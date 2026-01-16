@@ -1,32 +1,102 @@
 ---
-import Layout from '../layouts/MainLayout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<Layout title="About Me">
+<MainLayout title="About - Fashion Portfolio">
   <div class="max-w-4xl mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-8">About Me</h1>
-    <!-- Your bio -->
-    <h1 style="margin: 14px 0 10px;">About</h1>
-
-    <p style="max-width: 75ch;">
-      I am an early-career fashion designer currently building hands-on experience in garment construction,
-      tailoring, and studio work. My background includes formal coursework in fashion design, where I developed
-      a strong foundation in sewing, pattern work, and design process.
-    </p>
-  
-    <p style="max-width: 75ch;">
-      I’m especially interested in roles that allow me to work closely with garments—whether in tailoring,
-      studio assistance, or design support—and I’m motivated by environments where learning, precision,
-      and collaboration are valued.
-    </p>
-  
-    <p style="max-width: 75ch;">
-      I am currently seeking entry-level opportunities in fashion studios, tailoring, and design teams.
-    </p>
+    <h1 class="text-4xl font-bold mb-8 animate-fade-in">About Me</h1>
     
-    <div class="flex gap-4 mt-8">
-      <a href="mailto:your@email.com" class="btn-primary">Contact Me</a>
-      <a href="/resume.pdf" download class="btn-secondary">Download Resume</a>
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <div class="md:col-span-1">
+        <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+          <img 
+            src="https://placehold.co/400x400/EEE/31343C?text=Your+Photo" 
+            alt="Profile"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+      
+      <div class="md:col-span-2">
+        <h2 class="text-2xl font-bold mb-4">Fashion Designer & Illustrator</h2>
+        <p class="text-gray-700 mb-4">
+          I'm a passionate fashion designer with expertise in tailoring, pattern making, and technical illustration. 
+          My work combines traditional craftsmanship with contemporary design aesthetics.
+          I am an early-career fashion designer currently building hands-on experience in garment construction, tailoring, and studio work. My background includes formal coursework in fashion design, where I developed a strong foundation in sewing, pattern work, and design process.
+
+            I’m especially interested in roles that allow me to work closely with garments—whether in tailoring, studio assistance, or design support—and I’m motivated by environments where learning, precision, and collaboration are valued.
+
+            I am currently seeking entry-level opportunities in fashion studios, tailoring, and design teams.
+        </p>
+        <p class="text-gray-700 mb-4">
+          With a focus on sustainable practices and innovative construction techniques, I create garments 
+          that are both beautiful and thoughtfully made. My background includes studio work, custom tailoring, 
+          and fashion illustration.
+        </p>
+        <p class="text-gray-700 mb-6">
+          I'm currently seeking opportunities to collaborate on exciting fashion projects and contribute 
+          to forward-thinking design teams.
+        </p>
+
+        <div class="space-y-3">
+          <h3 class="text-xl font-bold mb-3">Skills</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-4 py-2 bg-black text-white rounded-full">Tailoring</span>
+            <span class="px-4 py-2 bg-black text-white rounded-full">Pattern Making</span>
+            <span class="px-4 py-2 bg-black text-white rounded-full">Draping</span>
+            <span class="px-4 py-2 bg-black text-white rounded-full">Technical Flats</span>
+            <span class="px-4 py-2 bg-black text-white rounded-full">Studio Work</span>
+            <span class="px-4 py-2 bg-black text-white rounded-full">Sustainable Design</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-8">
+      <h2 class="text-2xl font-bold mb-6">Get In Touch</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-bold mb-2">Email</h3>
+          <a href="mailto:your.email@example.com" class="text-blue-600 hover:underline">
+            your.email@example.com
+          </a>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">LinkedIn</h3>
+          <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-blue-600 hover:underline">
+            linkedin.com/in/yourprofile
+          </a>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Instagram</h3>
+          <a href="https://instagram.com/in/yourhandle" target="_blank" class="text-blue-600 hover:underline">
+            @yourhandle
+          </a>
+        </div>
+        <div>
+          <h3 class="font-bold mb-2">Portfolio PDF</h3>
+          <a href="/resume.pdf" download class="text-blue-600 hover:underline">
+            Download Resume
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-8 flex gap-4">
+        <a 
+          href="mailto:your.email@example.com" 
+          class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          Contact Me
+        </a>
+        <a 
+          href="/resume.pdf" 
+          download 
+          class="border-2 border-black text-black px-6 py-3 rounded-lg hover:bg-black hover:text-white transition-colors"
+        >
+          Download Resume
+        </a>
+      </div>
     </div>
   </div>
-</Layout>
+</MainLayout>
+

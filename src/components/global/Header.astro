@@ -1,0 +1,50 @@
+---
+import { SITE_TITLE } from '../../consts';
+import HeaderLink from './HeaderLink.astro';
+---
+
+<header class="bg-white shadow-sm sticky top-0 z-50">
+	 <nav class="max-w-7xl mx-auto px-4 py-6"></nav>
+		<div class="flex justify-between items-center">
+			<a href="/" class="text-2xl items-center font-bold hover:text-gray-600 transition-colors">
+			  {SITE_TITLE}
+			</a>
+			<div class="flex space-x-6">
+			  <a href="/about" class="hover:text-gray-600 transition-colors">About</a>
+			  <a href="/projects" class="hover:text-gray-600 transition-colors">Projects</a>
+			  <a href="/illustrations" class="hover:text-gray-600 transition-colors">Illustrations</a>
+			</div>
+		</div>
+	</nav>
+</header>
+<style>
+	header {
+		margin: 0;
+		padding: 0 1em;
+		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+	}
+	h2 {
+		margin: 0;
+		font-size: 1em;
+	}
+
+	h2 a,
+	h2 a.active {
+		text-decoration: none;
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	nav a {
+		padding: 1em 0.5em;
+		color: var(--black);
+		border-bottom: 4px solid transparent;
+		text-decoration: none;
+	}
+	nav a.active {
+		text-decoration: none;
+		border-bottom-color: var(--accent);
+	}
+</style>

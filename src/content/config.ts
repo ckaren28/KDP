@@ -17,6 +17,7 @@ const illustrations = defineCollection({
     date: z.date(),
     image: z.string(),
     tags: z.array(z.string()),
+    description: z.string().optional(), // Add optional description
   }),
 });
 

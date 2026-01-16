@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  image: string;
+  tags: string[];
+}
+
+const { title, image, tags } = Astro.props;
+---
+
+<div class="group">
+  <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    <div class="aspect-[3/4] bg-gray-200 overflow-hidden">
+      <img 
+        src={image} 
+        alt={title}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+    </div>
+    <div class="p-6">
+      <h2 class="text-xl font-bold mb-2">{title}</h2>
+      <div class="flex flex-wrap gap-2">
+        {tags.map((tag: string) => (
+          <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

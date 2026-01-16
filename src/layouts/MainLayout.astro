@@ -1,11 +1,20 @@
 ---
 import '../styles/global.css';
+import BlobCursorFollower from "../components/global/BlobCursorFollower.astro";
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
+const { pathname } = Astro.url;
+
+function cursorFollowerActive() {
+	const paths = ["", "/", "/it/", "/it"];
+	return paths.includes(pathname);
+}
 ---
 
 <!DOCTYPE html>
@@ -13,29 +22,27 @@ const { title } = Astro.props;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
   <title>{title}</title>
+  <meta name="description" content="Fashion design portfolio showcasing projects and illustrations">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
-<body>
-  <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <nav class="max-w-7xl mx-auto px-4 py-6">
-        <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold">My Portfolio</h1>
-          <div class="space-x-6">
-            <a href="/" class="hover:text-gray-600">Home</a>
-            <a href="/about" class="hover:text-gray-600">About</a>
-            <a href="/projects" class="hover:text-gray-600">Projects</a>
-            <a href="/illustrations" class="hover:text-gray-600">Illustrations</a>
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <main>
-      <slot />
-    </main>
-  </div>
+<body class="bg-gray-50">
+  <Header />
+  {cursorFollowerActive() && <BlobCursorFollower />}
+  <main class="min-h-screen">
+    <slot />
+  </main>
+  <Footer />
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>
