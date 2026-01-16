@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  const illustrations = await getCollection('illustrations');
+  
+  // Get all unique tags
+  const allTags = new Set<string>();
+  
+  projects.forEach(project => {
+    project.data.tags.forEach((tag: string) => allTags.add(tag));
+  });
+  
+  illustrations.forEach(illustration => {
+    illustration.data.tags.forEach((tag: string) => allTags.add(tag));
+  });
+  
+  // Create a page for each tag
+  return Array.from(allTags).map(tag => ({
+    params: { tag },
+    props: { 
+      tag,
+      projects: projects.filter(p => p.data.tags.includes(tag)),
+      illustrations: illustrations.filter(i => i.data.tags.includes(tag))
+    }
+  }));
+}
+
+const { tag, projects, illustrations } = Astro.props;
+---
+
+<MainLayout title={`${tag} - Fashion Portfolio`}>
+  <div class="max-w-7xl mx-auto px-4 py-16">
+    <div class="mb-8">
+      <a href="/projects" class="text-gray-600 hover:text-black">
+        ← Back to all projects
+      </a>
+    </div>
+    
+    <h1 class="text-4xl font-bold mb-4">Tag: <span class="text-gray-600">{tag}</span></h1>
+    <p class="text-gray-600 mb-12">
+      Showing {projects.length} project{projects.length !== 1 ? 's' : ''} and {illustrations.length} illustration{illustrations.length !== 1 ? 's' : ''}
+    </p>
+    
+    {projects.length > 0 && (
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-8">Projects</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project) => (
+            <a href={`/projects/${project.slug}`} class="group">
+              <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="aspect-video bg-gray-200">
+                  <img 
+                    src={project.data.coverImage} 
+                    alt={project.data.title}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <div class="p-6">
+                  <h3 class="text-2xl font-bold mb-2 group-hover:text-gray-600">{project.data.title}</h3>
+                  <p class="text-gray-600 mb-4">{project.data.description}</p>
+                  <div class="flex flex-wrap gap-2">
+                    {project.data.tags.map((t: string) => (
+                      <span class={`px-3 py-1 text-sm rounded-full ${t === tag ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'}`}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+    
+    {illustrations.length > 0 && (
+      <section>
+        <h2 class="text-3xl font-bold mb-8">Illustrations</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {illustrations.map((illustration) => (
+            <div class="group">
+              <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="aspect-[3/4] bg-gray-200">
+                  <img 
+                    src={illustration.data.image} 
+                    alt={illustration.data.title}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <h3 class="text-xl font-bold mb-2">{illustration.data.title}</h3>
+                  <div class="flex flex-wrap gap-2">
+                    {illustration.data.tags.map((t: string) => (
+                      <span class={`px-3 py-1 text-sm rounded-full ${t === tag ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'}`}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</MainLayout>

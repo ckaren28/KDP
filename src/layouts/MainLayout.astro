@@ -1,5 +1,11 @@
 ---
-// Your homepage
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -7,7 +13,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fashion Portfolio</title>
+  <title>{title}</title>
 </head>
 <body>
   <div class="min-h-screen bg-gray-50">
@@ -25,14 +31,8 @@
       </nav>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-16">
-      <div class="text-center">
-        <h2 class="text-5xl font-bold mb-4">Welcome to My Fashion Portfolio</h2>
-        <p class="text-xl text-gray-600 mb-8">Showcasing my design work and illustrations</p>
-        <a href="/projects" class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800">
-          View Projects
-        </a>
-      </div>
+    <main>
+      <slot />
     </main>
   </div>
 </body>

@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<MainLayout title={`${project.data.title} - Fashion Portfolio`}>
+  <div class="max-w-4xl mx-auto px-4 py-16">
+    <a href="/projects" class="text-gray-600 hover:text-black mb-8 inline-block">
+      ← Back to Projects
+    </a>
+    
+    <img 
+      src={project.data.coverImage} 
+      alt={project.data.title}
+      class="w-full aspect-video object-cover rounded-lg mb-8"
+    />
+    
+    <h1 class="text-4xl font-bold mb-4">{project.data.title}</h1>
+    <p class="text-xl text-gray-600 mb-6">{project.data.description}</p>
+    
+    <div class="flex flex-wrap gap-2 mb-8">
+      {project.data.tags.map((tag: string) => (
+        <a 
+          href={`/tags/${tag}`}
+          class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-black hover:text-white transition-colors"
+        >
+          {tag}
+        </a>
+      ))}
+    </div>
+
+    <div class="prose prose-lg max-w-none">
+      <Content />
+    </div>
+  </div>
+</MainLayout>
