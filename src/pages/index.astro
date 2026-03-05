@@ -1,37 +1,960 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+// Karen Dettmar — Creative Technologist Portfolio
+// Drop this into src/pages/index.astro in your Astro project
 ---
-<!-- // Your homepage -->
-<MainLayout title="Fashion Portfolio">
-	
-		<main class="max-w-7xl mx-auto px-4 py-16">
-		  <div class="text-center">
-			<h2 class="text-5xl font-bold mb-4">Karen Dettmar</h2>
-			<p class="text-xl text-gray-600 mb-8">Showcasing my design work and illustrations</p>
-			<div class="flex flex-col items-center justify-center gap-3 lg:col-start-1">
-			<div class="squircle-bg rounded-lg bg-zinc-900" data-cursor-hover >
-				<a class="flex h-10 w-full max-w-52 flex-1 items-center justify-center px-4 py-2 text-xl text-slate-200 transition-all hover:text-white sm:w-auto md:font-bold lg:h-10"
-				aria-label="All Projects" href="/projects" class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800">
-					View Projects
-				  </a>
-				</div>
-			</div>
-			
-		  </div>
-		</main>
 
-</MainLayout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karen Dettmar — Creative Technologist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-<style>
-/* Text rotator */
-.rotator > span {
-		position: absolute;
-	}
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-	.rotator > span:not(:nth-child(1)) {
-		opacity: 0;
-	}
-	</style>
-	<script>
+    :root {
+      --black: #0E0D0B;
+      --off-white: #F4F0E8;
+      --warm-white: #FAF8F4;
+      --sienna: #A0522D;
+      --sienna-light: #C4734A;
+      --muted: #8A8478;
+      --border: rgba(14,13,11,0.12);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Archivo', sans-serif;
+    }
 
-	</script>
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--off-white);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-weight: 300;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      opacity: 0.4;
+    }
+
+    body:has(a:hover) .cursor,
+    body:has(button:hover) .cursor { width: 16px; height: 16px; background: var(--sienna); }
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring { width: 52px; height: 52px; opacity: 0.2; }
+
+    /* ── GRAIN OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 9997;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 48px;
+      mix-blend-mode: multiply;
+    }
+
+    .nav-logo {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 1.8s forwards;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 1.8s forwards;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--sienna);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-index {
+      position: absolute;
+      top: 50%;
+      right: 48px;
+      transform: translateY(-50%);
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 2.2s forwards;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(72px, 13vw, 180px);
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      overflow: hidden;
+    }
+
+    .hero-name .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-name .word {
+      display: inline-block;
+      transform: translateY(110%);
+      opacity: 0;
+    }
+
+    .hero-name .word.first { animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
+    .hero-name .word.second { animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s forwards; }
+
+    .hero-name .italic {
+      font-style: italic;
+      color: var(--sienna);
+    }
+
+    .hero-tagline {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      overflow: hidden;
+    }
+
+    .hero-tagline .tag-text {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2.2vw, 26px);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--black);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s forwards;
+    }
+
+    .hero-tagline .tag-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: scaleIn 0.8s cubic-bezier(0.16,1,0.3,1) 1.2s forwards;
+    }
+
+    .hero-tagline .tag-cta {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 1.4s forwards;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tag-cta .arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    .tag-cta:hover .arrow { transform: translateX(4px); }
+
+    /* ── MARQUEE ── */
+    .marquee-wrapper {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 1.6s forwards;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marquee 22s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding-right: 28px;
+      white-space: nowrap;
+    }
+
+    .marquee-text {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .marquee-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--sienna);
+      flex-shrink: 0;
+    }
+
+    /* ── SECTION STRUCTURE ── */
+    section { padding: 100px 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 56px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--sienna);
+    }
+
+    .section-link {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-link .arrow { transition: transform 0.3s ease; }
+    .section-link:hover .arrow { transform: translateX(4px); }
+
+    /* ── WORK GRID ── */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .work-item {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+      cursor: none;
+    }
+
+    .work-item:nth-child(1) { grid-column: span 7; }
+    .work-item:nth-child(2) { grid-column: span 5; }
+    .work-item:nth-child(3) { grid-column: span 4; }
+    .work-item:nth-child(4) { grid-column: span 8; }
+
+    .work-item-inner {
+      aspect-ratio: 4/3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .work-item:nth-child(1) .work-item-inner { aspect-ratio: 16/10; }
+    .work-item:nth-child(4) .work-item-inner { aspect-ratio: 16/9; }
+
+    /* Placeholder for images — replace src with actual images */
+    .work-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--black);
+      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .work-item:hover .work-placeholder { transform: scale(1.04); }
+
+    .work-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+      transition: opacity 0.5s ease;
+    }
+    .work-item:hover .work-placeholder img { opacity: 1; }
+
+    /* Placeholder color blocks for items without images yet */
+    .placeholder-swatch {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .swatch-1 { background: #1C1917; }
+    .swatch-2 { background: #2A2420; }
+    .swatch-3 { background: #231F1B; }
+    .swatch-4 { background: #1A1714; }
+
+    .work-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(14,13,11,0.85) 0%, transparent 50%);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .work-item:hover .work-overlay { opacity: 1; }
+
+    .work-tag {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sienna-light);
+      margin-bottom: 8px;
+    }
+
+    .work-name {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--off-white);
+      line-height: 1.1;
+    }
+
+    .work-meta {
+      position: absolute;
+      bottom: -100%;
+      left: 0; right: 0;
+      background: var(--off-white);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: bottom 0s ease 0s;
+    }
+
+    /* Always-visible work label below image */
+    .work-label {
+      padding: 16px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .work-label-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--black);
+    }
+
+    .work-label-cat {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── ABOUT STRIP ── */
+    .about-strip {
+      background: var(--black);
+      color: var(--off-white);
+      padding: 100px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-headline {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 68px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .about-headline em {
+      font-style: italic;
+      color: #C4734A;
+    }
+
+    .about-body {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .about-body p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(244,240,232,0.75);
+      font-weight: 300;
+    }
+
+    .about-body p strong {
+      color: var(--off-white);
+      font-weight: 400;
+    }
+
+    .about-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      border: 1px solid rgba(244,240,232,0.2);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-weight: 400;
+    }
+
+    /* ── DISCIPLINES ── */
+    .disciplines {
+      padding: 80px 48px;
+    }
+
+    .discipline-list {
+      list-style: none;
+    }
+
+    .discipline-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .discipline-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--black);
+      transform: translateX(-100%);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      z-index: 0;
+    }
+
+    .discipline-item:hover::before { transform: translateX(0); }
+
+    .discipline-item:hover .disc-name,
+    .discipline-item:hover .disc-num,
+    .discipline-item:hover .disc-desc { color: var(--off-white); }
+
+    .disc-num {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      position: relative; z-index: 1;
+      transition: color 0.3s ease;
+      width: 40px;
+    }
+
+    .disc-name {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      position: relative; z-index: 1;
+      transition: color 0.3s ease;
+      flex: 1;
+      padding: 0 40px;
+    }
+
+    .disc-desc {
+      font-size: 13px;
+      color: var(--muted);
+      position: relative; z-index: 1;
+      transition: color 0.3s ease;
+      text-align: right;
+      max-width: 200px;
+      line-height: 1.5;
+    }
+
+    /* ── CONTACT ── */
+    .contact {
+      padding: 120px 48px 80px;
+      text-align: center;
+    }
+
+    .contact-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .contact-headline {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 9vw, 120px);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      margin-bottom: 56px;
+    }
+
+    .contact-headline em {
+      font-style: italic;
+      color: var(--sienna);
+      display: block;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+    }
+
+    .contact-link {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .contact-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: var(--sienna);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s ease;
+    }
+
+    .contact-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideUp {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 24px 28px; }
+      .hero { padding: 0 28px 56px; }
+      section { padding: 72px 28px; }
+      .about-strip { grid-template-columns: 1fr; gap: 48px; padding: 72px 28px; }
+      .disciplines { padding: 60px 28px; }
+      .contact { padding: 80px 28px 60px; }
+      footer { padding: 24px 28px; flex-direction: column; gap: 12px; text-align: center; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-item:nth-child(n) { grid-column: span 1; }
+      .disc-desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">Karen Dettmar</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="/illustrations">Illustrations</a></li>
+      <li><a href="/karen-dettmar-resume.pdf" target="_blank">Résumé</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-index">Creative Technologist · NYC</div>
+
+    <h1 class="hero-name">
+      <span class="line"><span class="word first">Karen</span></span>
+      <span class="line"><span class="word second italic">Dettmar</span></span>
+    </h1>
+
+    <div class="hero-tagline">
+      <span class="tag-text">Fashion, technology & the space between.</span>
+      <span class="tag-line"></span>
+      <a href="#work" class="tag-cta">View work <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrapper">
+    <div class="marquee-track" aria-hidden="true">
+      <!-- Two identical sets for seamless loop -->
+      <div class="marquee-item"><span class="marquee-text">Creative Technology</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Fashion Design</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Interactive Demos</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Parsons School of Design</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Developer Advocacy</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Technical Workshops</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Cultural Institutions</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Textile & Craft</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Front-End Development</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Creative Technology</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Fashion Design</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Interactive Demos</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Parsons School of Design</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Developer Advocacy</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Technical Workshops</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Cultural Institutions</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Textile & Craft</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Front-End Development</span><span class="marquee-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-label">Selected Work</div>
+        <h2 class="section-title">Things I've <em>made.</em></h2>
+      </div>
+      <a href="/work" class="section-link">All work <span class="arrow">→</span></a>
+    </div>
+
+    <div class="work-grid">
+
+      <!-- ITEM 1 — Wix DevCon Demo (large, featured) -->
+      <!-- Replace .placeholder-swatch with <img src="/images/wix-devcon.jpg" alt="..."> when ready -->
+      <div class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="placeholder-swatch swatch-1"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Conference Demo · Wix</div>
+            <div class="work-name">DevCon Keynote<br>Live Demo</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">DevCon Keynote Demo</span>
+          <span class="work-label-cat">Creative Technology</span>
+        </div>
+      </div>
+
+      <!-- ITEM 2 — Parsons Flat / CAD -->
+      <div class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="placeholder-swatch swatch-2"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Fashion Design · Parsons</div>
+            <div class="work-name">Technical Flats<br>& CAD Work</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Parsons — Technical Flats</span>
+          <span class="work-label-cat">Fashion Design</span>
+        </div>
+      </div>
+
+      <!-- ITEM 3 — Draped Dress -->
+      <div class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="placeholder-swatch swatch-3"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Construction · Parsons</div>
+            <div class="work-name">Draped &<br>Sewn Dress</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Draped Dress</span>
+          <span class="work-label-cat">Garment Construction</span>
+        </div>
+      </div>
+
+      <!-- ITEM 4 — Museum Label Generator -->
+      <div class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="placeholder-swatch swatch-4"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Live Demo · AI Tool</div>
+            <div class="work-name">Museum Label<br>Generator</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Museum Label Generator</span>
+          <span class="work-label-cat">Creative Technology</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DISCIPLINES -->
+  <div class="disciplines">
+    <ul class="discipline-list">
+      <li class="discipline-item reveal">
+        <span class="disc-num">01</span>
+        <span class="disc-name">Fashion Design</span>
+        <span class="disc-desc">Draping, construction, CAD, technical flats</span>
+      </li>
+      <li class="discipline-item reveal">
+        <span class="disc-num">02</span>
+        <span class="disc-name">Creative Technology</span>
+        <span class="disc-desc">Interactive demos, prototypes, AI tools</span>
+      </li>
+      <li class="discipline-item reveal">
+        <span class="disc-num">03</span>
+        <span class="disc-name">Front-End Development</span>
+        <span class="disc-desc">React, Astro, TypeScript, APIs</span>
+      </li>
+      <li class="discipline-item reveal">
+        <span class="disc-num">04</span>
+        <span class="disc-name">Workshop Facilitation</span>
+        <span class="disc-desc">Community, education, technical storytelling</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-strip" id="about">
+    <div>
+      <h2 class="about-headline reveal">
+        I make things<br>that live at the<br><em>edge of two worlds.</em>
+      </h2>
+    </div>
+    <div class="about-body reveal">
+      <p>
+        I'm a <strong>creative technologist and fashion designer</strong> based in New York City.
+        I build at the intersection of craft and code — equally comfortable draping a dress form
+        and architecting a React component.
+      </p>
+      <p>
+        Previously at <strong>Intuit</strong> and <strong>Wix</strong>, where I led developer
+        education, built conference demos, and ran technical workshops for global audiences.
+        Currently completing a <strong>Fashion Design certification at Parsons</strong> and
+        continuing technical studies at <strong>FIT</strong>.
+      </p>
+      <p>
+        I'm drawn to creative communities — cultural institutions, fashion, art — and
+        how technology can serve them rather than overpower them.
+      </p>
+      <div class="about-pills">
+        <span class="pill">Parsons School of Design</span>
+        <span class="pill">FIT</span>
+        <span class="pill">New York City</span>
+        <span class="pill">Open to work</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <p class="contact-eyebrow">Let's work together</p>
+    <h2 class="contact-headline reveal">
+      Say
+      <em>hello.</em>
+    </h2>
+    <div class="contact-links">
+      <a href="mailto:karen.dettmar@gmail.com" class="contact-link">Email</a>
+      <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-link">LinkedIn</a>
+      <a href="/karen-dettmar-resume.pdf" target="_blank" class="contact-link">Résumé</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Karen Dettmar</p>
+    <p>Creative Technologist · Fashion Designer · New York City</p>
+  </footer>
+
+  <script>
+    // ── CUSTOM CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let ringX = 0, ringY = 0, curX = 0, curY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      curX = e.clientX; curY = e.clientY;
+      cursor.style.left = curX + 'px';
+      cursor.style.top = curY + 'px';
+    });
+
+    function animateRing() {
+      ringX += (curX - ringX) * 0.12;
+      ringY += (curY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
