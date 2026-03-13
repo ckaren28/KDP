@@ -6,35 +6,157 @@ const projects = await getCollection('projects');
 const sortedProjects = projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<MainLayout title="Projects - Fashion Portfolio">
-  <div class="max-w-7xl mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-12">My Projects</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<MainLayout title="Projects — Karen Dettmar">
+  <div class="page-container">
+
+    <span class="page-eyebrow">Portfolio</span>
+    <h1 class="page-title">Selected <em>Work</em></h1>
+
+    <div class="work-grid">
+
       {sortedProjects.map((project) => (
-        <a href={'/projects/' + project.slug} class="group">
-          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
-            <div class="aspect-video bg-gray-200">
-              <img 
-                src={project.data.coverImage} 
-                alt={project.data.title}
-                class="w-full h-full object-cover"
-              />
+        <a href={'/projects/' + project.slug} class="work-item reveal">
+          <div class="work-item-inner">
+            <div class="work-placeholder">
+              {project.data.coverImage
+                ? <img src={project.data.coverImage} alt={project.data.title} />
+                : <div class="swatch swatch-default"></div>
+              }
             </div>
-            <div class="p-6">
-              <h2 class="text-2xl font-bold mb-2 group-hover:text-gray-600">{project.data.title}</h2>
-              <p class="text-gray-600 mb-4">{project.data.description}</p>
-              <div class="flex flex-wrap gap-2">
-                {project.data.tags.map((tag: string) => (
-                  <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+            <div class="work-overlay">
+              <div class="work-tag">{project.data.tags[0]}</div>
+              <div class="work-name">{project.data.title}</div>
             </div>
+          </div>
+          <div class="work-label">
+            <span class="work-label-name">{project.data.title}</span>
+            <span class="work-label-cat">{project.data.tags[0]}</span>
           </div>
         </a>
       ))}
+
+      <!-- Traveller — standalone project page -->
+      <a href="/projects/traveller" class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="swatch swatch-traveller"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Fashion Design · Parsons</div>
+            <div class="work-name">Traveller</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Traveller</span>
+          <span class="work-label-cat">Collection Concept</span>
+        </div>
+      </a>
+
     </div>
   </div>
 </MainLayout>
+
+<style>
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+
+  .work-item:nth-child(odd)  { grid-column: span 7; }
+  .work-item:nth-child(even) { grid-column: span 5; }
+
+  .work-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+    text-decoration: none;
+    color: inherit;
+    cursor: none;
+  }
+
+  .work-item-inner {
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .work-placeholder {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .work-item:hover .work-placeholder { transform: scale(1.04); }
+
+  .work-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    transition: opacity 0.5s ease;
+  }
+  .work-item:hover .work-placeholder img { opacity: 1; }
+
+  .swatch { width: 100%; height: 100%; }
+  .swatch-default   { background: #2A2420; }
+  .swatch-traveller { background: #1C1815; }
+
+  .work-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(14,13,11,0.88) 0%, transparent 55%);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .work-item:hover .work-overlay { opacity: 1; }
+
+  .work-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sienna-light);
+    margin-bottom: 6px;
+  }
+
+  .work-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--off-white);
+    line-height: 1.1;
+  }
+
+  .work-label {
+    padding: 14px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .work-label-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--black);
+  }
+
+  .work-label-cat {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .work-grid { grid-template-columns: 1fr; gap: 12px; }
+    .work-item:nth-child(n) { grid-column: span 1; }
+  }
+</style>

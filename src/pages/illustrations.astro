@@ -6,7 +6,6 @@ import IllustrationGallery from '../components/IllustrationGallery';
 const illustrations = await getCollection('illustrations');
 const sortedIllustrations = illustrations.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// Prepare data for the React component
 const illustrationsData = sortedIllustrations.map(ill => ({
   title: ill.data.title,
   image: ill.data.image,
@@ -15,10 +14,13 @@ const illustrationsData = sortedIllustrations.map(ill => ({
 }));
 ---
 
-<MainLayout title="Illustrations - Fashion Portfolio">
-  <div class="max-w-7xl mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-12 animate-fade-in">Fashion Illustrations</h1>
-    
+<MainLayout title="Illustrations — Karen Dettmar">
+  <div class="page-container">
+
+    <span class="page-eyebrow">Visual Work</span>
+    <h1 class="page-title">Fashion <em>Illustrations</em></h1>
+
     <IllustrationGallery illustrations={illustrationsData} client:load />
+
   </div>
 </MainLayout>

@@ -1,7 +1,33 @@
 ---
-const today = new Date();
+const year = new Date().getFullYear();
 ---
 
-<footer class="bg-gray-900 text-white mt-20">	&copy; {today.getFullYear()} Your name here. All rights reserved.
-	
+<footer>
+  <p>© {year} Karen Dettmar</p>
+  <p>Creative Technologist · Fashion Designer · New York City</p>
 </footer>
+
+<style>
+  footer {
+    padding: 28px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    footer {
+      padding: 24px 28px;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+</style>

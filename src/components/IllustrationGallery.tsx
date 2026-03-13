@@ -85,40 +85,40 @@ export default function IllustrationGallery({ illustrations }: Props) {
       {/* Lightbox Modal */}
       {selectedImage && selectedIndex !== null && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black bg-opacity-95 z-[200] flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setSelectedIndex(null)}
         >
           {/* Close Button */}
           <button
-            onClick={() => setSelectedIndex(null)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 text-4xl font-light w-12 h-12 flex items-center justify-center z-10"
+            onClick={(e) => { e.stopPropagation(); setSelectedIndex(null); }}
+            className="absolute top-5 right-5 z-[210] flex items-center gap-2 text-white opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Close"
+            style={{ cursor: 'pointer' }}
           >
-            ×
+            <span style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Close</span>
+            <span style={{ fontSize: '24px', fontWeight: 300, lineHeight: 1 }}>×</span>
           </button>
 
           {/* Previous Button */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goToPrevious();
-            }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 text-5xl font-light w-16 h-16 flex items-center justify-center z-10 hover:bg-white hover:bg-opacity-10 rounded-full transition-all"
+            onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+            className="absolute left-5 top-1/2 -translate-y-1/2 z-[210] flex flex-col items-center gap-1 text-white opacity-50 hover:opacity-100 transition-opacity"
             aria-label="Previous image"
+            style={{ cursor: 'pointer' }}
           >
-            ‹
+            <span style={{ fontSize: '28px', fontWeight: 300, lineHeight: 1 }}>←</span>
+            <span style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Prev</span>
           </button>
 
           {/* Next Button */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goToNext();
-            }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 text-5xl font-light w-16 h-16 flex items-center justify-center z-10 hover:bg-white hover:bg-opacity-10 rounded-full transition-all"
+            onClick={(e) => { e.stopPropagation(); goToNext(); }}
+            className="absolute right-5 top-1/2 -translate-y-1/2 z-[210] flex flex-col items-center gap-1 text-white opacity-50 hover:opacity-100 transition-opacity"
             aria-label="Next image"
+            style={{ cursor: 'pointer' }}
           >
-            ›
+            <span style={{ fontSize: '28px', fontWeight: 300, lineHeight: 1 }}>→</span>
+            <span style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Next</span>
           </button>
 
           <div

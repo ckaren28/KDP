@@ -2,101 +2,326 @@
 import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<MainLayout title="About - Fashion Portfolio">
-  <div class="max-w-4xl mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold mb-8 animate-fade-in">About Me</h1>
-    
-    <div class="grid md:grid-cols-3 gap-8 mb-12">
-      <div class="md:col-span-1">
-        <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-          <img 
-            src="https://placehold.co/400x400/EEE/31343C?text=Your+Photo" 
-            alt="Profile"
-            class="w-full h-full object-cover"
-          />
+<MainLayout title="About — Karen Dettmar">
+  <div class="page-container">
+
+    <!-- Header -->
+    <span class="page-eyebrow">About</span>
+    <h1 class="page-title">Karen <em>Dettmar</em></h1>
+
+    <!-- Bio grid -->
+    <div class="bio-grid reveal">
+      <div class="bio-image-col">
+        <div class="bio-image-placeholder">
+          <span>Photo</span>
         </div>
-      </div>
-      
-      <div class="md:col-span-2">
-        <h2 class="text-2xl font-bold mb-4">Fashion Designer & Illustrator</h2>
-        <p class="text-gray-700 mb-4">
-          I'm a passionate fashion designer with expertise in tailoring, pattern making, and technical illustration. 
-          My work combines traditional craftsmanship with contemporary design aesthetics.
-          I am an early-career fashion designer currently building hands-on experience in garment construction, tailoring, and studio work. My background includes formal coursework in fashion design, where I developed a strong foundation in sewing, pattern work, and design process.
-
-            I’m especially interested in roles that allow me to work closely with garments—whether in tailoring, studio assistance, or design support—and I’m motivated by environments where learning, precision, and collaboration are valued.
-
-            I am currently seeking entry-level opportunities in fashion studios, tailoring, and design teams.
-        </p>
-        <p class="text-gray-700 mb-4">
-          With a focus on sustainable practices and innovative construction techniques, I create garments 
-          that are both beautiful and thoughtfully made. My background includes studio work, custom tailoring, 
-          and fashion illustration.
-        </p>
-        <p class="text-gray-700 mb-6">
-          I'm currently seeking opportunities to collaborate on exciting fashion projects and contribute 
-          to forward-thinking design teams.
-        </p>
-
-        <div class="space-y-3">
-          <h3 class="text-xl font-bold mb-3">Skills</h3>
-          <div class="flex flex-wrap gap-2">
-            <span class="px-4 py-2 bg-black text-white rounded-full">Tailoring</span>
-            <span class="px-4 py-2 bg-black text-white rounded-full">Pattern Making</span>
-            <span class="px-4 py-2 bg-black text-white rounded-full">Draping</span>
-            <span class="px-4 py-2 bg-black text-white rounded-full">Technical Flats</span>
-            <span class="px-4 py-2 bg-black text-white rounded-full">Studio Work</span>
-            <span class="px-4 py-2 bg-black text-white rounded-full">Sustainable Design</span>
+        <div class="bio-meta">
+          <div class="bio-meta-item">
+            <span class="meta-label">Based</span>
+            <span class="meta-value">New York City</span>
+          </div>
+          <div class="bio-meta-item">
+            <span class="meta-label">Status</span>
+            <span class="meta-value">Open to work</span>
+          </div>
+          <div class="bio-meta-item">
+            <span class="meta-label">Education</span>
+            <span class="meta-value">Parsons · FIT</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="bg-white rounded-lg shadow-md p-8">
-      <h2 class="text-2xl font-bold mb-6">Get In Touch</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-bold mb-2">Email</h3>
-          <a href="mailto:your.email@example.com" class="text-blue-600 hover:underline">
-            your.email@example.com
-          </a>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">LinkedIn</h3>
-          <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-blue-600 hover:underline">
-            linkedin.com/in/yourprofile
-          </a>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">Instagram</h3>
-          <a href="https://instagram.com/in/yourhandle" target="_blank" class="text-blue-600 hover:underline">
-            @yourhandle
-          </a>
-        </div>
-        <div>
-          <h3 class="font-bold mb-2">Portfolio PDF</h3>
-          <a href="/resume.pdf" download class="text-blue-600 hover:underline">
-            Download Resume
-          </a>
-        </div>
-      </div>
-
-      <div class="mt-8 flex gap-4">
-        <a 
-          href="mailto:your.email@example.com" 
-          class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          Contact Me
-        </a>
-        <a 
-          href="/resume.pdf" 
-          download 
-          class="border-2 border-black text-black px-6 py-3 rounded-lg hover:bg-black hover:text-white transition-colors"
-        >
-          Download Resume
-        </a>
+      <div class="bio-text-col">
+        <p class="bio-lead">
+          I'm a creative technologist and fashion designer building at the intersection of craft and code.
+        </p>
+        <p>
+          Equally comfortable draping a dress form and architecting a React component, I work at the
+          edge of two disciplines that are rarely in the same room. My goal is to close that gap —
+          to make technology feel considered and make fashion feel intelligent.
+        </p>
+        <p>
+          Previously at <strong>Intuit</strong> and <strong>Wix</strong>, where I led developer
+          education, produced live conference demos for global audiences, and ran technical workshops
+          that translated complex tools into accessible experience.
+        </p>
+        <p>
+          Currently completing a <strong>Fashion Design certification at Parsons School of Design</strong>
+          and continuing technical studies at <strong>FIT</strong>. I'm drawn to creative
+          communities — cultural institutions, fashion houses, art-adjacent technology — and how
+          technology can serve them without overpowering them.
+        </p>
       </div>
     </div>
+
+    <!-- Disciplines -->
+    <div class="disciplines-section reveal">
+      <h2 class="disciplines-heading">What I do</h2>
+      <ul class="discipline-list">
+        <li class="discipline-item">
+          <span class="disc-num">01</span>
+          <span class="disc-name">Fashion Design</span>
+          <span class="disc-desc">Draping, construction, CAD, technical flats</span>
+        </li>
+        <li class="discipline-item">
+          <span class="disc-num">02</span>
+          <span class="disc-name">Creative Technology</span>
+          <span class="disc-desc">Interactive demos, prototypes, AI tools</span>
+        </li>
+        <li class="discipline-item">
+          <span class="disc-num">03</span>
+          <span class="disc-name">Front-End Development</span>
+          <span class="disc-desc">React, Astro, TypeScript, APIs</span>
+        </li>
+        <li class="discipline-item">
+          <span class="disc-num">04</span>
+          <span class="disc-name">Workshop Facilitation</span>
+          <span class="disc-desc">Community, education, technical storytelling</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="contact-section reveal">
+      <h2 class="contact-heading">Get in touch</h2>
+      <div class="contact-links">
+        <a href="mailto:karen.dettmar@gmail.com" class="contact-link">
+          <span class="contact-label">Email</span>
+          <span class="contact-value">karen.dettmar@gmail.com →</span>
+        </a>
+        <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-link">
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">linkedin.com/in/kdettmar →</span>
+        </a>
+        <a href="/karen-dettmar-resume.pdf" target="_blank" class="contact-link">
+          <span class="contact-label">Résumé</span>
+          <span class="contact-value">Download PDF →</span>
+        </a>
+      </div>
+    </div>
+
   </div>
 </MainLayout>
 
+<style>
+  /* ── BIO GRID ── */
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 64px;
+    margin-bottom: 80px;
+    align-items: start;
+  }
+
+  .bio-image-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #E8E3DB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .bio-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .bio-meta-item {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .meta-label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .meta-value {
+    color: var(--black);
+    font-weight: 400;
+  }
+
+  /* ── BIO TEXT ── */
+  .bio-text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 8px;
+  }
+
+  .bio-lead {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--black);
+  }
+
+  .bio-text-col p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #444;
+  }
+
+  .bio-text-col p strong {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  /* ── DISCIPLINES ── */
+  .disciplines-section {
+    margin-bottom: 80px;
+    border-top: 1px solid var(--border);
+    padding-top: 48px;
+  }
+
+  .disciplines-heading {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  .discipline-list {
+    list-style: none;
+  }
+
+  .discipline-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  .discipline-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--black);
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    z-index: 0;
+  }
+
+  .discipline-item:hover::before { transform: translateX(0); }
+
+  .discipline-item:hover .disc-name,
+  .discipline-item:hover .disc-num,
+  .discipline-item:hover .disc-desc { color: var(--off-white); }
+
+  .disc-num {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    transition: color 0.3s ease;
+    width: 40px;
+    flex-shrink: 0;
+  }
+
+  .disc-name {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.5vw, 48px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    position: relative; z-index: 1;
+    transition: color 0.3s ease;
+    flex: 1;
+    padding: 0 40px;
+  }
+
+  .disc-desc {
+    font-size: 12px;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    transition: color 0.3s ease;
+    text-align: right;
+    max-width: 200px;
+    line-height: 1.5;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    border-top: 1px solid var(--border);
+    padding-top: 48px;
+  }
+
+  .contact-heading {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .contact-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--black);
+    position: relative;
+    overflow: hidden;
+    transition: padding-left 0.3s ease;
+  }
+
+  .contact-link:hover { padding-left: 8px; }
+
+  .contact-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .contact-value {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 400;
+    font-style: italic;
+    transition: color 0.3s ease;
+  }
+
+  .contact-link:hover .contact-value { color: var(--sienna); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .bio-grid { grid-template-columns: 1fr; gap: 40px; }
+    .disc-desc { display: none; }
+    .contact-value { font-size: 16px; }
+  }
+</style>

@@ -1,6 +1,4 @@
 ---
-// Karen Dettmar — Creative Technologist Portfolio
-// Drop this into src/pages/index.astro in your Astro project
 ---
 
 <!DOCTYPE html>
@@ -11,7 +9,7 @@
   <title>Karen Dettmar — Creative Technologist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     /* ── RESET & BASE ── */
@@ -25,7 +23,7 @@
       --sienna-light: #C4734A;
       --muted: #8A8478;
       --border: rgba(14,13,11,0.12);
-      --font-display: 'Cormorant Garamond', serif;
+      --font-display: 'Playfair Display', serif;
       --font-body: 'Archivo', sans-serif;
     }
 
@@ -146,29 +144,52 @@
       overflow: hidden;
     }
 
-    .hero-index {
-      position: absolute;
-      top: 50%;
-      right: 48px;
-      transform: translateY(-50%);
+    /* Editorial metadata bar above the name */
+    .hero-masthead {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.1s forwards;
+    }
+
+    .hero-masthead-item {
       font-family: var(--font-body);
       font-size: 10px;
+      font-weight: 500;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
-      writing-mode: vertical-rl;
-      opacity: 0;
-      animation: fadeIn 0.8s ease 2.2s forwards;
+    }
+
+    .hero-masthead-divider {
+      width: 1px;
+      height: 10px;
+      background: var(--border);
+      margin: 0 20px;
+      flex-shrink: 0;
+    }
+
+    .hero-masthead-accent {
+      color: var(--sienna);
+    }
+
+    .hero-masthead-spacer {
+      flex: 1;
     }
 
     .hero-name {
       font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(72px, 13vw, 180px);
-      line-height: 0.88;
+      font-weight: 400;
+      font-size: clamp(72px, 13vw, 182px);
+      line-height: 0.9;
       letter-spacing: -0.02em;
       color: var(--black);
       overflow: hidden;
+      margin-bottom: 0;
     }
 
     .hero-name .line {
@@ -183,30 +204,29 @@
     }
 
     .hero-name .word.first { animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
-    .hero-name .word.second { animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s forwards; }
-
-    .hero-name .italic {
-      font-style: italic;
+    .hero-name .word.second {
+      animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s forwards;
       color: var(--sienna);
     }
 
     .hero-tagline {
-      margin-top: 32px;
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 32px;
-      overflow: hidden;
     }
 
     .hero-tagline .tag-text {
       font-family: var(--font-display);
-      font-size: clamp(16px, 2.2vw, 26px);
+      font-size: clamp(15px, 1.8vw, 22px);
       font-style: italic;
-      font-weight: 300;
-      color: var(--black);
+      font-weight: 400;
+      color: var(--muted);
       opacity: 0;
-      transform: translateY(30px);
-      animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s forwards;
+      animation: fadeIn 0.7s ease 0.9s forwards;
+      white-space: nowrap;
     }
 
     .hero-tagline .tag-line {
@@ -243,7 +263,7 @@
     .marquee-wrapper {
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 16px 0;
+      padding: 14px 0;
       overflow: hidden;
       opacity: 0;
       animation: fadeIn 0.6s ease 1.6s forwards;
@@ -252,7 +272,7 @@
     .marquee-track {
       display: flex;
       gap: 0;
-      animation: marquee 22s linear infinite;
+      animation: marquee 26s linear infinite;
       width: max-content;
     }
 
@@ -265,16 +285,16 @@
     }
 
     .marquee-text {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-style: italic;
-      font-weight: 300;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--muted);
-      letter-spacing: 0.04em;
     }
 
     .marquee-dot {
-      width: 4px; height: 4px;
+      width: 3px; height: 3px;
       border-radius: 50%;
       background: var(--sienna);
       flex-shrink: 0;
@@ -292,18 +312,20 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .section-label {
+    .section-eyebrow {
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
+      display: block;
+      margin-bottom: 10px;
     }
 
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(36px, 5vw, 64px);
-      font-weight: 300;
+      font-size: clamp(32px, 4.5vw, 58px);
+      font-weight: 400;
       line-height: 1;
       letter-spacing: -0.01em;
     }
@@ -322,15 +344,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      align-self: flex-end;
+      padding-bottom: 4px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
     }
+    .section-link:hover { border-bottom-color: var(--sienna); }
     .section-link .arrow { transition: transform 0.3s ease; }
     .section-link:hover .arrow { transform: translateX(4px); }
 
-    /* ── WORK GRID ── */
+    /* ── WORK GRID — 3 items ── */
     .work-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 20px;
+      gap: 16px;
     }
 
     .work-item {
@@ -340,10 +367,10 @@
       cursor: none;
     }
 
+    /* 3-item editorial grid: feature + sidebar on row 1, full-width on row 2 */
     .work-item:nth-child(1) { grid-column: span 7; }
     .work-item:nth-child(2) { grid-column: span 5; }
-    .work-item:nth-child(3) { grid-column: span 4; }
-    .work-item:nth-child(4) { grid-column: span 8; }
+    .work-item:nth-child(3) { grid-column: span 12; }
 
     .work-item-inner {
       aspect-ratio: 4/3;
@@ -351,10 +378,9 @@
       overflow: hidden;
     }
 
-    .work-item:nth-child(1) .work-item-inner { aspect-ratio: 16/10; }
-    .work-item:nth-child(4) .work-item-inner { aspect-ratio: 16/9; }
+    .work-item:nth-child(1) .work-item-inner { aspect-ratio: 16/11; }
+    .work-item:nth-child(3) .work-item-inner { aspect-ratio: 21/8; }
 
-    /* Placeholder for images — replace src with actual images */
     .work-placeholder {
       width: 100%;
       height: 100%;
@@ -376,21 +402,18 @@
     }
     .work-item:hover .work-placeholder img { opacity: 1; }
 
-    /* Placeholder color blocks for items without images yet */
     .placeholder-swatch {
       width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
     }
 
-    .swatch-1 { background: #1C1917; }
-    .swatch-2 { background: #2A2420; }
-    .swatch-3 { background: #231F1B; }
-    .swatch-4 { background: #1A1714; }
+    .swatch-1 { background: #2A2420; }
+    .swatch-2 { background: #231F1B; }
+    .swatch-3 { background: #1C1815; }
 
     .work-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(14,13,11,0.85) 0%, transparent 50%);
+      background: linear-gradient(to top, rgba(14,13,11,0.88) 0%, transparent 55%);
       padding: 28px;
       display: flex;
       flex-direction: column;
@@ -413,24 +436,11 @@
     .work-name {
       font-family: var(--font-display);
       font-size: 22px;
-      font-weight: 300;
+      font-weight: 400;
       color: var(--off-white);
       line-height: 1.1;
     }
 
-    .work-meta {
-      position: absolute;
-      bottom: -100%;
-      left: 0; right: 0;
-      background: var(--off-white);
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: bottom 0s ease 0s;
-    }
-
-    /* Always-visible work label below image */
     .work-label {
       padding: 16px 0 0;
       display: flex;
@@ -440,8 +450,8 @@
 
     .work-label-name {
       font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 300;
+      font-size: 17px;
+      font-weight: 400;
       font-style: italic;
       color: var(--black);
     }
@@ -466,9 +476,9 @@
 
     .about-headline {
       font-family: var(--font-display);
-      font-size: clamp(36px, 5vw, 68px);
-      font-weight: 300;
-      line-height: 1.05;
+      font-size: clamp(32px, 4.5vw, 64px);
+      font-weight: 400;
+      line-height: 1.08;
       letter-spacing: -0.01em;
     }
 
@@ -484,9 +494,9 @@
     }
 
     .about-body p {
-      font-size: 16px;
-      line-height: 1.75;
-      color: rgba(244,240,232,0.75);
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(244,240,232,0.72);
       font-weight: 300;
     }
 
@@ -507,7 +517,7 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--off-white);
-      border: 1px solid rgba(244,240,232,0.2);
+      border: 1px solid rgba(244,240,232,0.18);
       padding: 6px 14px;
       border-radius: 100px;
       font-weight: 400;
@@ -526,7 +536,7 @@
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      padding: 28px 0;
+      padding: 26px 0;
       border-bottom: 1px solid var(--border);
       position: relative;
       overflow: hidden;
@@ -549,8 +559,8 @@
     .discipline-item:hover .disc-desc { color: var(--off-white); }
 
     .disc-num {
-      font-size: 11px;
-      letter-spacing: 0.1em;
+      font-size: 10px;
+      letter-spacing: 0.12em;
       color: var(--muted);
       position: relative; z-index: 1;
       transition: color 0.3s ease;
@@ -559,8 +569,8 @@
 
     .disc-name {
       font-family: var(--font-display);
-      font-size: clamp(28px, 4vw, 52px);
-      font-weight: 300;
+      font-size: clamp(26px, 3.8vw, 50px);
+      font-weight: 400;
       letter-spacing: -0.01em;
       position: relative; z-index: 1;
       transition: color 0.3s ease;
@@ -569,13 +579,14 @@
     }
 
     .disc-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
       position: relative; z-index: 1;
       transition: color 0.3s ease;
       text-align: right;
       max-width: 200px;
       line-height: 1.5;
+      letter-spacing: 0.02em;
     }
 
     /* ── CONTACT ── */
@@ -595,7 +606,7 @@
     .contact-headline {
       font-family: var(--font-display);
       font-size: clamp(48px, 9vw, 120px);
-      font-weight: 300;
+      font-weight: 400;
       line-height: 0.9;
       letter-spacing: -0.02em;
       margin-bottom: 56px;
@@ -614,7 +625,7 @@
     }
 
     .contact-link {
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--black);
@@ -641,7 +652,7 @@
 
     /* ── FOOTER ── */
     footer {
-      padding: 32px 48px;
+      padding: 28px 48px;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -675,7 +686,7 @@
     /* ── SCROLL REVEAL ── */
     .reveal {
       opacity: 0;
-      transform: translateY(40px);
+      transform: translateY(32px);
       transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
     }
 
@@ -687,14 +698,17 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       nav { padding: 24px 28px; }
-      .hero { padding: 0 28px 56px; }
+      .hero { padding: 0 28px 48px; }
+      .hero-masthead { flex-wrap: wrap; gap: 8px; }
+      .hero-masthead-divider { display: none; }
       section { padding: 72px 28px; }
       .about-strip { grid-template-columns: 1fr; gap: 48px; padding: 72px 28px; }
       .disciplines { padding: 60px 28px; }
       .contact { padding: 80px 28px 60px; }
       footer { padding: 24px 28px; flex-direction: column; gap: 12px; text-align: center; }
-      .work-grid { grid-template-columns: 1fr; }
+      .work-grid { grid-template-columns: 1fr; gap: 12px; }
       .work-item:nth-child(n) { grid-column: span 1; }
+      .work-item:nth-child(n) .work-item-inner { aspect-ratio: 4/3; }
       .disc-desc { display: none; }
     }
   </style>
@@ -711,6 +725,7 @@
     <ul class="nav-links">
       <li><a href="#work">Work</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="/projects">Projects</a></li>
       <li><a href="/illustrations">Illustrations</a></li>
       <li><a href="/karen-dettmar-resume.pdf" target="_blank">Résumé</a></li>
     </ul>
@@ -718,15 +733,26 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-index">Creative Technologist · NYC</div>
+
+    <div class="hero-masthead">
+      <span class="hero-masthead-item hero-masthead-accent">No. 01</span>
+      <div class="hero-masthead-divider"></div>
+      <span class="hero-masthead-item">Creative Technologist</span>
+      <div class="hero-masthead-divider"></div>
+      <span class="hero-masthead-item">Fashion &amp; Technology</span>
+      <div class="hero-masthead-divider"></div>
+      <span class="hero-masthead-item">New York City</span>
+      <div class="hero-masthead-spacer"></div>
+      <span class="hero-masthead-item">2026</span>
+    </div>
 
     <h1 class="hero-name">
       <span class="line"><span class="word first">Karen</span></span>
-      <span class="line"><span class="word second italic">Dettmar</span></span>
+      <span class="line"><span class="word second">Dettmar</span></span>
     </h1>
 
     <div class="hero-tagline">
-      <span class="tag-text">Fashion, technology & the space between.</span>
+      <span class="tag-text">Fashion, technology &amp; the space between.</span>
       <span class="tag-line"></span>
       <a href="#work" class="tag-cta">View work <span class="arrow">→</span></a>
     </div>
@@ -735,7 +761,6 @@
   <!-- MARQUEE -->
   <div class="marquee-wrapper">
     <div class="marquee-track" aria-hidden="true">
-      <!-- Two identical sets for seamless loop -->
       <div class="marquee-item"><span class="marquee-text">Creative Technology</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Fashion Design</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Interactive Demos</span><span class="marquee-dot"></span></div>
@@ -743,7 +768,7 @@
       <div class="marquee-item"><span class="marquee-text">Developer Advocacy</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Technical Workshops</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Cultural Institutions</span><span class="marquee-dot"></span></div>
-      <div class="marquee-item"><span class="marquee-text">Textile & Craft</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Textile &amp; Craft</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Front-End Development</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Creative Technology</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Fashion Design</span><span class="marquee-dot"></span></div>
@@ -752,7 +777,7 @@
       <div class="marquee-item"><span class="marquee-text">Developer Advocacy</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Technical Workshops</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Cultural Institutions</span><span class="marquee-dot"></span></div>
-      <div class="marquee-item"><span class="marquee-text">Textile & Craft</span><span class="marquee-dot"></span></div>
+      <div class="marquee-item"><span class="marquee-text">Textile &amp; Craft</span><span class="marquee-dot"></span></div>
       <div class="marquee-item"><span class="marquee-text">Front-End Development</span><span class="marquee-dot"></span></div>
     </div>
   </div>
@@ -761,41 +786,23 @@
   <section id="work">
     <div class="section-header reveal">
       <div>
-        <div class="section-label">Selected Work</div>
+        <span class="section-eyebrow">Selected Work</span>
         <h2 class="section-title">Things I've <em>made.</em></h2>
       </div>
-      <a href="/work" class="section-link">All work <span class="arrow">→</span></a>
+      <a href="/projects" class="section-link">All projects <span class="arrow">→</span></a>
     </div>
 
     <div class="work-grid">
 
-      <!-- ITEM 1 — Wix DevCon Demo (large, featured) -->
-      <!-- Replace .placeholder-swatch with <img src="/images/wix-devcon.jpg" alt="..."> when ready -->
+      <!-- ITEM 1 — Parsons Technical Flats -->
       <div class="work-item reveal">
         <div class="work-item-inner">
           <div class="work-placeholder">
             <div class="placeholder-swatch swatch-1"></div>
           </div>
           <div class="work-overlay">
-            <div class="work-tag">Conference Demo · Wix</div>
-            <div class="work-name">DevCon Keynote<br>Live Demo</div>
-          </div>
-        </div>
-        <div class="work-label">
-          <span class="work-label-name">DevCon Keynote Demo</span>
-          <span class="work-label-cat">Creative Technology</span>
-        </div>
-      </div>
-
-      <!-- ITEM 2 — Parsons Flat / CAD -->
-      <div class="work-item reveal">
-        <div class="work-item-inner">
-          <div class="work-placeholder">
-            <div class="placeholder-swatch swatch-2"></div>
-          </div>
-          <div class="work-overlay">
             <div class="work-tag">Fashion Design · Parsons</div>
-            <div class="work-name">Technical Flats<br>& CAD Work</div>
+            <div class="work-name">Technical Flats<br>&amp; CAD Work</div>
           </div>
         </div>
         <div class="work-label">
@@ -804,15 +811,15 @@
         </div>
       </div>
 
-      <!-- ITEM 3 — Draped Dress -->
+      <!-- ITEM 2 — Draped Dress -->
       <div class="work-item reveal">
         <div class="work-item-inner">
           <div class="work-placeholder">
-            <div class="placeholder-swatch swatch-3"></div>
+            <div class="placeholder-swatch swatch-2"></div>
           </div>
           <div class="work-overlay">
             <div class="work-tag">Construction · Parsons</div>
-            <div class="work-name">Draped &<br>Sewn Dress</div>
+            <div class="work-name">Draped &amp;<br>Sewn Dress</div>
           </div>
         </div>
         <div class="work-label">
@@ -821,15 +828,15 @@
         </div>
       </div>
 
-      <!-- ITEM 4 — Museum Label Generator -->
+      <!-- ITEM 3 — Museum Label Generator (full width) -->
       <div class="work-item reveal">
         <div class="work-item-inner">
           <div class="work-placeholder">
-            <div class="placeholder-swatch swatch-4"></div>
+            <div class="placeholder-swatch swatch-3"></div>
           </div>
           <div class="work-overlay">
             <div class="work-tag">Live Demo · AI Tool</div>
-            <div class="work-name">Museum Label<br>Generator</div>
+            <div class="work-name">Museum Label Generator</div>
           </div>
         </div>
         <div class="work-label">
@@ -921,21 +928,25 @@
 
   <script>
     // ── CUSTOM CURSOR ──
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
+    const cursor = document.getElementById('cursor') as HTMLElement | null;
+    const ring = document.getElementById('cursorRing') as HTMLElement | null;
     let ringX = 0, ringY = 0, curX = 0, curY = 0;
 
     document.addEventListener('mousemove', (e) => {
       curX = e.clientX; curY = e.clientY;
-      cursor.style.left = curX + 'px';
-      cursor.style.top = curY + 'px';
+      if (cursor) {
+        cursor.style.left = curX + 'px';
+        cursor.style.top = curY + 'px';
+      }
     });
 
     function animateRing() {
       ringX += (curX - ringX) * 0.12;
       ringY += (curY - ringY) * 0.12;
-      ring.style.left = ringX + 'px';
-      ring.style.top = ringY + 'px';
+      if (ring) {
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+      }
       requestAnimationFrame(animateRing);
     }
     animateRing();

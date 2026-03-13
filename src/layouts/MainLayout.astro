@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import BlobCursorFollower from "../components/global/BlobCursorFollower.astro";
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 
@@ -9,12 +8,6 @@ interface Props {
 }
 
 const { title } = Astro.props;
-const { pathname } = Astro.url;
-
-function cursorFollowerActive() {
-	const paths = ["", "/", "/it/", "/it"];
-	return paths.includes(pathname);
-}
 ---
 
 <!DOCTYPE html>
@@ -23,23 +16,60 @@ function cursorFollowerActive() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title}</title>
-  <meta name="description" content="Fashion design portfolio showcasing projects and illustrations">
+  <meta name="description" content="Karen Dettmar — Creative Technologist & Fashion Designer, New York City">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
-<body class="bg-gray-50">
+<body>
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
   <Header />
-  {cursorFollowerActive() && <BlobCursorFollower />}
-  <main class="min-h-screen">
+  <main>
     <slot />
   </main>
   <Footer />
+
   <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
+    // ── CUSTOM CURSOR ──
+    const cursor = document.getElementById('cursor') as HTMLElement | null;
+    const ring = document.getElementById('cursorRing') as HTMLElement | null;
+    let ringX = 0, ringY = 0, curX = 0, curY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      curX = e.clientX; curY = e.clientY;
+      if (cursor) { cursor.style.left = curX + 'px'; cursor.style.top = curY + 'px'; }
+    });
+
+    function animateRing() {
+      ringX += (curX - ringX) * 0.12;
+      ringY += (curY - ringY) * 0.12;
+      if (ring) { ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px'; }
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // ── SCROLL REVEAL ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── NETLIFY IDENTITY ──
+    const netlify = (window as any).netlifyIdentity;
+    if (netlify) {
+      netlify.on("init", (user: any) => {
         if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
+          netlify.on("login", () => { document.location.href = "/admin/"; });
         }
       });
     }

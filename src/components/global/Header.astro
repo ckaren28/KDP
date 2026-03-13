@@ -1,50 +1,72 @@
 ---
-import { SITE_TITLE } from '../../consts';
-import HeaderLink from './HeaderLink.astro';
 ---
 
-<header class="bg-white shadow-sm sticky top-0 z-50">
-	 <nav class="max-w-7xl mx-auto px-4 py-6"></nav>
-		<div class="flex justify-between items-center">
-			<a href="/" class="text-2xl items-center font-bold hover:text-gray-600 transition-colors">
-			  {SITE_TITLE}
-			</a>
-			<div class="flex space-x-6">
-			  <a href="/about" class="hover:text-gray-600 transition-colors">About</a>
-			  <a href="/projects" class="hover:text-gray-600 transition-colors">Projects</a>
-			  <a href="/illustrations" class="hover:text-gray-600 transition-colors">Illustrations</a>
-			</div>
-		</div>
-	</nav>
+<header>
+  <a href="/" class="nav-logo">Karen Dettmar</a>
+  <ul class="nav-links">
+    <li><a href="/#work">Work</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/projects">Projects</a></li>
+    <li><a href="/illustrations">Illustrations</a></li>
+    <li><a href="/karen-dettmar-resume.pdf" target="_blank">Résumé</a></li>
+  </ul>
 </header>
-<style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
-	}
+<style>
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px;
+    mix-blend-mode: multiply;
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--sienna);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover::after { width: 100%; }
+
+  @media (max-width: 900px) {
+    header { padding: 24px 28px; }
+    .nav-links { gap: 20px; }
+    .nav-links a { font-size: 10px; }
+  }
+
+  @media (max-width: 600px) {
+    header { flex-direction: column; gap: 16px; padding: 20px 24px; }
+  }
 </style>
