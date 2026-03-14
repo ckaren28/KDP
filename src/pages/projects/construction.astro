@@ -1,11 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 
-// Add your images here as you upload them
-// Each entry: { src: '/images/construction/filename.jpg', alt: 'description', caption: 'optional caption' }
-const images: { src: string; alt: string; caption?: string }[] = [
-  // { src: '/images/construction/flat-01.jpg', alt: 'Technical flat — bodice', caption: 'Bodice — front & back' },
-];
 ---
 
 <MainLayout title="Garment Construction — Karen Dettmar">
@@ -160,8 +155,105 @@ const images: { src: string; alt: string; caption?: string }[] = [
     }
     .next-all:hover { color: var(--black); }
 
+    /* ── PROJECT ENTRIES ── */
+    .project-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .project-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .project-entry:hover { border-color: var(--sienna-light); }
+
+    .entry-image {
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      background: #2E2318;
+    }
+
+    .entry-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+      display: block;
+    }
+    .project-entry:hover .entry-image img { transform: scale(1.03); opacity: 1; }
+
+    /* hide broken image — fallback shows the dark swatch */
+    .entry-image img[src=""][alt],
+    .entry-image-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+
+    .entry-body {
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .entry-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .entry-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 1.25rem;
+    }
+
+    .entry-desc {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      font-weight: 300;
+      max-width: 36ch;
+      margin-bottom: 2rem;
+    }
+
+    .entry-link {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      align-self: flex-start;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .project-entry:hover .entry-link { color: var(--sienna); border-color: var(--sienna); }
+
     @media (max-width: 768px) {
       .image-grid { columns: 1; }
+      .project-entry { grid-template-columns: 1fr; }
+      .entry-image { aspect-ratio: 4/3; }
+      .entry-body { padding: 2rem 1.5rem; }
     }
   </style>
 
@@ -179,20 +271,49 @@ const images: { src: string; alt: string; caption?: string }[] = [
       </p>
     </header>
 
-    {images.length > 0 ? (
-      <div class="image-grid">
-        {images.map((img) => (
-          <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
-            <img src={img.src} alt={img.alt} />
-            {img.caption && <p class="image-caption">{img.caption}</p>}
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div class="empty-state">
-        <p>Images coming soon.<br />Add entries to the <code>images</code> array in this file.</p>
-      </div>
-    )}
+    <!-- ── PROJECT ENTRIES ── -->
+    <div class="project-entries">
+
+      <a href="/projects/constructions-2" class="project-entry reveal">
+        <div class="entry-image">
+          <img src="/images/constructions-2/lucky-dress1.JPG" alt="Green organza dress" />
+          <div class="entry-image-fallback"></div>
+        </div>
+        <div class="entry-body">
+          <span class="entry-label">Parsons · Constructions 2 · Final</span>
+          <h2 class="entry-title">Green Organza Dress</h2>
+          <p class="entry-desc">A draped and constructed tea-length dress in organza. Princess seams, French seam finished, with four oversized clover-inspired pockets.</p>
+          <span class="entry-link">View project →</span>
+        </div>
+      </a>
+
+      <a href="/projects/canvas-jacket" class="project-entry reveal">
+        <div class="entry-image">
+          <img src="/images/canvas-jacket/jacket-front.jpg" alt="Canvas zip-up jacket" />
+          <div class="entry-image-fallback"></div>
+        </div>
+        <div class="entry-body">
+          <span class="entry-label">FIT · Sewing Construction</span>
+          <h2 class="entry-title">Canvas Zip Jacket</h2>
+          <p class="entry-desc">A zip-up jacket in lightweight natural cotton canvas. Off-white with two large circular patch pockets.</p>
+          <span class="entry-link">View project →</span>
+        </div>
+      </a>
+
+      <a href="/projects/technical-flats" class="project-entry reveal">
+        <div class="entry-image">
+          <img src="/images/technical-flats/flat-01.jpg" alt="Technical flats" />
+          <div class="entry-image-fallback"></div>
+        </div>
+        <div class="entry-body">
+          <span class="entry-label">Parsons · Flats CAD</span>
+          <h2 class="entry-title">Technical Flats</h2>
+          <p class="entry-desc">Garment technical flats from the Flats CAD course at Parsons. The language between designer and production.</p>
+          <span class="entry-link">View project →</span>
+        </div>
+      </a>
+
+    </div>
 
     <div class="next-project">
       <a href="/projects" class="next-all">← All Projects</a>
