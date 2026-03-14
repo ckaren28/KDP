@@ -9,33 +9,30 @@ import MainLayout from '../../layouts/MainLayout.astro';
 <MainLayout title="Traveller — Karen Dettmar">
 
   <style>
-    /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     .project-page {
       max-width: 1100px;
       margin: 0 auto;
       padding: 120px 2rem 8rem;
-      font-family: 'Georgia', 'Times New Roman', serif;
-      color: #1a1a1a;
+      font-family: var(--font-display);
+      color: var(--black);
     }
 
-    /* ─── Back Nav ─── */
     .back-nav {
       padding: 2.5rem 0 4rem;
-      font-family: 'Arial', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
     .back-nav a {
-      color: #888;
+      color: var(--muted);
       text-decoration: none;
       transition: color 0.2s;
     }
-    .back-nav a:hover { color: #1a1a1a; }
+    .back-nav a:hover { color: var(--black); }
 
-    /* ─── Hero ─── */
     .hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -54,33 +51,31 @@ import MainLayout from '../../layouts/MainLayout.astro';
     .hero-image-placeholder {
       width: 100%;
       aspect-ratio: 3/4;
-      background: #f0ede8;
+      background: var(--placeholder-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.7rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #aaa;
+      color: var(--muted);
     }
 
-    .hero-text {
-      padding-bottom: 1rem;
-    }
+    .hero-text { padding-bottom: 1rem; }
 
     .hero-label {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.7rem;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #999;
+      color: var(--muted);
       margin-bottom: 1.5rem;
     }
 
     .hero-title {
       font-size: clamp(3.5rem, 8vw, 6.5rem);
-      font-weight: 400;
+      font-weight: 300;
       line-height: 0.95;
       letter-spacing: -0.02em;
       margin-bottom: 2.5rem;
@@ -88,41 +83,39 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .hero-subtitle {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.85rem;
-      line-height: 1.7;
-      color: #555;
+      line-height: 1.75;
+      color: var(--text-body);
       max-width: 32ch;
       margin-bottom: 3rem;
+      font-weight: 300;
     }
 
-    .hero-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    .hero-meta { display: flex; flex-direction: column; gap: 0; }
 
     .hero-meta-item {
       display: flex;
       gap: 1.5rem;
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.72rem;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .meta-label {
       text-transform: uppercase;
-      color: #bbb;
+      letter-spacing: 0.14em;
+      font-size: 0.65rem;
+      color: var(--muted);
       width: 6rem;
       flex-shrink: 0;
     }
 
-    .meta-value { color: #444; }
+    .meta-value { color: var(--text-body); }
 
-    /* ─── Concept Section ─── */
-    .section {
-      margin-bottom: 7rem;
-    }
+    .section { margin-bottom: 7rem; }
 
     .section-header {
       display: flex;
@@ -132,37 +125,37 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .section-number {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.65rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #ccc;
+      color: var(--muted);
     }
 
     .section-title {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.7rem;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #1a1a1a;
+      color: var(--black);
     }
 
     .section-rule {
       flex: 1;
       height: 1px;
-      background: #e0e0e0;
+      background: var(--border);
     }
 
     .concept-text {
       max-width: 65ch;
-      font-size: 1.15rem;
-      line-height: 1.85;
-      color: #333;
+      font-size: 1.12rem;
+      line-height: 1.88;
+      color: var(--text-body);
+      font-weight: 300;
     }
 
     .concept-text p + p { margin-top: 1.5rem; }
 
-    /* ─── Principles ─── */
     .principles {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -171,35 +164,36 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .principle {
-      background: #f7f5f2;
+      background: var(--placeholder-bg);
       padding: 3rem 2rem;
     }
 
     .principle-number {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.65rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #bbb;
+      color: var(--muted);
       margin-bottom: 1.5rem;
     }
 
     .principle-text {
       font-size: 1.4rem;
       font-style: italic;
+      font-weight: 300;
       line-height: 1.3;
-      color: #1a1a1a;
+      color: var(--black);
     }
 
     .principle-caption {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.78rem;
       line-height: 1.6;
-      color: #777;
+      color: var(--text-body);
       margin-top: 1rem;
+      font-weight: 300;
     }
 
-    /* ─── Mood Board ─── */
     .moodboard-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -207,9 +201,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
       gap: 2px;
     }
 
-    .moodboard-grid .img-main {
-      grid-row: 1 / 3;
-    }
+    .moodboard-grid .img-main { grid-row: 1 / 3; }
 
     .moodboard-grid img,
     .moodboard-grid .img-placeholder {
@@ -220,22 +212,21 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .img-placeholder {
-      background: #ece9e4;
+      background: var(--placeholder-bg);
       aspect-ratio: 4/3;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.65rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #bbb;
+      color: var(--muted);
     }
 
     .img-placeholder.tall { aspect-ratio: 2/3; }
     .img-placeholder.square { aspect-ratio: 1/1; }
 
-    /* ─── Sketches ─── */
     .sketches-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -251,15 +242,14 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .sketch-caption {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.68rem;
       letter-spacing: 0.06em;
-      color: #999;
+      color: var(--muted);
       margin-top: 0.75rem;
       text-transform: uppercase;
     }
 
-    /* ─── Flats + Swatches ─── */
     .technical-grid {
       display: grid;
       grid-template-columns: 3fr 2fr;
@@ -268,123 +258,121 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .flats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 2px;
     }
 
-    .flat-item img,
-    .flat-item .img-placeholder {
+    .flat-item img {
       width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: contain;
-      background: #f7f5f2;
       display: block;
+      object-fit: contain;
+      background: var(--placeholder-bg);
+      cursor: zoom-in;
+      transition: opacity 0.2s ease;
     }
+    .flat-item img:hover { opacity: 0.88; }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(24,16,10,0.96);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      display: block;
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      background: none; border: none;
+      color: rgba(237,229,208,0.5);
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: rgba(237,229,208,1); }
 
     .swatches-title {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.7rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #999;
+      color: var(--muted);
       margin-bottom: 2rem;
     }
 
-    .swatch-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
+    .swatch-list { display: flex; flex-direction: column; gap: 1.5rem; }
 
-    .swatch-item {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
+    .swatch-item { display: flex; align-items: center; gap: 1.25rem; }
 
     .swatch-color {
       width: 3rem;
       height: 3rem;
       flex-shrink: 0;
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
     }
 
-    .swatch-info {
-      font-family: 'Arial', sans-serif;
-    }
+    .swatch-info { font-family: var(--font-body); }
 
     .swatch-name {
       font-size: 0.8rem;
-      color: #222;
+      color: var(--black);
       margin-bottom: 0.2rem;
     }
 
     .swatch-note {
       font-size: 0.68rem;
-      color: #999;
+      color: var(--muted);
       letter-spacing: 0.04em;
     }
 
-    /* ─── Process Note ─── */
     .process-note {
-      border-left: 1px solid #ddd;
+      border-left: 1px solid var(--border);
       padding-left: 2rem;
       max-width: 55ch;
     }
 
     .process-note p {
       font-size: 1rem;
-      line-height: 1.8;
-      color: #555;
+      line-height: 1.85;
+      color: var(--text-body);
+      font-weight: 300;
     }
 
-    /* ─── Next Project Nav ─── */
     .next-project {
       margin-top: 8rem;
       padding-top: 3rem;
-      border-top: 1px solid #e8e8e8;
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .next-all {
-      font-family: 'Arial', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.7rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #888;
+      color: var(--muted);
       text-decoration: none;
       transition: color 0.2s;
     }
-    .next-all:hover { color: #1a1a1a; }
+    .next-all:hover { color: var(--black); }
 
-    .next-link {
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.4rem;
-      transition: opacity 0.2s;
-    }
-    .next-link:hover { opacity: 0.6; }
-
-    .next-label {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #bbb;
-    }
-
-    .next-title {
-      font-size: 1.4rem;
-      font-style: italic;
-      color: #1a1a1a;
-    }
-
-    /* ─── Responsive ─── */
     @media (max-width: 768px) {
       .hero { grid-template-columns: 1fr; gap: 2rem; }
       .principles { grid-template-columns: 1fr; }
@@ -405,8 +393,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     <!-- Hero -->
     <section class="hero">
-      <!-- Replace src with your actual mood board hero image -->
-      <div class="hero-image-placeholder tall">Mood Board Hero Image</div>
+  
+      <img class="hero-image" src="/images/traveller/Traveller-moodboard.png" alt="Traveller mood board" />
 
       <div class="hero-text">
         <p class="hero-label">Parsons School of Design · 2024</p>
@@ -443,7 +431,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
           Traveller began with a suitcase and a question: what do you keep when you have to leave everything behind?
         </p>
         <p>
-          Designed during a period of personal transition — moving cities, living without a fixed address, existing between places — this collection explores modular dressing as a philosophy rather than a gimmick. Each piece is designed to pack flat, layer intuitively, and shift between contexts: a dinner, a flight, a meeting, a morning walk in an unfamiliar city.
+          Designed during a period of personal transition. Moving cities, living without a fixed address, existing between places — this collection explores modular dressing as a philosophy rather than a gimmick. Each piece is designed to pack flat, layer intuitively, and shift between contexts: a dinner, a flight, a meeting, a morning walk in an unfamiliar city.
         </p>
         <p>
           The woman this collection is for knows how to travel light without looking like it. She moves through the world with intention. Her wardrobe doesn't announce itself.
@@ -479,10 +467,16 @@ import MainLayout from '../../layouts/MainLayout.astro';
       </div>
       <div class="moodboard-grid">
         <!-- Replace these placeholders with your actual mood board images -->
-        <!-- <img class="img-main" src="/images/traveller/moodboard-main.jpg" alt="Traveller mood board" /> -->
-        <div class="img-placeholder tall img-main">Mood Board — Main Image</div>
-        <div class="img-placeholder square">Reference 01</div>
-        <div class="img-placeholder square">Reference 02</div>
+        
+        <div class="img-placeholder ">Reference 01
+            <img class="img-placeholder " src="/images/traveller/sketches-process.png" alt="sketches" />
+
+
+        </div>
+        <div class="img-placeholder ">
+            
+            Reference 02</div>
+            <img class="img-placeholder " src="/images/traveller/fabrics.png" alt="fabric swatches" />
       </div>
     </section>
 
@@ -520,11 +514,12 @@ import MainLayout from '../../layouts/MainLayout.astro';
       <div class="technical-grid">
         <div>
           <div class="flats-grid">
-            <!-- Replace placeholders with your actual flat images -->
-            <div class="flat-item"><div class="img-placeholder">Flat 01 — Front</div></div>
-            <div class="flat-item"><div class="img-placeholder">Flat 01 — Back</div></div>
-            <div class="flat-item"><div class="img-placeholder">Flat 02 — Front</div></div>
-            <div class="flat-item"><div class="img-placeholder">Flat 02 — Back</div></div>
+            <div class="flat-item">
+              <img src="/images/traveller/Dettmar_Final_FW25.png" alt="Technical Flats FW25" class="lightbox-trigger" />
+            </div>
+            <div class="flat-item">
+              <img src="/images/traveller/Dettmar_Final_SS25.png" alt="Technical Flats SS25" class="lightbox-trigger" />
+            </div>
           </div>
         </div>
         <div>
@@ -584,5 +579,31 @@ import MainLayout from '../../layouts/MainLayout.astro';
     </div>
 
   </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">Close ×</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null;
+
+    document.querySelectorAll('.lightbox-trigger').forEach(img => {
+      img.addEventListener('click', () => {
+        if (!lightbox || !lightboxImg) return;
+        lightboxImg.src = (img as HTMLImageElement).src;
+        lightboxImg.alt = (img as HTMLImageElement).alt;
+        lightbox.classList.add('open');
+      });
+    });
+
+    function closeLightbox() { lightbox?.classList.remove('open'); }
+
+    document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
+    lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
 
 </MainLayout>

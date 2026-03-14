@@ -16,20 +16,13 @@ export default function IllustrationGallery({ illustrations }: Props) {
 
   const selectedImage = selectedIndex !== null ? illustrations[selectedIndex] : null;
 
-  // Keyboard navigation
   useEffect(() => {
     if (selectedIndex === null) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedIndex(null);
-      } else if (e.key === 'ArrowLeft') {
-        goToPrevious();
-      } else if (e.key === 'ArrowRight') {
-        goToNext();
-      }
+      if (e.key === 'Escape') setSelectedIndex(null);
+      else if (e.key === 'ArrowLeft') goToPrevious();
+      else if (e.key === 'ArrowRight') goToNext();
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, illustrations.length]);
@@ -46,128 +39,243 @@ export default function IllustrationGallery({ illustrations }: Props) {
 
   if (illustrations.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No illustrations match your filters.</p>
-      </div>
+      <p style={{ color: 'var(--muted)', fontSize: '14px', letterSpacing: '0.06em', paddingTop: '48px' }}>
+        No illustrations yet.
+      </p>
     );
   }
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Gallery Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '2px',
+      }}>
         {illustrations.map((illustration, index) => (
           <button
             key={index}
             onClick={() => setSelectedIndex(index)}
-            className="group cursor-pointer focus:outline-none focus:ring-2 focus:ring-black rounded-lg"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'none',
+              textAlign: 'left',
+            }}
           >
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <div className="aspect-[3/4] bg-gray-200 overflow-hidden select-none">
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{
+                aspectRatio: '3/4',
+                overflow: 'hidden',
+                background: 'var(--placeholder-bg)',
+              }}>
                 <img
                   src={illustration.image}
                   alt={illustration.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none"
-                  loading="lazy"
-                  draggable="false"
+                  draggable={false}
                   onContextMenu={(e) => e.preventDefault()}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                    userSelect: 'none',
+                    transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.04)';
+                    (e.currentTarget as HTMLImageElement).style.opacity = '0.85';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)';
+                    (e.currentTarget as HTMLImageElement).style.opacity = '1';
+                  }}
                 />
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-left group-hover:text-gray-600 transition-colors">
+              <div style={{ paddingTop: '12px' }}>
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '17px',
+                  fontWeight: 300,
+                  fontStyle: 'italic',
+                  color: 'var(--black)',
+                  lineHeight: 1.2,
+                }}>
                   {illustration.title}
-                </h3>
+                </span>
               </div>
             </div>
           </button>
         ))}
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       {selectedImage && selectedIndex !== null && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-95 z-[200] flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setSelectedIndex(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(24, 16, 10, 0.96)',
+            zIndex: 200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+          }}
         >
-          {/* Close Button */}
+          {/* Close */}
           <button
             onClick={(e) => { e.stopPropagation(); setSelectedIndex(null); }}
-            className="absolute top-5 right-5 z-[210] flex items-center gap-2 text-white opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Close"
-            style={{ cursor: 'pointer' }}
+            style={{
+              position: 'absolute', top: '24px', right: '32px',
+              background: 'none', border: 'none',
+              color: 'rgba(237,229,208,0.5)',
+              fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase',
+              cursor: 'pointer', zIndex: 210,
+              transition: 'color 0.2s',
+              fontFamily: 'var(--font-body)',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,1)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,0.5)')}
           >
-            <span style={{ fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Close</span>
-            <span style={{ fontSize: '24px', fontWeight: 300, lineHeight: 1 }}>×</span>
+            Close ×
           </button>
 
-          {/* Previous Button */}
+          {/* Prev */}
           <button
             onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
-            className="absolute left-5 top-1/2 -translate-y-1/2 z-[210] flex flex-col items-center gap-1 text-white opacity-50 hover:opacity-100 transition-opacity"
-            aria-label="Previous image"
-            style={{ cursor: 'pointer' }}
+            aria-label="Previous"
+            style={{
+              position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
+              background: 'none', border: 'none',
+              color: 'rgba(237,229,208,0.4)',
+              fontSize: '28px', cursor: 'pointer', zIndex: 210,
+              transition: 'color 0.2s',
+              fontFamily: 'var(--font-display)',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,1)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,0.4)')}
           >
-            <span style={{ fontSize: '28px', fontWeight: 300, lineHeight: 1 }}>←</span>
-            <span style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Prev</span>
+            ←
           </button>
 
-          {/* Next Button */}
+          {/* Next */}
           <button
             onClick={(e) => { e.stopPropagation(); goToNext(); }}
-            className="absolute right-5 top-1/2 -translate-y-1/2 z-[210] flex flex-col items-center gap-1 text-white opacity-50 hover:opacity-100 transition-opacity"
-            aria-label="Next image"
-            style={{ cursor: 'pointer' }}
+            aria-label="Next"
+            style={{
+              position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)',
+              background: 'none', border: 'none',
+              color: 'rgba(237,229,208,0.4)',
+              fontSize: '28px', cursor: 'pointer', zIndex: 210,
+              transition: 'color 0.2s',
+              fontFamily: 'var(--font-display)',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,1)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(237,229,208,0.4)')}
           >
-            <span style={{ fontSize: '28px', fontWeight: 300, lineHeight: 1 }}>→</span>
-            <span style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Next</span>
+            →
           </button>
 
+          {/* Content */}
           <div
-            className="max-w-7xl w-full max-h-[90vh] flex flex-col md:flex-row gap-6"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '40px',
+              maxWidth: '1200px',
+              width: '100%',
+              maxHeight: '90vh',
+              alignItems: 'center',
+            }}
           >
             {/* Image */}
-            <div className="flex-1 flex items-center justify-center select-none">
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <img
                 src={selectedImage.image}
                 alt={selectedImage.title}
-                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl pointer-events-none"
-                draggable="false"
+                draggable={false}
                 onContextMenu={(e) => e.preventDefault()}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '82vh',
+                  objectFit: 'contain',
+                  userSelect: 'none',
+                  display: 'block',
+                }}
               />
             </div>
 
-            {/* Info Panel */}
-            <div className="md:w-96 bg-white rounded-lg p-6 overflow-y-auto max-h-[80vh]">
-              <h2 className="text-2xl font-bold mb-4">{selectedImage.title}</h2>
-              
+            {/* Info */}
+            <div style={{
+              width: '280px',
+              flexShrink: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+            }}>
+              <h2 style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '28px',
+                fontWeight: 300,
+                fontStyle: 'italic',
+                color: 'var(--off-white)',
+                lineHeight: 1.1,
+              }}>
+                {selectedImage.title}
+              </h2>
+
               {selectedImage.description && (
-                <div className="mb-6">
-                  <p className="text-gray-700 leading-relaxed">{selectedImage.description}</p>
-                </div>
+                <p style={{
+                  fontSize: '13px',
+                  lineHeight: 1.75,
+                  color: 'rgba(237,229,208,0.6)',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 300,
+                }}>
+                  {selectedImage.description}
+                </p>
               )}
-              
-              <div className="mb-6">
-                <h3 className="font-bold text-sm text-gray-500 uppercase mb-2">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedImage.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px',
+              }}>
+                {selectedImage.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      fontSize: '9px',
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      color: 'rgba(237,229,208,0.45)',
+                      border: '1px solid rgba(237,229,208,0.15)',
+                      padding: '4px 10px',
+                      fontFamily: 'var(--font-body)',
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
 
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
-                  {selectedIndex + 1} of {illustrations.length}
-                </p>
-                <p className="text-xs text-gray-400 mt-2">
-                  Use arrow keys or buttons to navigate
-                </p>
-              </div>
+              <p style={{
+                fontSize: '10px',
+                letterSpacing: '0.1em',
+                color: 'rgba(237,229,208,0.25)',
+                fontFamily: 'var(--font-body)',
+                marginTop: 'auto',
+                paddingTop: '20px',
+                borderTop: '1px solid rgba(237,229,208,0.08)',
+              }}>
+                {selectedIndex + 1} / {illustrations.length}
+              </p>
             </div>
           </div>
         </div>

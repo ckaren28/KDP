@@ -1,0 +1,232 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// Add future tech projects here
+const projects = [
+  {
+    title: 'Museum Label Generator',
+    subtitle: 'AI-powered interpretive text for cultural institutions',
+    description: 'A tool that generates accessible, engaging museum label copy from structured object data. Built for cultural institutions that want to translate curatorial knowledge into language visitors actually connect with. Combines Claude API with a minimal editorial interface — the curator provides the facts, the tool finds the voice.',
+    tags: ['Claude API', 'React', 'TypeScript', 'Prompt Engineering'],
+    status: 'Live',
+    link: '/projects/museum-label-generator' as string | null,
+  },
+];
+---
+
+<MainLayout title="Creative Technology — Karen Dettmar">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .project-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 2rem 8rem;
+      font-family: var(--font-display);
+      color: var(--black);
+    }
+
+    .back-nav {
+      padding: 2.5rem 0 4rem;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .back-nav a:hover { color: var(--black); }
+
+    .page-header {
+      margin-bottom: 6rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .page-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .page-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      max-width: 52ch;
+      font-weight: 300;
+    }
+
+    /* ── PROJECT ENTRIES ── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-entry {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .project-entry:first-child { border-top: 1px solid var(--border); }
+
+    .project-left {}
+
+    .project-title {
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-style: italic;
+      margin-bottom: 1rem;
+      color: var(--black);
+    }
+
+    .project-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      font-weight: 300;
+    }
+
+    .project-right {}
+
+    .project-description {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      line-height: 1.85;
+      color: var(--text-body);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 2rem;
+    }
+
+    .project-tag {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .project-status {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sienna);
+    }
+
+    .project-link {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .project-link:hover { border-color: var(--sienna); color: var(--sienna); }
+
+    .next-project {
+      margin-top: 8rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .next-all {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .next-all:hover { color: var(--black); }
+
+    @media (max-width: 768px) {
+      .project-entry { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+  </style>
+
+  <div class="project-page">
+
+    <nav class="back-nav">
+      <a href="/projects">← All Projects</a>
+    </nav>
+
+    <header class="page-header">
+      <span class="page-label">Creative Technology</span>
+      <h1 class="page-title">Technical Projects</h1>
+      <p class="page-desc">
+        Tools, prototypes, and experiments at the intersection of technology and culture. Built for the institutions, makers, and communities that technology too often overlooks.
+      </p>
+    </header>
+
+    <div class="project-list">
+      {projects.map((project) => (
+        <div class="project-entry reveal">
+          <div class="project-left">
+            <h2 class="project-title">{project.title}</h2>
+            <p class="project-subtitle">{project.subtitle}</p>
+          </div>
+          <div class="project-right">
+            <p class="project-description">{project.description}</p>
+            <div class="project-tags">
+              {project.tags.map(tag => (
+                <span class="project-tag">{tag}</span>
+              ))}
+            </div>
+            <div class="project-meta">
+              <span class="project-status">{project.status}</span>
+              {project.link && (
+                <a href={project.link} target="_blank" class="project-link">View project →</a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="next-project">
+      <a href="/projects" class="next-all">← All Projects</a>
+    </div>
+
+  </div>
+
+</MainLayout>

@@ -39,7 +39,7 @@ const sortedProjects = projects.sort((a, b) => b.data.date.valueOf() - a.data.da
       <a href="/projects/traveller" class="work-item reveal">
         <div class="work-item-inner">
           <div class="work-placeholder">
-            <div class="swatch swatch-traveller"></div>
+            <img src="/images/traveller/Traveller-moodboard.png" alt="Traveller" />
           </div>
           <div class="work-overlay">
             <div class="work-tag">Fashion Design · Parsons</div>
@@ -49,6 +49,40 @@ const sortedProjects = projects.sort((a, b) => b.data.date.valueOf() - a.data.da
         <div class="work-label">
           <span class="work-label-name">Traveller</span>
           <span class="work-label-cat">Collection Concept</span>
+        </div>
+      </a>
+
+      <!-- Garment Construction -->
+      <a href="/projects/construction" class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder">
+            <div class="swatch swatch-construction"></div>
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Fashion Design</div>
+            <div class="work-name">Garment Construction</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Garment Construction</span>
+          <span class="work-label-cat">Pattern Work · Flats</span>
+        </div>
+      </a>
+
+      <!-- Creative Technology -->
+      <a href="/projects/tech" class="work-item reveal">
+        <div class="work-item-inner">
+          <div class="work-placeholder work-placeholder-tech">
+            <img src="/images/tech/cover.jpg" alt="Creative Technology" class="tech-cover" />
+          </div>
+          <div class="work-overlay">
+            <div class="work-tag">Creative Technology</div>
+            <div class="work-name">Technical Projects</div>
+          </div>
+        </div>
+        <div class="work-label">
+          <span class="work-label-name">Technical Projects</span>
+          <span class="work-label-cat">Tools · Prototypes</span>
         </div>
       </a>
 
@@ -99,8 +133,33 @@ const sortedProjects = projects.sort((a, b) => b.data.date.valueOf() - a.data.da
   .work-item:hover .work-placeholder img { opacity: 1; }
 
   .swatch { width: 100%; height: 100%; }
-  .swatch-default   { background: #2A2420; }
-  .swatch-traveller { background: #1C1815; }
+  .swatch-default      { background: #2A2420; }
+  .swatch-traveller    { background: #1C1815; }
+  .swatch-construction { background: #2E2318; }
+
+  /* Tech card — image with CSS fallback */
+  .work-placeholder-tech {
+    background: #1A1E24;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .tech-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+    transition: opacity 0.5s ease;
+    /* Hide broken image icon if file not yet added */
+    color: transparent;
+  }
+  /* Hide alt text / broken icon when image fails to load */
+  .tech-cover[src="/images/tech/cover.jpg"]:not([naturalWidth]) {
+    display: none;
+  }
+  .work-item:hover .work-placeholder-tech .tech-cover { opacity: 1; }
 
   .work-overlay {
     position: absolute;

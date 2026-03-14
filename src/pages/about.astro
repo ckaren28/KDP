@@ -3,99 +3,85 @@ import MainLayout from '../layouts/MainLayout.astro';
 ---
 
 <MainLayout title="About — Karen Dettmar">
-  <div class="page-container">
+  <div class="about-wrapper">
 
     <!-- Header -->
-    <span class="page-eyebrow">About</span>
-    <h1 class="page-title">Karen <em>Dettmar</em></h1>
-
-    <!-- Bio grid -->
-    <div class="bio-grid reveal">
-      <div class="bio-image-col">
-        <div class="bio-image-placeholder">
-          <span>Photo</span>
-        </div>
-        <div class="bio-meta">
-          <div class="bio-meta-item">
-            <span class="meta-label">Based</span>
-            <span class="meta-value">New York City</span>
-          </div>
-          <div class="bio-meta-item">
-            <span class="meta-label">Status</span>
-            <span class="meta-value">Open to work</span>
-          </div>
-          <div class="bio-meta-item">
-            <span class="meta-label">Education</span>
-            <span class="meta-value">Parsons · FIT</span>
-          </div>
-        </div>
+    <div class="about-header">
+      <h1 class="about-title">Karen <em>Dettmar</em></h1>
+      <div class="about-meta">
+        <span>New York City</span>
+        <span class="meta-dot">·</span>
+        <span>Parsons School of Design · FIT</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-open">Open to work</span>
       </div>
+    </div>
 
-      <div class="bio-text-col">
-        <p class="bio-lead">
-          I'm a creative technologist and fashion designer building at the intersection of craft and code.
-        </p>
-        <p>
-          Equally comfortable draping a dress form and architecting a React component, I work at the
-          edge of two disciplines that are rarely in the same room. My goal is to close that gap —
-          to make technology feel considered and make fashion feel intelligent.
-        </p>
-        <p>
-          Previously at <strong>Intuit</strong> and <strong>Wix</strong>, where I led developer
-          education, produced live conference demos for global audiences, and ran technical workshops
-          that translated complex tools into accessible experience.
-        </p>
-        <p>
-          Currently completing a <strong>Fashion Design certification at Parsons School of Design</strong>
-          and continuing technical studies at <strong>FIT</strong>. I'm drawn to creative
-          communities — cultural institutions, fashion houses, art-adjacent technology — and how
-          technology can serve them without overpowering them.
-        </p>
-      </div>
+    <!-- Bio -->
+    <div class="bio reveal">
+      <p class="bio-lead">
+        I build at the edge of craft and <em>code.</em>
+      </p>
+      <p>
+        Equally comfortable draping a dress form and architecting a React component, I work at the
+        edge of two disciplines that are rarely in the same room. My goal is to close that gap —
+        to make technology feel considered and make fashion feel intelligent.
+      </p>
+      <p>
+        Previously at <strong>Intuit</strong> and <strong>Wix</strong>, where I led developer
+        education, produced live conference demos for global audiences, and ran technical workshops
+        that translated complex tools into accessible experience.
+      </p>
+      <p>
+        Currently completing a <strong>Fashion Design certification at Parsons School of Design</strong>
+        and continuing technical studies at <strong>FIT</strong>. I'm drawn to creative
+        communities — cultural institutions, fashion houses, art-adjacent technology — and how
+        technology can serve them without overpowering them.
+      </p>
     </div>
 
     <!-- Disciplines -->
-    <div class="disciplines-section reveal">
-      <h2 class="disciplines-heading">What I do</h2>
-      <ul class="discipline-list">
-        <li class="discipline-item">
+    <div class="disciplines reveal">
+      <span class="section-label">What I do</span>
+      <div class="disc-grid">
+        <div class="disc-cell">
           <span class="disc-num">01</span>
-          <span class="disc-name">Fashion Design</span>
-          <span class="disc-desc">Draping, construction, CAD, technical flats</span>
-        </li>
-        <li class="discipline-item">
+          <h3 class="disc-name">Fashion Design</h3>
+          <p class="disc-desc">Draping, construction, CAD, technical flats</p>
+        </div>
+        <div class="disc-cell">
           <span class="disc-num">02</span>
-          <span class="disc-name">Creative Technology</span>
-          <span class="disc-desc">Interactive demos, prototypes, AI tools</span>
-        </li>
-        <li class="discipline-item">
+          <h3 class="disc-name">Creative Technology</h3>
+          <p class="disc-desc">Interactive demos, prototypes, AI tools</p>
+        </div>
+        <div class="disc-cell">
           <span class="disc-num">03</span>
-          <span class="disc-name">Front-End Development</span>
-          <span class="disc-desc">React, Astro, TypeScript, APIs</span>
-        </li>
-        <li class="discipline-item">
+          <h3 class="disc-name">Front-End Development</h3>
+          <p class="disc-desc">React, Astro, TypeScript, APIs</p>
+        </div>
+        <div class="disc-cell">
           <span class="disc-num">04</span>
-          <span class="disc-name">Workshop Facilitation</span>
-          <span class="disc-desc">Community, education, technical storytelling</span>
-        </li>
-      </ul>
+          <h3 class="disc-name">Workshop Facilitation</h3>
+          <p class="disc-desc">Community, education, technical storytelling</p>
+        </div>
+      </div>
     </div>
 
     <!-- Contact -->
-    <div class="contact-section reveal">
-      <h2 class="contact-heading">Get in touch</h2>
-      <div class="contact-links">
-        <a href="mailto:karen.dettmar@gmail.com" class="contact-link">
+    <div class="contact reveal">
+      <span class="section-label">Get in touch</span>
+      <div class="contact-list">
+        <a href="mailto:karen.dettmar@gmail.com" class="contact-row">
           <span class="contact-label">Email</span>
-          <span class="contact-value">karen.dettmar@gmail.com →</span>
+          <span class="contact-value">karen.dettmar@gmail.com</span>
         </a>
-        <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-link">
+        <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-row">
           <span class="contact-label">LinkedIn</span>
-          <span class="contact-value">linkedin.com/in/kdettmar →</span>
+          <span class="contact-value">linkedin.com/in/kdettmar</span>
         </a>
-        <a href="/karen-dettmar-resume.pdf" target="_blank" class="contact-link">
+        <a href="/karen-dettmar-resume.pdf" target="_blank" class="contact-row">
           <span class="contact-label">Résumé</span>
-          <span class="contact-value">Download PDF →</span>
+          <span class="contact-value">Download PDF</span>
         </a>
       </div>
     </div>
@@ -104,224 +90,195 @@ import MainLayout from '../layouts/MainLayout.astro';
 </MainLayout>
 
 <style>
-  /* ── BIO GRID ── */
-  .bio-grid {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 64px;
-    margin-bottom: 80px;
-    align-items: start;
+  .about-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 140px 48px 100px;
   }
 
-  .bio-image-placeholder {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: #E8E3DB;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-body);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
+  /* ── HEADER ── */
+  .about-header {
+    margin-bottom: 64px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 9vw, 108px);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-top: 12px;
     margin-bottom: 28px;
   }
 
-  .bio-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  .about-title em {
+    font-style: italic;
+    color: var(--sienna);
   }
 
-  .bio-meta-item {
+  .about-meta {
     display: flex;
-    justify-content: space-between;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border);
+    align-items: center;
+    gap: 12px;
     font-size: 11px;
-    letter-spacing: 0.06em;
-  }
-
-  .meta-label {
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
     color: var(--muted);
-    font-size: 10px;
+    flex-wrap: wrap;
   }
 
-  .meta-value {
-    color: var(--black);
-    font-weight: 400;
-  }
+  .meta-dot { color: var(--border); }
 
-  /* ── BIO TEXT ── */
-  .bio-text-col {
+  .meta-open { color: var(--sienna); }
+
+  /* ── BIO ── */
+  .bio {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding-top: 8px;
+    margin-bottom: 80px;
   }
 
   .bio-lead {
     font-family: var(--font-display);
-    font-size: clamp(20px, 2.5vw, 28px);
-    font-weight: 400;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 300;
     font-style: italic;
-    line-height: 1.4;
+    line-height: 1.45;
     color: var(--black);
+    margin-bottom: 8px;
   }
 
-  .bio-text-col p {
+  .bio p {
     font-size: 15px;
-    line-height: 1.85;
-    color: #444;
+    line-height: 1.88;
+    color: var(--text-body);
+    font-weight: 300;
   }
 
-  .bio-text-col p strong {
+  .bio p strong {
     color: var(--black);
-    font-weight: 500;
+    font-weight: 400;
   }
 
   /* ── DISCIPLINES ── */
-  .disciplines-section {
+  .disciplines {
     margin-bottom: 80px;
     border-top: 1px solid var(--border);
-    padding-top: 48px;
+    padding-top: 40px;
   }
 
-  .disciplines-heading {
-    font-family: var(--font-body);
+  .section-label {
+    display: block;
     font-size: 10px;
     font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0;
-  }
-
-  .discipline-list {
-    list-style: none;
-  }
-
-  .discipline-item {
-    display: flex;
-    align-items: baseline;
-    gap: 0;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    cursor: none;
-  }
-
-  .discipline-item::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--black);
-    transform: translateX(-100%);
-    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
-    z-index: 0;
-  }
-
-  .discipline-item:hover::before { transform: translateX(0); }
-
-  .discipline-item:hover .disc-name,
-  .discipline-item:hover .disc-num,
-  .discipline-item:hover .disc-desc { color: var(--off-white); }
-
-  .disc-num {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    position: relative; z-index: 1;
-    transition: color 0.3s ease;
-    width: 40px;
-    flex-shrink: 0;
-  }
-
-  .disc-name {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3.5vw, 48px);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    position: relative; z-index: 1;
-    transition: color 0.3s ease;
-    flex: 1;
-    padding: 0 40px;
-  }
-
-  .disc-desc {
-    font-size: 12px;
-    color: var(--muted);
-    position: relative; z-index: 1;
-    transition: color 0.3s ease;
-    text-align: right;
-    max-width: 200px;
-    line-height: 1.5;
-  }
-
-  /* ── CONTACT ── */
-  .contact-section {
-    border-top: 1px solid var(--border);
-    padding-top: 48px;
-  }
-
-  .contact-heading {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 32px;
   }
 
-  .contact-links {
-    display: flex;
-    flex-direction: column;
+  .disc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0;
   }
 
-  .contact-link {
+  .disc-cell {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .disc-cell:nth-child(odd) {
+    padding-right: 48px;
+    border-right: 1px solid var(--border);
+  }
+
+  .disc-cell:nth-child(even) {
+    padding-left: 48px;
+  }
+
+  .disc-num {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .disc-name {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.8vw, 34px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+
+  .disc-desc {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    font-weight: 300;
+  }
+
+  /* ── CONTACT ── */
+  .contact {
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+  }
+
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 20px 0;
+    padding: 22px 0;
     border-bottom: 1px solid var(--border);
     text-decoration: none;
     color: var(--black);
-    position: relative;
-    overflow: hidden;
     transition: padding-left 0.3s ease;
+    cursor: none;
   }
 
-  .contact-link:hover { padding-left: 8px; }
+  .contact-row:hover { padding-left: 8px; }
 
   .contact-label {
+    font-family: var(--font-body);
     font-size: 10px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
     width: 80px;
     flex-shrink: 0;
+    transition: color 0.3s;
   }
 
   .contact-value {
     font-family: var(--font-display);
-    font-size: clamp(18px, 2vw, 24px);
-    font-weight: 400;
+    font-size: clamp(18px, 2.2vw, 26px);
+    font-weight: 300;
     font-style: italic;
     transition: color 0.3s ease;
   }
 
-  .contact-link:hover .contact-value { color: var(--sienna); }
+  .contact-row:hover .contact-value { color: var(--sienna); }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    .bio-grid { grid-template-columns: 1fr; gap: 40px; }
-    .disc-desc { display: none; }
+    .about-wrapper { padding: 120px 28px 72px; }
+    .disc-grid { grid-template-columns: 1fr; }
+    .disc-cell { padding-right: 0 !important; padding-left: 0 !important; border-right: none !important; }
     .contact-value { font-size: 16px; }
   }
 </style>

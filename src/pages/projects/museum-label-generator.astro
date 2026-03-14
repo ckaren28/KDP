@@ -1,0 +1,829 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Museum Label Generator — Karen Dettmar">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .tool-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 2rem 8rem;
+      font-family: var(--font-display);
+      color: var(--black);
+    }
+
+    .back-nav {
+      padding: 2.5rem 0 4rem;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .back-nav a:hover { color: var(--black); }
+
+    .page-header {
+      margin-bottom: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .page-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .page-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      max-width: 52ch;
+      font-weight: 300;
+    }
+
+    /* ── TOOL GRID ── */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .tool-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── PANELS ── */
+    .panel {
+      border: 1px solid var(--border);
+      padding: 2rem;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 0.4rem;
+      color: var(--black);
+    }
+
+    .panel-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-field label {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--black);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .form-field select:focus {
+      border-color: var(--sienna);
+    }
+
+    .form-field textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-hint {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .form-options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 1.25rem 0;
+    }
+
+    .form-options label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--text-body);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-generate {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      background: var(--black);
+      border: 1px solid var(--black);
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .btn-generate:hover:not(:disabled) {
+      background: var(--sienna);
+      border-color: var(--sienna);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* ── PRESETS ── */
+    .presets-wrap { margin-bottom: 1.5rem; }
+    .presets-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .presets-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-btn {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: transparent;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .preset-btn:hover { color: var(--black); border-color: var(--black); }
+
+    /* ── FACILITATOR ── */
+    .facilitator-box {
+      margin-top: 1.5rem;
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+    }
+    .facilitator-title {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+    }
+    .facilitator-box ol {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      padding-left: 1.2rem;
+    }
+
+    /* ── OUTPUT STATES ── */
+    .output-empty,
+    .output-loading {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 3rem 0;
+      text-align: center;
+      border: 1px dashed var(--border);
+    }
+
+    /* ── OUTPUT SECTIONS ── */
+    .output-section {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .output-section:first-child { border-top: 1px solid var(--border); }
+
+    .output-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
+    .output-section-title {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .btn-copy {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .btn-copy:hover { color: var(--black); }
+
+    .output-text {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text-body);
+      white-space: pre-wrap;
+    }
+
+    .curator-notes-list {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      padding-left: 1.25rem;
+    }
+
+    .variation-item {
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .variation-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .variation-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── ERROR ── */
+    .error-box {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      color: #a0291a;
+      border: 1px solid #e8c4be;
+      background: #fdf5f4;
+      padding: 10px 14px;
+      margin-top: 0.75rem;
+    }
+
+    /* ── WORKSHOP TOGGLE ── */
+    .workshop-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.25rem;
+    }
+    .workshop-row label {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    /* ── DETAILS TOGGLE ── */
+    .toggle-details-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+    .btn-toggle-details {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .btn-toggle-details:hover { color: var(--black); }
+
+    /* ── ARCH DETAILS ── */
+    .details-box {
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .details-title {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+    .details-sub {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .details-pre {
+      font-family: monospace;
+      font-size: 0.72rem;
+      line-height: 1.6;
+      color: var(--text-body);
+      background: #f8f6f2;
+      padding: 1rem;
+      white-space: pre-wrap;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+    }
+
+    /* ── DISCUSSION PROMPTS ── */
+    .discussion-box {
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .discussion-title {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+    }
+    .discussion-box ul {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      padding-left: 1.2rem;
+    }
+
+    .next-project {
+      margin-top: 8rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .next-all {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .next-all:hover { color: var(--black); }
+  </style>
+
+  <div class="tool-page">
+
+    <nav class="back-nav">
+      <a href="/projects/tech">← Creative Technology</a>
+    </nav>
+
+    <header class="page-header">
+      <span class="page-label">Creative Technology · Tool</span>
+      <h1 class="page-title">Museum Label Generator</h1>
+      <p class="page-desc">
+        Draft wall labels, extended labels, kids labels, audio scripts, alt text, and curator notes from a source description. Built to support human editorial control.
+      </p>
+    </header>
+
+    <div class="tool-grid">
+
+      <!-- FORM PANEL -->
+      <div class="panel">
+        <div class="workshop-row">
+          <label>
+            <input id="mlg-workshop" type="checkbox" />
+            Workshop mode
+          </label>
+        </div>
+
+        <div id="mlg-presets" class="presets-wrap" style="display:none">
+          <div class="presets-label">Example inputs</div>
+          <div class="presets-list">
+            <button data-preset="abstract" type="button" class="preset-btn">Abstract painting</button>
+            <button data-preset="provenance" type="button" class="preset-btn">Archive object</button>
+            <button data-preset="photo" type="button" class="preset-btn">Contemporary photo</button>
+            <button data-preset="textile" type="button" class="preset-btn">Textile piece</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="mlg-title">Title (optional)</label>
+            <input id="mlg-title" type="text" placeholder="Untitled (Blue Study)" />
+          </div>
+          <div class="form-field">
+            <label for="mlg-artist">Artist (optional)</label>
+            <input id="mlg-artist" type="text" placeholder="Unknown" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="mlg-year">Year (optional)</label>
+            <input id="mlg-year" type="text" placeholder="1970s (approx.)" />
+          </div>
+          <div class="form-field">
+            <label for="mlg-medium">Medium / Materials (optional)</label>
+            <input id="mlg-medium" type="text" placeholder="Cotton, linen, dye" />
+          </div>
+        </div>
+
+        <div class="form-field" style="margin-bottom:0.25rem">
+          <label for="mlg-description">Source description (required)</label>
+          <textarea id="mlg-description" placeholder="Describe what the visitor sees, any known context, and what you want to emphasize..."></textarea>
+          <span class="form-hint">Minimum: ~30 characters</span>
+        </div>
+
+        <div class="form-options">
+          <div class="form-field" style="margin:0">
+            <label for="mlg-tone" style="text-transform:uppercase;letter-spacing:0.1em;font-size:0.68rem">Tone</label>
+            <select id="mlg-tone">
+              <option value="neutral" selected>Neutral</option>
+              <option value="warm">Warm</option>
+              <option value="playful">Playful</option>
+              <option value="academic">Academic</option>
+            </select>
+          </div>
+          <label style="font-family:var(--font-body);font-size:0.75rem;color:var(--text-body);display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+            <input id="mlg-stayclose" type="checkbox" checked />
+            Stay close to source text
+          </label>
+        </div>
+
+        <button id="mlg-generate" class="btn-generate" disabled type="button">Generate labels</button>
+
+        <div id="mlg-error" class="error-box" style="display:none"></div>
+
+        <div id="mlg-facilitator" class="facilitator-box" style="display:none">
+          <div class="facilitator-title">Facilitator notes</div>
+          <ol>
+            <li>Choose an example (or paste your own description).</li>
+            <li>Generate twice: with <em>Stay close</em> ON, then OFF.</li>
+            <li>Compare assumptions, tone, and accessibility. What needs human editing?</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- OUTPUT PANEL -->
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+          <div>
+            <div class="panel-title">Output</div>
+            <div class="panel-subtitle">Copy individual sections for drafts and iteration.</div>
+          </div>
+          <button id="mlg-toggle-details" type="button" class="btn-toggle-details">Show prompt & architecture</button>
+        </div>
+
+        <div id="mlg-empty" class="output-empty">Generate to see wall label drafts, alt text, and curator notes here.</div>
+        <div id="mlg-loading" class="output-loading" style="display:none">Working…</div>
+
+        <div id="mlg-output" style="display:none">
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Wall label (50–70 words)</span>
+              <button data-copy="wall_label" type="button" class="btn-copy">Copy</button>
+            </div>
+            <p data-field="wall_label" class="output-text"></p>
+          </div>
+
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Extended label (150–200 words)</span>
+              <button data-copy="extended_label" type="button" class="btn-copy">Copy</button>
+            </div>
+            <p data-field="extended_label" class="output-text"></p>
+          </div>
+
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Kids label</span>
+              <button data-copy="kids_label" type="button" class="btn-copy">Copy</button>
+            </div>
+            <p data-field="kids_label" class="output-text"></p>
+          </div>
+
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Audio guide script</span>
+              <button data-copy="audio_guide_script" type="button" class="btn-copy">Copy</button>
+            </div>
+            <p data-field="audio_guide_script" class="output-text"></p>
+          </div>
+
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Alt text</span>
+              <button data-copy="alt_text" type="button" class="btn-copy">Copy</button>
+            </div>
+            <p data-field="alt_text" class="output-text"></p>
+          </div>
+
+          <div class="output-section">
+            <div class="output-section-header">
+              <span class="output-section-title">Curator notes</span>
+            </div>
+            <ul id="mlg-curator-notes" class="curator-notes-list"></ul>
+          </div>
+
+          <div class="output-section" style="border-bottom:none">
+            <div class="output-section-header">
+              <span class="output-section-title">Variations (alternate wall labels)</span>
+            </div>
+            <div id="mlg-variations"></div>
+          </div>
+
+          <div id="mlg-discussion" class="discussion-box" style="display:none">
+            <div class="discussion-title">Discussion prompts</div>
+            <ul>
+              <li>What information did the model assume that wasn't in the source text?</li>
+              <li>Which version best respects the artist and audience?</li>
+              <li>What would you edit for clarity, accuracy, or cultural context?</li>
+              <li>What should never be automated in this workflow?</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="mlg-details" class="details-box" style="display:none">
+          <div class="details-title">Prompt & architecture</div>
+          <div class="details-sub">System prompt</div>
+          <pre class="details-pre" id="mlg-system"></pre>
+          <div class="details-sub">User prompt template</div>
+          <pre class="details-pre" id="mlg-user"></pre>
+          <div class="details-sub">Architecture</div>
+          <pre class="details-pre">User input → Browser UI
+        ↓
+Netlify Function (secure)
+        ↓
+Anthropic API → JSON
+        ↓
+Render cards + copy tools</pre>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="next-project">
+      <a href="/projects/tech" class="next-all">← Creative Technology</a>
+    </div>
+
+  </div>
+
+  <script>
+  (() => {
+    const $ = (id: string) => document.getElementById(id);
+
+    const workshop    = $("mlg-workshop")    as HTMLInputElement    | null;
+    const presetsWrap = $("mlg-presets");
+    const facilitator = $("mlg-facilitator");
+    const discussion  = $("mlg-discussion");
+    const desc        = $("mlg-description") as HTMLTextAreaElement | null;
+    const btn         = $("mlg-generate")    as HTMLButtonElement   | null;
+    const err         = $("mlg-error");
+    const empty       = $("mlg-empty");
+    const loading     = $("mlg-loading");
+    const output      = $("mlg-output");
+    const details     = $("mlg-details");
+    const toggleDetails = $("mlg-toggle-details");
+    const title       = $("mlg-title")      as HTMLInputElement  | null;
+    const artist      = $("mlg-artist")     as HTMLInputElement  | null;
+    const year        = $("mlg-year")       as HTMLInputElement  | null;
+    const medium      = $("mlg-medium")     as HTMLInputElement  | null;
+    const tone        = $("mlg-tone")       as HTMLSelectElement | null;
+    const stayClose   = $("mlg-stayclose")  as HTMLInputElement  | null;
+    const sysBlock    = $("mlg-system");
+    const userBlock   = $("mlg-user");
+
+    const SYSTEM_PROMPT = `You are a museum interpretation assistant. Write clear, accurate interpretive text that respects artists and audiences.
+Constraints:
+- Do not invent facts. If information is missing, write around it or label as "Unknown".
+- Avoid academic jargon unless requested.
+- Be culturally sensitive; do not stereotype. Flag sensitive topics with care.
+- Keep claims grounded in the provided description.
+Return output as valid JSON only.`;
+
+    const USER_TEMPLATE = `Artwork info:
+- Title: {{title}}
+- Artist: {{artist}}
+- Year: {{year}}
+- Medium/Materials: {{medium}}
+- Description: {{description}}
+
+Preferences:
+- Tone: {{tone}}
+- Grounding: {{stayCloseToSource}}
+
+Return JSON with:
+wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_notes, variations`;
+
+    if (sysBlock) sysBlock.textContent = SYSTEM_PROMPT;
+    if (userBlock) userBlock.textContent = USER_TEMPLATE;
+
+    const presets: Record<string, { title: string; artist: string; year: string; medium: string; description: string }> = {
+      abstract: {
+        title: "Untitled (Blue Study)", artist: "Unknown", year: "Unknown", medium: "Acrylic on canvas",
+        description: "A large canvas filled with layered blue forms that shift from sharp edges to soft gradients. Faint scraping and reworking marks are visible across the surface. The composition feels quiet but restless, as if the shapes are moving in and out of focus."
+      },
+      provenance: {
+        title: "Ceremonial Mask", artist: "Unknown", year: "19th century (approx.)", medium: "Wood, pigment, fiber",
+        description: "A carved mask with geometric patterning and traces of red and black pigment. The museum record notes it entered a private collection in the early 1900s before being donated decades later. Provenance details are incomplete, and the cultural context in the archive is minimal."
+      },
+      photo: {
+        title: "Street Portrait", artist: "Unknown", year: "2018", medium: "Photograph",
+        description: "A portrait of a person standing in bright sunlight on a city sidewalk. The background is softly blurred while the subject's clothing and posture read as calm and self-possessed. Strong contrast between light and shadow shapes the mood of the image."
+      },
+      textile: {
+        title: "Study in Thread", artist: "Unknown", year: "1970s (approx.)", medium: "Cotton, linen, dye",
+        description: "A small textile panel with repeated stitched lines and subtle color shifts from natural fiber tones to muted indigo. The stitching density changes across the surface, creating a rhythm that feels both measured and handmade. The work invites close viewing rather than distance."
+      }
+    };
+
+    function setPreset(p: { title: string; artist: string; year: string; medium: string; description: string }) {
+      if (title)  title.value  = p.title;
+      if (artist) artist.value = p.artist;
+      if (year)   year.value   = p.year;
+      if (medium) medium.value = p.medium;
+      if (desc)   desc.value   = p.description;
+      validate();
+    }
+
+    function validate() {
+      if (btn) btn.disabled = (desc?.value || "").trim().length < 30;
+    }
+    desc?.addEventListener("input", validate);
+    validate();
+
+    workshop?.addEventListener("change", () => {
+      const on = workshop.checked;
+      if (presetsWrap) presetsWrap.style.display = on ? "block" : "none";
+      if (facilitator) facilitator.style.display  = on ? "block" : "none";
+      if (discussion)  discussion.style.display   = on ? "block" : "none";
+      if (on && details) {
+        details.style.display = "block";
+        if (toggleDetails) toggleDetails.textContent = "Hide prompt & architecture";
+      }
+    });
+
+    presetsWrap?.addEventListener("click", (e) => {
+      const b = (e.target as Element).closest("button[data-preset]");
+      if (!b) return;
+      const p = presets[b.getAttribute("data-preset") || ""];
+      if (p) setPreset(p);
+    });
+
+    toggleDetails?.addEventListener("click", () => {
+      const hidden = details?.style.display === "none" || !details?.style.display;
+      if (details) details.style.display = hidden ? "block" : "none";
+      if (toggleDetails) toggleDetails.textContent = hidden ? "Hide prompt & architecture" : "Show prompt & architecture";
+    });
+
+    let lastData: Record<string, string> | null = null;
+    document.addEventListener("click", (e) => {
+      const copyBtn = (e.target as Element).closest("button[data-copy]");
+      if (!copyBtn || !lastData) return;
+      const key = copyBtn.getAttribute("data-copy") || "";
+      navigator.clipboard.writeText(lastData[key] || "");
+    });
+
+    btn?.addEventListener("click", async () => {
+      if (err)     { err.style.display     = "none"; err.textContent = ""; }
+      if (empty)    empty.style.display    = "none";
+      if (output)   output.style.display   = "none";
+      if (loading)  loading.style.display  = "block";
+
+      try {
+        const resp = await fetch("/.netlify/functions/museum-label", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title:            title?.value,
+            artist:           artist?.value,
+            year:             year?.value,
+            medium:           medium?.value,
+            description:      desc?.value,
+            tone:             tone?.value,
+            stayCloseToSource: stayClose?.checked
+          })
+        });
+
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data?.error || "Request failed.");
+
+        lastData = data;
+
+        document.querySelectorAll("[data-field]").forEach((el) => {
+          el.textContent = data[el.getAttribute("data-field") || ""] || "";
+        });
+
+        const ul = $("mlg-curator-notes");
+        if (ul) {
+          ul.innerHTML = "";
+          (data.curator_notes || []).forEach((n: string) => {
+            const li = document.createElement("li");
+            li.textContent = n;
+            ul.appendChild(li);
+          });
+        }
+
+        const varWrap = $("mlg-variations");
+        if (varWrap) {
+          varWrap.innerHTML = "";
+          (data.variations || []).forEach((v: string, i: number) => {
+            const box = document.createElement("div");
+            box.className = "variation-item";
+            box.innerHTML = `
+              <div class="variation-header">
+                <span class="variation-label">Option ${i + 1}</span>
+                <button type="button" class="btn-copy">Copy</button>
+              </div>
+              <p class="output-text"></p>
+            `;
+            const p = box.querySelector("p");
+            if (p) p.textContent = v;
+            box.querySelector("button")?.addEventListener("click", () => navigator.clipboard.writeText(v));
+            varWrap.appendChild(box);
+          });
+        }
+
+        if (loading) loading.style.display = "none";
+        if (output)  output.style.display  = "block";
+      } catch (e) {
+        if (loading) loading.style.display = "none";
+        if (empty)   empty.style.display   = "block";
+        if (err) {
+          err.textContent = (e as Error)?.message || "Something went wrong.";
+          err.style.display = "block";
+        }
+      }
+    });
+  })();
+  </script>
+
+</MainLayout>
