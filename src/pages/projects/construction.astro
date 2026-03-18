@@ -183,12 +183,12 @@ import MainLayout from '../../layouts/MainLayout.astro';
     .entry-image img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       opacity: 0.9;
-      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+      transition: opacity 0.4s ease;
       display: block;
     }
-    .project-entry:hover .entry-image img { transform: scale(1.03); opacity: 1; }
+    .project-entry:hover .entry-image img { opacity: 1; }
 
     /* hide broken image — fallback shows the dark swatch */
     .entry-image img[src=""][alt],
@@ -302,7 +302,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
       <a href="/projects/technical-flats" class="project-entry reveal">
         <div class="entry-image">
-          <img src="/images/technical-flats/flat-01.jpg" alt="Technical flats" />
+          <img src="/images/technical-flats/flat-01.png" alt="Technical flats" />
           <div class="entry-image-fallback"></div>
         </div>
         <div class="entry-body">

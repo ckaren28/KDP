@@ -201,13 +201,15 @@ import MainLayout from '../../layouts/MainLayout.astro';
       gap: 2px;
     }
 
-    .moodboard-grid .img-main { grid-row: 1 / 3; }
+    .reference-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-    .moodboard-grid img,
-    .moodboard-grid .img-placeholder {
+    .reference-stack img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
       display: block;
     }
 
@@ -229,15 +231,29 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     .sketches-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 2px;
+    }
+
+    .sketch-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sketch-item .sketch-img-wrap {
+      aspect-ratio: 2/3;
+      overflow: hidden;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .sketch-item img,
     .sketch-item .img-placeholder {
       width: 100%;
-      aspect-ratio: 2/3;
-      object-fit: cover;
+      height: 100%;
+      object-fit: contain;
       display: block;
     }
 
@@ -379,7 +395,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
       .moodboard-grid { grid-template-columns: 1fr; }
       .moodboard-grid .img-main { grid-row: auto; }
       .technical-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .sketches-grid { grid-template-columns: 1fr 1fr; }
+      .sketches-grid { grid-template-columns: repeat(3, 1fr); }
       .flats-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
@@ -465,18 +481,9 @@ import MainLayout from '../../layouts/MainLayout.astro';
         <span class="section-title">Mood Board</span>
         <div class="section-rule"></div>
       </div>
-      <div class="moodboard-grid">
-        <!-- Replace these placeholders with your actual mood board images -->
-        
-        <div class="img-placeholder ">Reference 01
-            <img class="img-placeholder " src="/images/traveller/sketches-process.png" alt="sketches" />
-
-
-        </div>
-        <div class="img-placeholder ">
-            
-            Reference 02</div>
-            <img class="img-placeholder " src="/images/traveller/fabrics.png" alt="fabric swatches" />
+      <div class="reference-stack">
+        <img src="/images/traveller/sketches-process.png" alt="sketches" />
+        <img src="/images/traveller/fabrics.png" alt="fabric swatches" />
       </div>
     </section>
 
@@ -488,18 +495,35 @@ import MainLayout from '../../layouts/MainLayout.astro';
         <div class="section-rule"></div>
       </div>
       <div class="sketches-grid">
-        <!-- Replace placeholders with your actual sketch images -->
         <div class="sketch-item">
-          <div class="img-placeholder">Sketch 01</div>
+          <div class="sketch-img-wrap">
+            <img src="/images/traveller/Look1.png" alt="Look 1" />
+          </div>
           <p class="sketch-caption">Look 01 — Departure</p>
         </div>
         <div class="sketch-item">
-          <div class="img-placeholder">Sketch 02</div>
+          <div class="sketch-img-wrap">
+            <img src="/images/traveller/Look2.png" alt="Look 2" />
+          </div>
           <p class="sketch-caption">Look 02 — In Transit</p>
         </div>
         <div class="sketch-item">
-          <div class="img-placeholder">Sketch 03</div>
+          <div class="sketch-img-wrap">
+            <img src="/images/traveller/Look3.png" alt="Look 3" />
+          </div>
           <p class="sketch-caption">Look 03 — Arrival</p>
+        </div>
+        <div class="sketch-item">
+          <div class="sketch-img-wrap">
+            <img src="/images/traveller/Look4.png" alt="Look 4" />
+          </div>
+          <p class="sketch-caption">Look 04</p>
+        </div>
+        <div class="sketch-item">
+          <div class="sketch-img-wrap">
+            <img src="/images/traveller/Look5.png" alt="Look 5" />
+          </div>
+          <p class="sketch-caption">Look 05</p>
         </div>
       </div>
     </section>
@@ -575,12 +599,6 @@ import MainLayout from '../../layouts/MainLayout.astro';
                 <div class="swatch-note">Lightweight layer</div>
               </div>
             </div>
-              <div class="swatch-item">
-              <div class="swatch-color" style="background: #dda981;"></div>
-              <div class="swatch-info">
-                <div class="swatch-name">Chalk</div>
-                <div class="swatch-note">Lightweight layer</div>
-              </div>
             </div>
           </div>
         </div>
