@@ -1,39 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
-
-const projects = await getCollection('projects');
-const sortedProjects = projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <MainLayout title="Projects — Karen Dettmar">
   <div class="page-container">
 
     <span class="page-eyebrow">Portfolio</span>
-    <h1 class="page-title">Selected <em>Work</em></h1>
+    <h1 class="page-title">Selected <em>Projects</em></h1>
 
     <div class="work-grid">
 
-      {sortedProjects.map((project) => (
-        <a href={'/projects/' + project.slug} class="work-item reveal">
-          <div class="work-item-inner">
-            <div class="work-placeholder">
-              {project.data.coverImage
-                ? <img src={project.data.coverImage} alt={project.data.title} />
-                : <div class="swatch swatch-default"></div>
-              }
-            </div>
-            <div class="work-overlay">
-              <div class="work-tag">{project.data.tags[0]}</div>
-              <div class="work-name">{project.data.title}</div>
-            </div>
-          </div>
-          <div class="work-label">
-            <span class="work-label-name">{project.data.title}</span>
-            <span class="work-label-cat">{project.data.tags[0]}</span>
-          </div>
-        </a>
-      ))}
 
       <!-- Traveller — standalone project page -->
       <a href="/projects/traveller" class="work-item reveal">

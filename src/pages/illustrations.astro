@@ -14,13 +14,17 @@ const illustrationsData = sortedIllustrations.map(ill => ({
 }));
 ---
 
-<MainLayout title="Illustrations — Karen Dettmar">
-  <div class="page-container">
+{illustrationsData.length > 0 ? (
+  <MainLayout title="Illustrations — Karen Dettmar">
+    <div class="page-container">
 
-    <span class="page-eyebrow">Visual Work</span>
-    <h1 class="page-title">Fashion <em>Illustrations</em></h1>
+      <span class="page-eyebrow">Visual Work</span>
+      <h1 class="page-title">Fashion <em>Illustrations</em></h1>
 
-    <IllustrationGallery illustrations={illustrationsData} client:load />
+      <IllustrationGallery illustrations={illustrationsData} client:load />
 
-  </div>
-</MainLayout>
+    </div>
+  </MainLayout>
+) : (
+  <meta http-equiv="refresh" content="0;url=/" />
+)}

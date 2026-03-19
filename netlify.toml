@@ -8,3 +8,6 @@
 
 [functions."museum-label"]
   timeout = 26
+
+[functions."garment-decoder"]
+  timeout = 30
