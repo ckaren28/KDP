@@ -16,39 +16,25 @@ export async function handler(event) {
       return { statusCode: 400, body: JSON.stringify({ error: "Please include a garment description (20+ chars)." }) };
     }
 
-    const system = `
-You are an expert patternmaker and garment construction specialist with deep knowledge of industrial and couture techniques.
-Given a garment description, produce a precise, structured technical breakdown a sewist or patternmaker could actually use.
-
-Constraints:
-- Be specific. Name actual seam types, interfacing weights, stitch types, and techniques.
-- If information is ambiguous, offer the most likely approach and note alternatives.
-- Do not invent details not implied by the description.
-- Return output as valid JSON only (no markdown, no commentary).
-`;
+    const system = `You are an expert patternmaker. Given a garment description, return a concise structured technical breakdown as valid JSON only — no markdown, no commentary. Be specific but brief.`;
 
     const travellerNote = travellerMode
       ? "\n- TRAVELLER MODE: Prioritize packability. Favor lightweight fabrics, minimal structure, wrinkle resistance, and compact closures. Flag any recommendations specifically for travel."
       : "";
 
-    const user = `
-Analyze this garment and return a structured technical construction breakdown.
+    const user = `Garment: ${description}
+${garmentType ? `Type: ${garmentType}` : ""}
+${fabricType ? `Fabric: ${fabricType}` : ""}${travellerNote}
 
-Garment description: ${description}
-${garmentType ? `Garment type: ${garmentType}` : ""}
-${fabricType ? `Fabric: ${fabricType}` : ""}
-${travellerNote}
-
-Return JSON with exactly these keys:
-- seam_types: array of objects { name, description, where_used }
-- fabric_behavior: string describing how the fabric will behave during construction and wear
-- lining: object { recommended (boolean), type, reason }
-- interfacing: array of objects { location, weight, type, reason }
-- closure_options: array of objects { type, pros, cons, best_for }
-- construction_order: array of strings (step-by-step build sequence)
-- construction_notes: array of strings (tips, watchouts, technique flags)
-- traveller_notes: array of strings (only if traveller mode — packability and travel-specific flags, otherwise empty array)
-`;
+Return JSON with these keys (keep each value concise):
+seam_types: [{name, description, where_used}] (max 3)
+fabric_behavior: string (2-3 sentences)
+lining: {recommended: boolean, type, reason}
+interfacing: [{location, weight, type, reason}] (max 3)
+closure_options: [{type, pros, cons, best_for}] (max 2)
+construction_order: [string] (max 8 steps)
+construction_notes: [string] (max 4 tips)
+traveller_notes: [string] (max 3, empty array if not traveller mode)`;
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -63,8 +49,8 @@ Return JSON with exactly these keys:
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 2048,
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
         temperature: 0.3,
         system,
         messages: [{ role: "user", content: user }],
