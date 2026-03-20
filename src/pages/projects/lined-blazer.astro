@@ -1,14 +1,15 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 
-// Drop your two images into /public/images/canvas-jacket/ and update filenames to match
+// Drop your 3 images into /public/images/lined-blazer/ and update filenames to match
 const images: { src: string; alt: string; caption?: string }[] = [
-  { src: '/images/canvas-jacket/jacket-front.jpg', alt: 'Canvas zip-up jacket — front', caption: 'Front' },
-  { src: '/images/canvas-jacket/jacket-side.jpg', alt: 'Canvas zip-up jacket — side', caption: 'Side' },
+  { src: '/images/lined-blazer/blazer-front.jpg', alt: 'Lined blazer — front', caption: 'Front' },
+  { src: '/images/lined-blazer/blazer-back.jpg', alt: 'Lined blazer — back', caption: 'Back' },
+  { src: '/images/lined-blazer/blazer-lining.jpg', alt: 'Lined blazer — lining detail', caption: 'Lining' },
 ];
 ---
 
-<MainLayout title="Canvas Zip Jacket — Karen Dettmar">
+<MainLayout title="Lined Blazer — Karen Dettmar">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,6 +66,16 @@ const images: { src: string; alt: string; caption?: string }[] = [
       font-weight: 300;
     }
 
+    .fabscrap-note {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 0.75rem;
+      max-width: 52ch;
+    }
+
     .meta-row {
       display: flex;
       flex-wrap: wrap;
@@ -91,10 +102,10 @@ const images: { src: string; alt: string; caption?: string }[] = [
       font-weight: 300;
     }
 
-    /* ── IMAGES ── */
-    .image-stack {
-      display: flex;
-      flex-direction: column;
+    /* ── 3-column image grid ── */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 4px;
     }
 
@@ -108,13 +119,11 @@ const images: { src: string; alt: string; caption?: string }[] = [
       width: 100%;
       display: block;
       object-fit: cover;
+      aspect-ratio: 3/4;
       transition: opacity 0.3s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
     }
 
-    .image-item:hover img {
-      opacity: 0.9;
-      transform: scale(1.01);
-    }
+    .image-item:hover img { opacity: 0.9; transform: scale(1.02); }
 
     .image-caption {
       font-family: var(--font-body);
@@ -149,14 +158,14 @@ const images: { src: string; alt: string; caption?: string }[] = [
       position: absolute;
       top: 24px; right: 32px;
       background: none; border: none;
-      color: rgba(237,229,208,0.5);
+      color: rgba(250,248,245,0.5);
       font-size: 11px; letter-spacing: 0.16em;
       text-transform: uppercase;
       cursor: pointer;
       font-family: var(--font-body);
       transition: color 0.2s;
     }
-    .lightbox-close:hover { color: rgba(237,229,208,1); }
+    .lightbox-close:hover { color: rgba(250,248,245,1); }
 
     /* ── FOOTER NAV ── */
     .next-project {
@@ -179,6 +188,7 @@ const images: { src: string; alt: string; caption?: string }[] = [
 
     @media (max-width: 768px) {
       .meta-row { gap: 2rem; }
+      .image-grid { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -189,37 +199,38 @@ const images: { src: string; alt: string; caption?: string }[] = [
     </nav>
 
     <header class="page-header">
-      <span class="page-label">FIT · Sewing Construction</span>
-      <h1 class="page-title">Canvas Zip <em>Jacket</em></h1>
+      <span class="page-label">FIT · Sewing 3</span>
+      <h1 class="page-title">Fully Lined <em>Blazer</em></h1>
       <p class="page-desc">
-        A zip-up jacket constructed in lightweight natural cotton canvas, developed for a sewing class at FIT. The jacket is defined by two large circular patch pockets. Cut and assembled in off-white canvas, the construction work is left visible as part of the design.
+        A fully lined single-breasted blazer constructed for Sewing 3 at FIT. The silhouette is shaped through darts and structured with sleeve heads and shoulder pads. Finished with welt pockets and 3/4-length sleeves.
       </p>
+      <p class="fabscrap-note">Fabric sourced from Fabscrap after volunteering at a New York textile recycling initiative that diverts surplus fabric from the fashion industry.</p>
     </header>
 
     <div class="meta-row">
       <div class="meta-item">
         <span class="meta-label">Course</span>
-        <span class="meta-value">Sewing Construction</span>
+        <span class="meta-value">Sewing 3</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Institution</span>
         <span class="meta-value">FIT</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Material</span>
-        <span class="meta-value">Natural cotton canvas · Off-white</span>
+        <span class="meta-label">Fabric</span>
+        <span class="meta-value">Sourced via Fabscrap</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Technique</span>
-        <span class="meta-value">Construction · Zip insertion</span>
+        <span class="meta-value">Full lining · Welt pockets · Darts</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Details</span>
-        <span class="meta-value">2 circular patch pockets · Lightweight canvas</span>
+        <span class="meta-value">Sleeve heads · Shoulder pads · 3/4 sleeves</span>
       </div>
     </div>
 
-    <div class="image-stack">
+    <div class="image-grid">
       {images.map((img) => (
         <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
           <img src={img.src} alt={img.alt} />
