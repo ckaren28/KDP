@@ -9,7 +9,7 @@ export async function handler(event) {
       description = "",
       fabricType = "",
       garmentType = "",
-      travellerMode = false,
+      travelerMode = false,
     } = body;
 
     if (!description || String(description).trim().length < 20) {
@@ -18,13 +18,13 @@ export async function handler(event) {
 
     const system = `You are an expert patternmaker. Given a garment description, return a concise structured technical breakdown as valid JSON only — no markdown, no commentary. Be specific but brief.`;
 
-    const travellerNote = travellerMode
+    const travelerNote = travelerMode
       ? "\n- TRAVELLER MODE: Prioritize packability. Favor lightweight fabrics, minimal structure, wrinkle resistance, and compact closures. Flag any recommendations specifically for travel."
       : "";
 
     const user = `Garment: ${description}
 ${garmentType ? `Type: ${garmentType}` : ""}
-${fabricType ? `Fabric: ${fabricType}` : ""}${travellerNote}
+${fabricType ? `Fabric: ${fabricType}` : ""}${travelerNote}
 
 Return JSON with these keys (keep each value concise):
 seam_types: [{name, description, where_used}] (max 3)
@@ -34,7 +34,7 @@ interfacing: [{location, weight, type, reason}] (max 3)
 closure_options: [{type, pros, cons, best_for}] (max 2)
 construction_order: [string] (max 8 steps)
 construction_notes: [string] (max 4 tips)
-traveller_notes: [string] (max 3, empty array if not traveller mode)`;
+traveler_notes: [string] (max 3, empty array if not traveler mode)`;
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {

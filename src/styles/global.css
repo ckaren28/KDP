@@ -40,7 +40,7 @@ html[data-theme="dark"] {
 /* Projects page work items in dark mode */
 html[data-theme="dark"] .work-item { background: #241810; }
 html[data-theme="dark"] .swatch-default   { background: #5A4030; }
-html[data-theme="dark"] .swatch-traveller { background: #4A3525; }
+html[data-theme="dark"] .swatch-traveler { background: #4A3525; }
 
 /* ── BASE ── */
 html { scroll-behavior: smooth; }
