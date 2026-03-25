@@ -100,18 +100,22 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     /* ── HERO ── */
     .hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: end;
-      margin-bottom: 7rem;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 280px);
+      margin-bottom: 4rem;
     }
 
     .hero-image {
-      width: 100%;
-      aspect-ratio: 3/4;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
       object-fit: cover;
       display: block;
+      flex-shrink: 0;
+      margin-top: 0.25rem;
     }
 
     .hero-text { padding-bottom: 1rem; }
@@ -242,6 +246,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     .img-full.wide { aspect-ratio: 16/9; }
+    .img-full.landing { aspect-ratio: 4/3; min-height: 600px; }
     .img-full.landscape { aspect-ratio: 3/2; }
 
     .img-caption {
@@ -313,8 +318,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
     .next-all:hover { color: var(--black); }
 
     @media (max-width: 768px) {
-      .hero { grid-template-columns: 1fr; gap: 2rem; }
       .role-grid { grid-template-columns: 1fr; }
+      .img-full.landing { min-height: 320px; }
     }
   </style>
 
@@ -434,7 +439,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
         <div class="section-rule"></div>
       </div>
       <img
-        class="img-full wide"
+        class="img-full landing"
         src="/images/wix-devcon/DevCon.gif"
         alt="DevCon announcement landing page for the Wix Discord community"
       />
@@ -468,7 +473,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     function start() {
-      timer = setInterval(() => goTo(current + 1), 4500);
+      timer = setInterval(() => goTo(current + 1), 2000);
     }
 
     function stop() {
