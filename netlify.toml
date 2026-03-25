@@ -11,3 +11,6 @@
 
 [functions."garment-decoder"]
   timeout = 30
+
+[functions."textile-palette"]
+  timeout = 20

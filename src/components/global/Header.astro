@@ -10,7 +10,7 @@ const hasIllustrations = illustrations.length > 0;
     <li><a href="/projects">Work</a></li>
     <li><a href="/about">About</a></li>
     {hasIllustrations && <li><a href="/illustrations">Illustrations</a></li>}
-    <li><a href="/Karen-Dettmar-Resume.pdf" target="_blank">Résumé</a></li>
+    <li><a href="/Karen-Dettmar-Resume.pdf" target="_blank">CV</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
 </header>
@@ -63,12 +63,9 @@ const hasIllustrations = illustrations.length > 0;
   .nav-links a:hover::after { width: 100%; }
 
   @media (max-width: 900px) {
-    header { padding: 24px 28px; }
+    header { padding: 20px 24px; }
+    .nav-logo { display: none; }
     .nav-links { gap: 20px; }
     .nav-links a { font-size: 10px; }
-  }
-
-  @media (max-width: 600px) {
-    header { flex-direction: column; gap: 16px; padding: 20px 24px; }
   }
 </style>

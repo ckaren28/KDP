@@ -168,5 +168,11 @@ img {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .page-container { padding: 120px 28px 72px; }
+  .page-container { padding: 100px 24px 72px; }
+}
+
+/* ── TOUCH DEVICES — hide custom cursor ── */
+@media (pointer: coarse) {
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
 }

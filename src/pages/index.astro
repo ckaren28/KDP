@@ -171,126 +171,266 @@ const hasIllustrations = illustrations.length > 0;
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0;
-      animation: fadeIn 2s ease 0.6s forwards;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 1%, black 7%, black 88%, transparent 99%);
-      mask-image: linear-gradient(to bottom, transparent 1%, black 7%, black 88%, transparent 99%);
     }
 
-    .hero-name {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(80px, 14vw, 196px);
-      line-height: 0.88;
-      letter-spacing: -0.02em;
-      color: var(--black);
-      position: relative;
-      z-index: 1;
-    }
 
-    .hero-name .line {
-      display: block;
-      overflow: hidden;
-    }
-
-    .hero-name .word {
-      display: inline-block;
-      transform: translateY(110%);
-      opacity: 0;
-    }
-
-    .hero-name .word.first  { animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s forwards; }
-    .hero-name .word.second {
-      animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.38s forwards;
-      font-style: italic;
-      color: var(--sienna);
-    }
-
-    .hero-phrase {
-      position: absolute;
-      z-index: 1;
-      right: 48px;
-      bottom: 68px;
-      font-family: var(--font-display);
-      font-size: clamp(13px, 1.4vw, 18px);
-      font-style: italic;
-      font-weight: 300;
-      color: var(--muted);
-      text-align: right;
-      line-height: 1.6;
-      max-width: 260px;
-      opacity: 0;
-      animation: fadeIn 0.9s ease 1.1s forwards;
-    }
-
-    /* ── WORK ── */
-    .work-section {
-      padding: 80px 48px 80px;
+    /* ── TRACK SELECTOR ── */
+    .tracks {
       border-top: 1px solid var(--border);
     }
 
-    .work-entry {
-      display: block;
-      padding: 52px 0;
-      border-bottom: 1px solid var(--border);
-      text-decoration: none;
-      color: var(--black);
-      cursor: none;
-    }
-    .work-entry:first-child { border-top: 1px solid var(--border); }
-
-    .work-entry-title {
-      display: block;
-      font-family: var(--font-display);
-      font-size: clamp(48px, 7vw, 96px);
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: -0.02em;
-      transition: color 0.4s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
-      margin-bottom: 14px;
-    }
-    .work-entry:hover .work-entry-title {
-      color: var(--sienna);
-      transform: translateX(10px);
-    }
-
-    .work-entry-meta {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .work-entry-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      letter-spacing: 0.02em;
-      font-weight: 300;
-      transition: color 0.3s ease;
-    }
-    .work-entry:hover .work-entry-desc { color: var(--text-body); }
-
-    .work-entry-tag {
-      font-size: 9px;
-      letter-spacing: 0.18em;
+    .tracks-prompt {
+      padding: 32px 48px 0;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
-      opacity: 0.6;
-      white-space: nowrap;
     }
 
-    .work-more {
-      display: inline-block;
-      margin-top: 40px;
+    .tracks-split {
+      display: flex;
+      height: 82vh;
+      min-height: 480px;
+    }
+
+    .track {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      text-decoration: none;
+      cursor: none;
+      transition: flex 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tracks-split:has(.track--fashion:hover) .track--fashion { flex: 1.7; }
+    .tracks-split:has(.track--fashion:hover) .track--tech    { flex: 0.3; }
+    .tracks-split:has(.track--tech:hover)    .track--tech    { flex: 1.7; }
+    .tracks-split:has(.track--tech:hover)    .track--fashion { flex: 0.3; }
+
+    /* backgrounds */
+    .track-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    }
+    .track-bg--fashion {
+      background: var(--warm-white);
+    }
+    .track-bg--tech {
+      background: var(--black);
+    }
+    /* subtle weave on fashion side */
+    .track--fashion .track-texture {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg,   transparent, transparent 19px, var(--border) 20px),
+        repeating-linear-gradient(90deg,  transparent, transparent 19px, var(--border) 20px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    /* tech side grid */
+    .track--tech .track-cursor-blink {
+      position: absolute;
+      top: 48px; right: 48px;
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--sienna);
+      opacity: 0;
+      animation: blink 1.1s step-end infinite;
+      transition: opacity 0.4s ease;
+    }
+    .track--tech:hover .track-cursor-blink { opacity: 1; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* content */
+    .track-content {
+      position: relative;
+      z-index: 1;
+      padding: 48px;
+      width: 100%;
+    }
+
+ 
+
+    .track-title {
       font-family: var(--font-display);
-      font-size: 18px;
+      font-weight: 300;
+      font-size: clamp(52px, 6vw, 96px);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      white-space: nowrap;
+      transition: color 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .track--fashion .track-title { color: var(--black); font-style: italic; }
+    .track--tech    .track-title { color: var(--off-white); }
+    .track:hover .track-title { transform: translateY(-4px); }
+
+    .track-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+    }
+    .track--fashion .track-desc { color: var(--text-body); }
+    /* tech track bg = var(--black), which flips light in dark mode — match text accordingly */
+    .track--tech    .track-desc { color: rgba(237,229,208,0.62); }
+    html[data-theme="dark"] .track--tech .track-desc { color: rgba(44,26,14,0.65); }
+    .track:hover .track-desc { opacity: 1; transform: translateY(0); }
+
+    .track-cta {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-style: italic;
+      font-weight: 300;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.35s ease 0.18s, transform 0.35s ease 0.18s, color 0.3s ease;
+    }
+    .track--fashion .track-cta { color: var(--sienna); }
+    .track--tech    .track-cta { color: var(--sienna-light); }
+    html[data-theme="dark"] .track--tech .track-cta { color: var(--sienna); }
+    .track:hover .track-cta { opacity: 1; transform: translateX(0); }
+
+    /* divider */
+    .track--fashion { border-right: 1px solid var(--border); }
+
+    @media (max-width: 900px) {
+      .tracks-prompt { padding: 28px 24px 0; }
+      .tracks-split { flex-direction: column; height: auto; min-height: unset; }
+      .track { flex: none !important; min-height: 44vh; align-items: flex-end; }
+      .track--fashion { border-right: none; border-bottom: 1px solid var(--border); }
+      .track-content { padding: 36px 24px; }
+      .track-title { font-size: clamp(48px, 12vw, 72px); }
+      .track-desc, .track-cta { opacity: 1; transform: none; }
+    }
+
+    /* ── FEATURED ── */
+    .featured-section {
+      padding: 80px 48px 100px;
+      border-top: 1px solid var(--border);
+    }
+
+    .featured-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .featured-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .featured-see-all {
+      font-family: var(--font-display);
+      font-size: 14px;
       font-style: italic;
       font-weight: 300;
       color: var(--muted);
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: color 0.3s;
     }
-    .work-more:hover { color: var(--sienna); }
+    .featured-see-all:hover { color: var(--black); }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .featured-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      cursor: none;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+    .featured-card:hover { border-color: var(--black); }
+
+    .featured-card-preview {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--warm-white);
+      position: relative;
+    }
+
+    .featured-card-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      display: block;
+    }
+    .featured-card:hover .featured-card-preview img { transform: scale(1.03); }
+
+    /* CSS pattern preview for textile tool */
+    .pattern-preview {
+      width: 100%;
+      height: 100%;
+      background-color: var(--black);
+      background-image:
+        repeating-linear-gradient(45deg,  transparent, transparent 12px, rgba(180,92,56,0.18) 12px, rgba(180,92,56,0.18) 14px),
+        repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(196,168,130,0.12) 12px, rgba(196,168,130,0.12) 14px),
+        repeating-linear-gradient(0deg,   transparent, transparent 24px, rgba(200,190,170,0.06) 24px, rgba(200,190,170,0.06) 25px);
+      transition: opacity 0.4s ease;
+    }
+    .featured-card:hover .pattern-preview { opacity: 0.85; }
+
+    .featured-card-body {
+      padding: 24px 28px 28px;
+    }
+
+    .featured-card-track {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .featured-card-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 8px;
+      transition: color 0.3s;
+    }
+    .featured-card:hover .featured-card-title { color: var(--sienna); }
+
+    .featured-card-desc {
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-body);
+      font-weight: 300;
+    }
+
+    @media (max-width: 900px) {
+      .featured-section { padding: 64px 24px 80px; }
+      .featured-grid { grid-template-columns: 1fr; }
+    }
 
     /* ── CONTACT ── */
     .contact-section {
@@ -356,9 +496,6 @@ const hasIllustrations = illustrations.length > 0;
     }
 
     /* ── ANIMATIONS ── */
-    @keyframes slideUp {
-      to { transform: translateY(0); opacity: 1; }
-    }
     @keyframes fadeIn {
       to { opacity: 1; }
     }
@@ -373,13 +510,18 @@ const hasIllustrations = illustrations.length > 0;
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      nav { padding: 24px 28px; }
-      .hero { padding: 0 28px 56px; }
-      .hero-phrase { right: 28px; bottom: 60px; max-width: 200px; }
-      .work-section { padding: 60px 28px; }
-      .work-entry { padding: 40px 0; }
-.contact-section { padding: 72px 28px 96px; }
-      footer { padding: 20px 28px; flex-direction: column; gap: 8px; text-align: center; }
+      nav { padding: 20px 24px; }
+      .nav-logo { display: none; }
+      .nav-links { gap: 20px; }
+      .hero { min-height: 100dvh; padding: 0 24px 48px; }
+      .contact-section { padding: 72px 24px 96px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* hide custom cursor on touch devices */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
     }
   </style>
 </head>
@@ -395,7 +537,7 @@ const hasIllustrations = illustrations.length > 0;
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>
       {hasIllustrations && <li><a href="/illustrations">Illustrations</a></li>}
-      <li><a href="/Karen-Dettmar-Resume.pdf" target="_blank">Résumé</a></li>
+      <li><a href="/Karen-Dettmar-Resume.pdf" target="_blank">CV</a></li>
     </ul>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
   </nav>
@@ -403,41 +545,69 @@ const hasIllustrations = illustrations.length > 0;
   <!-- HERO -->
   <section class="hero">
     <canvas id="heroCanvas" class="hero-canvas"></canvas>
-    <h1 class="hero-name">
-      <span class="line"><span class="word first">Karen</span></span>
-      <span class="line"><span class="word second">Dettmar</span></span>
-    </h1>
-    <p class="hero-phrase">Fashion, technology<br>&amp; the space between.</p>
   </section>
 
-  <!-- WORK -->
-  <section id="work" class="work-section">
+  <!-- TRACK SELECTOR -->
+  <section class="tracks reveal">
+    <p class="tracks-prompt">What brings you here?</p>
 
-    <a href="/projects/traveller" class="work-entry reveal">
-      <span class="work-entry-title">Traveler</span>
-      <div class="work-entry-meta">
-        <span class="work-entry-desc">A wearable collection built for movement and impermanence</span>
-        <span class="work-entry-tag">Collection Concept</span>
-      </div>
-    </a>
+    <div class="tracks-split">
 
-    <a href="/projects/construction" class="work-entry reveal">
-      <span class="work-entry-title">Fashion</span>
-      <div class="work-entry-meta">
-        <span class="work-entry-desc">Garment Construction, Pattern work, Draping, and Technical Flats</span>
-        <span class="work-entry-tag">Fashion Design</span>
-      </div>
-    </a>
+      <a href="/projects/fashion" class="track track--fashion">
+        <div class="track-bg track-bg--fashion"></div>
+        <div class="track-content">
+        
+          <h2 class="track-title">Fashion</h2>
+          <p class="track-desc">Collections, construction<br>& craft</p>
+          <span class="track-cta">View work →</span>
+        </div>
+        <div class="track-texture"></div>
+      </a>
 
-    <a href="/projects/tech" class="work-entry reveal">
-      <span class="work-entry-title">Creative Technology </span>
-      <div class="work-entry-meta">
-        <span class="work-entry-desc">Tools and prototypes at the intersection of technology and culture</span>
-        <span class="work-entry-tag">Tools · Prototypes</span>
-      </div>
-    </a>
+      <a href="/projects/tech" class="track track--tech">
+        <div class="track-bg track-bg--tech"></div>
+        <div class="track-content">
+         
+          <h2 class="track-title">Technology</h2>
+          <p class="track-desc">Tools, prototypes<br>& interactive work</p>
+          <span class="track-cta">View work →</span>
+        </div>
+        <div class="track-cursor-blink">_</div>
+      </a>
 
-    <a href="/projects" class="work-more reveal">All projects →</a>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS -->
+  <section class="featured-section reveal">
+    <div class="featured-header">
+      <span class="featured-eyebrow">Featured Projects</span>
+    </div>
+    <div class="featured-grid">
+
+      <a href="/projects/traveller" class="featured-card">
+        <div class="featured-card-preview">
+          <img src="/images/traveller/Traveller-moodboard.png" alt="Traveler collection moodboard" />
+        </div>
+        <div class="featured-card-body">
+          <span class="featured-card-track">Fashion</span>
+          <h3 class="featured-card-title">Traveler</h3>
+          <p class="featured-card-desc">A wearable collection built for movement and impermanence.</p>
+        </div>
+      </a>
+
+      <a href="/projects/textile-pattern-generator" class="featured-card">
+        <div class="featured-card-preview">
+          <div class="pattern-preview"></div>
+        </div>
+        <div class="featured-card-body">
+          <span class="featured-card-track">Technology</span>
+          <h3 class="featured-card-title">Generative Textile Pattern Tool</h3>
+          <p class="featured-card-desc">Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable.</p>
+        </div>
+      </a>
+
+    </div>
   </section>
 
   <!-- CONTACT -->
@@ -486,152 +656,285 @@ const hasIllustrations = illustrations.length > 0;
       localStorage.setItem('theme', next);
     });
 
-    // FABRIC CANVAS — fashion croquis
+    // T-SHIRT THREAD DRAWING
     (function() {
-      const canvasEl = document.getElementById('heroCanvas') as HTMLCanvasElement | null;
-      if (!canvasEl) return;
-      const canvas = canvasEl;
+      const canvas = document.getElementById('heroCanvas') as HTMLCanvasElement | null;
+      if (!canvas) return;
       const ctx = canvas.getContext('2d')!;
+
+      const SHIRT_COLORS = ['#faf8f5','#e8dcc8','#c4a882','#8b6f5e','#2C1A0E','#7d8c7c','#B85C38','#5a5550'];
+      const THREAD_COLORS = ['#8b6f5e','#5a5550','#c4a882','#7d8c7c','#b8846a','#9b8fa0','#D4845C'];
+
+      // SVG path data extracted from Basic T Shirt.svg (viewBox 0 0 595.28 841.89)
+      const SVG_SHIRT        = 'M176.24,594.87l247.9,.32c-1.03,-65.35,-2.07,-130.7,-3.1,-196.05l35.61,15.42,48.03,-62.22,-93.95,-75.82,-80.52,-29.08s-3.95,43.87,-31.85,45.38c-27.9,1.51,-34.43,-43.97,-34.43,-43.97l-70.76,23.49,-102.59,79.4,49.45,62.81,36.02,-17.37c.06,65.89,.12,131.78,.18,197.67Z';
+      const SVG_COLLAR_FILL  = 'M265.35,247.58s31.65,10.12,63.76,-.88c.6,3.91,3.03,22.39,-9.15,36.76c-2.92,3.45,-10.21,12.04,-21.59,12.47c-11.08,.42,-18.84,-7.18,-21.61,-9.89c-14.39,-14.08,-11.85,-35.22,-11.42,-38.46Z';
+      const SVG_COLLAR_SEAM  = 'M255.28,253.74c2.9,22.63,14.99,40.64,30.98,45.27c11.26,3.26,21.41,-.27,21.41,-.27c8.53,-2.84,13.3,-8.64,17.51,-13.76c9.73,-11.81,13.36,-24.73,14.83,-33.36';
+
+      let shirtColor = SHIRT_COLORS[0];
+      let threadColorIdx = 0;
+
+      interface Pt { x: number; y: number; }
+      interface Trail { pts: Pt[]; color: string; }
+
+      let trails: Trail[] = [];
+      let currentTrail: Trail | null = null;
+      let isDrawing = false;
       let W = 0, H = 0;
-      const mouse = { x: -9999, y: -9999 };
-      let frame = 0;
-
-      interface BgThread { x: number; phase: number; speed: number; amp: number; opacity: number; }
-      interface FigThread { pos: number; phase: number; speed: number; waver: number; }
-      let bg: BgThread[] = [];
-      let fig: FigThread[] = [];
-
-      // 9-head fashion croquis silhouette: [yNorm, halfWidth as fraction of figW]
-      const CROQUIS: [number, number][] = [
-        [0.000, 0.00],
-        [0.025, 0.12],  // forehead
-        [0.060, 0.17],  // widest of head
-        [0.095, 0.14],  // jaw
-        [0.110, 0.05],  // neck top (narrow)
-        [0.162, 0.06],  // neck base
-        [0.222, 0.50],  // shoulder
-        [0.275, 0.40],  // upper chest
-        [0.333, 0.35],  // bust
-        [0.400, 0.20],  // waist (narrowest)
-        [0.460, 0.34],  // high hip
-        [0.520, 0.42],  // hip (widest)
-        [0.610, 0.28],  // upper thigh
-        [0.660, 0.22],  // mid thigh
-        [0.740, 0.16],  // knee
-        [0.795, 0.17],  // upper calf
-        [0.860, 0.14],  // calf
-        [0.920, 0.08],  // ankle
-        [0.960, 0.10],  // foot
-        [1.000, 0.08],  // toe
-      ];
-
-      function getHW(y: number): number {
-        if (y <= 0) return 0;
-        for (let i = 0; i < CROQUIS.length - 1; i++) {
-          if (y >= CROQUIS[i][0] && y <= CROQUIS[i + 1][0]) {
-            const t = (y - CROQUIS[i][0]) / (CROQUIS[i + 1][0] - CROQUIS[i][0]);
-            return CROQUIS[i][1] + (CROQUIS[i + 1][1] - CROQUIS[i][1]) * t;
-          }
-        }
-        return CROQUIS[CROQUIS.length - 1][1];
-      }
+      let shirtPath: Path2D | null = null;
+      let shirtMx: DOMMatrix | null = null;
+      let shirtMidY = 0;
+      let shirtBottomY = 0;
+      let hintOpacity = 1;
+      let hasDrawn = false;
+      let swatchHits: { x: number; y: number; r: number; color: string }[] = [];
 
       function isDark() {
         return document.documentElement.getAttribute('data-theme') === 'dark';
       }
 
+      // The shirt's visual bounding box within the SVG coordinate space
+      const SVG_SHIRT_LEFT = 91, SVG_SHIRT_TOP = 247, SVG_SHIRT_W = 414, SVG_SHIRT_H = 348;
+
+      function buildShirtPath() {
+        // Scale shirt to ~58% of canvas width, capped so it fits vertically
+        const targetW = Math.min(W * 0.58, H * 0.68);
+        const scale   = targetW / SVG_SHIRT_W;
+
+        // Center horizontally; shirt visual top sits at 5% down
+        const offsetX = W / 2 - (SVG_SHIRT_LEFT + SVG_SHIRT_W / 2) * scale;
+        const offsetY = H * 0.05 - SVG_SHIRT_TOP * scale;
+
+        // [a, b, c, d, tx, ty]  →  x' = a·x + tx,  y' = d·y + ty
+        shirtMx = new DOMMatrix([scale, 0, 0, scale, offsetX, offsetY]);
+
+        const raw = new Path2D(SVG_SHIRT);
+        shirtPath = new Path2D();
+        shirtPath.addPath(raw, shirtMx);
+
+        shirtBottomY = offsetY + 595  * scale;
+        shirtMidY    = offsetY + (SVG_SHIRT_TOP + SVG_SHIRT_H / 2) * scale;
+      }
+
+      function buildSwatchHits() {
+        const n = SHIRT_COLORS.length;
+        const r = Math.min(12, (W * 0.75) / (n * 3.2));
+        const spacing = r * 3.2;
+        const startX  = W / 2 - ((n - 1) * spacing) / 2;
+        const swY = shirtBottomY + (H * 0.90 - shirtBottomY) * 0.42;
+        swatchHits = SHIRT_COLORS.map((color, i) => ({
+          x: startX + i * spacing, y: swY, r, color,
+        }));
+      }
+
       function resize() {
-        W = canvas.width = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
+        W = canvas!.width  = canvas!.offsetWidth;
+        H = canvas!.height = canvas!.offsetHeight;
+        buildShirtPath();
+        buildSwatchHits();
+      }
 
-        bg = [];
-        for (let i = 0; i < 90; i++) {
-          bg.push({
-            x: (i / 89) * W,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.004 + Math.random() * 0.003,
-            amp: 5 + Math.random() * 12,
-            opacity: 0.035 + Math.random() * 0.035,
-          });
-        }
+      function hexToRgb(hex: string) {
+        return { r: parseInt(hex.slice(1,3),16), g: parseInt(hex.slice(3,5),16), b: parseInt(hex.slice(5,7),16) };
+      }
 
-        fig = [];
-        for (let i = 0; i < 14; i++) {
-          fig.push({
-            pos: i / 13,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.003 + Math.random() * 0.002,
-            waver: 1 + Math.random() * 3,
-          });
-        }
+      function txPath(d: string) {
+        const p = new Path2D(); p.addPath(new Path2D(d), shirtMx!); return p;
+      }
+
+      // ── DRAW ──
+
+      function drawGrid() {
+        const dark = isDark();
+        ctx.strokeStyle = dark ? 'rgba(200,190,170,0.04)' : 'rgba(160,150,135,0.09)';
+        ctx.lineWidth = 0.5;
+        const sp = 22;
+        for (let x = 0; x < W; x += sp) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+        for (let y = 0; y < H; y += sp) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+      }
+
+      function drawShirtFill() {
+        if (!shirtPath || !shirtMx) return;
+        // Body fill
+        ctx.save();
+        ctx.fillStyle = shirtColor;
+        ctx.fill(shirtPath);
+        // Collar shadow
+        ctx.fillStyle = isDark() ? 'rgba(0,0,0,0.20)' : 'rgba(0,0,0,0.11)';
+        ctx.fill(txPath(SVG_COLLAR_FILL));
+        ctx.restore();
+      }
+
+      function drawThreads() {
+        if (!shirtPath || trails.length === 0) return;
+        ctx.save();
+        ctx.clip(shirtPath);
+        trails.forEach(trail => {
+          if (trail.pts.length < 2) return;
+          const { r, g, b } = hexToRgb(trail.color);
+          ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 1.6;
+          for (let i = 1; i < trail.pts.length; i++) {
+            const a = trail.pts[i-1], bp = trail.pts[i];
+            ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(bp.x,bp.y);
+            ctx.strokeStyle = `rgba(${r},${g},${b},0.80)`;
+            ctx.stroke();
+          }
+        });
+        ctx.restore();
+      }
+
+      function drawShirtOverlay() {
+        if (!shirtPath || !shirtMx) return;
+        const dark = isDark();
+        // Outline
+        ctx.save();
+        ctx.strokeStyle = dark ? 'rgba(200,190,170,0.38)' : 'rgba(44,26,14,0.30)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke(shirtPath);
+        ctx.restore();
+        // Dashed construction details
+        ctx.save();
+        ctx.strokeStyle = dark ? 'rgba(200,190,170,0.14)' : 'rgba(44,26,14,0.10)';
+        ctx.lineWidth = 0.7;
+        ctx.setLineDash([3, 3]);
+        ctx.stroke(txPath(SVG_COLLAR_SEAM));
+        ctx.stroke(txPath('M177.49,582.99L421.92,582.99')); // hem stitch
+        ctx.setLineDash([]);
+        ctx.restore();
+      }
+
+      function drawSwatches() {
+        const dark = isDark();
+        swatchHits.forEach(sw => {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+          ctx.fillStyle = sw.color;
+          ctx.fill();
+          ctx.strokeStyle = sw.color === shirtColor
+            ? (dark ? 'rgba(250,248,245,0.9)' : 'rgba(44,26,14,0.75)')
+            : (dark ? 'rgba(200,190,170,0.18)' : 'rgba(44,26,14,0.12)');
+          ctx.lineWidth = sw.color === shirtColor ? 2 : 0.5;
+          ctx.stroke();
+          ctx.restore();
+        });
+        const first = swatchHits[0];
+        if (!first) return;
+        ctx.save();
+        ctx.font = '500 8px "Archivo", sans-serif';
+        ctx.letterSpacing = '0.16em';
+        ctx.fillStyle = isDark() ? 'rgba(200,190,170,0.28)' : 'rgba(44,26,14,0.22)';
+        ctx.textAlign = 'center';
+        ctx.fillText('SHIRT COLOR', W / 2, first.y - first.r - 8);
+        ctx.textAlign = 'left'; ctx.letterSpacing = '0';
+        ctx.restore();
+      }
+
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+      function drawHint() {
+        if (hintOpacity <= 0) return;
+        const dark = isDark();
+        const base = dark ? '200,190,170' : '44,26,14';
+        const text = isTouch
+          ? 'DRAG INSIDE THE SHIRT TO DRAW  ·  DOUBLE-TAP TO ERASE'
+          : 'CLICK & DRAG INSIDE THE SHIRT TO DRAW  ·  DOUBLE-CLICK TO ERASE';
+        ctx.save();
+        ctx.font = '500 9px "Archivo", sans-serif';
+        ctx.letterSpacing = '0.14em';
+        ctx.fillStyle = `rgba(${base},${hintOpacity * 0.28})`;
+        ctx.textAlign = 'center';
+        ctx.fillText(text, W / 2, shirtMidY);
+        ctx.textAlign = 'left'; ctx.letterSpacing = '0';
+        ctx.restore();
+      }
+
+      function drawNameplate() {
+        const dark = isDark();
+        const pad = 44;
+        ctx.save();
+        ctx.font = '300 22px Georgia, serif';
+        ctx.fillStyle = dark ? 'rgba(220,210,190,0.72)' : 'rgba(44,26,14,0.55)';
+        ctx.fillText('Karen Dettmar', pad, H - pad - 22);
+        ctx.font = '500 9px "Archivo", sans-serif';
+        ctx.letterSpacing = '0.18em';
+        ctx.fillStyle = dark ? 'rgba(180,168,148,0.45)' : 'rgba(44,26,14,0.32)';
+        ctx.fillText('CREATIVE TECHNOLOGIST  ·  FASHION & CULTURE  ·  NEW YORK CITY', pad, H - pad);
+        ctx.letterSpacing = '0'; ctx.restore();
       }
 
       function drawFrame() {
-        ctx.clearRect(0, 0, W, H);
-        frame++;
-        const dark = isDark();
-        const sr = dark ? '196,104,63' : '184,92,56';
-        const mr = dark ? '130,110,92' : '154,136,114';
-        const PTS = 70;
-
-        const cx    = W * 0.50;
-        const figTop = H * 0.05;
-        const figH   = H * 0.86;
-        const figW   = W * 0.20;  // shoulder half-width = 10% of viewport
-
-        // — background threads (subtle, full height) —
-        bg.forEach(t => {
-          ctx.beginPath();
-          for (let i = 0; i <= PTS; i++) {
-            const p = i / PTS;
-            const y = p * H;
-            const env = Math.sin(p * Math.PI);
-            const x = t.x
-              + Math.sin(t.phase + frame * t.speed) * t.amp * env
-              + Math.sin(t.phase * 1.6 + frame * t.speed * 0.6 + 1.8) * t.amp * 0.4 * env;
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          }
-          ctx.strokeStyle = `rgba(${mr},${t.opacity})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        });
-
-        // — figure threads (trace croquis silhouette) —
-        fig.forEach(t => {
-          ctx.beginPath();
-          for (let i = 0; i <= PTS; i++) {
-            const yNorm = i / PTS;
-            const y = figTop + yNorm * figH;
-            const hw = getHW(yNorm) * figW;
-            // interpolate position across the silhouette width
-            const baseX = cx - hw + t.pos * hw * 2;
-            const wave = Math.sin(t.phase + frame * t.speed + yNorm * 6) * t.waver;
-            let x = baseX + wave;
-
-            // mouse repulsion
-            const dx = x - mouse.x;
-            const dy = y - mouse.y;
-            const d = Math.sqrt(dx * dx + dy * dy);
-            if (d < 150 && d > 0) x += (dx / d) * (1 - d / 150) * 55;
-
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          }
-          const isEdge = t.pos < 0.09 || t.pos > 0.91;
-          ctx.strokeStyle = `rgba(${sr},${isEdge ? 0.28 : 0.14})`;
-          ctx.lineWidth = isEdge ? 0.85 : 0.6;
-          ctx.stroke();
-        });
-
         requestAnimationFrame(drawFrame);
+        ctx.clearRect(0, 0, W, H);
+        drawGrid();
+        drawShirtFill();   // shirt color + collar shadow
+        drawThreads();     // user threads, clipped inside shirt
+        drawShirtOverlay();// outline + dashed seam details on top
+        if (hasDrawn) hintOpacity = Math.max(0, hintOpacity - 0.012);
+        drawHint();
+        drawSwatches();
+        drawNameplate();
       }
 
-      const hero = canvas.parentElement;
-      hero?.addEventListener('mousemove', e => {
-        const r = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - r.left;
-        mouse.y = e.clientY - r.top;
+      function getXY(e: MouseEvent | Touch) {
+        const rect = canvas!.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      }
+      function inShirt(x: number, y: number) {
+        return shirtPath ? ctx.isPointInPath(shirtPath, x, y) : false;
+      }
+      function hitSwatch(x: number, y: number) {
+        return swatchHits.find(s => Math.hypot(x - s.x, y - s.y) <= s.r * 1.5);
+      }
+      function addPoint(x: number, y: number) {
+        if (!currentTrail) {
+          currentTrail = { pts: [], color: THREAD_COLORS[threadColorIdx % THREAD_COLORS.length] };
+          threadColorIdx++;
+          trails.push(currentTrail);
+        }
+        const last = currentTrail.pts[currentTrail.pts.length - 1];
+        if (!last || Math.hypot(x - last.x, y - last.y) > 4) {
+          currentTrail.pts.push({ x, y });
+          hasDrawn = true;
+        }
+      }
+
+      const hero = canvas!.parentElement!;
+
+      hero.addEventListener('mousedown', (e: MouseEvent) => {
+        const { x, y } = getXY(e);
+        const sw = hitSwatch(x, y);
+        if (sw) { shirtColor = sw.color; return; }
+        if (inShirt(x, y)) { isDrawing = true; currentTrail = null; addPoint(x, y); }
       });
-      hero?.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+      hero.addEventListener('mousemove', (e: MouseEvent) => {
+        if (!isDrawing) return;
+        const { x, y } = getXY(e);
+        if (inShirt(x, y)) addPoint(x, y);
+      });
+      hero.addEventListener('mouseup',    () => { isDrawing = false; currentTrail = null; });
+      hero.addEventListener('mouseleave', () => { isDrawing = false; currentTrail = null; });
+      hero.addEventListener('dblclick', (e: MouseEvent) => {
+        const { x, y } = getXY(e);
+        if (inShirt(x, y)) { trails = []; currentTrail = null; }
+      });
+
+      let lastTap = 0;
+      hero.addEventListener('touchstart', (e: TouchEvent) => {
+        const { x, y } = getXY(e.touches[0]);
+        const sw = hitSwatch(x, y);
+        if (sw) { shirtColor = sw.color; return; }
+        if (inShirt(x, y)) { isDrawing = true; currentTrail = null; addPoint(x, y); }
+        const now = Date.now();
+        if (now - lastTap < 300 && inShirt(x, y)) { trails = []; currentTrail = null; }
+        lastTap = now;
+      }, { passive: true });
+      hero.addEventListener('touchmove', (e: TouchEvent) => {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const { x, y } = getXY(e.touches[0]);
+        if (inShirt(x, y)) addPoint(x, y);
+      }, { passive: false });
+      hero.addEventListener('touchend', () => { isDrawing = false; currentTrail = null; });
 
       window.addEventListener('resize', resize);
       resize();

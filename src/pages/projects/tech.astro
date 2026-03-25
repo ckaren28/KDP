@@ -1,23 +1,31 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 
-// Add future tech projects here
 const projects = [
+  {
+    title: 'Generative Textile Pattern Tool',
+    subtitle: 'Living patterns generated from collection concepts',
+    desc: 'Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable. Export as SVG.',
+    tags: ['Claude API', 'Canvas', 'Generative Art', 'Textile Design'],
+    status: 'Live',
+    link: '/projects/textile-pattern-generator',
+    featured: true,
+  },
   {
     title: 'Garment Construction Decoder',
     subtitle: 'Structured technical breakdown for garment construction',
-    description: 'Describe a garment and get a technical breakdown, seam types, fabric behavior, lining, interfacing, closure options, and construction considerations. Built at the intersection of pattern-making knowledge and language models. Includes Traveler Mode for packability constraints.',
-    tags: ['Claude API', 'React', 'Netlify Functions', 'Construction', 'Pattern Making'],
+    desc: 'Describe a garment and get a technical breakdown — seam types, fabric behavior, lining, interfacing, closure options, and construction order. Includes Traveler Mode for packability constraints.',
+    tags: ['Claude API', 'Netlify Functions', 'Construction'],
     status: 'Live',
-    link: '/projects/garment-construction-decoder' as string | null,
+    link: '/projects/garment-construction-decoder',
   },
   {
     title: 'Museum Label Generator',
     subtitle: 'AI-powered interpretive text for cultural institutions',
-    description: 'A tool that generates accessible, engaging museum label copy from structured object data. Built for cultural institutions, fashion archives, and textile collections. Anywhere objects need language that connects with an audience. The curator provides the facts, the tool finds the voice.',
-    tags: ['Claude API', 'React', 'TypeScript', 'Prompt Engineering'],
+    desc: 'Generates accessible, engaging museum label copy from structured object data — built for fashion archives, textile collections, and cultural institutions.',
+    tags: ['Claude API', 'TypeScript', 'Prompt Engineering'],
     status: 'Live',
-    link: '/projects/museum-label-generator' as string | null,
+    link: '/projects/museum-label-generator',
   },
 ];
 ---
@@ -25,214 +33,152 @@ const projects = [
 <MainLayout title="Creative Technology — Karen Dettmar">
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    .project-page {
-      max-width: 1100px;
+    .tech-page {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 120px 2rem 8rem;
-      font-family: var(--font-display);
-      color: var(--black);
+      padding: 120px 48px 100px;
     }
-
-    .back-nav {
-      padding: 2.5rem 0 4rem;
-      font-family: var(--font-body);
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    .back-nav a:hover { color: var(--black); }
 
     .page-header {
-      margin-bottom: 6rem;
-      padding-bottom: 3rem;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
       border-bottom: 1px solid var(--border);
     }
-
-    .page-label {
-      font-family: var(--font-body);
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
+    .page-eyebrow {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 1.5rem;
-      display: block;
+      margin-bottom: 12px;
     }
-
     .page-title {
-      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-family: var(--font-display);
+      font-size: clamp(44px, 6vw, 80px);
       font-weight: 300;
       line-height: 0.95;
       letter-spacing: -0.02em;
-      font-style: italic;
-      margin-bottom: 2rem;
+    }
+    .page-title em { font-style: italic; color: var(--sienna); }
+
+    /* grid */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
     }
 
-    .page-desc {
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      line-height: 1.75;
-      color: var(--text-body);
-      max-width: 52ch;
-      font-weight: 300;
-    }
-
-    /* ── PROJECT ENTRIES ── */
-    .project-list {
+    .project-card {
       display: flex;
       flex-direction: column;
+      padding: 36px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      cursor: none;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .project-card:hover {
+      border-color: var(--black);
+      background: var(--warm-white);
     }
 
-    .project-entry {
-      padding: 4rem 0;
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 4rem;
-      align-items: start;
-    }
-    .project-entry:first-child { border-top: 1px solid var(--border); }
-
-    .project-left {}
-
-    .project-title {
-      font-size: clamp(2rem, 3.5vw, 3.2rem);
+    .card-title {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 2.4vw, 34px);
       font-weight: 300;
-      line-height: 1;
-      letter-spacing: -0.02em;
       font-style: italic;
-      margin-bottom: 1rem;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
       color: var(--black);
+      margin-bottom: 8px;
+      transition: color 0.3s;
     }
+    .project-card:hover .card-title { color: var(--sienna); }
 
-    .project-subtitle {
-      font-family: var(--font-body);
-      font-size: 0.78rem;
+    .card-subtitle {
+      font-size: 12px;
       color: var(--muted);
-      line-height: 1.6;
       letter-spacing: 0.02em;
       font-weight: 300;
+      margin-bottom: 20px;
     }
 
-    .project-right {}
-
-    .project-description {
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      line-height: 1.85;
+    .card-desc {
+      font-size: 13px;
+      line-height: 1.75;
       color: var(--text-body);
       font-weight: 300;
-      margin-bottom: 2rem;
+      flex: 1;
+      margin-bottom: 28px;
     }
 
-    .project-tags {
+    .card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 2rem;
+      margin-bottom: 24px;
     }
-
-    .project-tag {
-      font-family: var(--font-body);
-      font-size: 0.62rem;
-      letter-spacing: 0.16em;
+    .card-tag {
+      font-size: 9px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
       border: 1px solid var(--border);
       padding: 4px 10px;
     }
 
-    .project-meta {
+    .card-footer {
       display: flex;
       align-items: center;
-      gap: 2rem;
+      justify-content: space-between;
     }
-
-    .project-status {
-      font-family: var(--font-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
+    .card-status {
+      font-size: 9px;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--sienna);
     }
-
-    .project-link {
-      font-family: var(--font-body);
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--black);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .project-link:hover { border-color: var(--sienna); color: var(--sienna); }
-
-    .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
-    }
-    .next-all {
-      font-family: var(--font-body);
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+    .card-link {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 300;
       color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.3s;
     }
-    .next-all:hover { color: var(--black); }
+    .project-card:hover .card-link { color: var(--black); }
 
-    @media (max-width: 768px) {
-      .project-entry { grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) {
+      .tech-page { padding: 100px 24px 72px; }
+      .project-grid { grid-template-columns: 1fr; }
+      .project-card { padding: 28px 24px; }
     }
   </style>
 
-  <div class="project-page">
+  <div class="tech-page">
 
-    <nav class="back-nav">
-      <a href="/projects">← All Projects</a>
-    </nav>
-
-    <header class="page-header">
-      <span class="page-label">Creative Technology</span>
-      <h1 class="page-title">Technical Projects</h1>
-      <p class="page-desc">
-        Tools, prototypes, and experiments at the intersection of technology and culture. Built for the institutions, makers, and communities that technology too often overlooks.
-      </p>
+    <header class="page-header reveal">
+      <span class="page-eyebrow">Creative Technology</span>
+      <h1 class="page-title"><em>Technology</em></h1>
     </header>
 
-    <div class="project-list">
-      {projects.map((project) => (
-        <div class="project-entry reveal">
-          <div class="project-left">
-            <h2 class="project-title">{project.title}</h2>
-            <p class="project-subtitle">{project.subtitle}</p>
+    <div class="project-grid">
+      {projects.map((p) => (
+        <a href={p.link} class="project-card reveal">
+          <h2 class="card-title">{p.title}</h2>
+          <p class="card-subtitle">{p.subtitle}</p>
+          <p class="card-desc">{p.desc}</p>
+          <div class="card-tags">
+            {p.tags.map(t => <span class="card-tag">{t}</span>)}
           </div>
-          <div class="project-right">
-            <p class="project-description">{project.description}</p>
-            <div class="project-tags">
-              {project.tags.map(tag => (
-                <span class="project-tag">{tag}</span>
-              ))}
-            </div>
-            <div class="project-meta">
-              <span class="project-status">{project.status}</span>
-              {project.link && (
-                <a href={project.link} target="_blank" class="project-link">View project →</a>
-              )}
-            </div>
+          <div class="card-footer">
+            <span class="card-status">{p.status}</span>
+            <span class="card-link">View project →</span>
           </div>
-        </div>
+        </a>
       ))}
-    </div>
-
-    <div class="next-project">
-      <a href="/projects" class="next-all">← All Projects</a>
     </div>
 
   </div>

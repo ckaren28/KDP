@@ -1,0 +1,852 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Generative Textile Pattern Tool — Karen Dettmar">
+
+  <style>
+    /* ── PAGE SHELL ── */
+    .tool-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 48px 100px;
+    }
+
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 48px;
+      transition: color 0.3s;
+    }
+    .back-nav:hover { color: var(--black); }
+
+    .page-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-eyebrow {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+    .page-title em { font-style: italic; color: var(--sienna); }
+
+    .page-desc {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      font-weight: 300;
+      max-width: 560px;
+    }
+
+    /* ── TWO-COLUMN TOOL LAYOUT ── */
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 0;
+      align-items: start;
+      min-height: calc(100vh - 300px);
+    }
+
+    /* ── CONTROLS PANEL ── */
+    .controls-panel {
+      border-right: 1px solid var(--border);
+      padding-right: 36px;
+      padding-bottom: 60px;
+    }
+
+    .ctrl-section {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 24px;
+    }
+    .ctrl-section:first-child {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    .ctrl-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-variant: small-caps;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* Concept textarea */
+    .concept-textarea {
+      width: 100%;
+      resize: none;
+      border: 1px solid var(--border);
+      background: var(--off-white);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    .concept-textarea:focus { border-color: var(--black); }
+    .concept-textarea::placeholder { color: var(--muted); }
+
+    /* Generate button */
+    .btn-generate {
+      width: 100%;
+      background: var(--black);
+      color: var(--off-white);
+      border: none;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 13px 20px;
+      cursor: none;
+      transition: background 0.3s, opacity 0.3s;
+    }
+    .btn-generate:hover:not(:disabled) { background: var(--hover-sweep, #3D2B1A); }
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Swatches — scoped to parent only; children are JS-created so use :global */
+    .swatch-row {
+      margin-bottom: 12px;
+    }
+    :global(.swatch-item) {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    :global(.swatch-block) {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    :global(.swatch-item:hover .swatch-block) {
+      box-shadow: 0 0 0 2px var(--black);
+    }
+    :global(.swatch-input) {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+    :global(.swatch-hex) {
+      font-family: 'Courier New', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+      flex: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    :global(.swatch-edit) {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    :global(.swatch-item:hover .swatch-edit) { opacity: 1; }
+
+    .mood-text {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.6;
+      min-height: 20px;
+    }
+
+    .error-msg {
+      font-size: 11px;
+      color: var(--sienna);
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
+    /* Pattern type buttons */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .btn-pattern {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      cursor: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-pattern:hover:not(.active) {
+      border-color: var(--black);
+    }
+    .btn-pattern.active {
+      background: var(--black);
+      color: var(--off-white);
+      border-color: var(--black);
+    }
+
+    /* Density slider */
+    .density-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 1px;
+      background: var(--border);
+      outline: none;
+      margin-bottom: 8px;
+      cursor: none;
+    }
+    .density-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--black);
+      border-radius: 50%;
+      cursor: none;
+    }
+    .density-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: var(--black);
+      border-radius: 50%;
+      border: none;
+      cursor: none;
+    }
+    .density-labels {
+      display: flex;
+      justify-content: space-between;
+    }
+    .density-label {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Download button */
+    .btn-download {
+      width: 100%;
+      background: transparent;
+      color: var(--black);
+      border: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 13px 20px;
+      cursor: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .btn-download:hover {
+      border-color: var(--sienna);
+      color: var(--sienna);
+    }
+
+    /* ── CANVAS PANEL ── */
+    .canvas-panel {
+      position: sticky;
+      top: 100px;
+      padding-left: 36px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 200px);
+    }
+
+    #patternCanvas {
+      flex: 1;
+      width: 100%;
+      background: var(--warm-white);
+      display: block;
+    }
+
+    .canvas-hint {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .tool-page { padding: 100px 24px 72px; }
+
+      .tool-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .canvas-panel {
+        position: static;
+        height: max(60vw, 320px);
+        padding-left: 0;
+        margin-bottom: 40px;
+        order: -1;
+      }
+
+      .controls-panel {
+        border-right: none;
+        padding-right: 0;
+      }
+    }
+  </style>
+
+  <div class="tool-page">
+
+    <a href="/projects/tech" class="back-nav">← Creative Technology</a>
+
+    <header class="page-header">
+      <span class="page-eyebrow">Creative Technology</span>
+      <h1 class="page-title">Generative Textile <em>Pattern Tool</em></h1>
+      <p class="page-desc">Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable.</p>
+    </header>
+
+    <div class="tool-layout">
+
+      <!-- CONTROLS -->
+      <aside class="controls-panel">
+
+        <!-- Collection Concept -->
+        <div class="ctrl-section">
+          <label class="ctrl-label" for="conceptInput">Collection Concept</label>
+          <textarea
+            id="conceptInput"
+            class="concept-textarea"
+            rows="2"
+            placeholder="e.g. Traveler, neutral tones, geometric"
+          ></textarea>
+          <button id="generateBtn" class="btn-generate">Generate Palette</button>
+          <div class="error-msg" id="errorMsg"></div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="ctrl-section">
+          <span class="ctrl-label">Color Palette</span>
+          <div class="swatch-row" id="swatches"></div>
+          <p class="mood-text" id="moodText"></p>
+        </div>
+
+        <!-- Pattern Type -->
+        <div class="ctrl-section">
+          <span class="ctrl-label">Pattern Type</span>
+          <div class="pattern-grid">
+            <button class="btn-pattern" data-pattern="geometric">Geometric</button>
+            <button class="btn-pattern" data-pattern="organic">Organic</button>
+            <button class="btn-pattern" data-pattern="stripe">Stripe</button>
+            <button class="btn-pattern" data-pattern="grid">Grid</button>
+          </div>
+        </div>
+
+        <!-- Density -->
+        <div class="ctrl-section">
+          <span class="ctrl-label">Density</span>
+          <input type="range" id="densitySlider" class="density-slider" min="1" max="10" value="5" />
+          <div class="density-labels">
+            <span class="density-label">Coarse</span>
+            <span class="density-label">Fine</span>
+          </div>
+        </div>
+
+        <!-- Export -->
+        <div class="ctrl-section">
+          <button id="downloadBtn" class="btn-download">Download SVG</button>
+        </div>
+
+      </aside>
+
+      <!-- CANVAS -->
+      <div class="canvas-panel">
+        <canvas id="patternCanvas"></canvas>
+        <p class="canvas-hint">Click to pause · Click again to resume</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── STATE ──
+    let colors = ['#C4A882', '#8B6F5E', '#DED5BE', '#7D8C7C', '#5A5550'];
+    let patternType = 'geometric';
+    let density = 5;
+    let frame = 0;
+    let paused = false;
+
+    // ── ELEMENTS ──
+    const canvas = document.getElementById('patternCanvas');
+    const ctx = canvas.getContext('2d');
+    const generateBtn = document.getElementById('generateBtn');
+    const conceptInput = document.getElementById('conceptInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const moodText = document.getElementById('moodText');
+    const densitySlider = document.getElementById('densitySlider');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // ── CANVAS RESIZE ──
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    // ── TILE SIZE ──
+    function getTileSize() {
+      return Math.round(100 - (density - 1) * 80 / 9);
+    }
+
+    // ── PATTERN DRAWING ──
+
+    function drawGeometric(ctx, W, H, colors, tileSize, frame) {
+      const t = tileSize;
+      const drift  = (frame * 0.10) % t;
+      const slowRot = frame * 0.004; // gentle continuous rotation
+
+      ctx.fillStyle = colors[0];
+      ctx.fillRect(0, 0, W, H);
+
+      const cols = Math.ceil(W / t) + 3;
+      const rows = Math.ceil(H / t) + 3;
+
+      for (let row = -1; row < rows; row++) {
+        for (let col = -1; col < cols; col++) {
+          const cx = col * t + t / 2 - drift;
+          const cy = row * t + t / 2 - drift;
+          const isAlt = (row + col) % 2 !== 0;
+          const r = t * 0.46;
+          const innerR = r * 0.42;
+
+          // Alternating tile background
+          ctx.fillStyle = isAlt ? colors[1] : colors[0];
+          ctx.fillRect(cx - t / 2, cy - t / 2, t, t);
+
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(slowRot);
+
+          // 8-pointed star (classic Islamic khatam motif)
+          ctx.beginPath();
+          for (let i = 0; i < 16; i++) {
+            const angle = (i * Math.PI / 8) - Math.PI / 2;
+            const rad = i % 2 === 0 ? r : innerR;
+            const px = Math.cos(angle) * rad;
+            const py = Math.sin(angle) * rad;
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fillStyle = isAlt ? colors[2] : colors[3];
+          ctx.fill();
+
+          // Inner square rotated 45° (counter-rotates slightly for depth)
+          const sq = innerR * 0.64;
+          ctx.rotate(Math.PI / 4 - slowRot * 0.5);
+          ctx.fillStyle = isAlt ? colors[3] : colors[2];
+          ctx.fillRect(-sq, -sq, sq * 2, sq * 2);
+
+          // Centre jewel
+          ctx.rotate(-Math.PI / 4 + slowRot * 0.5);
+          ctx.beginPath();
+          ctx.arc(0, 0, r * 0.14, 0, Math.PI * 2);
+          ctx.fillStyle = colors[4];
+          ctx.fill();
+
+          ctx.restore();
+
+          // Small rotated diamond accent at each tile corner midpoint
+          if (!isAlt) {
+            [[t / 2, 0], [0, t / 2], [-t / 2, 0], [0, -t / 2]].forEach(([dx, dy]) => {
+              ctx.save();
+              ctx.translate(cx + dx, cy + dy);
+              ctx.rotate(Math.PI / 4);
+              const ds = t * 0.09;
+              ctx.fillStyle = colors[4];
+              ctx.fillRect(-ds, -ds, ds * 2, ds * 2);
+              ctx.restore();
+            });
+          }
+        }
+      }
+    }
+
+    function drawOrganic(ctx, W, H, colors, tileSize, frame) {
+      ctx.fillStyle = colors[0];
+      ctx.fillRect(0, 0, W, H);
+
+      // density 1 → 5 bands, density 10 → 19 bands
+      const numBands = Math.round(density * 1.5 + 3);
+      const bandH    = H / numBands;
+      const amplitude = bandH * 0.38;
+      const freqScale = 1 + (density - 1) * 0.18;
+      // slow downward scroll so waves drift across the full canvas
+      const scroll = (frame * 0.28) % bandH;
+
+      // draw one extra row above and below to hide scroll seam
+      for (let row = -1; row < numBands + 1; row++) {
+        const baseY = row * bandH - scroll;
+        const phase = frame * 0.011 + row * 0.95;
+        const colorIdx = ((row % colors.length) + colors.length) % colors.length;
+
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 2) {
+          const nx = x / W;
+          const yTop = baseY
+            + Math.sin(nx * Math.PI * 4   * freqScale + phase)        * amplitude
+            + Math.sin(nx * Math.PI * 9.3 * freqScale + phase * 1.33) * amplitude * 0.28
+            + Math.sin(nx * Math.PI * 2.1 * freqScale + phase * 0.55) * amplitude * 0.18;
+          if (x === 0) ctx.moveTo(x, yTop); else ctx.lineTo(x, yTop);
+        }
+        // fill down to just past the next band to avoid gaps
+        ctx.lineTo(W + 2, baseY + bandH + amplitude + 2);
+        ctx.lineTo(-2,    baseY + bandH + amplitude + 2);
+        ctx.closePath();
+        ctx.fillStyle = colors[colorIdx];
+        ctx.globalAlpha = 0.84;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawStripe(ctx, W, H, colors, tileSize, frame) {
+      ctx.fillStyle = colors[0];
+      ctx.fillRect(0, 0, W, H);
+
+      const stripeWidth = tileSize;
+      const diagonalLen = Math.sqrt(W * W + H * H);
+      const slideOffset = (frame * 0.4) % (stripeWidth * colors.length);
+
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(Math.PI / 4);
+
+      const count = Math.ceil(diagonalLen * 2 / stripeWidth) + colors.length;
+      const startX = -diagonalLen - slideOffset;
+
+      for (let i = 0; i < count; i++) {
+        const x = startX + i * stripeWidth;
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillRect(x, -diagonalLen, stripeWidth, diagonalLen * 2);
+      }
+
+      ctx.restore();
+    }
+
+    function drawGrid(ctx, W, H, colors, tileSize, frame) {
+      ctx.fillStyle = colors[0];
+      ctx.fillRect(0, 0, W, H);
+
+      const t = tileSize;
+      const offsetX = (frame * 0.12) % t;
+      const offsetY = (frame * 0.12) % t;
+
+      const cols = Math.ceil(W / t) + 2;
+      const rows = Math.ceil(H / t) + 2;
+
+      // Weft bands (horizontal)
+      for (let row = -1; row < rows; row++) {
+        const y = row * t + offsetY;
+        ctx.globalAlpha = 0.75;
+        ctx.fillStyle = colors[1];
+        ctx.fillRect(0, y, W, t * 0.55);
+      }
+
+      // Warp bands (vertical)
+      for (let col = -1; col < cols; col++) {
+        const x = col * t + offsetX;
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = colors[2];
+        ctx.fillRect(x, 0, t * 0.55, H);
+      }
+
+      // Intersection squares
+      for (let row = -1; row < rows; row++) {
+        for (let col = -1; col < cols; col++) {
+          const x = col * t + offsetX;
+          const y = row * t + offsetY;
+          ctx.globalAlpha = 0.85;
+          ctx.fillStyle = colors[3];
+          ctx.fillRect(x, y, t * 0.55, t * 0.55);
+        }
+      }
+
+      ctx.globalAlpha = 1;
+    }
+
+    // ── DRAW LOOP ──
+    function draw() {
+      if (paused) return;
+
+      const W = canvas.width;
+      const H = canvas.height;
+      const tileSize = getTileSize();
+
+      if (patternType === 'geometric') drawGeometric(ctx, W, H, colors, tileSize, frame);
+      else if (patternType === 'organic') drawOrganic(ctx, W, H, colors, tileSize, frame);
+      else if (patternType === 'stripe') drawStripe(ctx, W, H, colors, tileSize, frame);
+      else if (patternType === 'grid') drawGrid(ctx, W, H, colors, tileSize, frame);
+
+      frame++;
+      requestAnimationFrame(draw);
+    }
+
+    // ── SVG EXPORT ──
+    function generateSVG() {
+      const t = getTileSize();
+      const W = 800;
+      const H = 600;
+
+      if (patternType === 'geometric') {
+        // 8-pointed star (khatam) tiled across canvas — static snapshot
+        const r    = t * 0.46;
+        const innR = r * 0.42;
+        const sq   = innR * 0.64;
+        let tiles  = '';
+        const svgCols = Math.ceil(W / t) + 2;
+        const svgRows = Math.ceil(H / t) + 2;
+        for (let row = -1; row < svgRows; row++) {
+          for (let col = -1; col < svgCols; col++) {
+            const cx = col * t + t / 2;
+            const cy = row * t + t / 2;
+            const alt = (row + col) % 2 !== 0;
+            tiles += `<rect x="${cx - t/2}" y="${cy - t/2}" width="${t}" height="${t}" fill="${alt ? colors[1] : colors[0]}"/>`;
+            let pts = '';
+            for (let i = 0; i < 16; i++) {
+              const a = (i * Math.PI / 8) - Math.PI / 2;
+              const rad = i % 2 === 0 ? r : innR;
+              pts += `${(cx + Math.cos(a)*rad).toFixed(1)},${(cy + Math.sin(a)*rad).toFixed(1)} `;
+            }
+            tiles += `<polygon points="${pts}" fill="${alt ? colors[2] : colors[3]}"/>`;
+            tiles += `<rect x="${(cx-sq).toFixed(1)}" y="${(cy-sq).toFixed(1)}" width="${(sq*2).toFixed(1)}" height="${(sq*2).toFixed(1)}" fill="${alt ? colors[3] : colors[2]}" transform="rotate(45,${cx.toFixed(1)},${cy.toFixed(1)})"/>`;
+            tiles += `<circle cx="${cx}" cy="${cy}" r="${(r*0.14).toFixed(1)}" fill="${colors[4]}"/>`;
+          }
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${tiles}</svg>`;
+
+      } else if (patternType === 'organic') {
+        const numBands  = Math.round(density * 1.5 + 3);
+        const bandH     = H / numBands;
+        const amplitude = bandH * 0.38;
+        const freqScale = 1 + (density - 1) * 0.18;
+        const phase0    = frame * 0.011;
+        let paths = '';
+        for (let row = -1; row < numBands + 1; row++) {
+          const baseY = row * bandH;
+          const phase = phase0 + row * 0.95;
+          const colorIdx = ((row % colors.length) + colors.length) % colors.length;
+          let d = '';
+          for (let x = 0; x <= W; x += 4) {
+            const nx = x / W;
+            const yTop = baseY
+              + Math.sin(nx * Math.PI * 4   * freqScale + phase) * amplitude
+              + Math.sin(nx * Math.PI * 9.3 * freqScale + phase * 1.33) * amplitude * 0.28
+              + Math.sin(nx * Math.PI * 2.1 * freqScale + phase * 0.55) * amplitude * 0.18;
+            d += x === 0 ? `M${x.toFixed(1)},${yTop.toFixed(1)}` : ` L${x.toFixed(1)},${yTop.toFixed(1)}`;
+          }
+          d += ` L${W + 2},${baseY + bandH + amplitude + 2} L-2,${baseY + bandH + amplitude + 2} Z`;
+          paths += `  <path d="${d}" fill="${colors[colorIdx]}" fill-opacity="0.84"/>\n`;
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
+${paths}</svg>`;
+
+      } else if (patternType === 'stripe') {
+        const sw = t;
+        const diag = Math.sqrt(W * W + H * H);
+        const count = Math.ceil(diag * 2 / sw) + colors.length;
+        const cx = W / 2;
+        const cy = H / 2;
+        let rects = '';
+        for (let i = 0; i < count; i++) {
+          const x = cx - diag + i * sw;
+          rects += `  <rect x="${x.toFixed(1)}" y="${(cy - diag).toFixed(1)}" width="${sw}" height="${(diag * 2).toFixed(1)}" fill="${colors[i % colors.length]}"/>\n`;
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
+  <g transform="rotate(45, ${cx}, ${cy})">
+${rects}  </g>
+</svg>`;
+
+      } else {
+        // grid
+        const cols = Math.ceil(W / t) + 1;
+        const rows = Math.ceil(H / t) + 1;
+        let weft = '';
+        let warp = '';
+        let intersections = '';
+        for (let row = 0; row < rows; row++) {
+          weft += `  <rect x="0" y="${row * t}" width="${W}" height="${(t * 0.55).toFixed(1)}" fill="${colors[1]}" fill-opacity="0.75"/>\n`;
+        }
+        for (let col = 0; col < cols; col++) {
+          warp += `  <rect x="${col * t}" y="0" width="${(t * 0.55).toFixed(1)}" height="${H}" fill="${colors[2]}" fill-opacity="0.7"/>\n`;
+        }
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            intersections += `  <rect x="${col * t}" y="${row * t}" width="${(t * 0.55).toFixed(1)}" height="${(t * 0.55).toFixed(1)}" fill="${colors[3]}" fill-opacity="0.85"/>\n`;
+          }
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
+${weft}${warp}${intersections}</svg>`;
+      }
+    }
+
+    // ── UI HELPERS ──
+
+    function updateSwatches() {
+      const container = document.getElementById('swatches');
+      if (!container) return;
+      container.innerHTML = colors.map((hex, i) => `
+        <div class="swatch-item" data-index="${i}">
+          <div class="swatch-block" style="background:${hex}">
+            <input type="color" class="swatch-input" value="${hex}" data-index="${i}" />
+          </div>
+          <span class="swatch-hex">${hex}</span>
+          <span class="swatch-edit">Edit</span>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.swatch-input').forEach(input => {
+        input.addEventListener('input', () => {
+          const el = input as HTMLInputElement;
+          const idx = Number(el.dataset.index);
+          const hex = el.value;
+          colors[idx] = hex;
+          const block = el.closest('.swatch-item')!.querySelector('.swatch-block') as HTMLElement;
+          block.style.background = hex;
+          el.closest('.swatch-item')!.querySelector('.swatch-hex')!.textContent = hex;
+        });
+      });
+    }
+
+    function updatePatternBtns() {
+      document.querySelectorAll('.btn-pattern').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.pattern === patternType);
+      });
+    }
+
+    // ── EVENT HANDLERS ──
+
+    generateBtn.addEventListener('click', async () => {
+      const concept = conceptInput.value.trim();
+      if (concept.length < 3) {
+        errorMsg.textContent = 'Please enter a concept (3+ characters).';
+        return;
+      }
+      errorMsg.textContent = '';
+      generateBtn.textContent = 'Generating\u2026';
+      generateBtn.disabled = true;
+
+      try {
+        const res = await fetch('/.netlify/functions/textile-palette', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ concept }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errorMsg.textContent = data.error || 'Something went wrong. Try again.';
+        } else {
+          colors = data.colors;
+          patternType = data.patternStyle || patternType;
+          moodText.textContent = data.mood || '';
+          updateSwatches();
+          updatePatternBtns();
+        }
+      } catch {
+        errorMsg.textContent = 'Network error. Please try again.';
+      } finally {
+        generateBtn.textContent = 'Generate Palette';
+        generateBtn.disabled = false;
+      }
+    });
+
+    document.querySelectorAll('.btn-pattern').forEach(btn => {
+      btn.addEventListener('click', () => {
+        patternType = btn.dataset.pattern;
+        updatePatternBtns();
+      });
+    });
+
+    densitySlider.addEventListener('input', () => {
+      density = Number(densitySlider.value);
+    });
+
+    canvas.addEventListener('click', () => {
+      paused = !paused;
+      if (!paused) {
+        requestAnimationFrame(draw);
+      }
+    });
+
+    window.addEventListener('resize', resize);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        paused = true;
+      } else {
+        paused = false;
+        requestAnimationFrame(draw);
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const svg = generateSVG();
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'textile-pattern.svg';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ── INIT ──
+    updateSwatches();
+    updatePatternBtns();
+    resize();
+    draw();
+  </script>
+
+</MainLayout>
