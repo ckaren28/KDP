@@ -1,9 +1,20 @@
 ---
+import fashionFigureRaw from '../assets/fashion-figure.svg?raw';
+
 interface Props {
   prompt?: string;
   bordered?: boolean;
 }
 const { prompt = 'What brings you here?', bordered = false } = Astro.props;
+
+// Process SVG: strip XML declaration, assign ID, warm stroke, transparent fill, remove border rect
+const fashionFigureSvg = fashionFigureRaw
+  .replace(/^<\?xml[^>]*>\n?/, '')
+  .replace('id="Layer_1"', 'id="fashion-figure-svg"')
+  .replace('stroke: #000', 'stroke: #5a5550;\n        stroke-width: 2')
+  .replace('fill: #fff', 'fill: none')
+  // Remove outer bounding rectangle (stroked border artifact when fill is none)
+  .replace('M0,783.87V-8.13h612v792H0Z', '');
 ---
 
 <div class:list={['tracks-wrap', { 'tracks-bordered': bordered }]}>
@@ -13,12 +24,15 @@ const { prompt = 'What brings you here?', bordered = false } = Astro.props;
 
     <a href="/projects/fashion" class="track track--fashion">
       <div class="track-bg track-bg--fashion"></div>
+      <div class="fashion-figure" aria-hidden="true">
+        <Fragment set:html={fashionFigureSvg} />
+      </div>
       <div class="track-content">
         <h2 class="track-title">Fashion</h2>
         <p class="track-desc">Collections, construction<br />& craft</p>
         <span class="track-cta">View work →</span>
       </div>
-      <div class="track-texture"></div>
+      <canvas class="track-lines-canvas" aria-hidden="true"></canvas>
     </a>
 
     <a href="/projects/tech" class="track track--tech">
@@ -78,14 +92,13 @@ const { prompt = 'What brings you here?', bordered = false } = Astro.props;
   .track-bg--fashion { background: var(--warm-white); }
   .track-bg--tech    { background: var(--black); }
 
-  .track--fashion .track-texture {
+  .track-lines-canvas {
     position: absolute;
     inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg,   transparent, transparent 19px, var(--border) 20px),
-      repeating-linear-gradient(90deg,  transparent, transparent 19px, var(--border) 20px);
-    opacity: 0.5;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    display: block;
   }
 
   .track--tech .track-cursor-blink {
@@ -155,6 +168,32 @@ const { prompt = 'What brings you here?', bordered = false } = Astro.props;
 
   .track--fashion { border-right: 1px solid var(--border); }
 
+  /* ── FASHION FIGURE ── */
+  .fashion-figure {
+    position: absolute;
+    right: -4%;
+    bottom: 0;
+    height: 92%;
+    width: auto;
+    opacity: 0.18;
+    pointer-events: none;
+    transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: bottom center;
+  }
+  .track--fashion:hover .fashion-figure {
+    opacity: 0.28;
+    transform: translateY(-6px);
+  }
+  :global(.fashion-figure svg) {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  /* Dark mode: lighten stroke so lines read against dark background */
+  :global(html[data-theme="dark"] .fashion-figure svg path) {
+    stroke: rgba(215, 200, 178, 0.72);
+  }
+
   @media (max-width: 900px) {
     .tracks-prompt { padding: 28px 24px 0; }
     .tracks-split { flex-direction: column; height: auto; min-height: unset; }
@@ -163,5 +202,95 @@ const { prompt = 'What brings you here?', bordered = false } = Astro.props;
     .track-content { padding: 36px 24px; }
     .track-title { font-size: clamp(48px, 12vw, 72px); }
     .track-desc, .track-cta { opacity: 1; transform: none; }
+    .fashion-figure { height: 80%; opacity: 0.14; }
   }
 </style>
+
+<script>
+  // ── Shared mouse state ────────────────────────────────────────────────────
+  const fashionTrack = document.querySelector('.track--fashion') as HTMLElement | null;
+  if (!fashionTrack) throw new Error('fashionTrack missing');
+
+  let mouseX = -9999, mouseY = -9999;
+  fashionTrack.addEventListener('mousemove', (e: MouseEvent) => { mouseX = e.clientX; mouseY = e.clientY; });
+  fashionTrack.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
+
+  // ── Canvas vertical lines — constant sine wave + hover push ─────────────────
+  const linesCanvas = fashionTrack.querySelector('.track-lines-canvas') as HTMLCanvasElement | null;
+
+  if (linesCanvas) {
+    const canvas = linesCanvas;
+    const ctx    = canvas.getContext('2d')!;
+
+    const N_LINES    = 38;
+    const H_RADIUS   = 95;    // hover influence radius px
+    const H_STRENGTH = 30;    // hover max displacement px
+    const LERP       = 0.08;
+    const WAVE_AMP   = 9;     // wave amplitude px
+    const WAVE_SPEED = 0.0007; // drift speed (full cycle ≈ 9 s)
+    const WAVE_FREQ  = 0.03;  // spatial frequency — tighter ripple across X
+
+    interface Line { baseX: number; hoverOff: number; }
+    let lines: Line[] = [];
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      const sp = canvas.width / N_LINES;
+      lines = Array.from({ length: N_LINES }, (_, i) => ({
+        baseX:    (i + 0.5) * sp,
+        hoverOff: lines[i]?.hoverOff ?? 0,
+      }));
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    function isDark() {
+      return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+
+    let lastTs = 0;
+    let elapsed = 0;
+
+    function tickLines(ts: number) {
+      requestAnimationFrame(tickLines);
+      elapsed += ts - lastTs;
+      lastTs = ts;
+
+      const rect   = canvas.getBoundingClientRect();
+      const localX = mouseX - rect.left;
+      const hovering = mouseX > -9000 && localX >= 0 && localX <= rect.width;
+      const W = canvas.width, H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+      const dark = isDark();
+      ctx.lineWidth = 0.65;
+
+      lines.forEach(line => {
+        // Hover repulsion: push lines away from cursor X
+        let target = 0;
+        if (hovering) {
+          const dx   = line.baseX - localX;
+          const dist = Math.abs(dx);
+          if (dist > 0 && dist < H_RADIUS) {
+            target = Math.sign(dx) * (1 - dist / H_RADIUS) * H_STRENGTH;
+          }
+        }
+        line.hoverOff += (target - line.hoverOff) * LERP;
+
+        // Constant sine wave drifting over time — each line has a unique phase
+        const wave = WAVE_AMP * Math.sin(elapsed * WAVE_SPEED + line.baseX * WAVE_FREQ);
+
+        const x = line.baseX + line.hoverOff + wave;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.strokeStyle = dark ? `rgba(215,200,178,0.10)` : `rgba(44,26,14,0.08)`;
+        ctx.stroke();
+      });
+    }
+
+    requestAnimationFrame(tickLines);
+  }
+</script>

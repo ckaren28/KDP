@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+
+    <!-- Wireframe grid pattern for hand -->
+    <pattern id="hand-grid" patternUnits="userSpaceOnUse" width="13" height="13">
+      <path d="M13 0L0 0 0 13" fill="none" stroke="#c4a882" stroke-width="0.65"/>
+    </pattern>
+
+    <!-- Clip path matches the hand outline exactly -->
+    <clipPath id="hand-clip">
+      <path d="
+        M 346,212 L 340,185
+        C 336,167 340,150 347,139
+        L 352,127 L 355,120
+        L 459,113 C 467,113 471,120 468,130 L 363,136
+        L 365,139 L 462,133 C 470,133 474,143 470,155 L 365,152
+        L 367,155 L 458,151 C 465,151 469,161 465,173 L 367,170
+        L 369,172 L 447,168 C 454,168 458,178 453,189 L 370,185
+        C 375,196 384,210 390,220
+        C 396,229 400,244 395,252 C 391,259 382,260 379,253
+        C 376,247 380,237 387,229
+        C 391,222 387,214 378,212
+        L 346,212 Z
+      "/>
+    </clipPath>
+
+  </defs>
+
+  <!-- ══ LAPTOP BODY ══════════════════════════════════════════════════════ -->
+
+  <!-- Lid top edge (depth strip) -->
+  <polygon points="22,44 214,48 214,42 22,38" fill="#c4b8aa"/>
+  <!-- Screen top edge (depth strip) -->
+  <polygon points="214,48 374,68 374,62 214,42" fill="#b8ac9e"/>
+
+  <!-- Lid back face — main visible surface, stickers live here -->
+  <polygon points="22,44 214,48 218,264 26,260"
+           fill="#e8e2da" stroke="#c4b8aa" stroke-width="1.5"/>
+
+  <!-- Screen face (dark) -->
+  <polygon points="214,48 374,68 376,256 218,264"
+           fill="#1a1714" stroke="#c4b8aa" stroke-width="1.5"/>
+
+  <!-- Screen right-edge depth sliver -->
+  <polygon points="374,68 382,74 383,260 376,256" fill="#c4b8aa" opacity="0.45"/>
+
+  <!-- Display bezel area (slightly inset content zone) -->
+  <!-- Browser chrome bar -->
+  <polygon points="226,61 364,79 364,97 226,79" fill="#242018" opacity="0.9"/>
+  <!-- Traffic-light dots -->
+  <circle cx="237" cy="77" r="3.2" fill="#c04040" opacity="0.72"/>
+  <circle cx="247" cy="77" r="3.2" fill="#c8a040" opacity="0.72"/>
+  <circle cx="257" cy="77" r="3.2" fill="#406040" opacity="0.72"/>
+
+  <!-- Screen content lines (sidebar + placeholder blocks) -->
+  <polygon points="226,103 258,106 258,220 226,217" fill="#222018" opacity="0.65"/>
+  <polygon points="264,103 364,109 364,118 264,112" fill="#222018" opacity="0.5"/>
+  <polygon points="264,122 340,127 340,133 264,128" fill="#222018" opacity="0.38"/>
+  <polygon points="264,138 348,143 348,149 264,144" fill="#222018" opacity="0.32"/>
+  <polygon points="264,154 332,158 332,164 264,160" fill="#222018" opacity="0.28"/>
+
+  <!-- Screen warm hover overlay (brightens on hover via CSS) -->
+  <polygon class="screen-overlay" points="226,61 364,79 364,248 226,246"
+           fill="#c4a882" opacity="0"/>
+
+  <!-- Keyboard top surface -->
+  <polygon points="26,260 376,256 382,328 32,324"
+           fill="#ddd5ca" stroke="#c4b8aa" stroke-width="1.5"/>
+  <!-- Keyboard right edge -->
+  <polygon points="376,256 383,260 388,332 382,328" fill="#b8ac9e"/>
+  <!-- Keyboard front face (shadow) -->
+  <polygon points="32,324 382,328 384,340 34,336" fill="#c4b8aa"/>
+
+  <!-- Key rows (subtle texture) -->
+  <polygon points="44,274 366,270 366,279 44,283"  fill="#cec6ba" opacity="0.5"/>
+  <polygon points="48,286 364,283 364,291 48,294"  fill="#cec6ba" opacity="0.38"/>
+  <polygon points="52,298 362,295 362,303 52,306"  fill="#cec6ba" opacity="0.28"/>
+
+  <!-- Trackpad -->
+  <polygon points="164,310 240,308 242,320 166,322"
+           fill="#cfc7bb" stroke="#c4b8aa" stroke-width="0.8" opacity="0.75"/>
+
+
+  <!-- ══ STICKERS on lid back ══════════════════════════════════════════════ -->
+  <!-- Clustered lower-left of the lid -->
+
+  <!-- ─ I ♥ NY ─ -->
+  <g transform="translate(62,140)">
+    <!-- Badge -->
+    <rect width="52" height="62" rx="5" fill="#f4ede4" stroke="#d8cfc4" stroke-width="1"/>
+    <!-- "I" -->
+    <text x="26" y="19"
+          text-anchor="middle"
+          font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+          font-size="15" font-weight="900" fill="#1a1714">I</text>
+    <!-- Heart -->
+    <path d="M26,32 C26,27.5 21,25 18.5,28.2 C16,31.5 18.5,35.8 26,41.5
+             C33.5,35.8 36,31.5 33.5,28.2 C31,25 26,27.5 26,32Z"
+          fill="#8b4a42"/>
+    <!-- "NY" -->
+    <text x="26" y="59"
+          text-anchor="middle"
+          font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+          font-size="15" font-weight="900" fill="#1a1714">NY</text>
+  </g>
+
+  <!-- ─ Paint brush ─ -->
+  <g transform="translate(146,134) rotate(-8,13,26)">
+    <!-- Handle -->
+    <rect x="8" y="0" width="9" height="28" rx="4"
+          fill="#8b6f5e" stroke="#6e5648" stroke-width="1"/>
+    <!-- Ferrule -->
+    <rect x="7" y="26" width="11" height="7" rx="1"
+          fill="#b0a090" stroke="#907e6e" stroke-width="0.8"/>
+    <!-- Bristle body -->
+    <path d="M7,33 C8.5,39 10.5,45 12.5,50 C14.5,45 16.5,39 18,33Z"
+          fill="#6e5444" stroke="#6e5444" stroke-width="0.5"/>
+    <!-- Bristle detail lines -->
+    <line x1="10.5" y1="33" x2="10" y2="48" stroke="#9a7868" stroke-width="0.7" opacity="0.6"/>
+    <line x1="14.5" y1="33" x2="15" y2="48" stroke="#9a7868" stroke-width="0.7" opacity="0.6"/>
+    <!-- Handle shine -->
+    <line x1="10" y1="2"  x2="10" y2="24" stroke="#b08878" stroke-width="0.9" opacity="0.45"/>
+  </g>
+
+  <!-- ─ Safety pin ─ -->
+  <g transform="translate(68,210)">
+    <!-- Outer coil/head loop -->
+    <path d="M12,0 C12,0 4,0 4,7 C4,14 12,14 12,14"
+          fill="none" stroke="#5a5550" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Main shaft -->
+    <line x1="12" y1="14" x2="12" y2="40"
+          stroke="#5a5550" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Inner pin running parallel -->
+    <path d="M4,14 L4,37 C4,43 12,43 12,40"
+          fill="none" stroke="#5a5550" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Bottom clasp arch -->
+    <path d="M4,37 C4,46 20,46 20,37"
+          fill="none" stroke="#5a5550" stroke-width="1.5"/>
+    <!-- Clasp arm going up -->
+    <line x1="20" y1="37" x2="20" y2="23"
+          stroke="#5a5550" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Highlight -->
+    <line x1="13" y1="2" x2="13" y2="13"
+          stroke="#8a8680" stroke-width="0.7" opacity="0.5"/>
+  </g>
+
+  <!-- ─ Scissors ─ -->
+  <g transform="translate(122,212)">
+    <!-- Left handle ring -->
+    <circle cx="7"  cy="16" r="9"   fill="none" stroke="#5a5550" stroke-width="1.5"/>
+    <circle cx="7"  cy="16" r="4.5" fill="none" stroke="#5a5550" stroke-width="1"/>
+    <!-- Right handle ring -->
+    <circle cx="22" cy="16" r="9"   fill="none" stroke="#5a5550" stroke-width="1.5"/>
+    <circle cx="22" cy="16" r="4.5" fill="none" stroke="#5a5550" stroke-width="1"/>
+    <!-- Upper blade -->
+    <path d="M13,9  L58,0" stroke="#5a5550" stroke-width="2" stroke-linecap="round"/>
+    <!-- Lower blade -->
+    <path d="M18,14 L58,8" stroke="#5a5550" stroke-width="2" stroke-linecap="round"/>
+    <!-- Pivot screw -->
+    <circle cx="31" cy="7" r="2.5" fill="#5a5550"/>
+  </g>
+
+
+  <!-- ══ HAND ═══════════════════════════════════════════════════════════════
+       id="hand" — targeted by CSS for hover animation                       -->
+  <g id="hand">
+
+    <!-- Subtle warm base fill so grid has something to sit on -->
+    <path d="
+      M 346,212 L 340,185
+      C 336,167 340,150 347,139
+      L 352,127 L 355,120
+      L 459,113 C 467,113 471,120 468,130 L 363,136
+      L 365,139 L 462,133 C 470,133 474,143 470,155 L 365,152
+      L 367,155 L 458,151 C 465,151 469,161 465,173 L 367,170
+      L 369,172 L 447,168 C 454,168 458,178 453,189 L 370,185
+      C 375,196 384,210 390,220
+      C 396,229 400,244 395,252 C 391,259 382,260 379,253
+      C 376,247 380,237 387,229
+      C 391,222 387,214 378,212
+      L 346,212 Z
+    " fill="#c4a882" opacity="0.10"/>
+
+    <!-- Wireframe grid clipped to hand silhouette -->
+    <g clip-path="url(#hand-clip)">
+      <rect x="328" y="105" width="150" height="160" fill="url(#hand-grid)"/>
+    </g>
+
+    <!-- Hand outline — the definitive contour -->
+    <path d="
+      M 346,212 L 340,185
+      C 336,167 340,150 347,139
+      L 352,127 L 355,120
+      L 459,113 C 467,113 471,120 468,130 L 363,136
+      L 365,139 L 462,133 C 470,133 474,143 470,155 L 365,152
+      L 367,155 L 458,151 C 465,151 469,161 465,173 L 367,170
+      L 369,172 L 447,168 C 454,168 458,178 453,189 L 370,185
+      C 375,196 384,210 390,220
+      C 396,229 400,244 395,252 C 391,259 382,260 379,253
+      C 376,247 380,237 387,229
+      C 391,222 387,214 378,212
+      L 346,212 Z
+    " fill="none" stroke="#c4a882" stroke-width="1.5"/>
+
+    <!-- Inter-finger dividers at the base (subtle V-notches) -->
+    <line x1="363" y1="136" x2="365" y2="152" stroke="#c4a882" stroke-width="1"   opacity="0.55"/>
+    <line x1="365" y1="152" x2="367" y2="169" stroke="#c4a882" stroke-width="1"   opacity="0.55"/>
+    <line x1="367" y1="169" x2="369" y2="185" stroke="#c4a882" stroke-width="1"   opacity="0.55"/>
+
+    <!-- Knuckle hint arcs on each finger shaft -->
+    <path d="M394,122 C397,119 401,119 404,121" fill="none" stroke="#c4a882" stroke-width="0.8" opacity="0.5"/>
+    <path d="M396,142 C399,139 403,139 406,141" fill="none" stroke="#c4a882" stroke-width="0.8" opacity="0.5"/>
+    <path d="M395,160 C398,157 402,157 405,159" fill="none" stroke="#c4a882" stroke-width="0.8" opacity="0.5"/>
+    <path d="M390,176 C393,173 397,173 400,175" fill="none" stroke="#c4a882" stroke-width="0.8" opacity="0.5"/>
+
+    <!-- Wrist tendon lines (very subtle) -->
+    <line x1="344" y1="195" x2="348" y2="212" stroke="#c4a882" stroke-width="0.7" opacity="0.3"/>
+    <line x1="355" y1="194" x2="358" y2="212" stroke="#c4a882" stroke-width="0.7" opacity="0.3"/>
+
+    <!-- ── Rings ── -->
+
+    <!-- Index: slim warm-gold band -->
+    <ellipse cx="416" cy="121" rx="6"   ry="3.2"
+             fill="#d4b87a" stroke="#c4a882" stroke-width="1.6" opacity="0.92"/>
+
+    <!-- Middle: two stacking delicate bands -->
+    <ellipse cx="420" cy="141" rx="6.5" ry="3"
+             fill="#c8a460" stroke="#c4a882" stroke-width="1.3" opacity="0.88"/>
+    <ellipse cx="420" cy="148" rx="6.5" ry="3"
+             fill="#c8a460" stroke="#c4a882" stroke-width="1.3" opacity="0.88"/>
+
+    <!-- Ring: statement ring — oval setting + stone suggestion -->
+    <ellipse cx="418" cy="161" rx="7.5" ry="3.8"
+             fill="#c8a44e" stroke="#c4a882" stroke-width="1.8" opacity="0.92"/>
+    <ellipse cx="418" cy="157" rx="4.5" ry="3.5"
+             fill="#b89040" stroke="#c4a882" stroke-width="1.2" opacity="0.85"/>
+    <!-- Stone facet hint -->
+    <ellipse cx="417" cy="156" rx="2.2" ry="1.6"
+             fill="#e8d080" opacity="0.55"/>
+
+    <!-- Pinky: single slim band -->
+    <ellipse cx="406" cy="178" rx="5"   ry="2.6"
+             fill="#c8a460" stroke="#c4a882" stroke-width="1.4" opacity="0.88"/>
+
+  </g>
+
+</svg>
