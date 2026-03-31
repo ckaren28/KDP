@@ -112,7 +112,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     .meta-value { color: var(--text-body); }
 
-    .section { margin-bottom: 7rem; }
+    .section { margin-bottom: 7rem; 
+    padding-left: 2rem;}
 
     .section-header {
       display: flex;
@@ -377,6 +378,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     .next-all {
       font-family: var(--font-body);
+      padding: 10px 2rem 3rem;
       font-size: 0.7rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -620,15 +622,12 @@ import MainLayout from '../../layouts/MainLayout.astro';
       <a href="/projects" class="next-all">← All Projects</a>
     </div>
 
-  </div>
-
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose">Close ×</button>
-    <img id="lightboxImg" src="" alt="" />
-  </div>
-
-  <script>
+     <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">Close ×</button>
+      <img id="lightboxImg" src="" alt="" />
+    </div>
+    <script>
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null;
 
@@ -646,6 +645,13 @@ import MainLayout from '../../layouts/MainLayout.astro';
     document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
     lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
-  </script>
+
+    </script>
+  </div>
+
+
+ 
+
+  
 
 </MainLayout>
