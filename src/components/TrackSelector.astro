@@ -7,14 +7,11 @@ interface Props {
 }
 const { prompt = 'What brings you here?', bordered = false } = Astro.props;
 
-// Process SVG: strip XML declaration, assign ID, warm stroke, transparent fill, remove border rect
-const fashionFigureSvg = fashionFigureRaw
-  .replace(/^<\?xml[^>]*>\n?/, '')
-  .replace('id="Layer_1"', 'id="fashion-figure-svg"')
-  .replace('stroke: #000', 'stroke: #5a5550;\n        stroke-width: 2')
-  .replace('fill: #fff', 'fill: none')
-  // Remove outer bounding rectangle (stroked border artifact when fill is none)
-  .replace('M0,783.87V-8.13h612v792H0Z', '');
+// Sampler SVG: injected hidden into the DOM so the browser can resolve
+// SVGPathElement.getTotalLength() / getPointAtLength() natively.
+// No visual processing needed — just rename the root ID.
+const samplerSvg = fashionFigureRaw
+  .replace('id="Layer_1"', 'id="fashion-sample-svg"');
 ---
 
 <div class:list={['tracks-wrap', { 'tracks-bordered': bordered }]}>
@@ -24,9 +21,21 @@ const fashionFigureSvg = fashionFigureRaw
 
     <a href="/projects/fashion" class="track track--fashion">
       <div class="track-bg track-bg--fashion"></div>
-      <div class="fashion-figure" aria-hidden="true">
-        <Fragment set:html={fashionFigureSvg} />
+
+      <!--
+        Sampler SVG — visually hidden but present in the DOM.
+        The browser needs it rendered (even at zero size) for
+        SVGPathElement.getPointAtLength() to return correct values.
+      -->
+      <div class="fashion-sampler-wrap" aria-hidden="true">
+        <Fragment set:html={samplerSvg} />
       </div>
+
+      <!-- p5.js instance mounts a canvas here -->
+      <div class="fashion-figure" aria-hidden="true">
+        <div id="fashion-p5-mount"></div>
+      </div>
+
       <div class="track-content">
         <h2 class="track-title">Fashion</h2>
         <p class="track-desc">Collections, construction<br />& craft</p>
@@ -37,6 +46,13 @@ const fashionFigureSvg = fashionFigureRaw
 
     <a href="/projects/tech" class="track track--tech">
       <div class="track-bg track-bg--tech"></div>
+
+      <!-- Laptop + hand illustration — hand fades in on hover -->
+      <div class="tech-illustration" aria-hidden="true">
+        <img class="tech-laptop" src="/images/tech-laptop.png" alt="" draggable="false" />
+        <img class="tech-hand"   src="/images/tech-hand.png"   alt="" draggable="false" />
+      </div>
+
       <div class="track-content">
         <h2 class="track-title">Technology</h2>
         <p class="track-desc">Tools, prototypes<br />& interactive work</p>
@@ -168,30 +184,67 @@ const fashionFigureSvg = fashionFigureRaw
 
   .track--fashion { border-right: 1px solid var(--border); }
 
-  /* ── FASHION FIGURE ── */
+  /* ── SAMPLER SVG (hidden geometry source) ── */
+  .fashion-sampler-wrap {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  /* 1×1px keeps the SVG "rendered" so getPointAtLength() is reliable */
+  :global(.fashion-sampler-wrap svg) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+  }
+
+  /* ── FASHION FIGURE (p5 canvas) ── */
   .fashion-figure {
     position: absolute;
-    right: -4%;
+    left: 50%;
     bottom: 0;
-    height: 92%;
-    width: auto;
-    opacity: 0.18;
+    transform: translateX(-50%);
+    height: 90%;
     pointer-events: none;
-    transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: bottom center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    /* opacity is baked into p5 stroke — no CSS opacity here */
   }
-  .track--fashion:hover .fashion-figure {
-    opacity: 0.28;
-    transform: translateY(-6px);
+
+  :global(#fashion-p5-mount canvas) {
+    display: block !important;
   }
-  :global(.fashion-figure svg) {
-    height: 100%;
-    width: auto;
-    display: block;
+
+  /* ── TECH ILLUSTRATION ── */
+  .tech-illustration {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
-  /* Dark mode: lighten stroke so lines read against dark background */
-  :global(html[data-theme="dark"] .fashion-figure svg path) {
-    stroke: rgba(215, 200, 178, 0.72);
+
+  .tech-laptop,
+  .tech-hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 75%;
+    height: 75%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    user-select: none;
+  }
+
+  .tech-hand {
+    filter: brightness(4) contrast(0.7);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .track--tech:hover .tech-hand {
+    opacity: 1;
   }
 
   @media (max-width: 900px) {
@@ -202,7 +255,13 @@ const fashionFigureSvg = fashionFigureRaw
     .track-content { padding: 36px 24px; }
     .track-title { font-size: clamp(48px, 12vw, 72px); }
     .track-desc, .track-cta { opacity: 1; transform: none; }
-    .fashion-figure { height: 80%; opacity: 0.14; }
+    .fashion-figure { height: 60%; }
+  }
+
+  /* Mobile: remove hand interaction, show laptop only */
+  @media (max-width: 768px) {
+    .tech-hand { display: none; }
+    .tech-illustration { top: 20%; }
   }
 </style>
 
@@ -215,82 +274,277 @@ const fashionFigureSvg = fashionFigureRaw
   fashionTrack.addEventListener('mousemove', (e: MouseEvent) => { mouseX = e.clientX; mouseY = e.clientY; });
   fashionTrack.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
 
-  // ── Canvas vertical lines — constant sine wave + hover push ─────────────────
+  // ── Background lines canvas — constant sine wave + hover push ─────────────
   const linesCanvas = fashionTrack.querySelector('.track-lines-canvas') as HTMLCanvasElement | null;
-
   if (linesCanvas) {
     const canvas = linesCanvas;
-    const ctx    = canvas.getContext('2d')!;
-
-    const N_LINES    = 38;
-    const H_RADIUS   = 95;    // hover influence radius px
-    const H_STRENGTH = 30;    // hover max displacement px
-    const LERP       = 0.08;
-    const WAVE_AMP   = 9;     // wave amplitude px
-    const WAVE_SPEED = 0.0007; // drift speed (full cycle ≈ 9 s)
-    const WAVE_FREQ  = 0.03;  // spatial frequency — tighter ripple across X
+    const ctx = canvas.getContext('2d')!;
+    const N_LINES = 38, H_RADIUS = 95, H_STRENGTH = 30, LERP = 0.08;
+    const WAVE_AMP = 9, WAVE_SPEED = 0.0007, WAVE_FREQ = 0.03;
 
     interface Line { baseX: number; hoverOff: number; }
     let lines: Line[] = [];
 
     function resize() {
-      canvas.width  = canvas.offsetWidth;
+      canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
       const sp = canvas.width / N_LINES;
       lines = Array.from({ length: N_LINES }, (_, i) => ({
-        baseX:    (i + 0.5) * sp,
+        baseX: (i + 0.5) * sp,
         hoverOff: lines[i]?.hoverOff ?? 0,
       }));
     }
-
     resize();
     window.addEventListener('resize', resize);
 
-    function isDark() {
-      return document.documentElement.getAttribute('data-theme') === 'dark';
-    }
+    function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
 
-    let lastTs = 0;
-    let elapsed = 0;
-
+    let lastTs = 0, elapsed = 0;
     function tickLines(ts: number) {
       requestAnimationFrame(tickLines);
       elapsed += ts - lastTs;
       lastTs = ts;
-
-      const rect   = canvas.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       const localX = mouseX - rect.left;
       const hovering = mouseX > -9000 && localX >= 0 && localX <= rect.width;
       const W = canvas.width, H = canvas.height;
-
       ctx.clearRect(0, 0, W, H);
-      const dark = isDark();
       ctx.lineWidth = 0.65;
-
+      const dark = isDark();
       lines.forEach(line => {
-        // Hover repulsion: push lines away from cursor X
         let target = 0;
         if (hovering) {
-          const dx   = line.baseX - localX;
-          const dist = Math.abs(dx);
-          if (dist > 0 && dist < H_RADIUS) {
+          const dx = line.baseX - localX, dist = Math.abs(dx);
+          if (dist > 0 && dist < H_RADIUS)
             target = Math.sign(dx) * (1 - dist / H_RADIUS) * H_STRENGTH;
-          }
         }
         line.hoverOff += (target - line.hoverOff) * LERP;
-
-        // Constant sine wave drifting over time — each line has a unique phase
         const wave = WAVE_AMP * Math.sin(elapsed * WAVE_SPEED + line.baseX * WAVE_FREQ);
-
         const x = line.baseX + line.hoverOff + wave;
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, H);
-        ctx.strokeStyle = dark ? `rgba(215,200,178,0.10)` : `rgba(44,26,14,0.08)`;
+        ctx.strokeStyle = dark ? 'rgba(215,200,178,0.10)' : 'rgba(44,26,14,0.08)';
         ctx.stroke();
       });
     }
-
     requestAnimationFrame(tickLines);
   }
+
+  // ── p5.js silk figure ─────────────────────────────────────────────────────
+  //
+  // Approach:
+  //   1. Sample each named SVG path into evenly-spaced {x,y} points using the
+  //      browser's native SVGPathElement.getPointAtLength() (works in SVG user units).
+  //   2. On each p5 frame, draw those points through curveVertex() (Catmull-Rom)
+  //      with per-point sine×Perlin offsets scaled by `amplitude`.
+  //   3. Loop only while hovered (or while amplitude is decaying). Zero CPU at rest.
+
+  const SVG_W = 254.3;
+  const SVG_H = 792;
+  const SAMPLE_STEP = 4; // SVG user-unit spacing between sampled points
+
+  // Body paths animate with the silk wave + cursor push.
+  // Face paths are completely static — no offset, no repulsion.
+  const BODY_IDS = ['Pant_Detail', 'Pants', 'Shirt', 'Arm', 'Hair', 'Shoes'];
+  const FACE_IDS = ['Face', 'ear_and_left_eye', 'bottom_lip', 'nose_and_mouth', 'Right_eye', 'Nostril'];
+
+  type Pt = { x: number; y: number };
+
+  function samplePathGroup(ids: string[]): Pt[][] {
+    const svg = document.getElementById('fashion-sample-svg');
+    if (!svg) return [];
+    return ids.flatMap(id => {
+      const el = svg.querySelector(`#${id}`) as SVGPathElement | null;
+      if (!el || typeof el.getTotalLength !== 'function') return [];
+      const len = el.getTotalLength();
+      if (len === 0) return [];
+      const pts: Pt[] = [];
+      for (let d = 0; d <= len; d += SAMPLE_STEP) {
+        const pt = el.getPointAtLength(d);
+        pts.push({ x: pt.x, y: pt.y });
+      }
+      return pts.length > 1 ? [pts] : [];
+    });
+  }
+
+  async function initFigure() {
+    // ── Load p5 from CDN ───────────────────────────────────────────────────
+    if (!('p5' in window)) {
+      await new Promise<void>((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js';
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('p5.js CDN load failed'));
+        document.head.appendChild(s);
+      });
+    }
+
+    const P5 = (window as any).p5;
+    const bodyPaths = samplePathGroup(BODY_IDS);
+    const facePaths = samplePathGroup(FACE_IDS);
+    if (bodyPaths.length === 0 && facePaths.length === 0) {
+      console.warn('fashion-figure: path sampling returned no data');
+      return;
+    }
+
+    // ── Animation state ───────────────────────────────────────────────────
+    let isHovered = false;
+    let looping   = false;
+    let amplitude = 0;   // current wave amplitude (canvas px)
+    let figAlpha  = 56;  // current stroke alpha 0–255
+
+    // ── p5 sketch (instance mode) ─────────────────────────────────────────
+    new P5((sk: any) => {
+
+      // Compute canvas dimensions from the .fashion-figure container
+      function getSize(): [number, number] {
+        const mount  = document.getElementById('fashion-p5-mount')!;
+        const figDiv = mount.parentElement as HTMLElement;
+        // Use figDiv height if available, fall back to panel × 0.70
+        const h = figDiv.clientHeight > 10
+          ? figDiv.clientHeight
+          : fashionTrack!.clientHeight * 0.70;
+        const w = h * (SVG_W / SVG_H);
+        return [Math.max(w, 60), Math.max(h, 200)];
+      }
+
+      sk.setup = () => {
+        const [w, h] = getSize();
+        const cnv = sk.createCanvas(w, h);
+        cnv.parent('fashion-p5-mount');
+        sk.pixelDensity(2);
+        sk.noFill();
+        sk.strokeWeight(1.2);
+
+        // Draw one static frame then go idle — zero CPU until first hover
+        sk.noLoop();
+        sk.redraw();
+
+        // ── Hover: start / let-decay animation loop ──────────────────────
+        fashionTrack!.addEventListener('mouseenter', () => {
+          isHovered = true;
+          if (!looping) { sk.loop(); looping = true; }
+        });
+        fashionTrack!.addEventListener('mouseleave', () => {
+          isHovered = false;
+          // draw() calls noLoop() once amplitude fully decays
+        });
+
+        // Redraw static frame when theme toggles (while loop is idle)
+        new MutationObserver(() => {
+          if (!looping) sk.redraw();
+        }).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
+
+        // Resize canvas when panel resizes
+        window.addEventListener('resize', () => {
+          const [rw, rh] = getSize();
+          sk.resizeCanvas(rw, rh);
+          if (!looping) sk.redraw();
+        });
+      };
+
+      sk.draw = () => {
+        sk.clear();
+
+        // ── Lerp amplitude ────────────────────────────────────────────────
+        const targetAmp = isHovered ? 2.5 : 0;
+        amplitude += (targetAmp - amplitude) * (isHovered ? 0.06 : 0.04);
+
+        // ── Lerp stroke alpha ─────────────────────────────────────────────
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const restAlpha  = dark ? 100 : 56;
+        const hoverAlpha = dark ? 148 : 82;
+        figAlpha += ((isHovered ? hoverAlpha : restAlpha) - figAlpha) * 0.05;
+
+        // ── Stop looping when fully settled at rest ───────────────────────
+        if (!isHovered && amplitude < 0.05) {
+          amplitude = 0;
+          figAlpha  = restAlpha;
+          looping   = false;
+          sk.noLoop();
+        }
+
+        if (dark) sk.stroke(215, 200, 178, Math.round(figAlpha));
+        else      sk.stroke(90,  85,  80,  Math.round(figAlpha));
+
+        const fc     = sk.frameCount;
+        const scaleX = sk.width  / SVG_W;
+        const scaleY = sk.height / SVG_H;
+
+        // Canvas-space mouse coordinates for cursor repulsion
+        const cRect = (sk.canvas as HTMLCanvasElement).getBoundingClientRect();
+        const cmx   = mouseX > -9000 ? mouseX - cRect.left : -9999;
+        const cmy   = mouseY > -9000 ? mouseY - cRect.top  : -9999;
+        const PUSH_R = 70;  // influence radius, canvas px
+        const PUSH_S = 14;  // max displacement, canvas px
+
+        // ── Body paths: silk wave + cursor push ───────────────────────────
+        for (const pts of bodyPaths) {
+          if (pts.length < 2) continue;
+          sk.beginShape();
+
+          // Phantom first control handle
+          const ox0 = Math.sin(fc * 0.02)  * amplitude * sk.noise(0,   fc * 0.005);
+          const oy0 = Math.cos(fc * 0.018) * amplitude * sk.noise(100, fc * 0.005);
+          sk.curveVertex(pts[0].x * scaleX + ox0, pts[0].y * scaleY + oy0);
+
+          for (let i = 0; i < pts.length; i++) {
+            const px = pts[i].x * scaleX;
+            const py = pts[i].y * scaleY;
+
+            // Silk wave
+            const wox = Math.sin(fc * 0.02  + i * 0.3)  * amplitude * sk.noise(i * 0.1,        fc * 0.005);
+            const woy = Math.cos(fc * 0.018 + i * 0.25) * amplitude * sk.noise(i * 0.15 + 100, fc * 0.005);
+
+            // Cursor repulsion
+            let pox = 0, poy = 0;
+            const dx = px - cmx, dy = py - cmy;
+            const dSq = dx * dx + dy * dy;
+            if (cmx > -9000 && dSq < PUSH_R * PUSH_R && dSq > 0.01) {
+              const dist  = Math.sqrt(dSq);
+              const force = (1 - dist / PUSH_R) * PUSH_S;
+              pox = (dx / dist) * force;
+              poy = (dy / dist) * force;
+            }
+
+            sk.curveVertex(px + wox + pox, py + woy + poy);
+          }
+
+          // Phantom last control handle
+          const n   = pts.length - 1;
+          const pnx = pts[n].x * scaleX, pny = pts[n].y * scaleY;
+          const oxN = Math.sin(fc * 0.02  + n * 0.3)  * amplitude * sk.noise(n * 0.1,        fc * 0.005);
+          const oyN = Math.cos(fc * 0.018 + n * 0.25) * amplitude * sk.noise(n * 0.15 + 100, fc * 0.005);
+          let poxN = 0, poyN = 0;
+          const dxN = pnx - cmx, dyN = pny - cmy;
+          const dSqN = dxN * dxN + dyN * dyN;
+          if (cmx > -9000 && dSqN < PUSH_R * PUSH_R && dSqN > 0.01) {
+            const dn = Math.sqrt(dSqN);
+            poxN = (dxN / dn) * (1 - dn / PUSH_R) * PUSH_S;
+            poyN = (dyN / dn) * (1 - dn / PUSH_R) * PUSH_S;
+          }
+          sk.curveVertex(pnx + oxN + poxN, pny + oyN + poyN);
+
+          sk.endShape();
+        }
+
+        // ── Face paths: static, no offset, no repulsion ───────────────────
+        for (const pts of facePaths) {
+          if (pts.length < 2) continue;
+          sk.beginShape();
+          sk.curveVertex(pts[0].x * scaleX, pts[0].y * scaleY);          // phantom first
+          for (const p of pts) sk.curveVertex(p.x * scaleX, p.y * scaleY);
+          sk.curveVertex(pts[pts.length - 1].x * scaleX, pts[pts.length - 1].y * scaleY); // phantom last
+          sk.endShape();
+        }
+      };
+
+    }, 'fashion-p5-mount');
+  }
+
+  initFigure();
 </script>
