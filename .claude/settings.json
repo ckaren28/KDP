@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Read(//Users/kc/Desktop/**)"
+      "Read(//Users/kc/Desktop/**)",
+      "Bash(cp /Users/kc/Desktop/Shibori/* /Users/kc/fashion-portfolio/public/images/shibori/)",
+      "Bash(cp /Users/kc/Desktop/Marbling/* /Users/kc/fashion-portfolio/public/images/marbling/)",
+      "Bash(cp /Users/kc/Desktop/Batik/* /Users/kc/fashion-portfolio/public/images/batik/)",
+      "Bash(cp \"/Users/kc/Desktop/Blockprint/Blockprint inspo.jpg\" /Users/kc/fashion-portfolio/public/images/blockprint/blockprint-inspo.jpg)",
+      "Bash(cp /Users/kc/Desktop/Blockprint/Blockprint.JPG /Users/kc/fashion-portfolio/public/images/blockprint/blockprint.JPG)",
+      "Read(//Users/kc/Downloads/**)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/Downloads/dress.png /Users/kc/Downloads/vest.png)",
+      "Bash(sips -s format jpeg -s formatOptions 85 /Users/kc/Downloads/dress.png --out /Users/kc/fashion-portfolio/public/images/knitting/dress.jpg)",
+      "Bash(sips -s format jpeg -s formatOptions 85 /Users/kc/Downloads/vest.png --out /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/knitting/dress.png /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/knitting/dress.jpg /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)"
     ],
     "additionalDirectories": [
       "/Users/kc/Desktop"

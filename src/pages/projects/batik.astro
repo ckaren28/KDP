@@ -1,0 +1,280 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const process: { src: string; alt: string; caption?: string }[] = [
+  { src: '/images/batik/Batik-process.JPG', alt: 'Batik process — applying soy wax resist', caption: 'Applying soy wax resist' },
+];
+
+const finals: { src: string; alt: string; caption?: string }[] = [
+  { src: '/images/batik/Batik-final1.jpg', alt: 'Batik — finished indigo sample' },
+  { src: '/images/batik/Batik-final2.jpg', alt: 'Batik — second sample' },
+];
+---
+
+<MainLayout title="Batik — Karen Dettmar">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .project-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 2rem 8rem;
+      font-family: var(--font-display);
+      color: var(--black);
+    }
+
+    .back-nav {
+      padding: 2.5rem 0 4rem;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .back-nav a:hover { color: var(--black); }
+
+    .page-header {
+      margin-bottom: 5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .page-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .page-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      max-width: 52ch;
+      font-weight: 300;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      margin-bottom: 5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .meta-value {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--text-body);
+      font-weight: 300;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.7;
+      margin-bottom: 1.5rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--border);
+      display: block;
+    }
+
+    .process-grid {
+      columns: 3;
+      column-gap: 4px;
+    }
+
+    .image-grid {
+      columns: 2;
+      column-gap: 4px;
+    }
+
+    .image-item {
+      break-inside: avoid;
+      margin-bottom: 4px;
+      position: relative;
+      cursor: zoom-in;
+      overflow: hidden;
+    }
+
+    .image-item img {
+      width: 100%;
+      display: block;
+      transition: opacity 0.3s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .image-item:hover img { opacity: 0.9; transform: scale(1.01); }
+
+    .image-caption {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 8px 0 0;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,18,30,0.97);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      display: block;
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      background: none; border: none;
+      color: rgba(200,210,230,0.5);
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: rgba(200,210,230,1); }
+
+    .next-project {
+      margin-top: 8rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 3rem;
+    }
+    .next-all {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .next-all:hover { color: var(--black); }
+
+    @media (max-width: 768px) {
+      .image-grid { columns: 1; }
+      .meta-row { gap: 2rem; }
+    }
+  </style>
+
+  <div class="project-page">
+
+    <nav class="back-nav">
+      <a href="/projects/textiles">← Textile Practice</a>
+    </nav>
+
+    <header class="page-header">
+      <span class="page-label">Textile Practice · Dyeing · Resist</span>
+      <h1 class="page-title">Batik</h1>
+      <p class="page-desc">
+        Wax resist batik on fabric, exploring color layering and pattern. Soy wax is brushed onto cloth to block the dye. When submerged in an indigo vat, only the unprotected areas absorb color. The wax is removed to reveal the resist pattern, with brush gesture and wax flow shaping the final mark.
+      </p>
+    </header>
+
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Practice</span>
+        <span class="meta-value">Textile Practice · Parsons, 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Resist</span>
+        <span class="meta-value">Soy wax</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Dye</span>
+        <span class="meta-value">Natural indigo vat</span>
+      </div>
+    </div>
+
+    <span class="section-label">Process</span>
+    <div class="process-grid">
+      {process.map((img: { src: string; alt: string; caption?: string }) => (
+        <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
+          <img src={img.src} alt={img.alt} loading="lazy" />
+          {img.caption && <p class="image-caption">{img.caption}</p>}
+        </div>
+      ))}
+    </div>
+
+    <span class="section-label">Results</span>
+    <div class="image-grid">
+      {finals.map((img: { src: string; alt: string; caption?: string }) => (
+        <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
+          <img src={img.src} alt={img.alt} loading="lazy" />
+          {img.caption && <p class="image-caption">{img.caption}</p>}
+        </div>
+      ))}
+    </div>
+
+    <div class="next-project">
+      <a href="/projects/textiles" class="next-all">← Textile Practice</a>
+      <a href="/projects/fashion" class="next-all">All Fashion →</a>
+    </div>
+
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">Close ×</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null;
+
+    document.querySelectorAll('.lightbox-trigger').forEach(el => {
+      el.addEventListener('click', () => {
+        if (!lightbox || !lightboxImg) return;
+        lightboxImg.src = (el as HTMLElement).dataset.src || '';
+        lightboxImg.alt = (el as HTMLElement).dataset.alt || '';
+        lightbox.classList.add('open');
+      });
+    });
+
+    function closeLightbox() { lightbox?.classList.remove('open'); }
+    document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
+    lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
+
+</MainLayout>

@@ -1,0 +1,364 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const textile = [
+  {
+    href: '/projects/shibori',
+    image: '/images/shibori/Shibori1.jpg',
+    alt: 'Shibori indigo resist-dyed fabric',
+    label: 'Dyeing · Resist',
+    title: 'Shibori',
+    desc: 'Indigo shibori resist dyeing on cotton. Itajime, arashi, and kumo techniques explored across a series of scarves.',
+  },
+  {
+    href: '/projects/marbling',
+    image: '/images/marbling/marblingfinal1.JPG',
+    alt: 'Marbled fabric with violet, gold, and orange swirls',
+    label: 'Dyeing · Surface',
+    title: 'Marbling',
+    desc: 'Marbling exploring color, fluid pattern, and surface tension.',
+  },
+  {
+    href: '/projects/batik',
+    image: '/images/batik/Batik-final1.jpg',
+    alt: 'Batik wax-resist dyed fabric',
+    label: 'Dyeing · Resist',
+    title: 'Batik',
+    desc: 'Wax resist batik on fabric, exploring color layering and pattern.',
+  },
+  {
+    href: '/projects/blockprint',
+    image: '/images/blockprint/blockprint.jpg',
+    alt: 'Block printed fabric — linoleum carved pattern',
+    label: 'Printing · Relief',
+    title: 'Block Printing',
+    desc: 'Hand-carved relief blocks and repeat pattern development on muslin.',
+  },
+  {
+    href: '/projects/felting',
+    image: '/images/felting/felted-art1.JPG',
+    alt: 'Felted textile',
+    label: 'Fiber · Construction',
+    title: 'Felting',
+    desc: 'Wet felting exploration in texture and form.',
+  },
+  {
+    href: '/projects/weaving',
+    image: '/images/weaving/weaving.JPG',
+    alt: 'Woven sample with reclaimed yarn',
+    label: 'Fiber · Structure',
+    title: 'Weaving',
+    desc: 'Hand-woven textile exploring warp and weft structure. Materials sourced from a local weaving studio in the Upper East Side.',
+  },
+];
+
+const knitting = [
+  {
+    image: '/images/knitting/dress.jpg',
+    alt: 'Hand-knitted silk maxi dress in dove blue',
+    title: 'Knit Dress',
+    desc: 'Hand-knitted button-front maxi dress in dove blue 100% silk yarn. Buttons are vintage French mother of pearl from the 1940s. Self-taught.',
+  },
+  {
+    image: '/images/knitting/vest.jpg',
+    alt: 'Hand-knitted cropped cashmere vest',
+    title: 'Knit Vest',
+    desc: 'Hand-knitted cropped vest with button closure. Cashmere wool blend yarn. Buttons are vintage Italian navy mother of pearl from the 1990s. Self-taught.',
+  },
+];
+---
+
+<MainLayout title="Textile Practice — Karen Dettmar">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .project-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 2rem 8rem;
+      font-family: var(--font-display);
+      color: var(--black);
+    }
+
+    .back-nav {
+      padding: 2.5rem 0 4rem;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .back-nav a:hover { color: var(--black); }
+
+    .page-header {
+      margin-bottom: 5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .page-title {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .page-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      max-width: 52ch;
+      font-weight: 300;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-heading {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1px;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: block;
+    }
+
+    /* ── PROJECT ENTRIES ── */
+    .project-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin-bottom: 6rem;
+    }
+
+    .project-entry {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      transition: opacity 0.2s;
+    }
+    .project-entry:hover { opacity: 0.85; }
+
+    .entry-image {
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: #2E2318;
+    }
+
+    .entry-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: opacity 0.4s ease;
+      display: block;
+    }
+    .project-entry:hover .entry-image img { opacity: 1; }
+
+    .entry-body {
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .entry-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .entry-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+    }
+
+    .entry-desc {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      font-weight: 300;
+      max-width: 40ch;
+      margin-bottom: 1rem;
+    }
+
+    .entry-link {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      align-self: flex-start;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .project-entry:hover .entry-link { color: var(--sienna); border-color: var(--sienna); }
+
+    /* ── KNITTING GRID — 2 col, no link ── */
+    .knit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      max-width: 50%;
+      margin-bottom: 1.5rem;
+    }
+
+    .knit-card { display: flex; flex-direction: column; }
+
+    .knit-image {
+      background: #ffffff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .knit-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      opacity: 0.9;
+      transition: opacity 0.4s ease;
+    }
+    .knit-card:hover .knit-image img { opacity: 1; }
+
+    .knit-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 0.6rem;
+    }
+
+    .knit-desc {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      font-weight: 300;
+      max-width: 36ch;
+      margin-bottom: 0.75rem;
+    }
+
+    .knit-caption {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .next-project {
+      margin-top: 8rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .next-all {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .next-all:hover { color: var(--black); }
+
+    @media (max-width: 540px) {
+      .project-entry { grid-template-columns: 120px 1fr; }
+      .entry-image { width: 120px; height: 120px; }
+      .entry-body { padding: 1rem 1.25rem; }
+      .knit-grid { grid-template-columns: 1fr 1fr; max-width: 100%; }
+    }
+  </style>
+
+  <div class="project-page">
+
+    <nav class="back-nav">
+      <a href="/projects/fashion">← Fashion</a>
+    </nav>
+
+    <header class="page-header">
+      <span class="page-label">Parsons School of Design · 2025</span>
+      <h1 class="page-title">Textile Practice</h1>
+      <p class="page-desc">
+        A record of making. Across dyeing, printing, weaving, and resist techniques, these pieces explore what happens when process drives design — where the technique itself determines the pattern, the color, and the form. Work developed during Parsons School of Design certification, 2025.
+      </p>
+    </header>
+
+    <!-- ── TEXTILE TECHNIQUES ── -->
+    <span class="section-heading">Dyeing, Printing &amp; Fiber</span>
+    <div class="project-entries">
+      {textile.map(e => (
+        <a href={e.href} class="project-entry reveal">
+          <div class="entry-image">
+            <img src={e.image} alt={e.alt} loading="lazy" />
+          </div>
+          <div class="entry-body">
+            <span class="entry-label">{e.label}</span>
+            <h2 class="entry-title">{e.title}</h2>
+            <p class="entry-desc">{e.desc}</p>
+            <span class="entry-link">View project →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- ── HAND KNITTING ── -->
+    <span class="section-heading">Hand Knitting</span>
+    <div class="knit-grid">
+      {knitting.map(k => (
+        <div class="knit-card">
+          <div class="knit-image">
+            <img src={k.image} alt={k.alt} loading="lazy" />
+          </div>
+          <h2 class="knit-title">{k.title}</h2>
+          <p class="knit-desc">{k.desc}</p>
+          <p class="knit-caption">Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="next-project">
+      <a href="/projects/fashion" class="next-all">← All Fashion</a>
+    </div>
+
+  </div>
+
+</MainLayout>
