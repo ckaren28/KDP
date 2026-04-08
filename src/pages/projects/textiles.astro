@@ -12,7 +12,7 @@ const textile = [
   },
   {
     href: '/projects/marbling',
-    image: '/images/marbling/marblingfinal1.JPG',
+    image: '/images/marbling/marblingfinal1.png',
     alt: 'Marbled fabric with violet, gold, and orange swirls',
     label: 'Dyeing · Surface',
     title: 'Marbling',
@@ -56,14 +56,18 @@ const knitting = [
   {
     image: '/images/knitting/dress.jpg',
     alt: 'Hand-knitted silk maxi dress in dove blue',
+    label: 'Hand Knitting · Self-taught',
     title: 'Knit Dress',
-    desc: 'Hand-knitted button-front maxi dress in dove blue 100% silk yarn. Buttons are vintage French mother of pearl from the 1940s. Self-taught.',
+    desc: 'Hand-knitted button-front maxi dress in dove blue 100% silk yarn. Buttons are vintage French mother of pearl from the 1940s.',
+    caption: 'Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.',
   },
   {
     image: '/images/knitting/vest.jpg',
     alt: 'Hand-knitted cropped cashmere vest',
+    label: 'Hand Knitting · Self-taught',
     title: 'Knit Vest',
-    desc: 'Hand-knitted cropped vest with button closure. Cashmere wool blend yarn. Buttons are vintage Italian navy mother of pearl from the 1990s. Self-taught.',
+    desc: 'Hand-knitted cropped vest with button closure. Cashmere wool blend yarn. Buttons are vintage Italian navy mother of pearl from the 1990s.',
+    caption: 'Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.',
   },
 ];
 ---
@@ -128,165 +132,282 @@ const knitting = [
     /* ── SECTION DIVIDER ── */
     .section-heading {
       font-family: var(--font-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
+      font-size: 0.6rem;
+      letter-spacing: 0.26em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 1px;
-      padding-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border);
+      opacity: 0.7;
       display: block;
+      padding-top: 4rem;
+      padding-bottom: 2.5rem;
     }
 
-    /* ── PROJECT ENTRIES ── */
-    .project-entries {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
+    /* ── 3-COLUMN GRID ── */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem 1.5rem;
       margin-bottom: 6rem;
     }
 
-    .project-entry {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      text-decoration: none;
-      color: inherit;
-      overflow: hidden;
-      transition: opacity 0.2s;
-    }
-    .project-entry:hover { opacity: 0.85; }
-
-    .entry-image {
-      width: 160px;
-      height: 160px;
-      flex-shrink: 0;
-      overflow: hidden;
-      background: #2E2318;
-    }
-
-    .entry-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.9;
-      transition: opacity 0.4s ease;
-      display: block;
-    }
-    .project-entry:hover .entry-image img { opacity: 1; }
-
-    .entry-body {
-      padding: 1.5rem 2rem;
+    .project-item {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      text-decoration: none;
+      color: inherit;
     }
 
-    .entry-label {
-      font-family: var(--font-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
+    .item-hero {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
       display: block;
-    }
-
-    .entry-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1;
-      letter-spacing: -0.02em;
-      color: var(--black);
-      margin-bottom: 0.75rem;
-    }
-
-    .entry-desc {
-      font-family: var(--font-body);
-      font-size: 0.82rem;
-      line-height: 1.75;
-      color: var(--text-body);
-      font-weight: 300;
-      max-width: 40ch;
       margin-bottom: 1rem;
     }
 
-    .entry-link {
+    .item-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .project-item:hover .item-hero img { transform: scale(1.03); }
+
+    .item-tag {
       font-family: var(--font-body);
-      font-size: 0.68rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .item-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2vw, 1.9rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+    .project-item:hover .item-title { color: var(--sienna); }
+
+    .item-desc {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.65;
+      color: var(--text-body);
+      font-weight: 300;
+      margin-bottom: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .item-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
       border-bottom: 1px solid var(--border);
       padding-bottom: 2px;
+      display: inline-block;
       align-self: flex-start;
       transition: color 0.2s, border-color 0.2s;
     }
-    .project-entry:hover .entry-link { color: var(--sienna); border-color: var(--sienna); }
+    .project-item:hover .item-link { color: var(--sienna); border-color: var(--sienna); }
 
-    /* ── KNITTING GRID — 2 col, no link ── */
-    .knit-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      max-width: 50%;
-      margin-bottom: 1.5rem;
+    @media (max-width: 768px) {
+      .project-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .project-grid { grid-template-columns: 1fr; }
     }
 
-    .knit-card { display: flex; flex-direction: column; }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 0;
+    }
 
-    .knit-image {
+    /* ── KNIT SLIDER ── */
+    .knit-slider {
+      position: relative;
+      max-width: 300px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .knit-track { overflow: hidden; }
+
+    .knit-slides {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .knit-item {
+      flex: 0 0 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .knit-hero {
+      width: 100%;
+      height: 380px;
+      overflow: hidden;
       background: #ffffff;
-      margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      margin-bottom: 1rem;
+      cursor: zoom-in;
     }
 
-    .knit-image img {
+    .knit-hero img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;
       display: block;
-      opacity: 0.9;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.2s;
     }
-    .knit-card:hover .knit-image img { opacity: 1; }
+    .knit-hero:hover img { opacity: 0.85; }
+
+    .knit-tag {
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
 
     .knit-title {
       font-family: var(--font-display);
-      font-size: clamp(1.4rem, 2vw, 2rem);
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
       font-weight: 300;
       font-style: italic;
       line-height: 1;
       letter-spacing: -0.02em;
       color: var(--black);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
     }
 
     .knit-desc {
       font-family: var(--font-body);
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       line-height: 1.7;
       color: var(--text-body);
       font-weight: 300;
-      max-width: 36ch;
-      margin-bottom: 0.75rem;
+      max-width: 56ch;
+      margin-bottom: 0.5rem;
     }
 
     .knit-caption {
       font-family: var(--font-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 0.68rem;
+      line-height: 1.65;
       color: var(--muted);
-      line-height: 1.6;
+      font-weight: 300;
+      max-width: 56ch;
     }
 
+    .knit-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 12px;
+    }
+
+    .knit-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .knit-btn:hover { color: var(--black); }
+    .knit-btn:disabled { opacity: 0.25; cursor: default; }
+
+    .knit-dots { display: flex; gap: 5px; }
+
+    .knit-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .knit-dot.active { background: var(--black); }
+
+    /* ── KNIT LIGHTBOX ── */
+    .knit-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(24,16,10,0.96);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    .knit-lightbox.open { display: flex; }
+    .knit-lightbox img {
+      max-width: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      display: block;
+      cursor: default;
+      background: #fff;
+    }
+    .knit-lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      background: none; border: none;
+      color: rgba(237,229,208,0.5);
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color 0.2s;
+    }
+    .knit-lightbox-close:hover { color: rgba(237,229,208,1); }
+
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 4rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
+    /* ── FOOTER NAV ── */
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
     .next-all {
@@ -300,11 +421,9 @@ const knitting = [
     }
     .next-all:hover { color: var(--black); }
 
-    @media (max-width: 540px) {
-      .project-entry { grid-template-columns: 120px 1fr; }
-      .entry-image { width: 120px; height: 120px; }
-      .entry-body { padding: 1rem 1.25rem; }
-      .knit-grid { grid-template-columns: 1fr 1fr; max-width: 100%; }
+    @media (max-width: 768px) {
+      .knit-hero { height: 360px; }
+      .knit-slider { max-width: 100%; }
     }
   </style>
 
@@ -315,50 +434,117 @@ const knitting = [
     </nav>
 
     <header class="page-header">
-      <span class="page-label">Parsons School of Design · 2025</span>
+      <span class="page-label">Textile Practice</span>
       <h1 class="page-title">Textile Practice</h1>
       <p class="page-desc">
-        A record of making. Across dyeing, printing, weaving, and resist techniques, these pieces explore what happens when process drives design — where the technique itself determines the pattern, the color, and the form. Work developed during Parsons School of Design certification, 2025.
+        A record of making. Across dyeing, printing, weaving, and resist techniques, these pieces explore what happens when process drives design. Where the technique itself determines the pattern, the color, and the form.
       </p>
     </header>
 
     <!-- ── TEXTILE TECHNIQUES ── -->
     <span class="section-heading">Dyeing, Printing &amp; Fiber</span>
-    <div class="project-entries">
+    <div class="project-grid">
       {textile.map(e => (
-        <a href={e.href} class="project-entry reveal">
-          <div class="entry-image">
+        <a href={e.href} class="project-item reveal">
+          <div class="item-hero">
             <img src={e.image} alt={e.alt} loading="lazy" />
           </div>
-          <div class="entry-body">
-            <span class="entry-label">{e.label}</span>
-            <h2 class="entry-title">{e.title}</h2>
-            <p class="entry-desc">{e.desc}</p>
-            <span class="entry-link">View project →</span>
-          </div>
+          <span class="item-tag">{e.label}</span>
+          <h2 class="item-title">{e.title}</h2>
+          <p class="item-desc">{e.desc}</p>
+          <span class="item-link">View project →</span>
         </a>
       ))}
     </div>
 
+    <hr class="section-divider" />
+
     <!-- ── HAND KNITTING ── -->
     <span class="section-heading">Hand Knitting</span>
-    <div class="knit-grid">
-      {knitting.map(k => (
-        <div class="knit-card">
-          <div class="knit-image">
-            <img src={k.image} alt={k.alt} loading="lazy" />
-          </div>
-          <h2 class="knit-title">{k.title}</h2>
-          <p class="knit-desc">{k.desc}</p>
-          <p class="knit-caption">Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.</p>
+    <div class="knit-slider" id="knitSlider">
+      <div class="knit-track">
+        <div class="knit-slides" id="knitSlides">
+          {knitting.map(k => (
+            <div class="knit-item">
+              <div class="knit-hero knit-lightbox-trigger" data-src={k.image} data-alt={k.alt}>
+                <img src={k.image} alt={k.alt} loading="lazy" />
+              </div>
+              <span class="knit-tag">{k.label}</span>
+              <h2 class="knit-title">{k.title}</h2>
+              <p class="knit-desc">{k.desc}</p>
+              <p class="knit-caption">{k.caption}</p>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+      <div class="knit-nav">
+        <button class="knit-btn" id="knitPrev">← Prev</button>
+        <div class="knit-dots" id="knitDots"></div>
+        <button class="knit-btn" id="knitNext">Next →</button>
+      </div>
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/technical-flats" class="project-nav-link">← Technical Flats</a>
+      <span></span>
+    </div>
     <div class="next-project">
       <a href="/projects/fashion" class="next-all">← All Fashion</a>
     </div>
 
   </div>
+
+  <div class="knit-lightbox" id="knitLightbox">
+    <button class="knit-lightbox-close" id="knitLightboxClose">Close ×</button>
+    <img id="knitLightboxImg" src="" alt="" />
+  </div>
+
+  <script>
+    const slides = document.getElementById('knitSlides');
+    const prevBtn = document.getElementById('knitPrev') as HTMLButtonElement;
+    const nextBtn = document.getElementById('knitNext') as HTMLButtonElement;
+    const dotsContainer = document.getElementById('knitDots');
+    const total = slides ? slides.children.length : 0;
+    let current = 0;
+
+    const dots: HTMLButtonElement[] = [];
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('button');
+      d.className = 'knit-dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsContainer?.appendChild(d);
+      dots.push(d);
+    }
+
+    function goTo(index: number) {
+      current = index;
+      if (slides) slides.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (nextBtn) nextBtn.disabled = current === total - 1;
+    }
+
+    prevBtn?.addEventListener('click', () => goTo(current - 1));
+    nextBtn?.addEventListener('click', () => goTo(current + 1));
+    goTo(0);
+
+    // Lightbox
+    const knitLightbox = document.getElementById('knitLightbox');
+    const knitLightboxImg = document.getElementById('knitLightboxImg') as HTMLImageElement | null;
+
+    document.querySelectorAll('.knit-lightbox-trigger').forEach(el => {
+      el.addEventListener('click', () => {
+        if (!knitLightbox || !knitLightboxImg) return;
+        knitLightboxImg.src = (el as HTMLElement).dataset.src || '';
+        knitLightboxImg.alt = (el as HTMLElement).dataset.alt || '';
+        knitLightbox.classList.add('open');
+      });
+    });
+
+    function closeKnitLightbox() { knitLightbox?.classList.remove('open'); }
+    document.getElementById('knitLightboxClose')?.addEventListener('click', closeKnitLightbox);
+    knitLightbox?.addEventListener('click', (e) => { if (e.target === knitLightbox) closeKnitLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeKnitLightbox(); });
+  </script>
 
 </MainLayout>

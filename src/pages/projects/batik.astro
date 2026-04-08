@@ -173,12 +173,29 @@ const finals: { src: string; alt: string; caption?: string }[] = [
     }
     .lightbox-close:hover { color: rgba(200,210,230,1); }
 
-    .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
+    /* ── PROJECT NAV ── */
+    .project-nav {
       display: flex;
-      gap: 3rem;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
+    .next-project {
+      margin-top: 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
     }
     .next-all {
       font-family: var(--font-body);
@@ -213,8 +230,8 @@ const finals: { src: string; alt: string; caption?: string }[] = [
 
     <div class="meta-row">
       <div class="meta-item">
-        <span class="meta-label">Practice</span>
-        <span class="meta-value">Textile Practice · Parsons, 2025</span>
+        <span class="meta-label">Fiber</span>
+        <span class="meta-value">Cotton</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Resist</span>
@@ -246,9 +263,12 @@ const finals: { src: string; alt: string; caption?: string }[] = [
       ))}
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/marbling" class="project-nav-link">← Marbling</a>
+      <a href="/projects/blockprint" class="project-nav-link">Block Printing →</a>
+    </div>
     <div class="next-project">
       <a href="/projects/textiles" class="next-all">← Textile Practice</a>
-      <a href="/projects/fashion" class="next-all">All Fashion →</a>
     </div>
 
   </div>

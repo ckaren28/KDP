@@ -12,7 +12,8 @@
       "Bash(sips -s format jpeg -s formatOptions 85 /Users/kc/Downloads/dress.png --out /Users/kc/fashion-portfolio/public/images/knitting/dress.jpg)",
       "Bash(sips -s format jpeg -s formatOptions 85 /Users/kc/Downloads/vest.png --out /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)",
       "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/knitting/dress.png /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)",
-      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/knitting/dress.jpg /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)"
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/knitting/dress.jpg /Users/kc/fashion-portfolio/public/images/knitting/vest.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/kc/fashion-portfolio/public/images/shibori/indigo-dying-process.gif)"
     ],
     "additionalDirectories": [
       "/Users/kc/Desktop"

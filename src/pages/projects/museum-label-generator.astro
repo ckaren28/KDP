@@ -422,9 +422,28 @@ import MainLayout from '../../layouts/MainLayout.astro';
       padding-left: 1.2rem;
     }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
     .next-all {
@@ -633,6 +652,10 @@ Render cards + copy tools</pre>
 
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/garment-construction-decoder" class="project-nav-link">← Garment Construction Decoder</a>
+      <a href="/projects/wix-devcon" class="project-nav-link">Wix DevCon →</a>
+    </div>
     <div class="next-project">
       <a href="/projects/tech" class="next-all">← Creative Technology</a>
     </div>
@@ -703,7 +726,7 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
         description: "A portrait of a person standing in bright sunlight on a city sidewalk. The background is softly blurred while the subject's clothing and posture read as calm and self-possessed. Strong contrast between light and shadow shapes the mood of the image."
       },
       textile: {
-        title: "Coat", artist: "Cristóbal Balenciaga", year: "c. 1967", medium: "Wool gazar, fully lined in silk",
+        title: "Coat", artist: "Cristóbal Balenciaga", year: "c. 1967", medium: "Wool gazar, fully lined silk",
         description: "A sculptural cocoon coat in double-faced wool gazar, cut away from the body with a single-seam construction at the back. The silhouette is architectural — volume held entirely by the fabric's weight and structure rather than darts or boning. The collar rises stiffly from the shoulders. Interior construction is immaculate: French seams, hand-stitched hem. Acquired from a private Paris collection; no alterations noted."
       }
     };

@@ -299,10 +299,29 @@ import MainLayout from '../../layouts/MainLayout.astro';
       font-weight: 300;
     }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     /* ── FOOTER NAV ── */
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
 
@@ -451,8 +470,12 @@ import MainLayout from '../../layouts/MainLayout.astro';
       </div>
     </section>
 
+    <div class="project-nav">
+      <a href="/projects/museum-label-generator" class="project-nav-link">← Museum Label Generator</a>
+      <span></span>
+    </div>
     <div class="next-project">
-      <a href="/projects/tech" class="next-all">← All Technology Projects</a>
+      <a href="/projects/tech" class="next-all">← Creative Technology</a>
     </div>
 
   </div>

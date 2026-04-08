@@ -167,13 +167,30 @@ const images: { src: string; alt: string; caption?: string }[] = [
     }
     .lightbox-close:hover { color: rgba(250,248,245,1); }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     /* ── FOOTER NAV ── */
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
-      display: flex;
-      gap: 3rem;
     }
     .next-all {
       font-family: var(--font-body);
@@ -195,27 +212,19 @@ const images: { src: string; alt: string; caption?: string }[] = [
   <div class="project-page">
 
     <nav class="back-nav">
-      <a href="/projects/construction">← Garment Construction</a>
+      <a href="/projects/fashion">← Fashion</a>
     </nav>
 
     <header class="page-header">
-      <span class="page-label">FIT · Sewing 3</span>
+      <span class="page-label">Garment Construction</span>
       <h1 class="page-title">Fully Lined <em>Blazer</em></h1>
       <p class="page-desc">
-        A fully lined single-breasted blazer constructed for a Professional Sewing course at FIT. The silhouette is shaped through darts and structured with sleeve heads and shoulder pads. Finished with welt pockets and 3/4-length sleeves.
+        A fully lined single-breasted blazer. The silhouette is shaped through darts and structured with sleeve heads and shoulder pads. Finished with welt pockets and 3/4-length sleeves.
       </p>
       <p class="fabscrap-note">Fabric sourced from Fabscrap after volunteering at a New York textile recycling initiative that diverts surplus fabric from the fashion industry.</p>
     </header>
 
     <div class="meta-row">
-      <div class="meta-item">
-        <span class="meta-label">Course</span>
-        <span class="meta-value">Sewing 3</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Institution</span>
-        <span class="meta-value">FIT</span>
-      </div>
       <div class="meta-item">
         <span class="meta-label">Fabric</span>
         <span class="meta-value">Sourced via Fabscrap</span>
@@ -239,9 +248,12 @@ const images: { src: string; alt: string; caption?: string }[] = [
       ))}
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/clover-dress" class="project-nav-link">← Clover Dress</a>
+      <a href="/projects/canvas-jacket" class="project-nav-link">Canvas Zip Jacket →</a>
+    </div>
     <div class="next-project">
-      <a href="/projects/construction" class="next-all">← Garment Construction</a>
-      <a href="/projects" class="next-all">All Projects →</a>
+      <a href="/projects/fashion" class="next-all">← All Fashion</a>
     </div>
 
   </div>

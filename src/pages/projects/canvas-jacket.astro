@@ -158,13 +158,30 @@ const images: { src: string; alt: string; caption?: string }[] = [
     }
     .lightbox-close:hover { color: rgba(237,229,208,1); }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     /* ── FOOTER NAV ── */
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
-      display: flex;
-      gap: 3rem;
     }
     .next-all {
       font-family: var(--font-body);
@@ -185,26 +202,18 @@ const images: { src: string; alt: string; caption?: string }[] = [
   <div class="project-page">
 
     <nav class="back-nav">
-      <a href="/projects/construction">← Garment Construction</a>
+      <a href="/projects/fashion">← Fashion</a>
     </nav>
 
     <header class="page-header">
-      <span class="page-label">FIT · Sewing Construction</span>
+      <span class="page-label">Garment Construction</span>
       <h1 class="page-title">Canvas Zip <em>Jacket</em></h1>
       <p class="page-desc">
-        A zip-up jacket constructed in lightweight natural cotton canvas, developed for a sewing class at FIT. The jacket is defined by two large circular patch pockets. Cut and assembled in off-white canvas, the construction work is left visible as part of the design.
+        A zip-up jacket constructed in lightweight natural cotton canvas. The jacket is defined by two large circular patch pockets. Cut and assembled in off-white canvas, the construction work is left visible as part of the design.
       </p>
     </header>
 
     <div class="meta-row">
-      <div class="meta-item">
-        <span class="meta-label">Course</span>
-        <span class="meta-value">Sewing Construction</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Institution</span>
-        <span class="meta-value">FIT</span>
-      </div>
       <div class="meta-item">
         <span class="meta-label">Material</span>
         <span class="meta-value">Natural cotton canvas · Off-white</span>
@@ -228,9 +237,12 @@ const images: { src: string; alt: string; caption?: string }[] = [
       ))}
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/lined-blazer" class="project-nav-link">← Lined Blazer</a>
+      <a href="/projects/technical-flats" class="project-nav-link">Technical Flats →</a>
+    </div>
     <div class="next-project">
-      <a href="/projects/construction" class="next-all">← Garment Construction</a>
-      <a href="/projects" class="next-all">All Projects →</a>
+      <a href="/projects/fashion" class="next-all">← All Fashion</a>
     </div>
 
   </div>

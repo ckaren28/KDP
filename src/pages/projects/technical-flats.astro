@@ -164,13 +164,30 @@ const images: { src: string; alt: string; caption?: string }[] = [
     }
     .lightbox-close:hover { color: rgba(237,229,208,1); }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     /* ── FOOTER NAV ── */
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
-      display: flex;
-      gap: 3rem;
     }
     .next-all {
       font-family: var(--font-body);
@@ -192,25 +209,21 @@ const images: { src: string; alt: string; caption?: string }[] = [
   <div class="project-page">
 
     <nav class="back-nav">
-      <a href="/projects/construction">← Garment Construction</a>
+      <a href="/projects/fashion">← Fashion</a>
     </nav>
 
     <header class="page-header">
-      <span class="page-label">Parsons School of Design · Flats CAD</span>
+      <span class="page-label">Garment Construction · Flats CAD</span>
       <h1 class="page-title">Technical <em>Flats</em></h1>
       <p class="page-desc">
-        Garment technical flats produced for the Flats CAD course at Parsons. Each design communicates construction details, seam lines, and hardware with precision, the language between designer and production.
+        Garment technical flats produced for Flats CAD. Tools: Illustrator. Each design communicates construction details, seam lines, and hardware with precision — the language between designer and production.
       </p>
     </header>
 
     <div class="meta-row">
       <div class="meta-item">
-        <span class="meta-label">Course</span>
-        <span class="meta-value">Flats CAD</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Institution</span>
-        <span class="meta-value">Parsons School of Design</span>
+        <span class="meta-label">Tools</span>
+        <span class="meta-value">Illustrator</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Medium</span>
@@ -227,9 +240,12 @@ const images: { src: string; alt: string; caption?: string }[] = [
       ))}
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/canvas-jacket" class="project-nav-link">← Canvas Zip Jacket</a>
+      <a href="/projects/textiles" class="project-nav-link">Textile Practice →</a>
+    </div>
     <div class="next-project">
-      <a href="/projects/construction" class="next-all">← Garment Construction</a>
-      <a href="/projects" class="next-all">All Projects →</a>
+      <a href="/projects/fashion" class="next-all">← All Fashion</a>
     </div>
 
   </div>

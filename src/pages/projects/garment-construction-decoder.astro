@@ -327,9 +327,28 @@ import MainLayout from '../../layouts/MainLayout.astro';
     .badge-yes { color: #2d6a3f; border-color: #2d6a3f; }
     .badge-no  { color: var(--muted); border-color: var(--border); }
 
+    /* ── PROJECT NAV ── */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
     .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
+      margin-top: 0;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
     .next-all {
@@ -467,6 +486,10 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     </div>
 
+    <div class="project-nav">
+      <a href="/projects/textile-pattern-generator" class="project-nav-link">← Generative Pattern Tool</a>
+      <a href="/projects/museum-label-generator" class="project-nav-link">Museum Label Generator →</a>
+    </div>
     <div class="next-project">
       <a href="/projects/tech" class="next-all">← Creative Technology</a>
     </div>

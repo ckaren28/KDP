@@ -367,18 +367,33 @@ import MainLayout from '../../layouts/MainLayout.astro';
       font-weight: 300;
     }
 
-    .next-project {
-      margin-top: 8rem;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
+    /* ── PROJECT NAV ── */
+    .project-nav {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+    }
+    .project-nav-link {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project-nav-link:hover { color: var(--black); }
+
+    .next-project {
+      margin-top: 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
     }
 
     .next-all {
       font-family: var(--font-body);
-      padding: 10px 2rem 3rem;
       font-size: 0.7rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -412,7 +427,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
       <img class="hero-image" src="/images/traveller/Traveller-moodboard.png" alt="Traveler mood board" />
 
       <div class="hero-text">
-        <p class="hero-label">Parsons School of Design · 2024</p>
+        <p class="hero-label">Collection Concept · 2024</p>
         <h1 class="hero-title">Traveler</h1>
         <p class="hero-subtitle">
           A modular collection for living in motion. Designed for packing light, wearing twice, and arriving ready.
@@ -421,10 +436,6 @@ import MainLayout from '../../layouts/MainLayout.astro';
           <div class="hero-meta-item">
             <span class="meta-label">Category</span>
             <span class="meta-value">Full Collection Concept</span>
-          </div>
-          <div class="hero-meta-item">
-            <span class="meta-label">School</span>
-            <span class="meta-value">Parsons School of Design</span>
           </div>
           <div class="hero-meta-item">
             <span class="meta-label">Deliverables</span>
@@ -618,8 +629,12 @@ import MainLayout from '../../layouts/MainLayout.astro';
     </section>
 
     <!-- Project Navigation -->
+    <div class="project-nav">
+      <span></span>
+      <a href="/projects/clover-dress" class="project-nav-link">Clover Dress →</a>
+    </div>
     <div class="next-project">
-      <a href="/projects" class="next-all">← All Projects</a>
+      <a href="/projects/fashion" class="next-all">← All Fashion</a>
     </div>
 
      <!-- LIGHTBOX -->
