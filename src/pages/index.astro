@@ -210,12 +210,12 @@ const hasIllustrations = illustrations.length > 0;
     /* Suitcase clip wrapper — crops the right-edge seam */
     .scene-suitcase-wrap {
       position: absolute;
-      width: 85%;
-      left: 15%;
-      top: 58%;
+      width: 90%;
+      left: 25%;
+      top: 36%;
       transform: translate(-50%, -50%);
       overflow: hidden;
-      /* z-index: 1; */
+      z-index: 1;
       cursor: pointer;
       animation: suitcase-breathe 3s ease-in-out infinite alternate;
     }
@@ -223,10 +223,10 @@ const hasIllustrations = illustrations.length > 0;
     /* Suitcase: sits on top, left of center */
     .scene-suitcase {
       display: block;
-      width: 110%;
+      width: 80%;
       object-fit: cover;
       object-position: left center;
-      clip-path: inset(0 8% 0 0);
+      clip-path: inset(0 30% 0 0);
       mix-blend-mode: screen;
       border: none; outline: none;
     }
@@ -240,9 +240,11 @@ const hasIllustrations = illustrations.length > 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
       z-index: 0;
+   
     }
     .scene-suitcase-wrap:hover .scene-hover-dark,
     .scene-scarf-wrap:hover     .scene-hover-dark { opacity: 1; }
+     .scene-suitcase-wrap:hover .scene-hover-dark{    width: 50%;}
 
     /* Scarf wrapper for hover dark overlay */
     .scene-scarf-wrap {
@@ -277,7 +279,7 @@ const hasIllustrations = illustrations.length > 0;
       gap: 8px;
     }
     .scene-overlay.visible { opacity: 1; }
-    .scene-overlay--suitcase { z-index: 4; }
+    .scene-overlay--suitcase { z-index: 2; }
     .scene-overlay--scarf    { z-index: 3; }
 
     .scene-tag {
