@@ -1,0 +1,383 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="CV — Karen Dettmar">
+
+  <div class="cv-wrapper">
+
+    <!-- Download button -->
+    <div class="cv-actions">
+      <a href="/Karen_Dettmar_CV.pdf" download class="cv-dl-btn">↓ &nbsp;Download PDF</a>
+    </div>
+
+    <!-- Name & identity -->
+    <header class="cv-header">
+      <h1 class="cv-name">Karen Dettmar</h1>
+      <p class="cv-subtitle">Creative Technologist &nbsp;·&nbsp; Fashion &amp; Culture &nbsp;·&nbsp; New York City</p>
+      <p class="cv-contact">
+        <a href="mailto:karen.dettmar@gmail.com">karen.dettmar@gmail.com</a>
+        <span class="cv-sep">·</span>
+        <a href="https://linkedin.com/in/kdettmar" target="_blank">linkedin.com/in/kdettmar</a>
+        <span class="cv-sep">·</span>
+        <a href="https://kdettmar-studio.netlify.app" target="_blank">kdettmar-studio.netlify.app</a>
+      </p>
+    </header>
+
+    <!-- Summary -->
+    <p class="cv-summary">
+      Creative technologist and front-end engineer with 7+ years building public-facing interactive
+      experiences at the intersection of technology, design, and storytelling. Background in
+      prototyping, developer experience research, and shipping tools used by real audiences. Drawn
+      to immersive, educational, and culturally resonant work.
+    </p>
+
+    <!-- Skills & Tools -->
+    <section class="cv-section">
+      <h2 class="cv-section-heading">Skills &amp; Tools</h2>
+      <div class="cv-skills">
+        <div class="cv-skill-row">
+          <span class="cv-skill-cat">Technology</span>
+          <span class="cv-skill-val">Midjourney, Nanobanana, Claude API &amp; Generative AI, React, JavaScript, HTML/CSS, APIs, Git, Astro, VueJS, AI-assisted prototyping, Design Systems, Figma</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-cat">Creative &amp; Design</span>
+          <span class="cv-skill-val">Adobe Illustrator, Brand Identity, Visual Systems, UX/UI</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-cat">Collaboration</span>
+          <span class="cv-skill-val">Cross-functional teams, Workshop facilitation, Keynote presentations, Beta testing, QA, SDLC</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="cv-section">
+      <h2 class="cv-section-heading">Experience</h2>
+
+      <div class="cv-role">
+        <div class="cv-role-meta">
+          <span class="cv-role-title">Creative Technologist / Developer Advocate</span>
+          <span class="cv-role-company">Intuit</span>
+          <span class="cv-role-date">Nov 2022 – Sept 2024</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Built and shipped engineer-facing tools and interactive learning experiences used by 7,000+ global employees, managing the full development lifecycle from prototype through public deployment.</li>
+          <li>Maintained and evolved design systems and documentation standards across multiple business units, ensuring visual and functional consistency across teams.</li>
+          <li>Designed and led the InnerSource Tournament — a company-wide creative challenge that built community and modernized collaborative tooling across AI &amp; Data teams.</li>
+          <li>Presented new platform capabilities to 7,000+ global employees; rebuilt Intuit's open-source website to better reflect engineering culture externally.</li>
+        </ul>
+      </div>
+
+      <div class="cv-role">
+        <div class="cv-role-meta">
+          <span class="cv-role-title">Creative Technologist / Developer Advocate</span>
+          <span class="cv-role-company">Wix</span>
+          <span class="cv-role-date">Feb 2020 – Oct 2022</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Prototyped, tested, and shipped the full keynote demo experience for Wix DevCon — a live, high-exposure public application built for a global developer audience.</li>
+          <li>Conducted user research and beta testing with external users to validate UX decisions and inform product development.</li>
+          <li>Led NYC meetups and workshops on JavaScript and design-to-code transitions, building a community bridge between designers and developers.</li>
+        </ul>
+      </div>
+
+      <div class="cv-role">
+        <div class="cv-role-meta">
+          <span class="cv-role-title">Front-End Developer &amp; Designer</span>
+          <span class="cv-role-company">WET &nbsp;·&nbsp; Pixomondo &nbsp;·&nbsp; CIBT</span>
+          <span class="cv-role-date">2017 – 2019</span>
+        </div>
+        <ul class="cv-bullets">
+          <li>Built web applications, marketing sites, and internal tools across entertainment, travel, and corporate sectors using VueJS, WordPress, and custom front-end stacks.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Speaking & Community -->
+    <section class="cv-section">
+      <h2 class="cv-section-heading">Speaking &amp; Community</h2>
+      <p class="cv-speaking">
+        Keynote Speaker — Wix DevCon
+        <span class="cv-sep">·</span>
+        Organizer &amp; Host — NYC Developer Meetups
+        <span class="cv-sep">·</span>
+        Technical Workshop Leader — JavaScript, Design Systems, React Security
+      </p>
+    </section>
+
+    <!-- Education -->
+    <section class="cv-section cv-section--last">
+      <h2 class="cv-section-heading">Education</h2>
+      <div class="cv-edu-list">
+        <div class="cv-edu-item">
+          <span class="cv-edu-degree">Certification in Fashion Design</span>
+          <span class="cv-edu-school">Parsons School of Design – The New School</span>
+        </div>
+        <div class="cv-edu-item">
+          <span class="cv-edu-degree">Sewing &amp; Garment Construction</span>
+          <span class="cv-edu-school">Fashion Institute of Technology (FIT)</span>
+        </div>
+        <div class="cv-edu-item">
+          <span class="cv-edu-degree">B.A. International Relations &nbsp;·&nbsp; Studio Art (Printmaking)</span>
+          <span class="cv-edu-school">University of Virginia</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</MainLayout>
+
+<style>
+  .cv-wrapper {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 140px 48px 140px;
+  }
+
+  /* ── DOWNLOAD BUTTON ── */
+  .cv-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 52px;
+  }
+
+  .cv-dl-btn {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 11px 24px;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    cursor: none;
+  }
+  .cv-dl-btn:hover {
+    border-color: var(--black);
+    color: var(--sienna);
+  }
+
+  /* ── HEADER ── */
+  .cv-header {
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cv-name {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 7vw, 72px);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    color: var(--black);
+  }
+
+  .cv-subtitle {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .cv-contact {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cv-contact a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .cv-contact a:hover { color: var(--black); }
+
+  .cv-sep { color: var(--border); }
+
+  /* ── SUMMARY ── */
+  .cv-summary {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text-body);
+    font-weight: 300;
+    margin-bottom: 0;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── SECTIONS ── */
+  .cv-section {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cv-section--last { border-bottom: none; }
+
+  .cv-section-heading {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── SKILLS ── */
+  .cv-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cv-skill-row {
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .cv-skill-cat {
+    font-weight: 400;
+    color: var(--black);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .cv-skill-val {
+    color: var(--text-body);
+    font-weight: 300;
+  }
+
+  /* ── EXPERIENCE ── */
+  .cv-role {
+    margin-bottom: 32px;
+  }
+  .cv-role:last-child { margin-bottom: 0; }
+
+  .cv-role-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 10px;
+    margin-bottom: 12px;
+  }
+
+  .cv-role-title {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--black);
+  }
+
+  .cv-role-company {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sienna);
+    font-family: var(--font-body);
+  }
+
+  /* push date to the right */
+  .cv-role-date {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    white-space: nowrap;
+    font-family: var(--font-body);
+    align-self: center;
+  }
+
+  .cv-bullets {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .cv-bullets li {
+    font-size: 13px;
+    line-height: 1.78;
+    color: var(--text-body);
+    font-weight: 300;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .cv-bullets li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  /* ── SPEAKING ── */
+  .cv-speaking {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-body);
+    font-weight: 300;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── EDUCATION ── */
+  .cv-edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cv-edu-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cv-edu-degree {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--black);
+    line-height: 1.2;
+  }
+
+  .cv-edu-school {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .cv-wrapper { padding: 110px 28px 100px; }
+    .cv-skill-row { grid-template-columns: 120px 1fr; }
+    .cv-role-date { margin-left: 0; width: 100%; }
+  }
+
+  @media (max-width: 600px) {
+    .cv-skill-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

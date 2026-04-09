@@ -1,5 +1,15 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+
+const process: { src: string; alt: string; caption?: string; note?: string }[] = [
+  { src: '/images/weaving/scrap-yarns.png', alt: 'Scrap yarns sourced from the studio remnant supply', caption: 'scrap yarns, unidentified' },
+  {
+    src: '/images/weaving/organizing-textiles.png',
+    alt: 'Scraps organized by color before weaving',
+    caption: 'organizing by color',
+    note: 'Scraps organized by color before warping. Most pieces were 1–2 inches long, so each strand had to be knotted together by hand to build a workable length.'
+  },
+];
 ---
 
 <MainLayout title="Weaving — Karen Dettmar">
@@ -130,6 +140,77 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
     .lightbox-close:hover { color: rgba(237,229,208,1); }
 
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.7;
+      margin-bottom: 1.5rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--border);
+      display: block;
+    }
+
+    /* ── PROCESS GRID ── */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      margin-bottom: 0;
+    }
+
+    .process-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .process-item img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
+      cursor: zoom-in;
+    }
+    .process-item:hover img { opacity: 0.9; transform: scale(1.01); }
+
+    .process-caption {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 8px 0 4px;
+    }
+
+    .process-note {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      font-weight: 300;
+      max-width: 48ch;
+      padding-top: 4px;
+    }
+
+    /* ── RESULT NOTE ── */
+    .result-note {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      font-weight: 300;
+      margin-top: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .process-grid { grid-template-columns: 1fr; }
+      .process-item img { height: 260px; }
+    }
+
     /* ── PROJECT NAV ── */
     .project-nav {
       display: flex;
@@ -176,14 +257,14 @@ import MainLayout from '../../layouts/MainLayout.astro';
       <span class="page-label">Textile Practice · Fiber · Structure</span>
       <h1 class="page-title">Weaving</h1>
       <p class="page-desc">
-        Hand-woven textile exploring warp and weft structure. Materials sourced from a local weaving studio in the Upper East Side — old yarn and felting scraps purchased directly from the studio's remnant supply. Working with pre-loved materials introduced an element of chance: the color palette and texture were determined by what was available, making the sourcing as much a part of the process as the weaving itself.
+        Hand-woven textile exploring warp and weft structure. Materials sourced from a local weaving studio in the Upper East Side. Old yarn and felting scraps purchased directly from the studio's remnant supply. Working with pre-loved materials introduced an element of chance: the color palette and texture were determined by what was available, making the sourcing as much a part of the process as the weaving itself.
       </p>
     </header>
 
     <div class="meta-row">
       <div class="meta-item">
         <span class="meta-label">Fiber</span>
-        <span class="meta-value">Reclaimed wool · Mixed yarn</span>
+        <span class="meta-value">Reclaimed wool · Mixed yarn · Synthetic and Natural</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Materials</span>
@@ -191,13 +272,28 @@ import MainLayout from '../../layouts/MainLayout.astro';
       </div>
       <div class="meta-item">
         <span class="meta-label">Source</span>
-        <span class="meta-value">Local weaving studio, Upper East Side</span>
+        <span class="meta-value">Local weaving studio </span>
       </div>
     </div>
 
+    <span class="section-label">Process</span>
+    <div class="process-grid">
+      {process.map(img => (
+        <div class="process-item">
+          <div class="lightbox-trigger" data-src={img.src} data-alt={img.alt}>
+            <img src={img.src} alt={img.alt} loading="lazy" />
+          </div>
+          {img.caption && <p class="process-caption">{img.caption}</p>}
+          {img.note && <p class="process-note">{img.note}</p>}
+        </div>
+      ))}
+    </div>
+
+    <span class="section-label">Result</span>
     <div class="image-full lightbox-trigger" data-src="/images/weaving/weaving.JPG" data-alt="Woven sample using reclaimed yarn and felting scraps">
       <img src="/images/weaving/weaving.JPG" alt="Woven sample using reclaimed yarn and felting scraps" />
     </div>
+    <p class="result-note">Final piece: 27 warp ends &nbsp;·&nbsp; 104 weft passes &nbsp;·&nbsp; Simple basket weave.</p>
 
     <div class="project-nav">
       <a href="/projects/felting" class="project-nav-link">← Felting</a>

@@ -285,13 +285,32 @@ const finals: { src: string; alt: string; caption?: string }[] = [
     }
     .next-all:hover { color: var(--m-purple); }
 
+    /* ── PAINT DRIP DECORATION ── */
+    .marbling-page {
+      position: relative;
+      overflow: visible;
+    }
+
+    .paintdrip-decor {
+      position: absolute;
+      top: 5rem;
+      right: 0;
+      width: 220px;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
     @media (max-width: 768px) {
       .image-grid { columns: 1; }
       .meta-row { gap: 2rem; }
+      .paintdrip-decor { display: none; }
     }
   </style>
 
   <div class="marbling-page">
+
+    <img src="/images/marbling/paintdrip1.png" alt="" class="paintdrip-decor" aria-hidden="true" />
 
     <nav class="back-nav">
       <a href="/projects/textiles">← Textile Practice</a>

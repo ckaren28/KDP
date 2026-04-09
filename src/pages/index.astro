@@ -187,55 +187,135 @@ const hasIllustrations = illustrations.length > 0;
     }
     .featured-see-all:hover { color: var(--black); }
 
+    /* ── CINEMATIC SCENE ── */
+    .scene-canvas {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      background: #0d0a07;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+
+    /* Scarf standalone (overridden when inside .scene-scarf-wrap) */
+    .scene-scarf {
+      display: block;
+    }
+
+    @keyframes suitcase-breathe {
+      0%   { transform: translate(-50%, -50%) rotate(-1deg) translateY(0px); }
+      100% { transform: translate(-50%, -50%) rotate(1deg)  translateY(3px); }
+    }
+
+    /* Suitcase clip wrapper — crops the right-edge seam */
+    .scene-suitcase-wrap {
+      position: absolute;
+      width: 85%;
+      left: 15%;
+      top: 58%;
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+      /* z-index: 1; */
+      cursor: pointer;
+      animation: suitcase-breathe 3s ease-in-out infinite alternate;
+    }
+
+    /* Suitcase: sits on top, left of center */
+    .scene-suitcase {
+      display: block;
+      width: 110%;
+      object-fit: cover;
+      object-position: left center;
+      clip-path: inset(0 8% 0 0);
+      mix-blend-mode: screen;
+      border: none; outline: none;
+    }
+
+    /* Hover dark overlay — strictly contained within its own wrapper */
+    .scene-hover-dark {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .scene-suitcase-wrap:hover .scene-hover-dark,
+    .scene-scarf-wrap:hover     .scene-hover-dark { opacity: 1; }
+
+    /* Scarf wrapper for hover dark overlay */
+    .scene-scarf-wrap {
+      position: absolute;
+      bottom: 0; right: -25%;
+      height: 100%;
+      z-index: 1;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    /* Move the scarf video styles into the wrapper context */
+    .scene-scarf-wrap .scene-scarf {
+      position: relative;
+      bottom: auto; right: auto;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: screen;
+      transform: rotate(180deg);
+      border: none; outline: none;
+    }
+
+    /* Overlays — position set by JS at hover time */
+    .scene-overlay {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .scene-overlay.visible { opacity: 1; }
+    .scene-overlay--suitcase { z-index: 4; }
+    .scene-overlay--scarf    { z-index: 3; }
+
+    .scene-tag {
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 228, 0.5);
+    }
+
+    .scene-title {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2.2vw, 30px);
+      font-style: italic;
+      font-weight: 300;
+      color: #F5F0E4;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .scene-link {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 228, 0.55);
+    }
+
+    /* ── FEATURED CARD BODIES (below canvas) ── */
     .featured-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      gap: 0;
     }
-
-    .featured-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      border: 1px solid var(--border);
-      cursor: none;
-      overflow: hidden;
-      transition: border-color 0.3s ease;
-    }
-    .featured-card:hover { border-color: var(--black); }
-
-    .featured-card-preview {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      background: var(--warm-white);
-      position: relative;
-    }
-
-    .featured-card-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      display: block;
-    }
-    .featured-card:hover .featured-card-preview img { transform: scale(1.03); }
-
-    /* CSS pattern preview for textile tool */
-    .pattern-preview {
-      width: 100%;
-      height: 100%;
-      background-color: var(--black);
-      background-image:
-        repeating-linear-gradient(45deg,  transparent, transparent 12px, rgba(180,92,56,0.18) 12px, rgba(180,92,56,0.18) 14px),
-        repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(196,168,130,0.12) 12px, rgba(196,168,130,0.12) 14px),
-        repeating-linear-gradient(0deg,   transparent, transparent 24px, rgba(200,190,170,0.06) 24px, rgba(200,190,170,0.06) 25px);
-      transition: opacity 0.4s ease;
-    }
-    .featured-card:hover .pattern-preview { opacity: 0.85; }
 
     .featured-card-body {
-      padding: 24px 28px 28px;
+      padding: 20px 28px 24px;
     }
 
     .featured-card-track {
@@ -243,28 +323,47 @@ const hasIllustrations = illustrations.length > 0;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--sienna);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       display: block;
     }
 
     .featured-card-title {
       font-family: var(--font-display);
-      font-size: clamp(20px, 2vw, 28px);
+      font-size: clamp(18px, 1.8vw, 24px);
       font-weight: 300;
       font-style: italic;
       line-height: 1.1;
       letter-spacing: -0.01em;
       color: var(--black);
-      margin-bottom: 8px;
-      transition: color 0.3s;
     }
-    .featured-card:hover .featured-card-title { color: var(--sienna); }
 
-    .featured-card-desc {
-      font-size: 12px;
-      line-height: 1.7;
-      color: var(--text-body);
-      font-weight: 300;
+    @media (max-width: 768px) {
+      .scene-canvas { height: auto; }
+      .scene-scarf {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+      }
+      .scene-suitcase {
+        position: relative;
+        display: block;
+        width: 70%;
+        left: auto; top: auto;
+        transform: none;
+        margin: 0 auto;
+      }
+      .scene-overlay--suitcase {
+        left: 50%;
+        top: 0%;
+        transform: translateX(-50%);
+      }
+      .scene-overlay--scarf {
+        right: auto;
+        left: 40%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
 
     @media (max-width: 900px) {
@@ -378,7 +477,7 @@ const hasIllustrations = illustrations.length > 0;
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>
       {hasIllustrations && <li><a href="/illustrations">Illustrations</a></li>}
-      <li><a href="/Karen-Dettmar-CV.pdf" target="_blank">CV</a></li>
+      <li><a href="/cv">CV</a></li>
     </ul>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
   </nav>
@@ -393,31 +492,37 @@ const hasIllustrations = illustrations.length > 0;
     <div class="featured-header">
       <span class="featured-eyebrow">Featured Projects</span>
     </div>
-    <div class="featured-grid">
+    <!-- cinematic scene -->
+    <div class="scene-canvas" id="sceneCanvas">
 
-      <a href="/projects/traveller" class="featured-card">
-        <div class="featured-card-preview">
-          <img src="/images/traveller/Traveller-moodboard.png" alt="Traveler collection moodboard" />
-        </div>
-        <div class="featured-card-body">
-          <span class="featured-card-track">Fashion</span>
-          <h3 class="featured-card-title">Traveler</h3>
-          <p class="featured-card-desc">A wearable collection built for movement and impermanence.</p>
-        </div>
-      </a>
+      <!-- Scarf: full-canvas background, z-index 1 -->
+      <div class="scene-scarf-wrap" id="scarfWrap">
+        <video class="scene-scarf" id="vidScarf" autoplay muted loop playsinline>
+          <source src="/videos/scarf.mp4" type="video/mp4" />
+        </video>
+        <div class="scene-hover-dark"></div>
+      </div>
+      <div class="scene-overlay scene-overlay--scarf" id="overlayScarf">
+        <span class="scene-tag">Technology</span>
+        <span class="scene-title">Generative Textile Pattern Tool</span>
+        <span class="scene-link">View project</span>
+      </div>
 
-      <a href="/projects/textile-pattern-generator" class="featured-card">
-        <div class="featured-card-preview">
-          <div class="pattern-preview"></div>
-        </div>
-        <div class="featured-card-body">
-          <span class="featured-card-track">Technology</span>
-          <h3 class="featured-card-title">Generative Textile Pattern Tool</h3>
-          <p class="featured-card-desc">Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable.</p>
-        </div>
-      </a>
+      <!-- Suitcase: on top, left of center, z-index 2 -->
+      <div class="scene-suitcase-wrap" id="suitcaseWrap">
+        <video class="scene-suitcase" id="vidSuitcase" autoplay muted loop playsinline>
+          <source src="/videos/suitcase.mp4" type="video/mp4" />
+        </video>
+        <div class="scene-hover-dark"></div>
+      </div>
+      <div class="scene-overlay scene-overlay--suitcase" id="overlaySuitcase">
+        <span class="scene-tag">Fashion</span>
+        <span class="scene-title">Traveller</span>
+        <span class="scene-link">View project</span>
+      </div>
 
     </div>
+
   </section>
 
   <!-- CONTACT -->
@@ -428,7 +533,7 @@ const hasIllustrations = illustrations.length > 0;
     </a>
     <div class="contact-sub-links">
       <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-sub-link">LinkedIn</a>
-      <a href="/Karen-Dettmar-CV.pdf" target="_blank" class="contact-sub-link">Résumé</a>
+      <a href="/Karen_Dettmar_CV.pdf" target="_blank" class="contact-sub-link">Résumé</a>
     </div>
   </div>
 
@@ -439,6 +544,44 @@ const hasIllustrations = illustrations.length > 0;
   </footer>
 
   <script>
+    // CINEMATIC SCENE — hover on wrapper divs, overlay centered over wrapper
+    const sceneCanvas     = document.getElementById('sceneCanvas')    as HTMLElement | null;
+    const vidSuitcase     = document.getElementById('vidSuitcase')    as HTMLVideoElement | null;
+    const vidScarf        = document.getElementById('vidScarf')       as HTMLVideoElement | null;
+    const suitcaseWrap    = document.getElementById('suitcaseWrap')   as HTMLElement | null;
+    const scarfWrap       = document.getElementById('scarfWrap')      as HTMLElement | null;
+    const overlaySuitcase = document.getElementById('overlaySuitcase') as HTMLElement | null;
+    const overlayScarf    = document.getElementById('overlayScarf')    as HTMLElement | null;
+
+    function centerOverlay(el: HTMLElement, overlay: HTMLElement) {
+      if (!sceneCanvas) return;
+      const er = el.getBoundingClientRect();
+      const cr = sceneCanvas.getBoundingClientRect();
+      overlay.style.left      = (er.left - cr.left + er.width  / 2) + 'px';
+      overlay.style.top       = (er.top  - cr.top  + er.height / 2) + 'px';
+      overlay.style.transform = 'translate(-50%, -50%)';
+    }
+
+    suitcaseWrap?.addEventListener('mouseenter', () => {
+      vidSuitcase?.pause();
+      if (overlaySuitcase && suitcaseWrap) { centerOverlay(suitcaseWrap, overlaySuitcase); overlaySuitcase.classList.add('visible'); }
+    });
+    suitcaseWrap?.addEventListener('mouseleave', () => {
+      vidSuitcase?.play();
+      overlaySuitcase?.classList.remove('visible');
+    });
+    suitcaseWrap?.addEventListener('click', () => { window.location.href = '/projects/traveller'; });
+
+    scarfWrap?.addEventListener('mouseenter', () => {
+      vidScarf?.pause();
+      if (overlayScarf && scarfWrap) { centerOverlay(scarfWrap, overlayScarf); overlayScarf.classList.add('visible'); }
+    });
+    scarfWrap?.addEventListener('mouseleave', () => {
+      vidScarf?.play();
+      overlayScarf?.classList.remove('visible');
+    });
+    scarfWrap?.addEventListener('click', () => { window.location.href = '/projects/textile-pattern-generator'; });
+
     // CURSOR
     const cursor = document.getElementById('cursor') as HTMLElement | null;
     const ring = document.getElementById('cursorRing') as HTMLElement | null;

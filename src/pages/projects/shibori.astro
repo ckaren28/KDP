@@ -12,6 +12,7 @@ const finals: { src: string; alt: string; caption?: string }[] = [
 ];
 
 const process: { src: string; alt: string; caption?: string }[] = [
+   { src: '/images/shibori/shibori-process-binding.png', alt: 'binding process', caption: 'Binding cloth' },
   { src: '/images/shibori/indigo-dying-process.gif', alt: 'Indigo dyeing process', caption: 'Indigo Dye Bath' },
   { src: '/images/shibori/Shibori-process1.JPG', alt: 'Shibori process — dye bath', caption: 'Oxidation' },
   { src: '/images/shibori/Shibori-process2.JPG', alt: 'Shibori process — reveal', caption: 'Unfolding the resist' },
@@ -147,9 +148,9 @@ const process: { src: string; alt: string; caption?: string }[] = [
 
     .process-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 4px;
-      max-width: 70%;
+      max-width: 100%;
     }
 
     .process-grid .image-item {

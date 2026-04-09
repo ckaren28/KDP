@@ -40,7 +40,7 @@ const textile = [
     alt: 'Felted textile',
     label: 'Fiber · Construction',
     title: 'Felting',
-    desc: 'Wet felting exploration in texture and form.',
+    desc: 'Felting exploration in texture and form.',
   },
   {
     href: '/projects/weaving',
@@ -385,6 +385,38 @@ const knitting = [
     }
     .knit-lightbox-close:hover { color: rgba(237,229,208,1); }
 
+    /* ── HAND KNITTING SECTION WRAPPER ── */
+    .knit-section {
+      position: relative;
+      overflow: visible;
+    }
+    .yarn-decor {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+    .yarn-topright {
+      top: 0;
+      right: -50px;
+      bottom: 0;
+      width: 400px;
+      height: 116%;
+    }
+    .yarn-bottomleft {
+      bottom: -7em;
+      left: 15%;
+      width: 160px;
+    }
+    /* Ensure slider content sits above the yarn decorations */
+    #knitSlider {
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .yarn-decor { display: none; }
+    }
+
     /* ── PROJECT NAV ── */
     .project-nav {
       display: flex;
@@ -460,8 +492,11 @@ const knitting = [
     <hr class="section-divider" />
 
     <!-- ── HAND KNITTING ── -->
-    <span class="section-heading">Hand Knitting</span>
-    <div class="knit-slider" id="knitSlider">
+    <div class="knit-section">
+      <img src="/images/knitting/yarn-top.png" alt="" class="yarn-decor yarn-topright" aria-hidden="true" />
+      <img src="/images/knitting/yarn-bottom.png" alt="" class="yarn-decor yarn-bottomleft" aria-hidden="true" />
+      <span class="section-heading">Hand Knitting</span>
+      <div class="knit-slider" id="knitSlider">
       <div class="knit-track">
         <div class="knit-slides" id="knitSlides">
           {knitting.map(k => (
@@ -483,6 +518,7 @@ const knitting = [
         <button class="knit-btn" id="knitNext">Next →</button>
       </div>
     </div>
+    </div>{/* end .knit-section */}
 
     <div class="project-nav">
       <a href="/projects/technical-flats" class="project-nav-link">← Technical Flats</a>

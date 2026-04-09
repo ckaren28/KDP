@@ -2,10 +2,10 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 
 const images: { src: string; alt: string; caption?: string }[] = [
-  { src: '/images/felting/felted-art1.JPG', alt: 'Felted knit — result 1' },
-  { src: '/images/felting/felted-art2.JPG', alt: 'Felted knit — result 2' },
+  { src: '/images/felting/felted-art1.JPG', alt: 'Dry Felted knit — result 1' },
+  { src: '/images/felting/felted-art2.JPG', alt: 'Dry Felted knit — result 2' },
   { src: '/images/felting/mini-sweater-before.JPG', alt: 'Mini knitted sweater before felting', caption: 'Before — knitted mini sweater' },
-  { src: '/images/felting/mini-sweater-after-felt.JPG', alt: 'Mini sweater after felting process', caption: 'After — post-felting' },
+  { src: '/images/felting/mini-sweater-after-felt.JPG', alt: 'Mini sweater after wet felting process', caption: 'After — post-felting' },
 ];
 ---
 
@@ -233,7 +233,7 @@ const images: { src: string; alt: string; caption?: string }[] = [
       <span class="page-label">Textile Practice · Fiber · Construction</span>
       <h1 class="page-title">Felting</h1>
       <p class="page-desc">
-        Dry felting exploration in texture and form. Starting from a hand-knitted mini sweater, the felting process — heat, agitation, and moisture — binds the wool fibers together and collapses the stitch definition. The before and after document the transformation: from open knit structure to a dense, matted surface where the original stitches dissolve into one unified fabric.
+        Felting exploration in texture and form. Starting from a hand-knitted mini sweater, the felting process (heat, agitation, and moisture) binds the wool fibers together and collapses the stitch definition. The before and after document the transformation: from open knit structure to a dense, matted surface where the original stitches dissolve into one unified fabric.
       </p>
     </header>
 
@@ -253,7 +253,7 @@ const images: { src: string; alt: string; caption?: string }[] = [
     </div>
 
     <!-- Before / After first -->
-    <p class="section-label">Before &amp; After</p>
+    <p class="section-label">Wet Felting Before &amp; After</p>
     <div class="before-after">
       {images.slice(2).map((img) => (
         <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
@@ -264,7 +264,7 @@ const images: { src: string; alt: string; caption?: string }[] = [
     </div>
 
     <!-- Results -->
-    <p class="section-label">Results</p>
+    <p class="section-label">Dry/Needle Felting on Muslin</p>
     <div class="image-grid">
       {images.slice(0, 2).map((img) => (
         <div class="image-item lightbox-trigger" data-src={img.src} data-alt={img.alt}>
