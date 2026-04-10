@@ -25,12 +25,6 @@ import MainLayout from '../../layouts/MainLayout.astro';
     .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .back-nav a:hover { color: var(--black); }
 
-    .page-header {
-      margin-bottom: 4rem;
-      padding-bottom: 3rem;
-      border-bottom: 1px solid var(--border);
-    }
-
     .page-label {
       font-family: var(--font-body);
       font-size: 0.7rem;
@@ -422,6 +416,219 @@ import MainLayout from '../../layouts/MainLayout.astro';
       padding-left: 1.2rem;
     }
 
+    /* ── HEADER TWO-COLUMN ── */
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 4rem;
+      align-items: start;
+      margin-bottom: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── HEADER VISUAL ── */
+    .header-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Artwork rotating display */
+    .artwork-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .artwork-frame-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 809 / 908;
+      /* transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1); */
+    }
+
+    .artwork-stage {
+      position: absolute;
+      inset: 11% 10.5% 13% 10.5%;
+      overflow: hidden;
+    }
+
+    .artwork-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .artwork-slide.active { opacity: 1; }
+
+    .frame-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      display: block;
+    }
+
+    /* Loading placeholder inside frame */
+    .artwork-loading {
+      position: absolute;
+      inset: 0;
+      background: #EDE6D8;
+      transition: opacity 0.6s ease;
+    }
+    .artwork-loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .artwork-caption {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.4em;
+      transition: opacity 0.4s ease;
+    }
+
+    /* ── MUSEUM WALL LABEL CARD ── */
+    .wall-label-card {
+      background: #FAF7F1;
+      border: 1px solid #D8CCBA;
+      padding: 1.2rem 1.4rem 1.25rem;
+      position: relative;
+    }
+    .wall-label-card::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(190,170,130,0.28);
+      pointer-events: none;
+    }
+    .wlc-eyebrow {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #A89070;
+      margin-bottom: 0.55rem;
+    }
+    .wlc-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 300;
+      font-style: italic;
+      color: #2C2416;
+      margin-bottom: 0.2rem;
+      line-height: 1.2;
+    }
+    .wlc-meta {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      color: #8A7A64;
+      margin-bottom: 0.65rem;
+      font-weight: 300;
+    }
+    .wlc-body {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      line-height: 1.8;
+      color: #3D3020;
+      font-weight: 300;
+    }
+    .wlc-body.placeholder {
+      color: #B8AA94;
+      font-style: italic;
+    }
+
+    @media (max-width: 900px) {
+      .page-header { grid-template-columns: 1fr; gap: 2.5rem; }
+      .header-visual { max-width: 280px; margin: 0 auto; }
+    }
+
+    /* ── YOUR ARTWORK SECTION ── */
+    .your-artwork-section {
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .your-artwork-section > .section-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .your-artwork-inner {
+      max-width: 360px;
+    }
+    .upload-area {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border: 1px dashed var(--border);
+      background: #FAF7F1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+      margin-bottom: 1.25rem;
+    }
+    .upload-area:hover,
+    .upload-area.drag-over { border-color: var(--sienna); }
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-placeholder {
+      text-align: center;
+      pointer-events: none;
+      padding: 1rem;
+    }
+    .upload-icon {
+      font-size: 1.4rem;
+      color: var(--muted);
+      opacity: 0.35;
+      margin-bottom: 0.6rem;
+    }
+    .upload-placeholder p {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+    }
+    .upload-placeholder p strong {
+      color: var(--black);
+      font-weight: 400;
+    }
+    .uploaded-preview {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
     /* ── PROJECT NAV ── */
     .project-nav {
       display: flex;
@@ -465,14 +672,39 @@ import MainLayout from '../../layouts/MainLayout.astro';
     </nav>
 
     <header class="page-header">
-      <span class="page-label">Creative Technology · Tool</span>
-      <h1 class="page-title">Museum Label Generator</h1>
-      <p class="page-desc">
-        Draft wall labels, extended labels, kids labels, audio scripts, alt text, and curator notes from a source description. Built to support human editorial control.
-      </p>
-      <p class="page-desc" style="margin-top:0.75rem;font-style:italic;color:var(--muted)">
-        Originally built for museum contexts — equally useful for fashion archive descriptions, collection notes, and garment documentation.
-      </p>
+      <div class="header-text">
+        <span class="page-label">Creative Technology · Tool</span>
+        <h1 class="page-title">Museum Label Generator</h1>
+        <p class="page-desc">
+          Draft wall labels, extended labels, kids labels, audio scripts, alt text, and curator notes from a source description. Built to support human editorial control.
+        </p>
+        <p class="page-desc" style="margin-top:0.75rem;font-style:italic;color:var(--muted)">
+          Originally built for museum contexts — equally useful for fashion archive descriptions, collection notes, and garment documentation.
+        </p>
+      </div>
+
+      <div class="header-visual">
+
+        <!-- Rotating artwork display -->
+        <div class="artwork-display">
+          <div class="artwork-frame-wrap" id="artworkFrameWrap">
+            <div class="artwork-stage" id="artworkStage">
+              <div class="artwork-loading" id="artworkLoading"></div>
+            </div>
+            <img src="/images/frame.png" alt="" class="frame-img" aria-hidden="true" />
+          </div>
+          <!-- <p class="artwork-caption" id="artworkCaption"></p> -->
+        </div>
+
+        <!-- Museum wall label card -->
+        <div class="wall-label-card">
+          <span class="wlc-eyebrow">Wall Label</span>
+          <div class="wlc-title" id="wlc-title">Untitled</div>
+          <div class="wlc-meta" id="wlc-meta">Artist unknown · Date unknown</div>
+          <p class="wlc-body placeholder" id="wlc-body"> AHH I don't know how to describe this?? Use the generator.</p>
+        </div>
+
+      </div>
     </header>
 
     <div class="tool-grid">
@@ -652,15 +884,193 @@ Render cards + copy tools</pre>
 
     </div>
 
+    <!-- ── YOUR ARTWORK ── -->
+    <section class="your-artwork-section">
+      <span class="section-label">Your artwork</span>
+      <div class="your-artwork-inner">
+
+        <!-- Image upload -->
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="artworkUpload" accept="image/jpeg,image/png,image/gif,image/webp" />
+          <div class="upload-placeholder" id="uploadPlaceholder">
+            <div class="upload-icon">⊕</div>
+            <p><strong>Click or drag</strong> to upload<br>JPG · PNG · GIF · WebP</p>
+          </div>
+          <img class="uploaded-preview" id="uploadedPreview" src="" alt="Your uploaded artwork" />
+        </div>
+
+        <!-- User's generated wall label -->
+        <div class="wall-label-card">
+          <span class="wlc-eyebrow">Wall Label</span>
+          <div class="wlc-title" id="user-wlc-title">Untitled</div>
+          <div class="wlc-meta" id="user-wlc-meta">Artist unknown · Date unknown</div>
+          <p class="wlc-body placeholder" id="user-wlc-body">Generate a label above to see your draft here.</p>
+        </div>
+
+      </div>
+    </section>
+
     <div class="project-nav">
       <a href="/projects/garment-construction-decoder" class="project-nav-link">← Garment Construction Decoder</a>
-      <a href="/projects/wix-devcon" class="project-nav-link">Wix DevCon →</a>
+      <a href="/projects/wix-devcon" class="project-nav-link">DevCon →</a>
     </div>
     <div class="next-project">
       <a href="/projects/tech" class="next-all">← Creative Technology</a>
     </div>
 
   </div>
+
+  <script>
+  // ── ARTWORK ROTATOR — Met Museum Open Access API (random) ──
+  (() => {
+    const MET_SEARCH = 'https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&isPublicDomain=true&q=painting';
+    const MET_OBJ    = (id: number) => `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+    const TARGET     = 5;   // artworks to display
+    const POOL       = 20;  // IDs to sample from search results
+
+    const stage    = document.getElementById('artworkStage')   as HTMLElement | null;
+    const loader   = document.getElementById('artworkLoading') as HTMLElement | null;
+    const caption  = document.getElementById('artworkCaption') as HTMLElement | null;
+    const frameWrap = document.getElementById('artworkFrameWrap') as HTMLElement | null;
+
+    // Single static tilt for the frame — never changes during cycling
+    if (frameWrap) frameWrap.style.transform = 'rotate(-1.2deg)';
+
+    // Create two img elements for crossfade (A/B swap)
+    const imgA = document.createElement('img');
+    const imgB = document.createElement('img');
+    for (const img of [imgA, imgB]) {
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.9s ease;opacity:0;';
+      stage?.appendChild(img);
+    }
+    let front = imgA;  // currently visible
+    let back  = imgB;  // preloading next
+
+    interface Artwork { url: string; title: string; artist: string; date: string; medium: string; }
+    let artworks: Artwork[] = [];
+    let current  = 0;
+    let timer: number | null = null;
+    let paused   = false;
+
+    function captionText(a: Artwork): string {
+      const meta = [a.artist, a.date].filter(Boolean).join(', ');
+      return [a.title, meta].filter(Boolean).join(' — ');
+    }
+
+    function updateHeaderCard(a: Artwork) {
+      const wlcTitle = document.getElementById('wlc-title');
+      const wlcMeta  = document.getElementById('wlc-meta');
+      if (wlcTitle) wlcTitle.textContent = a.title || 'Untitled';
+      if (wlcMeta) {
+        const parts = [a.artist, a.date, a.medium].filter(Boolean);
+        wlcMeta.textContent = parts.length ? parts.join(' · ') : 'Artist unknown';
+      }
+    }
+
+    function showArtwork(index: number, instant = false) {
+      const a = artworks[index];
+      if (!a) return;
+
+      // Preload into back buffer
+      back.src = a.url;
+
+      function reveal() {
+        // Fade out front, fade in back
+        front.style.opacity = '0';
+        back.style.opacity  = '1';
+        if (caption) {
+          caption.style.opacity = '0';
+          setTimeout(() => {
+            caption!.textContent = captionText(a);
+            caption!.style.opacity = '1';
+          }, 450);
+        }
+        // Update header wall label card with Met API metadata
+        updateHeaderCard(a);
+        // Swap roles
+        [front, back] = [back, front];
+      }
+
+      if (instant || back.complete) {
+        reveal();
+      } else {
+        back.addEventListener('load',  reveal, { once: true });
+        back.addEventListener('error', reveal, { once: true }); // show anyway
+      }
+    }
+
+    function advance() {
+      if (paused || artworks.length < 2) return;
+      current = (current + 1) % artworks.length;
+      showArtwork(current);
+    }
+
+    function startCycle() {
+      if (timer !== null) clearInterval(timer);
+      timer = window.setInterval(advance, 4000);
+    }
+
+    // Hover pause / resume
+    frameWrap?.addEventListener('mouseenter', () => { paused = true; });
+    frameWrap?.addEventListener('mouseleave', () => { paused = false; });
+
+    async function fetchArtwork(id: number): Promise<Artwork> {
+      const resp = await fetch(MET_OBJ(id));
+      if (!resp.ok) throw new Error(`${resp.status}`);
+      const d = await resp.json();
+      if (!d.primaryImage) throw new Error('no image');
+      return {
+        url:    d.primaryImage       as string,
+        title:  (d.title             || 'Untitled') as string,
+        artist: (d.artistDisplayName || '')         as string,
+        date:   (d.objectDate        || '')         as string,
+        medium: (d.medium            || '')         as string,
+      };
+    }
+
+    function shuffle<T>(arr: T[]): T[] {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    async function init() {
+      // 1. Get a pool of random public-domain painting IDs
+      let pool: number[] = [];
+      try {
+        const sr = await fetch(MET_SEARCH);
+        const sd = await sr.json();
+        pool = shuffle((sd.objectIDs as number[]) || []).slice(0, POOL);
+      } catch {
+        return; // search failed — loader stays
+      }
+
+      // 2. Fetch objects one at a time until we have TARGET successes
+      for (const id of pool) {
+        if (artworks.length >= TARGET) break;
+        try {
+          const a = await fetchArtwork(id);
+          artworks.push(a);
+
+          if (artworks.length === 1) {
+            // Show the very first artwork as soon as it's ready
+            loader?.classList.add('hidden');
+            showArtwork(0, true);
+          }
+        } catch {
+          // skip failed fetches silently
+        }
+      }
+
+      // 3. Start cycling once we have at least 2
+      if (artworks.length >= 2) startCycle();
+    }
+
+    init();
+  })();
+  </script>
 
   <script>
   (() => {
@@ -838,6 +1248,22 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
           });
         }
 
+        // Update "Your Artwork" wall label card with user's generated output
+        const userWlcTitle = document.getElementById('user-wlc-title');
+        const userWlcMeta  = document.getElementById('user-wlc-meta');
+        const userWlcBody  = document.getElementById('user-wlc-body');
+        if (userWlcTitle) userWlcTitle.textContent = title?.value || 'Untitled';
+        if (userWlcMeta) {
+          const parts = [artist?.value, year?.value, medium?.value].filter(Boolean);
+          userWlcMeta.textContent = parts.length ? parts.join(' · ') : 'Artist unknown · Date unknown';
+        }
+        if (userWlcBody) {
+          userWlcBody.textContent = data.wall_label || '';
+          userWlcBody.classList.remove('placeholder');
+        }
+        // Scroll the Your Artwork section into view so user sees their label
+        document.querySelector('.your-artwork-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
         if (loading) loading.style.display = "none";
         if (output)  output.style.display  = "block";
       } catch (e) {
@@ -848,6 +1274,45 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
           err.style.display = "block";
         }
       }
+    });
+  })();
+  </script>
+
+  <script>
+  // ── IMAGE UPLOAD ──
+  (() => {
+    const uploadArea    = document.getElementById('uploadArea');
+    const uploadInput   = document.getElementById('artworkUpload') as HTMLInputElement | null;
+    const placeholder   = document.getElementById('uploadPlaceholder');
+    const preview       = document.getElementById('uploadedPreview') as HTMLImageElement | null;
+
+    function handleFile(file: File) {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (!preview || !placeholder) return;
+        preview.src = e.target?.result as string;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    uploadInput?.addEventListener('change', () => {
+      const file = uploadInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    uploadArea?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('drag-over');
+    });
+    uploadArea?.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+    uploadArea?.addEventListener('drop', (e: DragEvent) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+      const file = e.dataTransfer?.files[0];
+      if (file) handleFile(file);
     });
   })();
   </script>

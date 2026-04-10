@@ -348,6 +348,55 @@ import MainLayout from '../../layouts/MainLayout.astro';
       text-align: center;
     }
 
+    /* ── MOCKUP SECTION ── */
+    .mockup-section {
+      margin-top: 80px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+    .mockup-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .mockup-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .mockup-frame {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: var(--warm-white, #F5F1E8);
+      padding: 28px 20px 20px;
+    }
+    .mockup-svg-container {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .mockup-svg-container svg {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    .mockup-name {
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 900px) {
       .tool-page { padding: 100px 24px 72px; }
@@ -380,7 +429,26 @@ import MainLayout from '../../layouts/MainLayout.astro';
       <span class="page-eyebrow">Creative Technology</span>
       <h1 class="page-title">Generative Textile <em>Pattern Tool</em></h1>
       <p class="page-desc">Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable.</p>
+
+      <div class="mockup-section">
+      <span class="mockup-label">Pattern in Context</span>
+      <div class="mockup-row">
+        <div class="mockup-frame">
+          <div class="mockup-svg-container" id="mockupChair"></div>
+          <span class="mockup-name">Chair</span>
+        </div>
+        <div class="mockup-frame">
+          <div class="mockup-svg-container" id="mockupCoat"></div>
+          <span class="mockup-name">Coat</span>
+        </div>
+        <div class="mockup-frame">
+          <div class="mockup-svg-container" id="mockupTote"></div>
+          <span class="mockup-name">Tote Bag</span>
+        </div>
+      </div>
+    </div>
     </header>
+    
 
     <div class="tool-layout">
 
@@ -443,6 +511,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     </div>
 
+    
+
     <div class="project-nav">
       <span></span>
       <a href="/projects/garment-construction-decoder" class="project-nav-link">Garment Construction Decoder →</a>
@@ -460,6 +530,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
     let density = 5;
     let frame = 0;
     let paused = false;
+    let organicOffset = 0;   // incremented 0.012/frame by the organic RAF loop
+    let organicRafId: number | null = null; // handle for cancelAnimationFrame
 
     // ── ELEMENTS ──
     const canvas = document.getElementById('patternCanvas');
@@ -555,42 +627,63 @@ import MainLayout from '../../layouts/MainLayout.astro';
       }
     }
 
-    function drawOrganic(ctx, W, H, colors, tileSize, frame) {
+    function drawOrganicFrame() {
+      const W = (canvas as HTMLCanvasElement).width;
+      const H = (canvas as HTMLCanvasElement).height;
+      const numBands  = density;
+      const bandHeight = H / numBands;
+
       ctx.fillStyle = colors[0];
       ctx.fillRect(0, 0, W, H);
 
-      // density 1 → 5 bands, density 10 → 19 bands
-      const numBands = Math.round(density * 1.5 + 3);
-      const bandH    = H / numBands;
-      const amplitude = bandH * 0.38;
-      const freqScale = 1 + (density - 1) * 0.18;
-      // slow downward scroll so waves drift across the full canvas
-      const scroll = (frame * 0.28) % bandH;
+      // Draw top → bottom: each band fills from its wavy edge down to canvas bottom.
+      // Later (lower) bands paint over the bottom portion of earlier bands, making
+      // each band's strip visible between its own wavy top and the next band's wavy top.
+      for (let i = 0; i <= numBands; i++) {
+        const colorIndex = i % colors.length;
+        ctx.fillStyle   = colors[colorIndex];
+        ctx.globalAlpha = 1.0;
 
-      // draw one extra row above and below to hide scroll seam
-      for (let row = -1; row < numBands + 1; row++) {
-        const baseY = row * bandH - scroll;
-        const phase = frame * 0.011 + row * 0.95;
-        const colorIdx = ((row % colors.length) + colors.length) % colors.length;
+        const y        = i * bandHeight;
+        const segments = 6;
+        const segWidth = (W + 100) / segments;
 
         ctx.beginPath();
-        for (let x = 0; x <= W; x += 2) {
-          const nx = x / W;
-          const yTop = baseY
-            + Math.sin(nx * Math.PI * 4   * freqScale + phase)        * amplitude
-            + Math.sin(nx * Math.PI * 9.3 * freqScale + phase * 1.33) * amplitude * 0.28
-            + Math.sin(nx * Math.PI * 2.1 * freqScale + phase * 0.55) * amplitude * 0.18;
-          if (x === 0) ctx.moveTo(x, yTop); else ctx.lineTo(x, yTop);
+        ctx.moveTo(-50, H + 10);
+        ctx.lineTo(-50, y);
+
+        for (let s = 0; s < segments; s++) {
+          const x1    = -50 + s * segWidth + segWidth / 2;
+          const x2    = -50 + (s + 1) * segWidth;
+          const waveY = y + Math.sin(organicOffset + s * 0.8 + i * 1.2) * bandHeight * 0.4;
+          ctx.quadraticCurveTo(x1, waveY, x2, y);
         }
-        // fill down to just past the next band to avoid gaps
-        ctx.lineTo(W + 2, baseY + bandH + amplitude + 2);
-        ctx.lineTo(-2,    baseY + bandH + amplitude + 2);
+
+        ctx.lineTo(W + 50, H + 10);
         ctx.closePath();
-        ctx.fillStyle = colors[colorIdx];
-        ctx.globalAlpha = 0.84;
         ctx.fill();
       }
-      ctx.globalAlpha = 1;
+
+      ctx.globalAlpha = 1.0;
+
+      // Update SVG mockup patterns (throttled)
+      mockupTick++;
+      if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+
+      organicOffset += 0.012;
+      organicRafId = requestAnimationFrame(drawOrganicFrame);
+    }
+
+    function startOrganicLoop() {
+      if (organicRafId !== null) return; // already running
+      organicRafId = requestAnimationFrame(drawOrganicFrame);
+    }
+
+    function stopOrganicLoop() {
+      if (organicRafId !== null) {
+        cancelAnimationFrame(organicRafId);
+        organicRafId = null;
+      }
     }
 
     function drawStripe(ctx, W, H, colors, tileSize, frame) {
@@ -658,6 +751,117 @@ import MainLayout from '../../layouts/MainLayout.astro';
       ctx.globalAlpha = 1;
     }
 
+    // ── SVG MOCKUPS ──
+    const STROKE = '#3d2b1f';
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    // Small offscreen canvas for pattern sampling (avoids toDataURL on the huge main canvas)
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = 512;
+    offCanvas.height = 512;
+    const offCtx = offCanvas.getContext('2d');
+
+    let mockupTick = 0;
+    const MOCKUP_EVERY = 4; // update pattern image every N frames
+
+    async function loadMockupSVG(
+      svgPath: string,
+      containerId: string,
+      patternId: string
+    ) {
+      try {
+        const res = await fetch(svgPath);
+        const text = await res.text();
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(text, 'image/svg+xml');
+        const svgEl = svgDoc.querySelector('svg');
+        if (!svgEl) return;
+
+        const vb = (svgEl.getAttribute('viewBox') || '0 0 100 100').split(/[\s,]+/);
+        const vw = parseFloat(vb[2]);
+        const vh = parseFloat(vb[3]);
+
+        // Ensure defs element
+        let defs = svgEl.querySelector('defs');
+        if (!defs) {
+          defs = svgDoc.createElementNS(SVG_NS, 'defs');
+          svgEl.insertBefore(defs, svgEl.firstChild);
+        }
+
+        // Inject pattern + image placeholder
+        const pat = svgDoc.createElementNS(SVG_NS, 'pattern');
+        pat.setAttribute('id', patternId);
+        pat.setAttribute('patternUnits', 'userSpaceOnUse');
+        pat.setAttribute('x', '0'); pat.setAttribute('y', '0');
+        pat.setAttribute('width', String(vw)); pat.setAttribute('height', String(vh));
+
+        const imgNode = svgDoc.createElementNS(SVG_NS, 'image');
+        imgNode.setAttribute('id', `${patternId}-img`);
+        imgNode.setAttribute('x', '0'); imgNode.setAttribute('y', '0');
+        imgNode.setAttribute('width', String(vw)); imgNode.setAttribute('height', String(vh));
+        imgNode.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        imgNode.setAttribute('href', '');
+
+        pat.appendChild(imgNode);
+        defs.appendChild(pat);
+
+        // Apply pattern fill only to paths whose id contains "fabric" (case-insensitive).
+        // Structural paths (no fabric id) keep their original styles unchanged.
+        svgEl.querySelectorAll('[style]').forEach(el => {
+          const id = (el.getAttribute('id') || '').toLowerCase();
+          const isFabric = id.includes('fabric');
+          let s = el.getAttribute('style') || '';
+
+          if (isFabric) {
+            if (/fill:\s*[^;]+/.test(s)) {
+              s = s.replace(/fill:\s*[^;]+/, `fill: url(#${patternId})`);
+            } else {
+              s = `fill: url(#${patternId}); ${s}`;
+            }
+          }
+
+          // Apply warm stroke color to any path that already has a stroke defined
+          if (s.includes('stroke:')) {
+            s = s.replace(/stroke:\s*#[0-9a-fA-F]+/, `stroke: ${STROKE}`);
+          }
+
+          el.setAttribute('style', s);
+        });
+
+        // Make SVG fluid
+        svgEl.setAttribute('width', '100%');
+        svgEl.setAttribute('height', '100%');
+        svgEl.style.cssText = 'display:block;width:100%;height:100%;';
+
+        // Import into live document
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        container.appendChild(document.importNode(svgEl, true));
+
+      } catch (e) {
+        // silently skip failed loads
+      }
+    }
+
+    function updateMockupPatterns() {
+      const mainCanvas = canvas as HTMLCanvasElement;
+      if (!mainCanvas || !mainCanvas.width || !offCtx) return;
+      offCtx.drawImage(mainCanvas, 0, 0, offCanvas.width, offCanvas.height);
+      const dataUrl = offCanvas.toDataURL('image/jpeg', 0.72);
+      for (const pid of ['mp-chair', 'mp-coat', 'mp-tote']) {
+        const imgEl = document.getElementById(`${pid}-img`);
+        if (imgEl) imgEl.setAttribute('href', dataUrl);
+      }
+    }
+
+    // Load all three SVGs on page load
+    Promise.all([
+      loadMockupSVG('/images/chair-textilegen.svg',   'mockupChair', 'mp-chair'),
+      loadMockupSVG('/images/coat-textilegen.svg',    'mockupCoat',  'mp-coat'),
+      loadMockupSVG('/images/totebag-textilegen.svg', 'mockupTote',  'mp-tote'),
+    ]);
+
     // ── DRAW LOOP ──
     function draw() {
       if (paused) return;
@@ -667,9 +871,15 @@ import MainLayout from '../../layouts/MainLayout.astro';
       const tileSize = getTileSize();
 
       if (patternType === 'geometric') drawGeometric(ctx, W, H, colors, tileSize, frame);
-      else if (patternType === 'organic') drawOrganic(ctx, W, H, colors, tileSize, frame);
       else if (patternType === 'stripe') drawStripe(ctx, W, H, colors, tileSize, frame);
       else if (patternType === 'grid') drawGrid(ctx, W, H, colors, tileSize, frame);
+      // organic has its own RAF loop (startOrganicLoop/stopOrganicLoop) — skipped here
+
+      if (patternType !== 'organic') {
+        // Update SVG mockup patterns every few frames (throttled for perf)
+        mockupTick++;
+        if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+      }
 
       frame++;
       requestAnimationFrame(draw);
@@ -709,31 +919,35 @@ import MainLayout from '../../layouts/MainLayout.astro';
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${tiles}</svg>`;
 
       } else if (patternType === 'organic') {
+        // Static snapshot using current organicOffset — same bezier logic as drawOrganic()
+        const OVERFLOW  = 50;
+        const FREQ      = 0.008;
+        const OVERLAP   = 6;
         const numBands  = Math.round(density * 1.5 + 3);
         const bandH     = H / numBands;
-        const amplitude = bandH * 0.38;
-        const freqScale = 1 + (density - 1) * 0.18;
-        const phase0    = frame * 0.011;
-        let paths = '';
-        for (let row = -1; row < numBands + 1; row++) {
-          const baseY = row * bandH;
-          const phase = phase0 + row * 0.95;
+        const amplitude = bandH * 0.5;
+        let paths = `  <rect width="${W}" height="${H}" fill="${colors[0]}"/>\n`;
+        for (let row = numBands - 1; row >= 0; row--) {
           const colorIdx = ((row % colors.length) + colors.length) % colors.length;
-          let d = '';
-          for (let x = 0; x <= W; x += 4) {
-            const nx = x / W;
-            const yTop = baseY
-              + Math.sin(nx * Math.PI * 4   * freqScale + phase) * amplitude
-              + Math.sin(nx * Math.PI * 9.3 * freqScale + phase * 1.33) * amplitude * 0.28
-              + Math.sin(nx * Math.PI * 2.1 * freqScale + phase * 0.55) * amplitude * 0.18;
-            d += x === 0 ? `M${x.toFixed(1)},${yTop.toFixed(1)}` : ` L${x.toFixed(1)},${yTop.toFixed(1)}`;
-          }
-          d += ` L${W + 2},${baseY + bandH + amplitude + 2} L-2,${baseY + bandH + amplitude + 2} Z`;
-          paths += `  <path d="${d}" fill="${colors[colorIdx]}" fill-opacity="0.84"/>\n`;
+          const bandOff  = organicOffset + row * 0.5;
+          const baseY    = row * bandH;
+          const bottomY  = baseY + bandH + amplitude + OVERLAP;
+          const lx = -OVERFLOW, x1 = W / 3, x2 = W * 2 / 3, rx = W + OVERFLOW;
+          const ly  = baseY + Math.sin(bandOff + lx * FREQ) * amplitude;
+          const y1  = baseY + Math.sin(bandOff + x1 * FREQ) * amplitude;
+          const y2  = baseY + Math.sin(bandOff + x2 * FREQ) * amplitude;
+          const ry  = baseY + Math.sin(bandOff + rx * FREQ) * amplitude;
+          const f = (n: number) => n.toFixed(1);
+          const d = [
+            `M${f(lx)},${f(ly)}`,
+            `C${f(lx+(x1-lx)*0.5)},${f(ly)} ${f(x1-(x1-lx)*0.5)},${f(y1)} ${f(x1)},${f(y1)}`,
+            `C${f(x1+(x2-x1)*0.5)},${f(y1)} ${f(x2-(x2-x1)*0.5)},${f(y2)} ${f(x2)},${f(y2)}`,
+            `C${f(x2+(rx-x2)*0.5)},${f(y2)} ${f(rx-(rx-x2)*0.5)},${f(ry)} ${f(rx)},${f(ry)}`,
+            `L${f(rx)},${f(bottomY)} L${f(lx)},${f(bottomY)} Z`,
+          ].join(' ');
+          paths += `  <path d="${d}" fill="${colors[colorIdx]}"/>\n`;
         }
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
-${paths}</svg>`;
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">\n${paths}</svg>`;
 
       } else if (patternType === 'stripe') {
         const sw = t;
@@ -848,7 +1062,14 @@ ${weft}${warp}${intersections}</svg>`;
 
     document.querySelectorAll('.btn-pattern').forEach(btn => {
       btn.addEventListener('click', () => {
-        patternType = btn.dataset.pattern;
+        const next = (btn as HTMLElement).dataset.pattern as string;
+        if (next === 'organic') {
+          patternType = next;
+          startOrganicLoop();
+        } else {
+          stopOrganicLoop();
+          patternType = next;
+        }
         updatePatternBtns();
       });
     });

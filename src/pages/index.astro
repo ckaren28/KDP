@@ -103,6 +103,7 @@ const hasIllustrations = illustrations.length > 0;
       justify-content: space-between;
       align-items: center;
       padding: 28px 48px;
+      background: var(--off-white);
     }
 
     .nav-logo {
@@ -157,7 +158,7 @@ const hasIllustrations = illustrations.length > 0;
 
     /* ── FEATURED ── */
     .featured-section {
-      padding: 80px 48px 100px;
+      padding: 80px 48px 50px;
       border-top: 1px solid var(--border);
     }
 
@@ -165,7 +166,8 @@ const hasIllustrations = illustrations.length > 0;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
+      margin-top: 5vh;
     }
 
     .featured-eyebrow {
@@ -203,33 +205,35 @@ const hasIllustrations = illustrations.length > 0;
       display: block;
     }
 
-    @keyframes suitcase-breathe {
-      0%   { transform: translate(-50%, -50%) rotate(-1deg) translateY(0px); }
-      100% { transform: translate(-50%, -50%) rotate(1deg)  translateY(3px); }
+    @keyframes suitcase-float {
+      0%   { transform: translateY(0px)   rotate(-0.5deg); }
+      100% { transform: translateY(-8px)  rotate(0.5deg); }
     }
 
-    /* Suitcase clip wrapper — crops the right-edge seam */
+    /* Suitcase wrapper */
     .scene-suitcase-wrap {
       position: absolute;
-      width: 90%;
       left: 25%;
-      top: 36%;
+      top: 60%;
       transform: translate(-50%, -50%);
-      overflow: hidden;
+      overflow: visible;
       z-index: 1;
       cursor: pointer;
-      animation: suitcase-breathe 3s ease-in-out infinite alternate;
     }
 
-    /* Suitcase: sits on top, left of center */
+    /* Suitcase PNG — transparent bg, no blend mode needed */
     .scene-suitcase {
       display: block;
-      width: 80%;
-      object-fit: cover;
-      object-position: left center;
-      clip-path: inset(0 30% 0 0);
-      mix-blend-mode: screen;
+      width: 45rem;
       border: none; outline: none;
+      animation: suitcase-float 3s ease-in-out infinite alternate;
+      transition: filter 0.3s ease;
+      filter: brightness(1);
+    }
+
+    .scene-suitcase-wrap:hover .scene-suitcase {
+      animation-play-state: paused;
+      filter: brightness(0.6);
     }
 
     /* Hover dark overlay — strictly contained within its own wrapper */
@@ -245,7 +249,7 @@ const hasIllustrations = illustrations.length > 0;
     }
     .scene-suitcase-wrap:hover .scene-hover-dark,
     .scene-scarf-wrap:hover     .scene-hover-dark { opacity: 1; }
-     .scene-suitcase-wrap:hover .scene-hover-dark{    width: 50%;}
+     /* .scene-suitcase-wrap:hover .scene-hover-dark{    width: 50%;} */
 
     /* Scarf wrapper for hover dark overlay */
     .scene-scarf-wrap {
@@ -340,37 +344,76 @@ const hasIllustrations = illustrations.length > 0;
       color: var(--black);
     }
 
+    /* ── MOBILE FEATURED FALLBACK ── */
+    .featured-mobile {
+      display: none; /* hidden on desktop */
+    }
+
     @media (max-width: 768px) {
-      .scene-canvas { height: auto; }
-      .scene-scarf {
-        position: relative;
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
+      /* Hide cinematic canvas entirely on mobile */
+      .scene-canvas { display: none; }
+
+      /* Show mobile fallback */
+      .featured-mobile {
+        display: flex;
+        flex-direction: column;
       }
-      .scene-suitcase {
-        position: relative;
-        display: block;
-        width: 70%;
-        left: auto; top: auto;
-        transform: none;
-        margin: 0 auto;
+
+      .fmob-item {
+        padding: 28px 0 28px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: padding-left 0.25s ease;
       }
-      .scene-overlay--suitcase {
-        left: 50%;
-        top: 0%;
-        transform: translateX(-50%);
+      .fmob-item:first-child { border-top: 1px solid var(--border); }
+      .fmob-item:hover { padding-left: 6px; }
+
+      .fmob-tag {
+        font-family: var(--font-body);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--sienna);
       }
-      .scene-overlay--scarf {
-        right: auto;
-        left: 40%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+
+      .fmob-title {
+        font-family: var(--font-display);
+        font-size: clamp(22px, 6vw, 32px);
+        font-weight: 300;
+        font-style: italic;
+        line-height: 1.05;
+        letter-spacing: -0.01em;
+        color: var(--black);
       }
+
+      .fmob-desc {
+        font-family: var(--font-body);
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+        font-weight: 300;
+        margin-top: 2px;
+      }
+
+      .fmob-link {
+        font-family: var(--font-body);
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 6px;
+        transition: color 0.2s;
+      }
+      .fmob-item:hover .fmob-link { color: var(--black); }
     }
 
     @media (max-width: 900px) {
-      .featured-section { padding: 64px 24px 80px; }
+      .featured-section { padding: 64px 24px 20px; }
       .featured-grid { grid-template-columns: 1fr; }
     }
 
@@ -485,12 +528,7 @@ const hasIllustrations = illustrations.length > 0;
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
   </nav>
 
-  <!-- TRACK SELECTOR -->
-  <section class="reveal">
-    <TrackSelector prompt="What brings you here?" bordered={true} />
-  </section>
-
-  <!-- FEATURED PROJECTS -->
+   <!-- FEATURED PROJECTS -->
   <section class="featured-section reveal">
     <div class="featured-header">
       <span class="featured-eyebrow">Featured Projects</span>
@@ -511,12 +549,9 @@ const hasIllustrations = illustrations.length > 0;
         <span class="scene-link">View project</span>
       </div>
 
-      <!-- Suitcase: on top, left of center, z-index 2 -->
+      <!-- Suitcase: on top, left of center, z-index 1 -->
       <div class="scene-suitcase-wrap" id="suitcaseWrap">
-        <video class="scene-suitcase" id="vidSuitcase" autoplay muted loop playsinline>
-          <source src="/videos/suitcase.mp4" type="video/mp4" />
-        </video>
-        <div class="scene-hover-dark"></div>
+        <img class="scene-suitcase" src="/images/suitcase.png" alt="Traveller suitcase" />
       </div>
       <div class="scene-overlay scene-overlay--suitcase" id="overlaySuitcase">
         <span class="scene-tag">Fashion</span>
@@ -526,7 +561,30 @@ const hasIllustrations = illustrations.length > 0;
 
     </div>
 
+    <!-- Mobile fallback — shown only when canvas is hidden (< 768px) -->
+    <div class="featured-mobile">
+      <a href="/projects/traveller" class="fmob-item">
+        <span class="fmob-tag">Fashion</span>
+        <span class="fmob-title">Traveller</span>
+        <p class="fmob-desc">A travel-ready collection exploring movement, materiality, and the aesthetics of transit.</p>
+        <span class="fmob-link">View project →</span>
+      </a>
+      <a href="/projects/textile-pattern-generator" class="fmob-item">
+        <span class="fmob-tag">Technology</span>
+        <span class="fmob-title">Generative Textile Pattern Tool</span>
+        <p class="fmob-desc">Enter a concept — get an AI-suggested palette and an animated, exportable pattern.</p>
+        <span class="fmob-link">View project →</span>
+      </a>
+    </div>
+
   </section>
+
+  <!-- TRACK SELECTOR -->
+  <section class="reveal">
+    <TrackSelector prompt="What brings you here?" bordered={true} />
+  </section>
+
+ 
 
   <!-- CONTACT -->
   <div class="contact-section reveal">
@@ -549,7 +607,6 @@ const hasIllustrations = illustrations.length > 0;
   <script>
     // CINEMATIC SCENE — hover on wrapper divs, overlay centered over wrapper
     const sceneCanvas     = document.getElementById('sceneCanvas')    as HTMLElement | null;
-    const vidSuitcase     = document.getElementById('vidSuitcase')    as HTMLVideoElement | null;
     const vidScarf        = document.getElementById('vidScarf')       as HTMLVideoElement | null;
     const suitcaseWrap    = document.getElementById('suitcaseWrap')   as HTMLElement | null;
     const scarfWrap       = document.getElementById('scarfWrap')      as HTMLElement | null;
@@ -566,11 +623,9 @@ const hasIllustrations = illustrations.length > 0;
     }
 
     suitcaseWrap?.addEventListener('mouseenter', () => {
-      vidSuitcase?.pause();
       if (overlaySuitcase && suitcaseWrap) { centerOverlay(suitcaseWrap, overlaySuitcase); overlaySuitcase.classList.add('visible'); }
     });
     suitcaseWrap?.addEventListener('mouseleave', () => {
-      vidSuitcase?.play();
       overlaySuitcase?.classList.remove('visible');
     });
     suitcaseWrap?.addEventListener('click', () => { window.location.href = '/projects/traveller'; });
