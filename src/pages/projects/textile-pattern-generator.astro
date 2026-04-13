@@ -480,7 +480,8 @@ import MainLayout from '../../layouts/MainLayout.astro';
           <span class="ctrl-label">Pattern Type</span>
           <div class="pattern-grid">
             <button class="btn-pattern" data-pattern="geometric">Geometric</button>
-            <button class="btn-pattern" data-pattern="organic">Organic</button>
+            <button class="btn-pattern" data-pattern="organic">Floral</button>
+            <button class="btn-pattern" data-pattern="organic2">Organic</button>
             <button class="btn-pattern" data-pattern="stripe">Stripe</button>
             <button class="btn-pattern" data-pattern="grid">Grid</button>
           </div>
@@ -530,8 +531,10 @@ import MainLayout from '../../layouts/MainLayout.astro';
     let density = 5;
     let frame = 0;
     let paused = false;
-    let organicOffset = 0;   // incremented 0.012/frame by the organic RAF loop
-    let organicRafId: number | null = null; // handle for cancelAnimationFrame
+    let organicT  = 0;   // floral animation offset, incremented per frame
+    let organic2T = 0;   // organic2 flow field offset
+    let organicRafId:  number | null = null;
+    let organic2RafId: number | null = null;
 
     // ── ELEMENTS ──
     const canvas = document.getElementById('patternCanvas');
@@ -627,75 +630,233 @@ import MainLayout from '../../layouts/MainLayout.astro';
       }
     }
 
-    // Shared geometry for one organic wave band — used by both canvas draw and SVG export.
-    // Returns the cubic bezier endpoints and control points for band i.
-    function organicBandGeom(i: number, numBands: number, W: number, H: number, offset: number) {
-      const evenBandH = H / numBands;
-      // Stagger: some bands clustered, some gapped
-      const baseY     = (i / numBands) * H + H * 0.05 * Math.sin(i * 2.3);
-      // Varying amplitude per layer
-      const amplitude = evenBandH * (0.3 + 0.4 * Math.sin(i * 1.7));
-      // Diagonal tilt: left side lower on screen, right side higher → crest travels lower-left → upper-right
-      const tilt   = H * 0.18;
-      const yLeft  = baseY + tilt;
-      const yRight = baseY - tilt;
-      // Two independent wave terms drive the control points at different speeds
-      const w1 = Math.sin(offset       + i * 0.9) * amplitude;
-      const w2 = Math.sin(offset * 0.6 + i * 1.8) * amplitude * 0.5;
-      // Left CP higher than right CP (by roughly H * 0.15–0.35) to push curve diagonally
-      const cp1x = W * 0.28;
-      const cp1y = yLeft  + w1 - H * 0.15;
-      const cp2x = W * 0.72;
-      const cp2y = yRight + w2 + H * 0.20;
-      return { yLeft, yRight, cp1x, cp1y, cp2x, cp2y };
+    // ── FLORAL — Marimekko bold botanical tile grid ──
+
+    // Irregular blob: 8 bezier points with ±40% radius variation
+    function drawFloralBlob(c: CanvasRenderingContext2D, cx: number, cy: number,
+                             r: number, seed: number) {
+      const N = 8;
+      // Compute all radii first so we can close the shape cleanly
+      const radii: number[] = [];
+      for (let i = 0; i < N; i++) radii.push(r * (0.6 + 0.4 * Math.abs(Math.sin(seed + i * 1.9))));
+      c.beginPath();
+      for (let i = 0; i < N; i++) {
+        const a0 = (i / N) * Math.PI * 2 - Math.PI / 2;
+        const a1 = ((i + 1) / N) * Math.PI * 2 - Math.PI / 2;
+        const aMid = (a0 + a1) / 2;
+        // current point
+        const px = cx + Math.cos(a0) * radii[i];
+        const py = cy + Math.sin(a0) * radii[i];
+        // next point
+        const nx = cx + Math.cos(a1) * radii[(i + 1) % N];
+        const ny = cy + Math.sin(a1) * radii[(i + 1) % N];
+        // control point bulges outward at midpoint
+        const cpR = (radii[i] + radii[(i + 1) % N]) / 2 * 1.15;
+        const cpx = cx + Math.cos(aMid) * cpR;
+        const cpy = cy + Math.sin(aMid) * cpR;
+        if (i === 0) c.moveTo(px, py);
+        c.quadraticCurveTo(cpx, cpy, nx, ny);
+      }
+      c.closePath();
+      c.fill();
+    }
+
+    // Leaf: pointed oval from (x0,y0) to (x1,y1) with bulge controlled by bulge param
+    function drawLeaf(c: CanvasRenderingContext2D, x0: number, y0: number,
+                       x1: number, y1: number, bulge: number) {
+      const mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+      const dx = x1 - x0, dy = y1 - y0;
+      const px = -dy * bulge, py = dx * bulge; // perpendicular offset
+      c.beginPath();
+      c.moveTo(x0, y0);
+      c.quadraticCurveTo(mx + px, my + py, x1, y1);
+      c.quadraticCurveTo(mx - px, my - py, x0, y0);
+      c.closePath();
+      c.fill();
+    }
+
+    // Draw one complete floral tile centered at (cx, cy) with given tile size
+    function drawFloralTile(c: CanvasRenderingContext2D, cx: number, cy: number,
+                             tileSize: number, tileAngle: number, seed: number) {
+      c.save();
+      c.translate(cx, cy);
+      c.rotate(tileAngle);
+
+      const blobR   = tileSize * 0.35;
+      const pLen    = tileSize * 0.38; // petal length
+      const pHalf   = tileSize * 0.09; // petal half-width at widest
+      const stemLen = tileSize * 0.3;
+      const leafLen = tileSize * 0.2;
+
+      // 1. Background blob in colors[1]
+      c.fillStyle = colors[1];
+      drawFloralBlob(c, 0, 0, blobR, seed);
+
+      // 2. Five teardrop petals radiating from center, alternating colors[2] / colors[3]
+      for (let p = 0; p < 5; p++) {
+        const angle = (p / 5) * Math.PI * 2 - Math.PI / 2;
+        c.save();
+        c.rotate(angle);
+        c.fillStyle = (p % 2 === 0) ? colors[2] : colors[3];
+        c.beginPath();
+        // Teardrop: base at origin, tip at (0, -pLen)
+        c.moveTo(0, 0);
+        c.bezierCurveTo(-pHalf * 1.2, -pLen * 0.25, -pHalf, -pLen * 0.75, 0, -pLen);
+        c.bezierCurveTo( pHalf,       -pLen * 0.75,  pHalf * 1.2, -pLen * 0.25, 0, 0);
+        c.closePath();
+        c.fill();
+        c.restore();
+      }
+
+      // 3. Curved stem downward from blob edge
+      const stemStartY = blobR;
+      const stemEndY   = stemStartY + stemLen;
+      const stemCPx    = tileSize * 0.1 * Math.sin(seed);
+      c.strokeStyle = colors[4];
+      c.lineWidth   = Math.max(2, tileSize * 0.03);
+      c.lineCap     = 'round';
+      c.beginPath();
+      c.moveTo(0, stemStartY);
+      c.quadraticCurveTo(stemCPx, stemStartY + stemLen * 0.5, 0, stemEndY);
+      c.stroke();
+
+      // 4. Two pointed leaves branching from stem at 1/3 down
+      const leafY      = stemStartY + stemLen * 0.33;
+      const leafColors = [colors[2], colors[3]];
+      for (let l = 0; l < 2; l++) {
+        const side = l === 0 ? 1 : -1;
+        c.fillStyle = leafColors[l];
+        drawLeaf(c,
+          side * tileSize * 0.04, leafY,
+          side * leafLen, leafY - leafLen * 0.6,
+          0.45
+        );
+      }
+
+      // 5. Center dot in colors[4] — drawn LAST so it sits on top
+      c.fillStyle = colors[4];
+      c.beginPath();
+      c.arc(0, 0, tileSize * 0.06, 0, Math.PI * 2);
+      c.fill();
+
+      c.restore();
     }
 
     function drawOrganicFrame() {
-      const W = (canvas as HTMLCanvasElement).width;
-      const H = (canvas as HTMLCanvasElement).height;
-      const numBands = density;
-
-      ctx.fillStyle = colors[0];
-      ctx.fillRect(0, 0, W, H);
-
-      // Draw top → bottom so each successive band paints over the lower portion,
-      // revealing the strip between each pair of diagonal wave edges.
-      for (let i = 0; i <= numBands; i++) {
-        const { yLeft, yRight, cp1x, cp1y, cp2x, cp2y } =
-          organicBandGeom(i, numBands, W, H, organicOffset);
-
-        ctx.fillStyle   = colors[i % colors.length];
-        ctx.globalAlpha = 1.0;
-
-        ctx.beginPath();
-        ctx.moveTo(-50, H + 10);
-        ctx.lineTo(-50, yLeft);
-        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, W + 50, yRight);
-        ctx.lineTo(W + 50, H + 10);
-        ctx.closePath();
-        ctx.fill();
-      }
+      if (paused) return;
+      const W  = (canvas as HTMLCanvasElement).width;
+      const H  = (canvas as HTMLCanvasElement).height;
+      // density 1=coarse (large tiles ~300px), 10=fine (small tiles ~120px)
+      const tileSize = Math.round(300 - (density - 1) * 20); // 300 → 120
+      const drift    = Math.sin(organicT) * 4; // gentle breathing offset
 
       ctx.globalAlpha = 1.0;
+      ctx.fillStyle   = colors[0];
+      ctx.fillRect(0, 0, W, H);
 
-      // Update SVG mockup patterns (throttled)
+      const cols = Math.ceil(W / tileSize) + 2;
+      const rows = Math.ceil(H / tileSize) + 2;
+
+      for (let row = -1; row < rows; row++) {
+        for (let col = -1; col < cols; col++) {
+          // Brick-layout stagger: every other column shifts down half a tile
+          const stagger = (col % 2 === 0) ? 0 : tileSize * 0.5;
+          const cx = col * tileSize + tileSize * 0.5 + drift;
+          const cy = row * tileSize + tileSize * 0.5 + stagger + drift * 0.7;
+
+          // Small deterministic rotation per tile, capped at ±15°
+          const rawAngle = ((col * 17 + row * 31) % 360) * (Math.PI / 180);
+          const tileAngle = ((rawAngle + Math.PI) % (Math.PI * 2) - Math.PI) * (8 / 180);
+
+          const seed = col * 7.3 + row * 13.1;
+          drawFloralTile(ctx, cx, cy, tileSize, tileAngle, seed);
+        }
+      }
+
       mockupTick++;
       if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
 
-      organicOffset += 0.012;
+      organicT += 0.008;
       organicRafId = requestAnimationFrame(drawOrganicFrame);
     }
 
     function startOrganicLoop() {
-      if (organicRafId !== null) return; // already running
+      if (organicRafId !== null) return;
       organicRafId = requestAnimationFrame(drawOrganicFrame);
     }
-
     function stopOrganicLoop() {
-      if (organicRafId !== null) {
-        cancelAnimationFrame(organicRafId);
-        organicRafId = null;
+      if (organicRafId !== null) { cancelAnimationFrame(organicRafId); organicRafId = null; }
+    }
+
+    // ── ORGANIC2 — Truchet tile system ──
+
+    function drawOrganic2Frame() {
+      if (paused) return;
+      const W        = (canvas as HTMLCanvasElement).width;
+      const H        = (canvas as HTMLCanvasElement).height;
+      const tileSize = getTileSize();
+      const phase    = Math.floor(organic2T / 60); // morphs every 60 frames
+
+      ctx.fillStyle   = colors[0];
+      ctx.fillRect(0, 0, W, H);
+      ctx.lineCap     = 'butt';
+      ctx.lineJoin    = 'round';
+      ctx.globalAlpha = 1.0;
+
+      const cols = Math.ceil(W / tileSize) + 1;
+      const rows = Math.ceil(H / tileSize) + 1;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x         = col * tileSize;
+          const y         = row * tileSize;
+          const isTypeA   = Math.sin(col * 1.7 + row * 2.3 + phase) > 0;
+          const cellColor = colors[1 + ((col * 2 + row * 3) % 4)];
+
+          // Draw thick colored arc
+          ctx.lineWidth   = tileSize * 0.6;
+          ctx.strokeStyle = cellColor;
+          ctx.beginPath();
+          if (isTypeA) {
+            // Type A: arc at top-left corner, connects top-mid to left-mid
+            ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
+          } else {
+            // Type B: arc at bottom-right corner, connects bottom-mid to right-mid
+            ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
+          }
+          ctx.stroke();
+
+          // Draw narrow gap arc in background color on top
+          ctx.lineWidth   = tileSize * 0.18;
+          ctx.strokeStyle = colors[0];
+          ctx.beginPath();
+          if (isTypeA) {
+            ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
+          } else {
+            ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
+          }
+          ctx.stroke();
+        }
       }
+
+      mockupTick++;
+      if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+
+      organic2T += 1;
+      organic2RafId = requestAnimationFrame(drawOrganic2Frame);
+    }
+
+    function startOrganic2Loop() {
+      if (organic2RafId !== null) return;
+      organic2RafId = requestAnimationFrame(drawOrganic2Frame);
+    }
+    function stopOrganic2Loop() {
+      if (organic2RafId !== null) { cancelAnimationFrame(organic2RafId); organic2RafId = null; }
+    }
+    function stopAllLoops() {
+      stopOrganicLoop();
+      stopOrganic2Loop();
+      // main draw() self-terminates when paused === true
     }
 
     function drawStripe(ctx, W, H, colors, tileSize, frame) {
@@ -885,10 +1046,9 @@ import MainLayout from '../../layouts/MainLayout.astro';
       if (patternType === 'geometric') drawGeometric(ctx, W, H, colors, tileSize, frame);
       else if (patternType === 'stripe') drawStripe(ctx, W, H, colors, tileSize, frame);
       else if (patternType === 'grid') drawGrid(ctx, W, H, colors, tileSize, frame);
-      // organic has its own RAF loop (startOrganicLoop/stopOrganicLoop) — skipped here
+      // organic + organic2 have their own RAF loops — skipped here
 
-      if (patternType !== 'organic') {
-        // Update SVG mockup patterns every few frames (throttled for perf)
+      if (patternType !== 'organic' && patternType !== 'organic2') {
         mockupTick++;
         if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
       }
@@ -931,22 +1091,56 @@ import MainLayout from '../../layouts/MainLayout.astro';
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${tiles}</svg>`;
 
       } else if (patternType === 'organic') {
-        // Static snapshot at current organicOffset using the same geometry as drawOrganicFrame()
-        const numBands = density;
-        const f = (n: number) => n.toFixed(1);
-        let paths = `  <rect width="${W}" height="${H}" fill="${colors[0]}"/>\n`;
-        for (let i = 0; i <= numBands; i++) {
-          const { yLeft, yRight, cp1x, cp1y, cp2x, cp2y } =
-            organicBandGeom(i, numBands, W, H, organicOffset);
-          const d = [
-            `M${f(-50)},${f(H + 10)}`,
-            `L${f(-50)},${f(yLeft)}`,
-            `C${f(cp1x)},${f(cp1y)} ${f(cp2x)},${f(cp2y)} ${f(W + 50)},${f(yRight)}`,
-            `L${f(W + 50)},${f(H + 10)} Z`,
-          ].join(' ');
-          paths += `  <path d="${d}" fill="${colors[i % colors.length]}"/>\n`;
+        // Floral — render to offscreen canvas using same drawFloralTile logic, embed as PNG in SVG
+        const oc  = document.createElement('canvas');
+        oc.width  = W; oc.height = H;
+        const oc2 = oc.getContext('2d')!;
+        const tileSize2 = Math.round(300 - (density - 1) * 20);
+        const drift2    = Math.sin(organicT) * 4;
+        oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
+        const cols2 = Math.ceil(W / tileSize2) + 2;
+        const rows2 = Math.ceil(H / tileSize2) + 2;
+        for (let row = -1; row < rows2; row++) {
+          for (let col = -1; col < cols2; col++) {
+            const stagger   = (col % 2 === 0) ? 0 : tileSize2 * 0.5;
+            const cx2       = col * tileSize2 + tileSize2 * 0.5 + drift2;
+            const cy2       = row * tileSize2 + tileSize2 * 0.5 + stagger + drift2 * 0.7;
+            const rawAngle2 = ((col * 17 + row * 31) % 360) * (Math.PI / 180);
+            const tileAngle2 = ((rawAngle2 + Math.PI) % (Math.PI * 2) - Math.PI) * (8 / 180);
+            drawFloralTile(oc2, cx2, cy2, tileSize2, tileAngle2, col * 7.3 + row * 13.1);
+          }
         }
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">\n${paths}</svg>`;
+        const dataUrl = oc.toDataURL('image/png');
+        return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}"><image width="${W}" height="${H}" xlink:href="${dataUrl}"/></svg>`;
+
+      } else if (patternType === 'organic2') {
+        // Truchet tiles — render to offscreen canvas using same drawOrganic2Frame logic, embed as PNG in SVG
+        const oc  = document.createElement('canvas');
+        oc.width  = W; oc.height = H;
+        const oc2 = oc.getContext('2d')!;
+        const ts2   = getTileSize();
+        const phase2 = Math.floor(organic2T / 60);
+        oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
+        oc2.lineCap = 'butt'; oc2.lineJoin = 'round'; oc2.globalAlpha = 1.0;
+        const cols3 = Math.ceil(W / ts2) + 1;
+        const rows3 = Math.ceil(H / ts2) + 1;
+        for (let row = 0; row < rows3; row++) {
+          for (let col = 0; col < cols3; col++) {
+            const x3 = col * ts2, y3 = row * ts2;
+            const isA3   = Math.sin(col * 1.7 + row * 2.3 + phase2) > 0;
+            const cc  = colors[1 + ((col * 2 + row * 3) % 4)];
+            function drawTruchetArc(c: CanvasRenderingContext2D) {
+              c.beginPath();
+              if (isA3) { c.arc(x3, y3, ts2 / 2, 0, Math.PI / 2); }
+              else      { c.arc(x3 + ts2, y3 + ts2, ts2 / 2, Math.PI, Math.PI * 3 / 2); }
+              c.stroke();
+            }
+            oc2.lineWidth = ts2 * 0.6;  oc2.strokeStyle = cc;         drawTruchetArc(oc2);
+            oc2.lineWidth = ts2 * 0.18; oc2.strokeStyle = colors[0];  drawTruchetArc(oc2);
+          }
+        }
+        const dataUrl2 = oc.toDataURL('image/png');
+        return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}"><image width="${W}" height="${H}" xlink:href="${dataUrl2}"/></svg>`;
 
       } else if (patternType === 'stripe') {
         const sw = t;
@@ -1062,13 +1256,12 @@ ${weft}${warp}${intersections}</svg>`;
     document.querySelectorAll('.btn-pattern').forEach(btn => {
       btn.addEventListener('click', () => {
         const next = (btn as HTMLElement).dataset.pattern as string;
-        if (next === 'organic') {
-          patternType = next;
-          startOrganicLoop();
-        } else {
-          stopOrganicLoop();
-          patternType = next;
-        }
+        // Stop any running organic loops before switching
+        stopOrganicLoop();
+        stopOrganic2Loop();
+        patternType = next;
+        if (next === 'organic')  startOrganicLoop();
+        if (next === 'organic2') startOrganic2Loop();
         updatePatternBtns();
       });
     });
@@ -1079,8 +1272,12 @@ ${weft}${warp}${intersections}</svg>`;
 
     canvas.addEventListener('click', () => {
       paused = !paused;
-      if (!paused) {
-        requestAnimationFrame(draw);
+      if (paused) {
+        stopAllLoops();
+      } else {
+        if (patternType === 'organic')       startOrganicLoop();
+        else if (patternType === 'organic2') startOrganic2Loop();
+        else requestAnimationFrame(draw);
       }
     });
 
@@ -1089,9 +1286,12 @@ ${weft}${warp}${intersections}</svg>`;
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         paused = true;
+        stopAllLoops();
       } else {
         paused = false;
-        requestAnimationFrame(draw);
+        if (patternType === 'organic')       startOrganicLoop();
+        else if (patternType === 'organic2') startOrganic2Loop();
+        else requestAnimationFrame(draw);
       }
     });
 

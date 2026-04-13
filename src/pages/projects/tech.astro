@@ -52,15 +52,27 @@ const projects = [
       padding-bottom: 32px;
       border-bottom: 1px solid var(--border);
     }
+    .page-header-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
     .page-eyebrow {
-      display: block;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 12px;
     }
+    .github-link {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .github-link:hover { color: var(--black); }
     .page-title {
       font-family: var(--font-display);
       font-size: clamp(44px, 6vw, 80px);
@@ -188,7 +200,10 @@ const projects = [
   <div class="tech-page">
 
     <header class="page-header reveal">
-      <span class="page-eyebrow">Creative Technology</span>
+      <div class="page-header-top">
+        <span class="page-eyebrow">Creative Technology</span>
+        <a href="https://github.com/ckaren28" target="_blank" rel="noopener" class="github-link">github.com/ckaren28</a>
+      </div>
       <h1 class="page-title"><em>Technology</em></h1>
     </header>
 
