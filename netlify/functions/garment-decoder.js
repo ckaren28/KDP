@@ -19,7 +19,7 @@ export async function handler(event) {
     const system = `You are an expert patternmaker. Given a garment description, return a concise structured technical breakdown as valid JSON only — no markdown, no commentary. Be specific but brief.`;
 
     const travelerNote = travelerMode
-      ? "\n- TRAVELLER MODE: Prioritize packability. Favor lightweight fabrics, minimal structure, wrinkle resistance, and compact closures. Flag any recommendations specifically for travel."
+      ? "\n- TRAVELER MODE: Prioritize packability. Favor lightweight fabrics, minimal structure, wrinkle resistance, and compact closures. Flag any recommendations specifically for travel."
       : "";
 
     const user = `Garment: ${description}

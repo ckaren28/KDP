@@ -444,14 +444,16 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
     .artwork-frame-wrap {
       position: relative;
-      width: 100%;
-      aspect-ratio: 809 / 908;
+      width: 30vw;
+       aspect-ratio: 4 / 3;
+      /* aspect-ratio: 809 / 908; */
       /* transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1); */
     }
 
     .artwork-stage {
       position: absolute;
-      inset: 11% 10.5% 13% 10.5%;
+      inset: 5%;
+      /* inset: 11% 10.5% 13% 10.5%; */
       overflow: hidden;
     }
 
@@ -933,9 +935,7 @@ Render cards + copy tools</pre>
     const caption  = document.getElementById('artworkCaption') as HTMLElement | null;
     const frameWrap = document.getElementById('artworkFrameWrap') as HTMLElement | null;
 
-    // Single static tilt for the frame — never changes during cycling
-    if (frameWrap) frameWrap.style.transform = 'rotate(-1.2deg)';
-
+    
     // Create two img elements for crossfade (A/B swap)
     const imgA = document.createElement('img');
     const imgB = document.createElement('img');

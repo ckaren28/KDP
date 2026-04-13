@@ -627,38 +627,50 @@ import MainLayout from '../../layouts/MainLayout.astro';
       }
     }
 
+    // Shared geometry for one organic wave band — used by both canvas draw and SVG export.
+    // Returns the cubic bezier endpoints and control points for band i.
+    function organicBandGeom(i: number, numBands: number, W: number, H: number, offset: number) {
+      const evenBandH = H / numBands;
+      // Stagger: some bands clustered, some gapped
+      const baseY     = (i / numBands) * H + H * 0.05 * Math.sin(i * 2.3);
+      // Varying amplitude per layer
+      const amplitude = evenBandH * (0.3 + 0.4 * Math.sin(i * 1.7));
+      // Diagonal tilt: left side lower on screen, right side higher → crest travels lower-left → upper-right
+      const tilt   = H * 0.18;
+      const yLeft  = baseY + tilt;
+      const yRight = baseY - tilt;
+      // Two independent wave terms drive the control points at different speeds
+      const w1 = Math.sin(offset       + i * 0.9) * amplitude;
+      const w2 = Math.sin(offset * 0.6 + i * 1.8) * amplitude * 0.5;
+      // Left CP higher than right CP (by roughly H * 0.15–0.35) to push curve diagonally
+      const cp1x = W * 0.28;
+      const cp1y = yLeft  + w1 - H * 0.15;
+      const cp2x = W * 0.72;
+      const cp2y = yRight + w2 + H * 0.20;
+      return { yLeft, yRight, cp1x, cp1y, cp2x, cp2y };
+    }
+
     function drawOrganicFrame() {
       const W = (canvas as HTMLCanvasElement).width;
       const H = (canvas as HTMLCanvasElement).height;
-      const numBands  = density;
-      const bandHeight = H / numBands;
+      const numBands = density;
 
       ctx.fillStyle = colors[0];
       ctx.fillRect(0, 0, W, H);
 
-      // Draw top → bottom: each band fills from its wavy edge down to canvas bottom.
-      // Later (lower) bands paint over the bottom portion of earlier bands, making
-      // each band's strip visible between its own wavy top and the next band's wavy top.
+      // Draw top → bottom so each successive band paints over the lower portion,
+      // revealing the strip between each pair of diagonal wave edges.
       for (let i = 0; i <= numBands; i++) {
-        const colorIndex = i % colors.length;
-        ctx.fillStyle   = colors[colorIndex];
-        ctx.globalAlpha = 1.0;
+        const { yLeft, yRight, cp1x, cp1y, cp2x, cp2y } =
+          organicBandGeom(i, numBands, W, H, organicOffset);
 
-        const y        = i * bandHeight;
-        const segments = 6;
-        const segWidth = (W + 100) / segments;
+        ctx.fillStyle   = colors[i % colors.length];
+        ctx.globalAlpha = 1.0;
 
         ctx.beginPath();
         ctx.moveTo(-50, H + 10);
-        ctx.lineTo(-50, y);
-
-        for (let s = 0; s < segments; s++) {
-          const x1    = -50 + s * segWidth + segWidth / 2;
-          const x2    = -50 + (s + 1) * segWidth;
-          const waveY = y + Math.sin(organicOffset + s * 0.8 + i * 1.2) * bandHeight * 0.4;
-          ctx.quadraticCurveTo(x1, waveY, x2, y);
-        }
-
+        ctx.lineTo(-50, yLeft);
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, W + 50, yRight);
         ctx.lineTo(W + 50, H + 10);
         ctx.closePath();
         ctx.fill();
@@ -919,33 +931,20 @@ import MainLayout from '../../layouts/MainLayout.astro';
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${tiles}</svg>`;
 
       } else if (patternType === 'organic') {
-        // Static snapshot using current organicOffset — same bezier logic as drawOrganic()
-        const OVERFLOW  = 50;
-        const FREQ      = 0.008;
-        const OVERLAP   = 6;
-        const numBands  = Math.round(density * 1.5 + 3);
-        const bandH     = H / numBands;
-        const amplitude = bandH * 0.5;
+        // Static snapshot at current organicOffset using the same geometry as drawOrganicFrame()
+        const numBands = density;
+        const f = (n: number) => n.toFixed(1);
         let paths = `  <rect width="${W}" height="${H}" fill="${colors[0]}"/>\n`;
-        for (let row = numBands - 1; row >= 0; row--) {
-          const colorIdx = ((row % colors.length) + colors.length) % colors.length;
-          const bandOff  = organicOffset + row * 0.5;
-          const baseY    = row * bandH;
-          const bottomY  = baseY + bandH + amplitude + OVERLAP;
-          const lx = -OVERFLOW, x1 = W / 3, x2 = W * 2 / 3, rx = W + OVERFLOW;
-          const ly  = baseY + Math.sin(bandOff + lx * FREQ) * amplitude;
-          const y1  = baseY + Math.sin(bandOff + x1 * FREQ) * amplitude;
-          const y2  = baseY + Math.sin(bandOff + x2 * FREQ) * amplitude;
-          const ry  = baseY + Math.sin(bandOff + rx * FREQ) * amplitude;
-          const f = (n: number) => n.toFixed(1);
+        for (let i = 0; i <= numBands; i++) {
+          const { yLeft, yRight, cp1x, cp1y, cp2x, cp2y } =
+            organicBandGeom(i, numBands, W, H, organicOffset);
           const d = [
-            `M${f(lx)},${f(ly)}`,
-            `C${f(lx+(x1-lx)*0.5)},${f(ly)} ${f(x1-(x1-lx)*0.5)},${f(y1)} ${f(x1)},${f(y1)}`,
-            `C${f(x1+(x2-x1)*0.5)},${f(y1)} ${f(x2-(x2-x1)*0.5)},${f(y2)} ${f(x2)},${f(y2)}`,
-            `C${f(x2+(rx-x2)*0.5)},${f(y2)} ${f(rx-(rx-x2)*0.5)},${f(ry)} ${f(rx)},${f(ry)}`,
-            `L${f(rx)},${f(bottomY)} L${f(lx)},${f(bottomY)} Z`,
+            `M${f(-50)},${f(H + 10)}`,
+            `L${f(-50)},${f(yLeft)}`,
+            `C${f(cp1x)},${f(cp1y)} ${f(cp2x)},${f(cp2y)} ${f(W + 50)},${f(yRight)}`,
+            `L${f(W + 50)},${f(H + 10)} Z`,
           ].join(' ');
-          paths += `  <path d="${d}" fill="${colors[colorIdx]}"/>\n`;
+          paths += `  <path d="${d}" fill="${colors[i % colors.length]}"/>\n`;
         }
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">\n${paths}</svg>`;
 
