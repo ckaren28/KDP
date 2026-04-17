@@ -1,0 +1,101 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="404 — Karen Dettmar">
+  <div class="not-found">
+    <span class="eyebrow">404</span>
+    <h1 class="headline">This page doesn't<br /><em>exist yet.</em></h1>
+    <p class="body-text">
+      Lots of things don't exist yet. Half my patterns, my novelty illustration portfolio,
+      a blazer I keep meaning to knit. If you're looking for something specific,
+      try the work page.
+    </p>
+    <div class="links">
+      <a href="/projects" class="link-primary">See the work →</a>
+      <a href="/" class="link-secondary">Home</a>
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .not-found {
+    min-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .headline {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 300;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 36px;
+  }
+
+  .headline em {
+    font-style: italic;
+    color: var(--sienna);
+  }
+
+  .body-text {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.8;
+    font-weight: 300;
+    color: var(--text-body);
+    max-width: 520px;
+    margin-bottom: 48px;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .link-primary {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .link-primary:hover { color: var(--sienna); }
+
+  .link-secondary {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .link-secondary:hover { color: var(--black); }
+
+  @media (max-width: 640px) {
+    .not-found { padding: 100px 24px 60px; }
+  }
+</style>
