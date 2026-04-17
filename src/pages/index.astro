@@ -193,7 +193,8 @@ const hasIllustrations = illustrations.length > 0;
     .scene-canvas {
       position: relative;
       width: 100%;
-      height: 600px;
+      height: 70vh;
+      /* height: 600px; */
        background: #000;
       /* background: #0d0a07; */
       overflow: hidden;
@@ -254,7 +255,7 @@ const hasIllustrations = illustrations.length > 0;
     /* Scarf wrapper for hover dark overlay */
     .scene-scarf-wrap {
       position: absolute;
-      bottom: 0; right: -25%;
+      bottom: 0; right: -300px;
       height: 100%;
       z-index: 1;
       cursor: pointer;
@@ -286,6 +287,42 @@ const hasIllustrations = illustrations.length > 0;
     .scene-overlay.visible { opacity: 1; }
     .scene-overlay--suitcase { z-index: 2; }
     .scene-overlay--scarf    { z-index: 3; }
+    .scene-overlay--tag      { z-index: 2; }
+
+    @keyframes tag-sway {
+      0%   { transform: translate(-50%, 0) rotate(-1deg); }
+      100% { transform: translate(-50%, 0) rotate(1deg); }
+    }
+
+    .scene-tag-wrap {
+      position: absolute;
+      left: 50%;
+      top: 0%;
+      transform: translate(-50%, 0);
+      transform-origin: top center;
+      overflow: visible;
+      z-index: 1;
+      cursor: pointer;
+      animation: tag-sway 4s ease-in-out infinite alternate;
+    }
+
+    .scene-tag-img {
+      display: block;
+      width: 6rem;
+      border: none;
+      outline: none;
+      transition: filter 0.3s ease;
+      filter: brightness(1);
+    }
+
+    .scene-tag-wrap:hover .scene-tag-img {
+      animation-play-state: paused;
+      filter: brightness(0.6);
+    }
+
+    .scene-tag-wrap:hover .scene-hover-dark {
+      opacity: 1;
+    }
 
     .scene-tag {
       font-family: var(--font-body);
@@ -559,6 +596,17 @@ const hasIllustrations = illustrations.length > 0;
         <span class="scene-link">View project</span>
       </div>
 
+      <!-- Museum Tag: hangs from top, z-index 1 -->
+      <div class="scene-tag-wrap" id="tagWrap">
+        <img class="scene-tag-img" src="/images/museum-tag.png" alt="Museum archive tag" />
+        <div class="scene-hover-dark"></div>
+      </div>
+      <div class="scene-overlay scene-overlay--tag" id="overlayTag">
+        <span class="scene-tag">Technology</span>
+        <span class="scene-title">Museum Label Generator</span>
+        <span class="scene-link">View project</span>
+      </div>
+
     </div>
 
     <!-- Mobile fallback — shown only when canvas is hidden (< 768px) -->
@@ -575,13 +623,14 @@ const hasIllustrations = illustrations.length > 0;
         <p class="fmob-desc">Enter a concept — get an AI-suggested palette and an animated, exportable pattern.</p>
         <span class="fmob-link">View project →</span>
       </a>
+      <a href="/projects/museum-label-generator" class="fmob-item">
+        <span class="fmob-tag">Technology</span>
+        <span class="fmob-title">Museum Label Generator</span>
+        <p class="fmob-desc">AI-drafted museum labels with human editorial control built into the interface.</p>
+        <span class="fmob-link">View project →</span>
+      </a>
     </div>
 
-  </section>
-
-  <!-- TRACK SELECTOR -->
-  <section class="reveal">
-    <TrackSelector prompt="What brings you here?" bordered={true} />
   </section>
 
  
@@ -610,8 +659,10 @@ const hasIllustrations = illustrations.length > 0;
     const vidScarf        = document.getElementById('vidScarf')       as HTMLVideoElement | null;
     const suitcaseWrap    = document.getElementById('suitcaseWrap')   as HTMLElement | null;
     const scarfWrap       = document.getElementById('scarfWrap')      as HTMLElement | null;
+    const tagWrap         = document.getElementById('tagWrap')        as HTMLElement | null;
     const overlaySuitcase = document.getElementById('overlaySuitcase') as HTMLElement | null;
     const overlayScarf    = document.getElementById('overlayScarf')    as HTMLElement | null;
+    const overlayTag      = document.getElementById('overlayTag')      as HTMLElement | null;
 
     function centerOverlay(el: HTMLElement, overlay: HTMLElement) {
       if (!sceneCanvas) return;
@@ -639,6 +690,14 @@ const hasIllustrations = illustrations.length > 0;
       overlayScarf?.classList.remove('visible');
     });
     scarfWrap?.addEventListener('click', () => { window.location.href = '/projects/textile-pattern-generator'; });
+
+    tagWrap?.addEventListener('mouseenter', () => {
+      if (overlayTag && tagWrap) { centerOverlay(tagWrap, overlayTag); overlayTag.classList.add('visible'); }
+    });
+    tagWrap?.addEventListener('mouseleave', () => {
+      overlayTag?.classList.remove('visible');
+    });
+    tagWrap?.addEventListener('click', () => { window.location.href = '/projects/museum-label-generator'; });
 
     // CURSOR
     const cursor = document.getElementById('cursor') as HTMLElement | null;

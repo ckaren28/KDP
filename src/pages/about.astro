@@ -5,28 +5,19 @@ import MainLayout from '../layouts/MainLayout.astro';
 <MainLayout title="About — Karen Dettmar">
   <div class="about-wrapper">
 
-    <!-- Header -->
-    <div class="about-header">
+    <!-- Header: name headline only -->
+    <div class="about-header reveal">
       <h1 class="about-title">Karen <em>Dettmar</em></h1>
-      <div class="about-meta">
-        <span>New York City</span>
-        <span class="meta-dot">·</span>
-        <span>Parsons School of Design · FIT</span>
-        <span class="meta-dot">·</span>
-      
-      </div>
     </div>
 
-    <!-- Bio -->
+    <!-- Bio paragraph -->
     <div class="bio reveal">
-      <p class="bio-lead">
-        I build at the edge of craft and <em>code.</em>
-      </p>
       <p>
-        Equally comfortable draping a dress form and architecting a React component, I work at the
-        edge of two disciplines that are rarely in the same room. My goal is to close that gap, to make technology feel considered and make fashion feel intelligent.
+        Equally comfortable draping a dress form and architecting a React component,
+        I work at the edge of two disciplines that are rarely in the same room.
+        My goal is to close that gap — to make technology feel considered and make
+        fashion feel intelligent.
       </p>
-      
     </div>
 
     <!-- Disciplines -->
@@ -56,6 +47,204 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
     </div>
 
+    <!-- Off the clock -->
+    <!-- <div class="otc-section reveal">
+      <span class="section-label">Off the clock</span>
+      <div class="otc-grid">
+
+        Tile 1: NYC subway map SVG
+        <div class="otc-tile" data-anim>
+          <div class="otc-reveal">
+            <svg class="tile-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line class="sv-line" x1="5" y1="52" x2="95" y2="52" stroke="#C4504A" stroke-width="2.5" pathLength="1"/>
+              <line class="sv-line" x1="15" y1="88" x2="78" y2="18" stroke="#C8A848" stroke-width="2.5" pathLength="1" style="animation-delay:0.18s"/>
+              <line class="sv-line" x1="63" y1="8" x2="55" y2="93" stroke="#7A9470" stroke-width="2.5" pathLength="1" style="animation-delay:0.34s"/>
+              <line class="sv-line" x1="8" y1="28" x2="90" y2="70" stroke="#6E8EAA" stroke-width="2.5" pathLength="1" style="animation-delay:0.50s"/>
+              <circle class="sv-dot" cx="57" cy="52" r="4.5" fill="#C4504A" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.70s"/>
+              <circle class="sv-dot" cx="64" cy="44" r="4.5" fill="#C8A848" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.80s"/>
+              <circle class="sv-dot" cx="35" cy="62" r="4.5" fill="#6E8EAA" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.90s"/>
+              <circle class="sv-dot" cx="62" cy="52" r="4.5" fill="#7A9470" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:1.0s"/>
+            </svg>
+          </div>
+          <span class="otc-caption">NYC</span>
+        </div>
+
+        Tile 2: Three abstract figures
+        <div class="otc-tile" data-anim>
+          <div class="otc-reveal">
+            <svg class="tile-svg" viewBox="0 0 100 90" fill="none" stroke="var(--black)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+              Figure 1: standing, left
+              <path class="fig-line" pathLength="100" d="M 20,15 A 6,6 0 1,0 20.01,15 Z" style="animation-delay:0s"/>
+              <path class="fig-line" pathLength="100" d="M 20,21 L 20,42" style="animation-delay:0.05s"/>
+              <path class="fig-line" pathLength="100" d="M 20,30 L 11,36" style="animation-delay:0.10s"/>
+              <path class="fig-line" pathLength="100" d="M 20,30 L 29,34" style="animation-delay:0.15s"/>
+              <path class="fig-line" pathLength="100" d="M 20,42 L 14,60" style="animation-delay:0.20s"/>
+              <path class="fig-line" pathLength="100" d="M 20,42 L 26,60" style="animation-delay:0.20s"/>
+              Figure 2: seated, center
+              <path class="fig-line" pathLength="100" d="M 50,10 A 6,6 0 1,0 50.01,10 Z" style="animation-delay:0.35s"/>
+              <path class="fig-line" pathLength="100" d="M 50,16 L 50,36" style="animation-delay:0.40s"/>
+              <path class="fig-line" pathLength="100" d="M 50,24 L 40,30" style="animation-delay:0.45s"/>
+              <path class="fig-line" pathLength="100" d="M 50,24 L 60,28" style="animation-delay:0.50s"/>
+              <path class="fig-line" pathLength="100" d="M 50,36 L 42,44" style="animation-delay:0.55s"/>
+              <path class="fig-line" pathLength="100" d="M 50,36 L 58,40" style="animation-delay:0.55s"/>
+              <path class="fig-line" pathLength="100" d="M 42,44 L 36,44" style="animation-delay:0.60s"/>
+              <path class="fig-line" pathLength="100" d="M 58,40 L 66,36" style="animation-delay:0.60s"/>
+              Figure 3: standing, right
+              <path class="fig-line" pathLength="100" d="M 80,12 A 6,6 0 1,0 80.01,12 Z" style="animation-delay:0.75s"/>
+              <path class="fig-line" pathLength="100" d="M 80,18 L 80,40" style="animation-delay:0.80s"/>
+              <path class="fig-line" pathLength="100" d="M 80,28 L 70,33" style="animation-delay:0.85s"/>
+              <path class="fig-line" pathLength="100" d="M 80,28 L 90,32" style="animation-delay:0.90s"/>
+              <path class="fig-line" pathLength="100" d="M 80,40 L 73,62" style="animation-delay:0.95s"/>
+              <path class="fig-line" pathLength="100" d="M 80,40 L 87,62" style="animation-delay:0.95s"/>
+            </svg>
+          </div>
+          <span class="otc-caption">Rides the train to look at people</span>
+        </div>
+
+        Tile 3: Sewing image
+        PLACEHOLDER: /images/about/sewing.jpg — replace with a close-up of stitching, bobbin, or fabric on the machine
+        <div class="otc-tile otc-tile--img">
+          <div class="otc-reveal otc-reveal--img">
+            <img src="/images/about/sewing.jpg" alt="" class="tile-img" loading="lazy" />
+          </div>
+          <span class="otc-caption">Likes to sew. Juki at home.</span>
+        </div>
+
+        Tile 4: CLO3D wireframe garment
+        <div class="otc-tile" data-anim>
+          <div class="otc-reveal">
+            <svg class="tile-svg garment-svg" viewBox="0 0 80 110" fill="none" stroke="var(--black)" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              Bodice outline
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 28,8 Q 40,4 52,8 L 58,28 Q 40,24 22,28 Z" style="animation-delay:0s"/>
+              Shoulders
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 28,8 L 18,20 L 22,28" style="animation-delay:0.15s"/>
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 52,8 L 62,20 L 58,28" style="animation-delay:0.15s"/>
+              Neckline
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 34,8 Q 40,13 46,8" style="animation-delay:0.08s"/>
+              Waist
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 22,28 Q 40,32 58,28" style="animation-delay:0.28s"/>
+              Skirt
+              <path class="g-line" stroke-width="1.8" pathLength="100" d="M 22,28 L 13,82 Q 40,90 67,82 L 58,28" style="animation-delay:0.38s"/>
+              <!/-- Mesh: horizontals -->
+              <!-- <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 20,42 Q 40,46 60,42" style="animation-delay:0.52s"/>
+              <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 18,56 Q 40,60 62,56" style="animation-delay:0.58s"/>
+              <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 16,70 Q 40,74 64,70" style="animation-delay:0.64s"/> -->
+              <!-- Mesh: verticals -->
+              <!-- <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 40,28 L 40,86" style="animation-delay:0.70s"/>
+              <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 31,29 L 22,84" style="animation-delay:0.74s"/>
+              <path class="g-mesh" stroke-width="0.9" pathLength="100" d="M 49,29 L 58,84" style="animation-delay:0.74s"/>
+            </svg>
+          </div> -->
+          <!-- <span class="otc-caption">Learning CLO3D</span>
+        </div> -->
+
+        <!-- Tile 5: Print image -->
+        <!-- PLACEHOLDER: /images/about/print.jpg — replace with a close-up of a print/ink detail from archive -->
+        <!-- <div class="otc-tile otc-tile--img">
+          <div class="otc-reveal otc-reveal--img">
+            <img src="/images/about/print.jpg" alt="" class="tile-img" loading="lazy" />
+          </div>
+          <span class="otc-caption">Printmaker at UVA, fashion at Parsons</span>
+        </div> -->
+
+        <!-- Tile 6: Steam pot -->
+        <!-- <div class="otc-tile otc-tile--steam">
+          <div class="otc-reveal">
+            <svg class="tile-svg" viewBox="0 0 80 90" fill="none" stroke="var(--black)" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"> -->
+              <!-- Steam lines — loop while hovering -->
+              <!-- <path class="steam steam-1" stroke-width="1.8" d="M 28,32 Q 24,25 28,17 Q 32,9 28,2"/>
+              <path class="steam steam-2" stroke-width="1.8" d="M 40,34 Q 36,26 40,18 Q 44,10 40,3"/>
+              <path class="steam steam-3" stroke-width="1.8" d="M 52,32 Q 48,25 52,17 Q 56,9 52,2"/>
+              Pot body -->
+              <!-- <path class="pot-body" stroke-width="2" pathLength="100" d="M 14,44 L 14,76 Q 14,80 18,80 L 62,80 Q 66,80 66,76 L 66,44 Z"/> -->
+              <!-- Lid -->
+              <!-- <path class="pot-body" stroke-width="2" pathLength="100" d="M 10,44 Q 40,38 70,44" style="animation-delay:0.3s"/> -->
+              <!-- Lid knob -->
+              <!-- <path class="pot-body" stroke-width="1.5" pathLength="100" d="M 37,38 Q 37,34 40,34 Q 43,34 43,38" style="animation-delay:0.4s"/>
+              Handles
+              <path class="pot-body" stroke-width="2" pathLength="100" d="M 14,52 Q 6,52 6,58 Q 6,64 14,64" style="animation-delay:0.45s"/>
+              <path class="pot-body" stroke-width="2" pathLength="100" d="M 66,52 Q 74,52 74,58 Q 74,64 66,64" style="animation-delay:0.45s"/>
+            </svg>
+          </div>
+          <span class="otc-caption">Perfecting a few recipes</span>
+        </div> -->
+
+        <!-- Tile 7: Knit stitch pattern -->
+        <!-- <div class="otc-tile" data-anim>
+          <div class="otc-reveal">
+            <svg class="tile-svg" viewBox="0 0 96 80" fill="none" stroke="var(--black)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" xmlns="http://www.w3.org/2000/svg"> -->
+              <!-- Row 1 -->
+              <!-- <g class="knit-row" style="--row-delay: 0s">
+                <path pathLength="100" d="M 4,24 L 10,14 L 16,24"/>
+                <path pathLength="100" d="M 16,24 L 22,14 L 28,24"/>
+                <path pathLength="100" d="M 28,24 L 34,14 L 40,24"/>
+                <path pathLength="100" d="M 40,24 L 46,14 L 52,24"/>
+                <path pathLength="100" d="M 52,24 L 58,14 L 64,24"/>
+                <path pathLength="100" d="M 64,24 L 70,14 L 76,24"/>
+                <path pathLength="100" d="M 76,24 L 82,14 L 88,24"/>
+              </g> -->
+              <!-- Row 2 -->
+              <!-- <g class="knit-row" style="--row-delay: 0.4s">
+                <path pathLength="100" d="M 4,41 L 10,31 L 16,41"/>
+                <path pathLength="100" d="M 16,41 L 22,31 L 28,41"/>
+                <path pathLength="100" d="M 28,41 L 34,31 L 40,41"/>
+                <path pathLength="100" d="M 40,41 L 46,31 L 52,41"/>
+                <path pathLength="100" d="M 52,41 L 58,31 L 64,41"/>
+                <path pathLength="100" d="M 64,41 L 70,31 L 76,41"/>
+                <path pathLength="100" d="M 76,41 L 82,31 L 88,41"/>
+              </g> -->
+              <!-- Row 3 -->
+              <!-- <g class="knit-row" style="--row-delay: 0.8s">
+                <path pathLength="100" d="M 4,58 L 10,48 L 16,58"/>
+                <path pathLength="100" d="M 16,58 L 22,48 L 28,58"/>
+                <path pathLength="100" d="M 28,58 L 34,48 L 40,58"/>
+                <path pathLength="100" d="M 40,58 L 46,48 L 52,58"/>
+                <path pathLength="100" d="M 52,58 L 58,48 L 64,58"/>
+                <path pathLength="100" d="M 64,58 L 70,48 L 76,58"/>
+                <path pathLength="100" d="M 76,58 L 82,48 L 88,58"/>
+              </g>
+              Row 4
+              <g class="knit-row" style="--row-delay: 1.2s">
+                <path pathLength="100" d="M 4,75 L 10,65 L 16,75"/>
+                <path pathLength="100" d="M 16,75 L 22,65 L 28,75"/>
+                <path pathLength="100" d="M 28,75 L 34,65 L 40,75"/>
+                <path pathLength="100" d="M 40,75 L 46,65 L 52,75"/>
+                <path pathLength="100" d="M 52,75 L 58,65 L 64,75"/>
+                <path pathLength="100" d="M 64,75 L 70,65 L 76,75"/>
+                <path pathLength="100" d="M 76,75 L 82,65 L 88,75"/>
+              </g>
+            </svg>
+          </div>
+          <span class="otc-caption">Knits</span>
+        </div> -->
+
+        <!-- Tile 8: Color swatches -->
+        <!-- <div class="otc-tile otc-tile--swatches">
+          <div class="otc-reveal otc-reveal--swatches">
+            <div class="swatch-grid">
+              <div class="swatch" style="background:#B85C38; animation-delay:0s"></div>
+              <div class="swatch" style="background:#C4A882; animation-delay:0.07s"></div>
+              <div class="swatch" style="background:#7D8C7C; animation-delay:0.14s"></div>
+              <div class="swatch" style="background:#6E8EAA; animation-delay:0.21s"></div>
+              <div class="swatch" style="background:#C4504A; animation-delay:0.28s"></div>
+              <div class="swatch" style="background:#DED5BE; animation-delay:0.35s"></div>
+            </div>
+          </div> -->
+          <!-- <span class="otc-caption">Multimedia. Builds with anything.</span> --> 
+        <!-- </div> -->
+
+        <!-- Tile 9: Image sliding puzzle -->
+        <!-- PLACEHOLDER: /images/about/puzzle-textile.jpg — provide a square textile detail
+             (shibori, marbling, or block print) at 600×600 px or larger. -->
+        <!-- <div class="otc-tile otc-tile--puzzle" id="puzzleTileWrap">
+          <div class="puzzle-container" id="puzzleContainer"></div>
+        </div>
+
+      </div> -->
+      <!-- /otc-grid -->
+    <!-- </div> -->
+    <!-- /otc-section -->
+
     <!-- Contact -->
     <div class="contact reveal">
       <span class="section-label">Get in touch</span>
@@ -75,26 +264,146 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
     </div>
 
+  </div><!-- /about-wrapper -->
+
+  <!-- Easter egg: floating note (fixed, top-right) -->
+  <div class="egg-note" id="eggNote" aria-hidden="true">
+    Still here? I'm probably making something.
   </div>
 
+</MainLayout>
+
 <script>
-  function fitText() {
-    const el = document.querySelector('.bio-lead') as HTMLElement | null;
-    if (!el) return;
-    const container = el.parentElement as HTMLElement;
-    let size = 200;
-    el.style.fontSize = size + 'px';
-    while (el.scrollWidth > container.clientWidth && size > 12) {
-      size -= 0.5;
-      el.style.fontSize = size + 'px';
+  // ── ANIMATION RESTART ON HOVER (tiles with data-anim) ──
+  document.querySelectorAll<HTMLElement>('.otc-tile[data-anim]').forEach(tile => {
+    tile.addEventListener('mouseenter', () => {
+      tile.classList.remove('playing');
+      void tile.offsetHeight; // force reflow to restart animations
+      tile.classList.add('playing');
+    });
+    tile.addEventListener('mouseleave', () => {
+      tile.classList.remove('playing');
+    });
+  });
+
+  // ── STEAM TILE: play/pause on hover ──
+  const steamTile = document.querySelector<HTMLElement>('.otc-tile--steam');
+  steamTile?.addEventListener('mouseenter', () => steamTile.classList.add('playing'));
+  steamTile?.addEventListener('mouseleave', () => steamTile.classList.remove('playing'));
+
+  // ── IMAGE PUZZLE ──
+  const N = 3;
+  const PUZZLE_IMG = '/images/about/puzzle-textile.jpg';
+  const puzzleWrap      = document.getElementById('puzzleTileWrap');
+  const puzzleContainer = document.getElementById('puzzleContainer');
+  // piecePos[i] = grid position (0–8) of piece i (pieces 0–7; piece 8 is conceptually the empty)
+  let piecePos: number[] = [0, 1, 2, 3, 4, 5, 6, 7];
+  let emptyPos = 8;
+  let puzShuffled = false;
+  const pieceDivs: HTMLDivElement[] = [];
+
+  function getRC(pos: number) {
+    return { r: Math.floor(pos / N), c: pos % N };
+  }
+
+  function renderPieces() {
+    pieceDivs.forEach((div, i) => {
+      const { r, c } = getRC(piecePos[i]);
+      div.style.left = (c * 100 / N) + '%';
+      div.style.top  = (r * 100 / N) + '%';
+    });
+    const emptyEl = document.getElementById('puzzleEmpty');
+    if (emptyEl) {
+      const { r, c } = getRC(emptyPos);
+      emptyEl.style.left = (c * 100 / N) + '%';
+      emptyEl.style.top  = (r * 100 / N) + '%';
     }
   }
 
-  fitText();
-  window.addEventListener('resize', fitText);
-</script>
+  function tryMove(pieceIdx: number) {
+    const pos = piecePos[pieceIdx];
+    const { r: pr, c: pc } = getRC(pos);
+    const { r: er, c: ec } = getRC(emptyPos);
+    if (Math.abs(pr - er) + Math.abs(pc - ec) === 1) {
+      piecePos[pieceIdx] = emptyPos;
+      emptyPos = pos;
+      renderPieces();
+    }
+  }
 
-</MainLayout>
+  function shufflePuzzle() {
+    for (let s = 0; s < 200; s++) {
+      const { r: er, c: ec } = getRC(emptyPos);
+      const nbrs: number[] = [];
+      if (er > 0)     nbrs.push(emptyPos - N);
+      if (er < N - 1) nbrs.push(emptyPos + N);
+      if (ec > 0)     nbrs.push(emptyPos - 1);
+      if (ec < N - 1) nbrs.push(emptyPos + 1);
+      const target = nbrs[Math.floor(Math.random() * nbrs.length)];
+      const pi = piecePos.indexOf(target);
+      if (pi !== -1) {
+        piecePos[pi] = emptyPos;
+        emptyPos = target;
+      }
+    }
+    renderPieces();
+  }
+
+  if (puzzleContainer) {
+    // Empty-slot pulse div
+    const emptyEl = document.createElement('div');
+    emptyEl.id = 'puzzleEmpty';
+    emptyEl.className = 'puzzle-empty';
+    puzzleContainer.appendChild(emptyEl);
+
+    // Create 8 piece divs
+    for (let i = 0; i < 8; i++) {
+      const div = document.createElement('div');
+      div.className = 'puzzle-piece';
+      const imgC = i % N;
+      const imgR = Math.floor(i / N);
+      div.style.backgroundImage   = `url('${PUZZLE_IMG}')`;
+      div.style.backgroundSize    = '300% 300%';
+      div.style.backgroundPosition = `${imgC * 50}% ${imgR * 50}%`;
+      div.addEventListener('click', () => tryMove(i));
+      pieceDivs.push(div);
+      puzzleContainer.appendChild(div);
+    }
+    renderPieces();
+  }
+
+  puzzleWrap?.addEventListener('mouseenter', () => {
+    if (!puzShuffled) { puzShuffled = true; shufflePuzzle(); }
+  });
+
+  // ── TRIPLE-CLICK EASTER EGG ──
+  const eggNote = document.getElementById('eggNote');
+  let eggClicks = 0;
+  let eggLastT  = 0;
+  let eggTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle?.addEventListener('click', () => {
+    const now = Date.now();
+    if (now - eggLastT > 800) eggClicks = 0;
+    eggClicks++;
+    eggLastT = now;
+
+    if (eggClicks >= 3 && eggNote) {
+      eggClicks = 0;
+      localStorage.setItem('easter1', '1');
+      if (eggTimer) clearTimeout(eggTimer);
+      eggNote.classList.remove('egg-hiding');
+      eggNote.classList.add('egg-visible');
+      eggTimer = setTimeout(() => {
+        eggNote.classList.add('egg-hiding');
+        eggNote.addEventListener('transitionend', () => {
+          eggNote.classList.remove('egg-visible', 'egg-hiding');
+        }, { once: true });
+      }, 4000);
+    }
+  });
+</script>
 
 <style>
   .about-wrapper {
@@ -105,7 +414,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 
   /* ── HEADER ── */
   .about-header {
-    margin-bottom: 64px;
+    margin-bottom: 48px;
     padding-bottom: 32px;
     border-bottom: 1px solid var(--border);
   }
@@ -117,7 +426,6 @@ import MainLayout from '../layouts/MainLayout.astro';
     line-height: 0.9;
     letter-spacing: -0.02em;
     margin-top: 12px;
-    margin-bottom: 28px;
   }
 
   .about-title em {
@@ -125,38 +433,9 @@ import MainLayout from '../layouts/MainLayout.astro';
     color: var(--sienna);
   }
 
-  .about-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    flex-wrap: wrap;
-  }
-
-  .meta-dot { color: var(--border); }
-
-  .meta-open { color: var(--sienna); }
-
   /* ── BIO ── */
   .bio {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
     margin-bottom: 80px;
-  }
-
-  .bio-lead {
-    font-family: var(--font-display);
-    font-size: 16px; /* set by JS fitText */
-    font-weight: 300;
-    font-style: italic;
-    line-height: 1.15;
-    white-space: nowrap;
-    color: var(--black);
-    margin-bottom: 8px;
   }
 
   .bio p {
@@ -164,11 +443,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     line-height: 1.88;
     color: var(--text-body);
     font-weight: 300;
-  }
-
-  .bio p strong {
-    color: var(--black);
-    font-weight: 400;
+    max-width: 640px;
   }
 
   /* ── DISCIPLINES ── */
@@ -199,14 +474,8 @@ import MainLayout from '../layouts/MainLayout.astro';
     border-bottom: 1px solid var(--border);
   }
 
-  .disc-cell:nth-child(odd) {
-    padding-right: 48px;
-    border-right: 1px solid var(--border);
-  }
-
-  .disc-cell:nth-child(even) {
-    padding-left: 48px;
-  }
+  .disc-cell:nth-child(odd)  { padding-right: 48px; border-right: 1px solid var(--border); }
+  .disc-cell:nth-child(even) { padding-left: 48px; }
 
   .disc-num {
     display: block;
@@ -234,6 +503,318 @@ import MainLayout from '../layouts/MainLayout.astro';
     line-height: 1.6;
     letter-spacing: 0.02em;
     font-weight: 300;
+  }
+
+  /* ── OFF THE CLOCK ── */
+  .otc-section {
+    margin-bottom: 80px;
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+  }
+
+  .otc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .otc-tile {
+    aspect-ratio: 1 / 1;
+    background: var(--warm-white);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: background 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .otc-tile:hover {
+    background: var(--off-white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.10);
+    z-index: 1;
+  }
+
+  html[data-theme="dark"] .otc-tile         { background: var(--warm-white); }
+  html[data-theme="dark"] .otc-tile:hover   { background: #2a1c12; }
+
+  /* Reveal layer: hidden by default, shown on .playing or :hover */
+  .otc-reveal {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .otc-tile.playing .otc-reveal,
+  .otc-tile:hover .otc-reveal  { opacity: 1; }
+
+  /* Caption */
+  .otc-caption {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    color: var(--text-body);
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s;
+    pointer-events: none;
+  }
+
+  .otc-tile.playing .otc-caption,
+  .otc-tile:hover .otc-caption  { opacity: 1; }
+
+  /* SVG fills the reveal area */
+  .tile-svg {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* ── TILE 1: SUBWAY LINES ── */
+  .sv-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .sv-dot {
+    opacity: 0;
+    transform-origin: center;
+    transform: scale(0.2);
+  }
+
+  .otc-tile.playing .sv-line {
+    animation: drawLine 0.55s ease forwards;
+  }
+  .otc-tile.playing .sv-dot {
+    animation: dotPop 0.3s ease forwards;
+  }
+
+  /* ── TILE 2: FIGURES ── */
+  .fig-line {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  .otc-tile.playing .fig-line {
+    animation: drawPath 0.35s ease forwards;
+  }
+
+  /* ── TILE 4: GARMENT ── */
+  .g-line, .g-mesh {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  .otc-tile.playing .g-line {
+    animation: drawPath 0.5s ease forwards;
+  }
+  .otc-tile.playing .g-mesh {
+    animation: drawPath 0.4s ease forwards;
+    opacity: 0.45;
+  }
+
+  /* Slow sway only while playing */
+  .garment-svg {
+    transform-origin: center;
+    transform-style: preserve-3d;
+  }
+  .otc-tile.playing .garment-svg {
+    animation: garmentSway 3s ease-in-out infinite alternate;
+  }
+
+  /* ── TILE 6: STEAM POT ── */
+  .steam {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: steamRise 2s ease-in infinite;
+    animation-play-state: paused;
+  }
+  .steam-1 { animation-delay: 0s; }
+  .steam-2 { animation-delay: 0.55s; }
+  .steam-3 { animation-delay: 1.1s; }
+
+  .otc-tile--steam.playing .steam {
+    animation-play-state: running;
+  }
+
+  .pot-body {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  .otc-tile--steam.playing .pot-body {
+    animation: drawPath 0.5s ease forwards;
+  }
+
+  /* ── TILE 7: KNIT ── */
+  .knit-row path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  .otc-tile.playing .knit-row path {
+    animation: drawPath 0.5s ease forwards;
+    animation-delay: var(--row-delay);
+  }
+
+  /* ── TILE 8: SWATCHES ── */
+  .otc-reveal--swatches { padding: 20px; }
+
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .swatch {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: none;
+  }
+
+  .otc-tile--swatches:hover .swatch {
+    animation: swatchIn 0.35s ease forwards;
+  }
+
+  /* ── IMAGE TILES ── */
+  .otc-tile--img .otc-reveal { padding: 0; }
+  .otc-reveal--img { overflow: hidden; }
+
+  .tile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.04);
+    transition: transform 0.5s ease;
+  }
+
+  .otc-tile--img:hover .tile-img { transform: scale(1.0); }
+
+  /* ── PUZZLE TILE ── */
+  .otc-tile--puzzle {
+    cursor: default;
+    padding: 0;
+    overflow: hidden;
+  }
+  /* No hover lift / translate on puzzle tile */
+  .otc-tile--puzzle:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .puzzle-container {
+    position: absolute;
+    inset: 0;
+  }
+
+  .puzzle-piece {
+    position: absolute;
+    width: calc(100% / 3);
+    height: calc(100% / 3);
+    background-repeat: no-repeat;
+    cursor: none;
+    transition: left 0.25s ease, top 0.25s ease;
+    box-sizing: border-box;
+    border: 0.5px solid rgba(44, 26, 14, 0.08);
+  }
+
+  .puzzle-piece:hover {
+    filter: brightness(1.06);
+    z-index: 1;
+  }
+
+  .puzzle-empty {
+    position: absolute;
+    width: calc(100% / 3);
+    height: calc(100% / 3);
+    background: var(--warm-white);
+    transition: left 0.25s ease, top 0.25s ease;
+    animation: pulseEmpty 2.5s ease-in-out infinite;
+  }
+
+  html[data-theme="dark"] .puzzle-empty { background: #241810; }
+
+  /* ── EASTER EGG ── */
+  .egg-note {
+    position: fixed;
+    top: 80px;
+    right: 48px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 280px;
+    text-align: right;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    z-index: 200;
+  }
+
+  .egg-note.egg-visible {
+    animation: eggIn 0.5s ease forwards;
+  }
+
+  .egg-note.egg-hiding {
+    animation: eggOut 0.5s ease forwards;
+  }
+
+  /* ── KEYFRAMES ── */
+  @keyframes drawLine {
+    from { stroke-dashoffset: 1; }
+    to   { stroke-dashoffset: 0; }
+  }
+
+  @keyframes drawPath {
+    from { stroke-dashoffset: 100; }
+    to   { stroke-dashoffset: 0;   }
+  }
+
+  @keyframes dotPop {
+    from { opacity: 0; transform: scale(0.2); }
+    to   { opacity: 1; transform: scale(1);   }
+  }
+
+  @keyframes garmentSway {
+    from { transform: perspective(300px) rotateY(-12deg); }
+    to   { transform: perspective(300px) rotateY(12deg);  }
+  }
+
+  @keyframes steamRise {
+    0%   { stroke-dashoffset: 0;   opacity: 0.75; transform: translateY(0);     }
+    100% { stroke-dashoffset: -30; opacity: 0;    transform: translateY(-14px); }
+  }
+
+  @keyframes swatchIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1);   }
+  }
+
+  @keyframes pulseEmpty {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.75; }
+  }
+
+  @keyframes eggIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  @keyframes eggOut {
+    from { opacity: 1; transform: translateY(0);    }
+    to   { opacity: 0; transform: translateY(-6px); }
   }
 
   /* ── CONTACT ── */
@@ -269,7 +850,6 @@ import MainLayout from '../layouts/MainLayout.astro';
     color: var(--muted);
     width: 80px;
     flex-shrink: 0;
-    transition: color 0.3s;
   }
 
   .contact-value {
@@ -288,5 +868,10 @@ import MainLayout from '../layouts/MainLayout.astro';
     .disc-grid { grid-template-columns: 1fr; }
     .disc-cell { padding-right: 0 !important; padding-left: 0 !important; border-right: none !important; }
     .contact-value { font-size: 16px; }
+    .egg-note { right: 24px; }
+  }
+
+  @media (max-width: 640px) {
+    .otc-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
