@@ -1,0 +1,42 @@
+---
+title: "Generative Textile Pattern Tool"
+description: "Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable. Exports as SVG."
+track: "tech"
+tags: ["Creative Technology", "Generative Art", "AI", "Canvas API", "Pattern Design"]
+date: 2024-10-01
+live_url: "https://karen-dettmar.netlify.app/projects/textile-pattern-generator"
+---
+
+import TextilePatternGenerator from '../../components/tools/TextilePatternGenerator.astro';
+
+<TextilePatternGenerator />
+
+## How it works
+
+Type a collection concept — a mood, a place, a material reference — and the tool calls an AI model to suggest a five-color palette and a pattern structure. The palette is immediately editable: click any swatch to override a color. Pattern type and density are manual controls, keeping the creative decision with the designer.
+
+The canvas runs as an animation loop in the browser using the Canvas API. Five pattern algorithms are available: a geometric Islamic khatam motif, a Marimekko-style botanical floral grid, a Truchet tile system, diagonal stripes, and a woven grid. Each responds continuously to palette and density changes.
+
+## Architecture
+
+```
+User input (concept text)
+        ↓
+Netlify Function (keeps API key server-side)
+        ↓
+Anthropic API → JSON { colors[], patternStyle, mood }
+        ↓
+Canvas draw loop updates live
+        ↓
+SVG export (static snapshot of current state)
+```
+
+## Design decisions
+
+**AI suggests, designer decides.** The model outputs a palette and a pattern style recommendation, but neither is locked in. Every value is editable immediately after generation. The point is to reduce the blank-canvas problem, not to automate the output.
+
+**Canvas over SVG for the live view.** The animation loop — continuous drift, rotation, breathing offset — requires frame-by-frame drawing. SVG would work for static output, which is why the download uses a generated SVG rather than a canvas screenshot.
+
+**Mockup previews.** Three SVGs (chair, coat, tote bag) have pattern-fill zones identified by element ID. The tool samples the live canvas every four frames and injects a JPEG thumbnail as the fill image. This gives immediate spatial context without an expensive render pipeline.
+
+**Five algorithms, not infinite.** Each pattern type is hand-coded for the aesthetic it produces — the Islamic star grid, the floral tile, the Truchet arcs. A general-purpose pattern generator would be blander. The constraint of five named types is intentional.

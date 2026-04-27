@@ -1,0 +1,812 @@
+---
+import styles from '../../pages/projects/textile-pattern-generator.module.css';
+const s = styles;
+---
+
+<!-- ── MOCKUP PREVIEWS ── -->
+<div class={s['mockup-section']}>
+  <span class={s['mockup-label']}>Pattern in Context</span>
+  <div class={s['mockup-row']}>
+    <div class={s['mockup-frame']}>
+      <div class={s['mockup-svg-container']} id="mockupChair"></div>
+      <span class={s['mockup-name']}>Chair</span>
+    </div>
+    <div class={s['mockup-frame']}>
+      <div class={s['mockup-svg-container']} id="mockupCoat"></div>
+      <span class={s['mockup-name']}>Coat</span>
+    </div>
+    <div class={s['mockup-frame']}>
+      <div class={s['mockup-svg-container']} id="mockupTote"></div>
+      <span class={s['mockup-name']}>Tote Bag</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOOL LAYOUT ── -->
+<div class={s['tool-layout']}>
+
+  <!-- CONTROLS -->
+  <aside class={s['controls-panel']}>
+
+    <div class={s['ctrl-section']}>
+      <label class={s['ctrl-label']} for="conceptInput">Collection Concept</label>
+      <textarea
+        id="conceptInput"
+        class={s['concept-textarea']}
+        rows="2"
+        placeholder="e.g. Traveler, neutral tones, geometric"
+      ></textarea>
+      <button id="generateBtn" class={s['btn-generate']}>Generate Palette</button>
+      <div class={s['error-msg']} id="errorMsg"></div>
+    </div>
+
+    <div class={s['ctrl-section']}>
+      <span class={s['ctrl-label']}>Color Palette</span>
+      <div class={s['swatch-row']} id="swatches"></div>
+      <p class={s['mood-text']} id="moodText"></p>
+    </div>
+
+    <div class={s['ctrl-section']}>
+      <span class={s['ctrl-label']}>Pattern Type</span>
+      <div class={s['pattern-grid']}>
+        <button class={s['btn-pattern']} data-pattern="geometric">Geometric</button>
+        <button class={s['btn-pattern']} data-pattern="organic">Floral</button>
+        <button class={s['btn-pattern']} data-pattern="organic2">Organic</button>
+        <button class={s['btn-pattern']} data-pattern="stripe">Stripe</button>
+        <button class={s['btn-pattern']} data-pattern="grid">Grid</button>
+      </div>
+    </div>
+
+    <div class={s['ctrl-section']}>
+      <span class={s['ctrl-label']}>Density</span>
+      <input type="range" id="densitySlider" class={s['density-slider']} min="1" max="10" value="5" />
+      <div class={s['density-labels']}>
+        <span class={s['density-label']}>Coarse</span>
+        <span class={s['density-label']}>Fine</span>
+      </div>
+    </div>
+
+    <div class={s['ctrl-section']}>
+      <button id="downloadBtn" class={s['btn-download']}>Download SVG</button>
+    </div>
+
+  </aside>
+
+  <!-- CANVAS -->
+  <div class={s['canvas-panel']}>
+    <canvas id="patternCanvas" class={s['pattern-canvas']}></canvas>
+    <p class={s['canvas-hint']}>Click to pause · Click again to resume</p>
+  </div>
+
+</div>
+
+<script>
+  // ── STATE ──
+  let colors = ['#C4A882', '#8B6F5E', '#DED5BE', '#7D8C7C', '#5A5550'];
+  let patternType = 'geometric';
+  let density = 5;
+  let frame = 0;
+  let paused = false;
+  let organicT  = 0;
+  let organic2T = 0;
+  let organicRafId:  number | null = null;
+  let organic2RafId: number | null = null;
+
+  // ── ELEMENTS ──
+  const canvas = document.getElementById('patternCanvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  const generateBtn = document.getElementById('generateBtn') as HTMLButtonElement;
+  const conceptInput = document.getElementById('conceptInput') as HTMLTextAreaElement;
+  const errorMsg = document.getElementById('errorMsg') as HTMLElement;
+  const moodText = document.getElementById('moodText') as HTMLElement;
+  const densitySlider = document.getElementById('densitySlider') as HTMLInputElement;
+  const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement;
+
+  // ── CANVAS RESIZE ──
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  // ── TILE SIZE ──
+  function getTileSize() {
+    return Math.round(100 - (density - 1) * 80 / 9);
+  }
+
+  // ── PATTERN DRAWING ──
+
+  function drawGeometric(ctx: CanvasRenderingContext2D, W: number, H: number, colors: string[], tileSize: number, frame: number) {
+    const t = tileSize;
+    const drift  = (frame * 0.10) % t;
+    const slowRot = frame * 0.004;
+
+    ctx.fillStyle = colors[0];
+    ctx.fillRect(0, 0, W, H);
+
+    const cols = Math.ceil(W / t) + 3;
+    const rows = Math.ceil(H / t) + 3;
+
+    for (let row = -1; row < rows; row++) {
+      for (let col = -1; col < cols; col++) {
+        const cx = col * t + t / 2 - drift;
+        const cy = row * t + t / 2 - drift;
+        const isAlt = (row + col) % 2 !== 0;
+        const r = t * 0.46;
+        const innerR = r * 0.42;
+
+        ctx.fillStyle = isAlt ? colors[1] : colors[0];
+        ctx.fillRect(cx - t / 2, cy - t / 2, t, t);
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(slowRot);
+
+        ctx.beginPath();
+        for (let i = 0; i < 16; i++) {
+          const angle = (i * Math.PI / 8) - Math.PI / 2;
+          const rad = i % 2 === 0 ? r : innerR;
+          const px = Math.cos(angle) * rad;
+          const py = Math.sin(angle) * rad;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fillStyle = isAlt ? colors[2] : colors[3];
+        ctx.fill();
+
+        const sq = innerR * 0.64;
+        ctx.rotate(Math.PI / 4 - slowRot * 0.5);
+        ctx.fillStyle = isAlt ? colors[3] : colors[2];
+        ctx.fillRect(-sq, -sq, sq * 2, sq * 2);
+
+        ctx.rotate(-Math.PI / 4 + slowRot * 0.5);
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 0.14, 0, Math.PI * 2);
+        ctx.fillStyle = colors[4];
+        ctx.fill();
+
+        ctx.restore();
+
+        if (!isAlt) {
+          [[t / 2, 0], [0, t / 2], [-t / 2, 0], [0, -t / 2]].forEach(([dx, dy]) => {
+            ctx.save();
+            ctx.translate(cx + dx, cy + dy);
+            ctx.rotate(Math.PI / 4);
+            const ds = t * 0.09;
+            ctx.fillStyle = colors[4];
+            ctx.fillRect(-ds, -ds, ds * 2, ds * 2);
+            ctx.restore();
+          });
+        }
+      }
+    }
+  }
+
+  function drawFloralBlob(c: CanvasRenderingContext2D, cx: number, cy: number, r: number, seed: number) {
+    const N = 8;
+    const radii: number[] = [];
+    for (let i = 0; i < N; i++) radii.push(r * (0.6 + 0.4 * Math.abs(Math.sin(seed + i * 1.9))));
+    c.beginPath();
+    for (let i = 0; i < N; i++) {
+      const a0 = (i / N) * Math.PI * 2 - Math.PI / 2;
+      const a1 = ((i + 1) / N) * Math.PI * 2 - Math.PI / 2;
+      const aMid = (a0 + a1) / 2;
+      const px = cx + Math.cos(a0) * radii[i];
+      const py = cy + Math.sin(a0) * radii[i];
+      const nx = cx + Math.cos(a1) * radii[(i + 1) % N];
+      const ny = cy + Math.sin(a1) * radii[(i + 1) % N];
+      const cpR = (radii[i] + radii[(i + 1) % N]) / 2 * 1.15;
+      const cpx = cx + Math.cos(aMid) * cpR;
+      const cpy = cy + Math.sin(aMid) * cpR;
+      if (i === 0) c.moveTo(px, py);
+      c.quadraticCurveTo(cpx, cpy, nx, ny);
+    }
+    c.closePath();
+    c.fill();
+  }
+
+  function drawLeaf(c: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, bulge: number) {
+    const mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+    const dx = x1 - x0, dy = y1 - y0;
+    const px = -dy * bulge, py = dx * bulge;
+    c.beginPath();
+    c.moveTo(x0, y0);
+    c.quadraticCurveTo(mx + px, my + py, x1, y1);
+    c.quadraticCurveTo(mx - px, my - py, x0, y0);
+    c.closePath();
+    c.fill();
+  }
+
+  function drawFloralTile(c: CanvasRenderingContext2D, cx: number, cy: number, tileSize: number, tileAngle: number, seed: number) {
+    c.save();
+    c.translate(cx, cy);
+    c.rotate(tileAngle);
+
+    const blobR   = tileSize * 0.35;
+    const pLen    = tileSize * 0.38;
+    const pHalf   = tileSize * 0.09;
+    const stemLen = tileSize * 0.3;
+    const leafLen = tileSize * 0.2;
+
+    c.fillStyle = colors[1];
+    drawFloralBlob(c, 0, 0, blobR, seed);
+
+    for (let p = 0; p < 5; p++) {
+      const angle = (p / 5) * Math.PI * 2 - Math.PI / 2;
+      c.save();
+      c.rotate(angle);
+      c.fillStyle = (p % 2 === 0) ? colors[2] : colors[3];
+      c.beginPath();
+      c.moveTo(0, 0);
+      c.bezierCurveTo(-pHalf * 1.2, -pLen * 0.25, -pHalf, -pLen * 0.75, 0, -pLen);
+      c.bezierCurveTo( pHalf,       -pLen * 0.75,  pHalf * 1.2, -pLen * 0.25, 0, 0);
+      c.closePath();
+      c.fill();
+      c.restore();
+    }
+
+    const stemStartY = blobR;
+    const stemEndY   = stemStartY + stemLen;
+    const stemCPx    = tileSize * 0.1 * Math.sin(seed);
+    c.strokeStyle = colors[4];
+    c.lineWidth   = Math.max(2, tileSize * 0.03);
+    c.lineCap     = 'round';
+    c.beginPath();
+    c.moveTo(0, stemStartY);
+    c.quadraticCurveTo(stemCPx, stemStartY + stemLen * 0.5, 0, stemEndY);
+    c.stroke();
+
+    const leafY      = stemStartY + stemLen * 0.33;
+    const leafColors = [colors[2], colors[3]];
+    for (let l = 0; l < 2; l++) {
+      const side = l === 0 ? 1 : -1;
+      c.fillStyle = leafColors[l];
+      drawLeaf(c, side * tileSize * 0.04, leafY, side * leafLen, leafY - leafLen * 0.6, 0.45);
+    }
+
+    c.fillStyle = colors[4];
+    c.beginPath();
+    c.arc(0, 0, tileSize * 0.06, 0, Math.PI * 2);
+    c.fill();
+
+    c.restore();
+  }
+
+  function drawOrganicFrame() {
+    if (paused) return;
+    const W  = canvas.width;
+    const H  = canvas.height;
+    const tileSize = Math.round(300 - (density - 1) * 20);
+    const drift    = Math.sin(organicT) * 4;
+
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle   = colors[0];
+    ctx.fillRect(0, 0, W, H);
+
+    const cols = Math.ceil(W / tileSize) + 2;
+    const rows = Math.ceil(H / tileSize) + 2;
+
+    for (let row = -1; row < rows; row++) {
+      for (let col = -1; col < cols; col++) {
+        const stagger = (col % 2 === 0) ? 0 : tileSize * 0.5;
+        const cx = col * tileSize + tileSize * 0.5 + drift;
+        const cy = row * tileSize + tileSize * 0.5 + stagger + drift * 0.7;
+        const rawAngle = ((col * 17 + row * 31) % 360) * (Math.PI / 180);
+        const tileAngle = ((rawAngle + Math.PI) % (Math.PI * 2) - Math.PI) * (8 / 180);
+        const seed = col * 7.3 + row * 13.1;
+        drawFloralTile(ctx, cx, cy, tileSize, tileAngle, seed);
+      }
+    }
+
+    mockupTick++;
+    if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+
+    organicT += 0.008;
+    organicRafId = requestAnimationFrame(drawOrganicFrame);
+  }
+
+  function startOrganicLoop() {
+    if (organicRafId !== null) return;
+    organicRafId = requestAnimationFrame(drawOrganicFrame);
+  }
+  function stopOrganicLoop() {
+    if (organicRafId !== null) { cancelAnimationFrame(organicRafId); organicRafId = null; }
+  }
+
+  function drawOrganic2Frame() {
+    if (paused) return;
+    const W        = canvas.width;
+    const H        = canvas.height;
+    const tileSize = getTileSize();
+    const phase    = Math.floor(organic2T / 60);
+
+    ctx.fillStyle   = colors[0];
+    ctx.fillRect(0, 0, W, H);
+    ctx.lineCap     = 'butt';
+    ctx.lineJoin    = 'round';
+    ctx.globalAlpha = 1.0;
+
+    const cols = Math.ceil(W / tileSize) + 1;
+    const rows = Math.ceil(H / tileSize) + 1;
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const x         = col * tileSize;
+        const y         = row * tileSize;
+        const isTypeA   = Math.sin(col * 1.7 + row * 2.3 + phase) > 0;
+        const cellColor = colors[1 + ((col * 2 + row * 3) % 4)];
+
+        ctx.lineWidth   = tileSize * 0.6;
+        ctx.strokeStyle = cellColor;
+        ctx.beginPath();
+        if (isTypeA) {
+          ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
+        } else {
+          ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
+        }
+        ctx.stroke();
+
+        ctx.lineWidth   = tileSize * 0.18;
+        ctx.strokeStyle = colors[0];
+        ctx.beginPath();
+        if (isTypeA) {
+          ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
+        } else {
+          ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
+        }
+        ctx.stroke();
+      }
+    }
+
+    mockupTick++;
+    if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+
+    organic2T += 1;
+    organic2RafId = requestAnimationFrame(drawOrganic2Frame);
+  }
+
+  function startOrganic2Loop() {
+    if (organic2RafId !== null) return;
+    organic2RafId = requestAnimationFrame(drawOrganic2Frame);
+  }
+  function stopOrganic2Loop() {
+    if (organic2RafId !== null) { cancelAnimationFrame(organic2RafId); organic2RafId = null; }
+  }
+  function stopAllLoops() {
+    stopOrganicLoop();
+    stopOrganic2Loop();
+  }
+
+  function drawStripe(ctx: CanvasRenderingContext2D, W: number, H: number, colors: string[], tileSize: number, frame: number) {
+    ctx.fillStyle = colors[0];
+    ctx.fillRect(0, 0, W, H);
+
+    const stripeWidth = tileSize;
+    const diagonalLen = Math.sqrt(W * W + H * H);
+    const slideOffset = (frame * 0.4) % (stripeWidth * colors.length);
+
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(Math.PI / 4);
+
+    const count = Math.ceil(diagonalLen * 2 / stripeWidth) + colors.length;
+    const startX = -diagonalLen - slideOffset;
+
+    for (let i = 0; i < count; i++) {
+      const x = startX + i * stripeWidth;
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillRect(x, -diagonalLen, stripeWidth, diagonalLen * 2);
+    }
+
+    ctx.restore();
+  }
+
+  function drawGrid(ctx: CanvasRenderingContext2D, W: number, H: number, colors: string[], tileSize: number, frame: number) {
+    ctx.fillStyle = colors[0];
+    ctx.fillRect(0, 0, W, H);
+
+    const t = tileSize;
+    const offsetX = (frame * 0.12) % t;
+    const offsetY = (frame * 0.12) % t;
+
+    const cols = Math.ceil(W / t) + 2;
+    const rows = Math.ceil(H / t) + 2;
+
+    for (let row = -1; row < rows; row++) {
+      const y = row * t + offsetY;
+      ctx.globalAlpha = 0.75;
+      ctx.fillStyle = colors[1];
+      ctx.fillRect(0, y, W, t * 0.55);
+    }
+
+    for (let col = -1; col < cols; col++) {
+      const x = col * t + offsetX;
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = colors[2];
+      ctx.fillRect(x, 0, t * 0.55, H);
+    }
+
+    for (let row = -1; row < rows; row++) {
+      for (let col = -1; col < cols; col++) {
+        const x = col * t + offsetX;
+        const y = row * t + offsetY;
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = colors[3];
+        ctx.fillRect(x, y, t * 0.55, t * 0.55);
+      }
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  // ── SVG MOCKUPS ──
+  const STROKE = '#3d2b1f';
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = 512;
+  offCanvas.height = 512;
+  const offCtx = offCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+  let mockupTick = 0;
+  const MOCKUP_EVERY = 4;
+
+  async function loadMockupSVG(svgPath: string, containerId: string, patternId: string) {
+    try {
+      const res = await fetch(svgPath);
+      const text = await res.text();
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(text, 'image/svg+xml');
+      const svgEl = svgDoc.querySelector('svg');
+      if (!svgEl) return;
+
+      const vb = (svgEl.getAttribute('viewBox') || '0 0 100 100').split(/[\s,]+/);
+      const vw = parseFloat(vb[2]);
+      const vh = parseFloat(vb[3]);
+
+      let defs = svgEl.querySelector('defs');
+      if (!defs) {
+        defs = svgDoc.createElementNS(SVG_NS, 'defs');
+        svgEl.insertBefore(defs, svgEl.firstChild);
+      }
+
+      const pat = svgDoc.createElementNS(SVG_NS, 'pattern');
+      pat.setAttribute('id', patternId);
+      pat.setAttribute('patternUnits', 'userSpaceOnUse');
+      pat.setAttribute('x', '0'); pat.setAttribute('y', '0');
+      pat.setAttribute('width', String(vw)); pat.setAttribute('height', String(vh));
+
+      const imgNode = svgDoc.createElementNS(SVG_NS, 'image');
+      imgNode.setAttribute('id', `${patternId}-img`);
+      imgNode.setAttribute('x', '0'); imgNode.setAttribute('y', '0');
+      imgNode.setAttribute('width', String(vw)); imgNode.setAttribute('height', String(vh));
+      imgNode.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      imgNode.setAttribute('href', '');
+
+      pat.appendChild(imgNode);
+      defs.appendChild(pat);
+
+      svgEl.querySelectorAll('[style]').forEach(el => {
+        const id = (el.getAttribute('id') || '').toLowerCase();
+        const isFabric = id.includes('fabric');
+        let s = el.getAttribute('style') || '';
+
+        if (isFabric) {
+          if (/fill:\s*[^;]+/.test(s)) {
+            s = s.replace(/fill:\s*[^;]+/, `fill: url(#${patternId})`);
+          } else {
+            s = `fill: url(#${patternId}); ${s}`;
+          }
+        }
+
+        if (s.includes('stroke:')) {
+          s = s.replace(/stroke:\s*#[0-9a-fA-F]+/, `stroke: ${STROKE}`);
+        }
+
+        el.setAttribute('style', s);
+      });
+
+      svgEl.setAttribute('width', '100%');
+      svgEl.setAttribute('height', '100%');
+      svgEl.style.cssText = 'display:block;width:100%;height:100%;';
+
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      container.appendChild(document.importNode(svgEl, true));
+
+    } catch (e) {
+      // silently skip failed loads
+    }
+  }
+
+  function updateMockupPatterns() {
+    if (!canvas || !canvas.width || !offCtx) return;
+    offCtx.drawImage(canvas, 0, 0, offCanvas.width, offCanvas.height);
+    const dataUrl = offCanvas.toDataURL('image/jpeg', 0.72);
+    for (const pid of ['mp-chair', 'mp-coat', 'mp-tote']) {
+      const imgEl = document.getElementById(`${pid}-img`);
+      if (imgEl) imgEl.setAttribute('href', dataUrl);
+    }
+  }
+
+  Promise.all([
+    loadMockupSVG('/images/chair-textilegen.svg',   'mockupChair', 'mp-chair'),
+    loadMockupSVG('/images/coat-textilegen.svg',    'mockupCoat',  'mp-coat'),
+    loadMockupSVG('/images/totebag-textilegen.svg', 'mockupTote',  'mp-tote'),
+  ]);
+
+  // ── DRAW LOOP ──
+  function draw() {
+    if (paused) return;
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const tileSize = getTileSize();
+
+    if (patternType === 'geometric') drawGeometric(ctx, W, H, colors, tileSize, frame);
+    else if (patternType === 'stripe') drawStripe(ctx, W, H, colors, tileSize, frame);
+    else if (patternType === 'grid') drawGrid(ctx, W, H, colors, tileSize, frame);
+
+    if (patternType !== 'organic' && patternType !== 'organic2') {
+      mockupTick++;
+      if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
+    }
+
+    frame++;
+    requestAnimationFrame(draw);
+  }
+
+  // ── SVG EXPORT ──
+  function generateSVG(): string {
+    const t = getTileSize();
+    const W = 800;
+    const H = 600;
+
+    if (patternType === 'geometric') {
+      const r    = t * 0.46;
+      const innR = r * 0.42;
+      const sq   = innR * 0.64;
+      let tiles  = '';
+      const svgCols = Math.ceil(W / t) + 2;
+      const svgRows = Math.ceil(H / t) + 2;
+      for (let row = -1; row < svgRows; row++) {
+        for (let col = -1; col < svgCols; col++) {
+          const cx = col * t + t / 2;
+          const cy = row * t + t / 2;
+          const alt = (row + col) % 2 !== 0;
+          tiles += `<rect x="${cx - t/2}" y="${cy - t/2}" width="${t}" height="${t}" fill="${alt ? colors[1] : colors[0]}"/>`;
+          let pts = '';
+          for (let i = 0; i < 16; i++) {
+            const a = (i * Math.PI / 8) - Math.PI / 2;
+            const rad = i % 2 === 0 ? r : innR;
+            pts += `${(cx + Math.cos(a)*rad).toFixed(1)},${(cy + Math.sin(a)*rad).toFixed(1)} `;
+          }
+          tiles += `<polygon points="${pts}" fill="${alt ? colors[2] : colors[3]}"/>`;
+          tiles += `<rect x="${(cx-sq).toFixed(1)}" y="${(cy-sq).toFixed(1)}" width="${(sq*2).toFixed(1)}" height="${(sq*2).toFixed(1)}" fill="${alt ? colors[3] : colors[2]}" transform="rotate(45,${cx.toFixed(1)},${cy.toFixed(1)})"/>`;
+          tiles += `<circle cx="${cx}" cy="${cy}" r="${(r*0.14).toFixed(1)}" fill="${colors[4]}"/>`;
+        }
+      }
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${tiles}</svg>`;
+
+    } else if (patternType === 'organic') {
+      const oc  = document.createElement('canvas');
+      oc.width  = W; oc.height = H;
+      const oc2 = oc.getContext('2d')!;
+      const tileSize2 = Math.round(300 - (density - 1) * 20);
+      const drift2    = Math.sin(organicT) * 4;
+      oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
+      const cols2 = Math.ceil(W / tileSize2) + 2;
+      const rows2 = Math.ceil(H / tileSize2) + 2;
+      for (let row = -1; row < rows2; row++) {
+        for (let col = -1; col < cols2; col++) {
+          const stagger   = (col % 2 === 0) ? 0 : tileSize2 * 0.5;
+          const cx2       = col * tileSize2 + tileSize2 * 0.5 + drift2;
+          const cy2       = row * tileSize2 + tileSize2 * 0.5 + stagger + drift2 * 0.7;
+          const rawAngle2 = ((col * 17 + row * 31) % 360) * (Math.PI / 180);
+          const tileAngle2 = ((rawAngle2 + Math.PI) % (Math.PI * 2) - Math.PI) * (8 / 180);
+          drawFloralTile(oc2, cx2, cy2, tileSize2, tileAngle2, col * 7.3 + row * 13.1);
+        }
+      }
+      const dataUrl = oc.toDataURL('image/png');
+      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}"><image width="${W}" height="${H}" xlink:href="${dataUrl}"/></svg>`;
+
+    } else if (patternType === 'organic2') {
+      const oc  = document.createElement('canvas');
+      oc.width  = W; oc.height = H;
+      const oc2 = oc.getContext('2d')!;
+      const ts2   = getTileSize();
+      const phase2 = Math.floor(organic2T / 60);
+      oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
+      oc2.lineCap = 'butt'; oc2.lineJoin = 'round'; oc2.globalAlpha = 1.0;
+      const cols3 = Math.ceil(W / ts2) + 1;
+      const rows3 = Math.ceil(H / ts2) + 1;
+      for (let row = 0; row < rows3; row++) {
+        for (let col = 0; col < cols3; col++) {
+          const x3 = col * ts2, y3 = row * ts2;
+          const isA3   = Math.sin(col * 1.7 + row * 2.3 + phase2) > 0;
+          const cc  = colors[1 + ((col * 2 + row * 3) % 4)];
+          function drawTruchetArc(c: CanvasRenderingContext2D) {
+            c.beginPath();
+            if (isA3) { c.arc(x3, y3, ts2 / 2, 0, Math.PI / 2); }
+            else      { c.arc(x3 + ts2, y3 + ts2, ts2 / 2, Math.PI, Math.PI * 3 / 2); }
+            c.stroke();
+          }
+          oc2.lineWidth = ts2 * 0.6;  oc2.strokeStyle = cc;         drawTruchetArc(oc2);
+          oc2.lineWidth = ts2 * 0.18; oc2.strokeStyle = colors[0];  drawTruchetArc(oc2);
+        }
+      }
+      const dataUrl2 = oc.toDataURL('image/png');
+      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}"><image width="${W}" height="${H}" xlink:href="${dataUrl2}"/></svg>`;
+
+    } else if (patternType === 'stripe') {
+      const sw = t;
+      const diag = Math.sqrt(W * W + H * H);
+      const count = Math.ceil(diag * 2 / sw) + colors.length;
+      const cx = W / 2;
+      const cy = H / 2;
+      let rects = '';
+      for (let i = 0; i < count; i++) {
+        const x = cx - diag + i * sw;
+        rects += `  <rect x="${x.toFixed(1)}" y="${(cy - diag).toFixed(1)}" width="${sw}" height="${(diag * 2).toFixed(1)}" fill="${colors[i % colors.length]}"/>\n`;
+      }
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
+  <g transform="rotate(45, ${cx}, ${cy})">
+${rects}  </g>
+</svg>`;
+
+    } else {
+      const cols = Math.ceil(W / t) + 1;
+      const rows = Math.ceil(H / t) + 1;
+      let weft = '';
+      let warp = '';
+      let intersections = '';
+      for (let row = 0; row < rows; row++) {
+        weft += `  <rect x="0" y="${row * t}" width="${W}" height="${(t * 0.55).toFixed(1)}" fill="${colors[1]}" fill-opacity="0.75"/>\n`;
+      }
+      for (let col = 0; col < cols; col++) {
+        warp += `  <rect x="${col * t}" y="0" width="${(t * 0.55).toFixed(1)}" height="${H}" fill="${colors[2]}" fill-opacity="0.7"/>\n`;
+      }
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          intersections += `  <rect x="${col * t}" y="${row * t}" width="${(t * 0.55).toFixed(1)}" height="${(t * 0.55).toFixed(1)}" fill="${colors[3]}" fill-opacity="0.85"/>\n`;
+        }
+      }
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <rect width="${W}" height="${H}" fill="${colors[0]}"/>
+${weft}${warp}${intersections}</svg>`;
+    }
+  }
+
+  // ── UI HELPERS ──
+
+  function updateSwatches() {
+    const container = document.getElementById('swatches');
+    if (!container) return;
+    container.innerHTML = colors.map((hex, i) => `
+      <div class="swatch-item" data-index="${i}">
+        <div class="swatch-block" style="background:${hex}">
+          <input type="color" class="swatch-input" value="${hex}" data-index="${i}" />
+        </div>
+        <span class="swatch-hex">${hex}</span>
+        <span class="swatch-edit">Edit</span>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.swatch-input').forEach(input => {
+      input.addEventListener('input', () => {
+        const el = input as HTMLInputElement;
+        const idx = Number(el.dataset.index);
+        const hex = el.value;
+        colors[idx] = hex;
+        const block = el.closest('.swatch-item')!.querySelector('.swatch-block') as HTMLElement;
+        block.style.background = hex;
+        el.closest('.swatch-item')!.querySelector('.swatch-hex')!.textContent = hex;
+      });
+    });
+  }
+
+  function updatePatternBtns() {
+    document.querySelectorAll('[data-pattern]').forEach(btn => {
+      if ((btn as HTMLElement).dataset.pattern === patternType) {
+        btn.setAttribute('data-active', '');
+      } else {
+        btn.removeAttribute('data-active');
+      }
+    });
+  }
+
+  // ── EVENT HANDLERS ──
+
+  generateBtn.addEventListener('click', async () => {
+    const concept = conceptInput.value.trim();
+    if (concept.length < 3) {
+      errorMsg.textContent = 'Please enter a concept (3+ characters).';
+      return;
+    }
+    errorMsg.textContent = '';
+    generateBtn.textContent = 'Generating…';
+    generateBtn.disabled = true;
+
+    try {
+      const res = await fetch('/.netlify/functions/textile-palette', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ concept }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        errorMsg.textContent = data.error || 'Something went wrong. Try again.';
+      } else {
+        colors = data.colors;
+        patternType = data.patternStyle || patternType;
+        moodText.textContent = data.mood || '';
+        updateSwatches();
+        updatePatternBtns();
+      }
+    } catch {
+      errorMsg.textContent = 'Network error. Please try again.';
+    } finally {
+      generateBtn.textContent = 'Generate Palette';
+      generateBtn.disabled = false;
+    }
+  });
+
+  document.querySelectorAll('[data-pattern]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = (btn as HTMLElement).dataset.pattern as string;
+      stopOrganicLoop();
+      stopOrganic2Loop();
+      patternType = next;
+      if (next === 'organic')  startOrganicLoop();
+      if (next === 'organic2') startOrganic2Loop();
+      updatePatternBtns();
+    });
+  });
+
+  densitySlider.addEventListener('input', () => {
+    density = Number(densitySlider.value);
+  });
+
+  canvas.addEventListener('click', () => {
+    paused = !paused;
+    if (paused) {
+      stopAllLoops();
+    } else {
+      if (patternType === 'organic')       startOrganicLoop();
+      else if (patternType === 'organic2') startOrganic2Loop();
+      else requestAnimationFrame(draw);
+    }
+  });
+
+  window.addEventListener('resize', resize);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      paused = true;
+      stopAllLoops();
+    } else {
+      paused = false;
+      if (patternType === 'organic')       startOrganicLoop();
+      else if (patternType === 'organic2') startOrganic2Loop();
+      else requestAnimationFrame(draw);
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const svg = generateSVG();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'textile-pattern.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ── INIT ──
+  updateSwatches();
+  updatePatternBtns();
+  resize();
+  draw();
+</script>

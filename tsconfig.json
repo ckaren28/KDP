@@ -11,7 +11,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "moduleResolution": "bundler",
-    "types": ["astro/client"]
+    "types": ["astro/client", "node"]
   },
   "files": [
     "node_modules/gsap/types/index.d.ts"

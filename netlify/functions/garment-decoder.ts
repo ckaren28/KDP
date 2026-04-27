@@ -1,16 +1,32 @@
-export async function handler(event) {
+type HandlerEvent = {
+  httpMethod: string;
+  body: string | null;
+};
+
+type HandlerResponse = {
+  statusCode: number;
+  headers?: Record<string, string>;
+  body: string;
+};
+
+export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
   try {
     if (event.httpMethod !== "POST") {
       return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
     }
 
-    const body = JSON.parse(event.body || "{}");
+    const body = JSON.parse(event.body || "{}") as Record<string, unknown>;
     const {
       description = "",
       fabricType = "",
       garmentType = "",
       travelerMode = false,
-    } = body;
+    } = body as {
+      description?: string;
+      fabricType?: string;
+      garmentType?: string;
+      travelerMode?: boolean;
+    };
 
     if (!description || String(description).trim().length < 20) {
       return { statusCode: 400, body: JSON.stringify({ error: "Please include a garment description (20+ chars)." }) };
@@ -57,7 +73,7 @@ traveler_notes: [string] (max 3, empty array if not traveler mode)`;
       }),
     });
 
-    const raw = await resp.json();
+    const raw = await resp.json() as { content?: Array<{ type: string; text: string }>; error?: { message: string } };
     if (!resp.ok) {
       return { statusCode: resp.status, body: JSON.stringify({ error: raw?.error?.message || "Anthropic API error." }) };
     }
@@ -70,7 +86,7 @@ traveler_notes: [string] (max 3, empty array if not traveler mode)`;
 
     const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
 
-    let data;
+    let data: unknown;
     try {
       data = JSON.parse(cleaned);
     } catch {
@@ -88,7 +104,7 @@ traveler_notes: [string] (max 3, empty array if not traveler mode)`;
       headers: { "content-type": "application/json" },
       body: JSON.stringify(data),
     };
-  } catch (e) {
+  } catch {
     return { statusCode: 500, body: JSON.stringify({ error: "Server error." }) };
   }
 }

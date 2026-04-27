@@ -1,10 +1,21 @@
-export async function handler(event) {
+type HandlerEvent = {
+  httpMethod: string;
+  body: string | null;
+};
+
+type HandlerResponse = {
+  statusCode: number;
+  headers?: Record<string, string>;
+  body: string;
+};
+
+export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
   try {
     if (event.httpMethod !== "POST") {
       return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
     }
 
-    const body = JSON.parse(event.body || "{}");
+    const body = JSON.parse(event.body || "{}") as { concept?: string };
     const { concept = "" } = body;
 
     if (!concept || String(concept).trim().length < 3) {
@@ -41,7 +52,7 @@ mood: string — one sentence describing the feel of this palette (max 12 words)
       }),
     });
 
-    const raw = await resp.json();
+    const raw = await resp.json() as { content?: Array<{ type: string; text: string }>; error?: { message: string } };
     if (!resp.ok) {
       return { statusCode: resp.status, body: JSON.stringify({ error: raw?.error?.message || "Anthropic API error." }) };
     }
@@ -54,14 +65,14 @@ mood: string — one sentence describing the feel of this palette (max 12 words)
 
     const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
 
-    let data;
+    let data: { colors?: unknown[]; patternStyle?: unknown; mood?: unknown };
     try {
-      data = JSON.parse(cleaned);
+      data = JSON.parse(cleaned) as typeof data;
     } catch {
       const start = cleaned.indexOf("{");
       const end = cleaned.lastIndexOf("}");
       if (start >= 0 && end > start) {
-        data = JSON.parse(cleaned.slice(start, end + 1));
+        data = JSON.parse(cleaned.slice(start, end + 1)) as typeof data;
       } else {
         return { statusCode: 500, body: JSON.stringify({ error: "Model returned invalid JSON. Try again." }) };
       }
@@ -80,7 +91,7 @@ mood: string — one sentence describing the feel of this palette (max 12 words)
         mood: data.mood,
       }),
     };
-  } catch (e) {
+  } catch {
     return { statusCode: 500, body: JSON.stringify({ error: "Server error." }) };
   }
 }

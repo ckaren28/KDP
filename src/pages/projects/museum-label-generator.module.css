@@ -1,0 +1,655 @@
+/* ── MUSEUM LABEL GENERATOR ── */
+
+.tool-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 2rem 8rem;
+  font-family: var(--font-display);
+  color: var(--black);
+}
+
+.back-nav {
+  padding: 2.5rem 0 4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.back-nav a:hover { color: var(--black); }
+
+.page-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.page-title {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.page-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  max-width: 52ch;
+  font-weight: 300;
+}
+
+/* ── HEADER TWO-COLUMN ── */
+.page-header {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 4rem;
+  align-items: start;
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .page-header { grid-template-columns: 1fr; gap: 2.5rem; }
+  .header-visual { max-width: 280px; margin: 0 auto; }
+}
+
+/* ── HEADER VISUAL ── */
+.header-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.artwork-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.artwork-frame-wrap {
+  position: relative;
+  width: 30vw;
+  aspect-ratio: 4 / 3;
+}
+
+.artwork-stage {
+  position: absolute;
+  inset: 5%;
+  overflow: hidden;
+}
+
+.artwork-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+/* JS crossfade uses inline styles — data-active kept for future use */
+.artwork-slide[data-active] { opacity: 1; }
+
+.frame-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+}
+
+.artwork-loading {
+  position: absolute;
+  inset: 0;
+  background: #EDE6D8;
+  transition: opacity 0.6s ease;
+}
+/* JS sets data-hidden via setAttribute('data-hidden', '') */
+.artwork-loading[data-hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.artwork-caption {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  min-height: 1.4em;
+  transition: opacity 0.4s ease;
+}
+
+/* ── MUSEUM WALL LABEL CARD ── */
+.wall-label-card {
+  background: #FAF7F1;
+  border: 1px solid #D8CCBA;
+  padding: 1.2rem 1.4rem 1.25rem;
+  position: relative;
+}
+.wall-label-card::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(190,170,130,0.28);
+  pointer-events: none;
+}
+.wlc-eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #A89070;
+  margin-bottom: 0.55rem;
+}
+.wlc-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 300;
+  font-style: italic;
+  color: #2C2416;
+  margin-bottom: 0.2rem;
+  line-height: 1.2;
+}
+.wlc-meta {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  color: #8A7A64;
+  margin-bottom: 0.65rem;
+  font-weight: 300;
+}
+.wlc-body {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  line-height: 1.8;
+  color: #3D3020;
+  font-weight: 300;
+}
+/* JS removes data-placeholder attribute when label is generated */
+.wlc-body[data-placeholder] {
+  color: #B8AA94;
+  font-style: italic;
+}
+
+/* ── TOOL GRID ── */
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .tool-grid { grid-template-columns: 1fr; }
+}
+
+/* ── PANELS ── */
+.panel {
+  border: 1px solid var(--border);
+  padding: 2rem;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 0.4rem;
+  color: var(--black);
+}
+
+.panel-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+/* ── FORM ELEMENTS ── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--black);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--sienna);
+}
+
+.form-field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-hint {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.form-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.form-options label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* ── BUTTONS ── */
+.btn-generate {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--off-white);
+  background: var(--black);
+  border: 1px solid var(--black);
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.btn-generate:hover:not(:disabled) {
+  background: var(--sienna);
+  border-color: var(--sienna);
+}
+.btn-generate:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── PRESETS ── */
+.presets-wrap { margin-bottom: 1.5rem; }
+.presets-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.presets-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.preset-btn {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.preset-btn:hover { color: var(--black); border-color: var(--black); }
+
+/* ── FACILITATOR ── */
+.facilitator-box {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+}
+.facilitator-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 0.75rem;
+}
+.facilitator-box ol {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text-body);
+  padding-left: 1.2rem;
+}
+
+/* ── OUTPUT STATES ── */
+.output-empty,
+.output-loading {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 3rem 0;
+  text-align: center;
+  border: 1px dashed var(--border);
+}
+
+/* ── OUTPUT SECTIONS ── */
+.output-section {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.output-section:first-child { border-top: 1px solid var(--border); }
+
+.output-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.output-section-title {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* btn-copy and output-text exist in both static HTML and JS-created DOM
+   Use :global so JS innerHTML can reference them as literal class names */
+:global(.btn-copy) {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.2s;
+}
+:global(.btn-copy):hover { color: var(--black); }
+
+:global(.output-text) {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--text-body);
+  white-space: pre-wrap;
+}
+
+.curator-notes-list {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  padding-left: 1.25rem;
+}
+
+/* Variation items are JS-created */
+:global(.variation-item) {
+  border: 1px solid var(--border);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+:global(.variation-header) {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+:global(.variation-label) {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── ERROR ── */
+.error-box {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #a0291a;
+  border: 1px solid #e8c4be;
+  background: #fdf5f4;
+  padding: 10px 14px;
+  margin-top: 0.75rem;
+}
+
+/* ── WORKSHOP TOGGLE ── */
+.workshop-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.25rem;
+}
+.workshop-row label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* ── DETAILS TOGGLE ── */
+.btn-toggle-details {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-toggle-details:hover { color: var(--black); }
+
+/* ── ARCH DETAILS ── */
+.details-box {
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.details-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 1rem;
+}
+.details-sub {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.details-pre {
+  font-family: monospace;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  background: #f8f6f2;
+  padding: 1rem;
+  white-space: pre-wrap;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+
+/* ── DISCUSSION PROMPTS ── */
+.discussion-box {
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+.discussion-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 0.75rem;
+}
+.discussion-box ul {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text-body);
+  padding-left: 1.2rem;
+}
+
+/* ── YOUR ARTWORK SECTION ── */
+.your-artwork-section {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
+}
+.your-artwork-section > .section-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+.your-artwork-inner {
+  max-width: 360px;
+}
+.upload-area {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px dashed var(--border);
+  background: #FAF7F1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  margin-bottom: 1.25rem;
+}
+/* JS adds data-drag-over attribute via uploadArea.dataset.dragOver = '' */
+.upload-area:hover,
+.upload-area[data-drag-over] { border-color: var(--sienna); }
+.upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.upload-placeholder {
+  text-align: center;
+  pointer-events: none;
+  padding: 1rem;
+}
+.upload-icon {
+  font-size: 1.4rem;
+  color: var(--muted);
+  opacity: 0.35;
+  margin-bottom: 0.6rem;
+}
+.upload-placeholder p {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+.upload-placeholder p strong {
+  color: var(--black);
+  font-weight: 400;
+}
+.uploaded-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+/* ── PROJECT NAV ── */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+}
+.project-nav-link {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.project-nav-link:hover { color: var(--black); }
+
+.next-project {
+  margin-top: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.next-all {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.next-all:hover { color: var(--black); }

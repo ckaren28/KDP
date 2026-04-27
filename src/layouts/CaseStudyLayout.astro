@@ -1,0 +1,81 @@
+---
+import MainLayout from './MainLayout.astro';
+import PasswordGate from '../components/PasswordGate.astro';
+import styles from './case-study-layout.module.css';
+const s = styles;
+
+interface Props {
+  title: string;
+  description: string;
+  track: 'tech' | 'fashion' | 'textiles';
+  tags: string[];
+  live_url?: string;
+  github_url?: string;
+  password_protected?: boolean;
+  slug?: string;
+}
+
+const { title, description, track, tags, live_url, github_url, password_protected, slug: slugProp } = Astro.props;
+const slug = slugProp ?? Astro.url.pathname.split('/').filter(Boolean).pop() ?? '';
+const backHref  = track === 'tech' ? '/projects/tech' : track === 'textiles' ? '/projects/textiles' : '/projects/fashion';
+const backLabel = track === 'tech' ? '← Creative Technology' : track === 'textiles' ? '← Textile Practice' : '← Fashion';
+const trackLabel = track === 'tech' ? 'Creative Technology' : track === 'textiles' ? 'Textile Practice' : 'Fashion';
+---
+
+<MainLayout title={`${title} — Karen Dettmar`}>
+
+  <div class={s['page']}>
+
+    <nav class={s['back-nav']}>
+      <a href={backHref}>{backLabel}</a>
+    </nav>
+
+    <header class={s['page-header']}>
+      <span class={s['page-label']}>{trackLabel}</span>
+      <h1 class={s['page-title']}>{title}</h1>
+      <p class={s['page-desc']}>{description}</p>
+
+      {tags.length > 0 && (
+        <div class={s['tags']}>
+          {tags.map(tag => (
+            <span class={s['tag']}>{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {(live_url || github_url) && (
+        <div class={s['actions']}>
+          {live_url && (
+            <a href={live_url} target="_blank" rel="noopener noreferrer" class={`${s['btn']} ${s['btn-primary']}`}>
+              View live ↗
+            </a>
+          )}
+          {github_url && (
+            <a href={github_url} target="_blank" rel="noopener noreferrer" class={`${s['btn']} ${s['btn-secondary']}`}>
+              GitHub ↗
+            </a>
+          )}
+        </div>
+      )}
+    </header>
+
+    {password_protected ? (
+      <>
+        <PasswordGate slug={slug} />
+        <div id="gated-content" class={s['prose']} style="display:none">
+          <slot />
+        </div>
+      </>
+    ) : (
+      <div class={s['prose']}>
+        <slot />
+      </div>
+    )}
+
+    <div class={s['footer-nav']}>
+      <a href={backHref}>{backLabel}</a>
+    </div>
+
+  </div>
+
+</MainLayout>

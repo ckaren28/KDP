@@ -1,0 +1,240 @@
+/* ── CASE STUDY LAYOUT ── */
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 2rem 8rem;
+  font-family: var(--font-display);
+  color: var(--black);
+}
+
+/* ── BACK NAV ── */
+.back-nav {
+  padding: 2.5rem 0 4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.back-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-nav a:hover { color: var(--black); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 5rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.page-title {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.page-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  max-width: 52ch;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+/* ── TAGS ── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 2rem;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+/* ── ACTION BUTTONS ── */
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 20px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--black);
+  color: var(--off-white);
+  border: 1px solid var(--black);
+}
+.btn-primary:hover {
+  background: var(--sienna);
+  border-color: var(--sienna);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--black);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  border-color: var(--black);
+}
+
+/* ── PROSE (MDX content) ── */
+.prose {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+.prose :global(h2) {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: var(--black);
+  margin: 4rem 0 1.5rem;
+  padding-top: 4rem;
+  border-top: 1px solid var(--border);
+}
+
+.prose :global(h3) {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--black);
+  margin: 2.5rem 0 1rem;
+}
+
+.prose :global(p) {
+  margin-bottom: 1.4rem;
+}
+
+.prose :global(ul),
+.prose :global(ol) {
+  padding-left: 1.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.prose :global(li) {
+  margin-bottom: 0.4rem;
+}
+
+.prose :global(strong) {
+  font-weight: 500;
+  color: var(--black);
+}
+
+.prose :global(em) {
+  font-style: italic;
+}
+
+.prose :global(a) {
+  color: var(--sienna);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+.prose :global(a:hover) { color: var(--black); }
+
+.prose :global(blockquote) {
+  border-left: 2px solid var(--sienna);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose :global(code) {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82em;
+  background: rgba(44, 26, 14, 0.05);
+  padding: 2px 5px;
+  border-radius: 2px;
+}
+
+.prose :global(pre) {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  background: rgba(44, 26, 14, 0.04);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.prose :global(img) {
+  max-width: 100%;
+  display: block;
+  margin: 2rem 0;
+}
+
+.prose :global(hr) {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4rem 0;
+}
+
+/* ── FOOTER NAV ── */
+.footer-nav {
+  margin-top: 6rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-nav a {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-nav a:hover { color: var(--black); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .page { padding: 100px 1.5rem 6rem; }
+  .back-nav { padding: 1.5rem 0 2.5rem; }
+  .page-header { margin-bottom: 3rem; }
+}

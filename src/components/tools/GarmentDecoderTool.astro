@@ -1,0 +1,293 @@
+---
+import styles from '../../pages/projects/garment-construction-decoder.module.css';
+const s = styles;
+---
+
+<div class={s['tool-grid']}>
+
+  <!-- INPUT PANEL -->
+  <div class={s['panel']}>
+    <div class={s['panel-title']}>Garment details</div>
+    <div class={s['panel-subtitle']}>Describe what you're making — the more specific, the better.</div>
+
+    <div class={s['presets-label']}>Quick examples</div>
+    <div class={s['presets-list']} data-presets-list>
+      <button data-preset="shirtdress" type="button" class={s['preset-btn']}>Shirt dress</button>
+      <button data-preset="blazer" type="button" class={s['preset-btn']}>Structured blazer</button>
+      <button data-preset="bias-skirt" type="button" class={s['preset-btn']}>Bias-cut skirt</button>
+      <button data-preset="trousers" type="button" class={s['preset-btn']}>Tailored trousers</button>
+    </div>
+
+    <div class={s['form-field']}>
+      <label for="gd-garment-type">Garment type (optional)</label>
+      <input id="gd-garment-type" type="text" placeholder="e.g. dress, jacket, trousers" />
+    </div>
+
+    <div class={s['form-field']}>
+      <label for="gd-fabric">Fabric (optional)</label>
+      <input id="gd-fabric" type="text" placeholder="e.g. silk charmeuse, medium-weight wool, linen" />
+    </div>
+
+    <div class={s['form-field']}>
+      <label for="gd-description">Description (required)</label>
+      <textarea id="gd-description" placeholder="Describe the garment — silhouette, details, construction complexity, any specific techniques you want to use..."></textarea>
+      <span class={s['form-hint']}>Minimum: ~20 characters</span>
+    </div>
+
+    <div class={s['traveler-row']}>
+      <input id="gd-traveler" type="checkbox" />
+      <label for="gd-traveler">Traveler Mode — optimize for packability &amp; travel</label>
+      <span class={s['traveler-badge']}>Traveler</span>
+    </div>
+
+    <button id="gd-generate" class={s['btn-generate']} disabled type="button">Decode construction</button>
+
+    <div id="gd-error" class={s['error-box']} style="display:none"></div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class={s['panel']}>
+    <div class={s['panel-title']}>Breakdown</div>
+    <div class={s['panel-subtitle']}>Technical construction analysis.</div>
+
+    <div id="gd-empty" class={s['output-empty']}>Describe your garment to see the full technical breakdown here.</div>
+    <div id="gd-loading" class={s['output-loading']} style="display:none">Analysing construction…</div>
+
+    <div id="gd-output" style="display:none">
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Fabric behavior</span>
+        <p id="gd-fabric-behavior" class={s['output-text']}></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Lining</span>
+        <div class={s['lining-row']}>
+          <span id="gd-lining-badge" class="badge"></span>
+          <span id="gd-lining-type" class={s['output-text']}></span>
+        </div>
+        <p id="gd-lining-reason" class={s['card-meta']}></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Seam types</span>
+        <div id="gd-seams" class={s['card-list']}></div>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Interfacing</span>
+        <div id="gd-interfacing" class={s['card-list']}></div>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Closure options</span>
+        <div id="gd-closures" class={s['card-list']}></div>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Construction order</span>
+        <ol id="gd-order" class={s['steps-list']}></ol>
+      </div>
+
+      <div class={s['output-section']}>
+        <span class={s['output-section-title']}>Construction notes</span>
+        <ul id="gd-notes" class={s['notes-list']}></ul>
+      </div>
+
+      <div id="gd-traveler-section" class={`${s['output-section']} ${s['traveler-output']}`} style="display:none;border-bottom:none">
+        <span class={s['output-section-title']}>Traveler notes</span>
+        <ul id="gd-traveler-notes" class={s['notes-list']}></ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const $ = (id: string) => document.getElementById(id);
+
+  const descEl      = $("gd-description")   as HTMLTextAreaElement | null;
+  const garmentEl   = $("gd-garment-type")  as HTMLInputElement    | null;
+  const fabricEl    = $("gd-fabric")        as HTMLInputElement    | null;
+  const travelerEl  = $("gd-traveler")      as HTMLInputElement    | null;
+  const btn         = $("gd-generate")      as HTMLButtonElement   | null;
+  const errEl       = $("gd-error");
+  const emptyEl     = $("gd-empty");
+  const loadingEl   = $("gd-loading");
+  const outputEl    = $("gd-output");
+
+  const presets: Record<string, { garmentType: string; fabric: string; description: string }> = {
+    shirtdress: {
+      garmentType: "Shirt dress",
+      fabric: "Cotton poplin",
+      description: "A relaxed shirt dress with a collar, button-front placket, patch pockets, and a self-tie belt. Knee length with a slightly oversized fit through the body.",
+    },
+    blazer: {
+      garmentType: "Blazer",
+      fabric: "Medium-weight wool suiting",
+      description: "A structured single-breasted blazer with notch lapels, two welt pockets, a chest pocket, and a two-button front. Fully lined with a back vent.",
+    },
+    "bias-skirt": {
+      garmentType: "Skirt",
+      fabric: "Silk charmeuse",
+      description: "A floor-length bias-cut skirt with a side seam invisible zipper and minimal ease. The bias cut allows the fabric to drape and cling to the body.",
+    },
+    trousers: {
+      garmentType: "Trousers",
+      fabric: "Lightweight wool crepe",
+      description: "Tailored wide-leg trousers with a flat front, side pockets, and a concealed zip fly with a hook-and-bar closure. Mid-rise with a clean, pressed centre crease.",
+    },
+  };
+
+  document.querySelector("[data-presets-list]")?.addEventListener("click", (e) => {
+    const b = (e.target as Element).closest("button[data-preset]");
+    if (!b) return;
+    const p = presets[b.getAttribute("data-preset") || ""];
+    if (!p) return;
+    if (garmentEl) garmentEl.value = p.garmentType;
+    if (fabricEl)  fabricEl.value  = p.fabric;
+    if (descEl)    descEl.value    = p.description;
+    validate();
+  });
+
+  function validate() {
+    if (btn) btn.disabled = (descEl?.value || "").trim().length < 20;
+  }
+  descEl?.addEventListener("input", validate);
+  validate();
+
+  btn?.addEventListener("click", async () => {
+    if (errEl)    { errEl.style.display    = "none"; errEl.textContent = ""; }
+    if (emptyEl)   emptyEl.style.display   = "none";
+    if (outputEl)  outputEl.style.display  = "none";
+    if (loadingEl) loadingEl.style.display = "block";
+
+    try {
+      const resp = await fetch("/.netlify/functions/garment-decoder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          description:  descEl?.value,
+          garmentType:  garmentEl?.value,
+          fabricType:   fabricEl?.value,
+          travelerMode: travelerEl?.checked,
+        }),
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any;
+      const rawText = await resp.text();
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        if (resp.status === 404) throw new Error("Function not found (404). Make sure you're running `netlify dev` not `astro dev`.");
+        if (resp.status === 502 || resp.status === 504) throw new Error("Request timed out — try a shorter description.");
+        throw new Error(`Server error ${resp.status}: ${rawText.slice(0, 120)}`);
+      }
+      if (!resp.ok) throw new Error(data?.error || "Request failed.");
+
+      const fbEl = $("gd-fabric-behavior");
+      if (fbEl) fbEl.textContent = data.fabric_behavior || "";
+
+      const lining = data.lining || {};
+      const badgeEl  = $("gd-lining-badge");
+      const typeEl   = $("gd-lining-type");
+      const reasonEl = $("gd-lining-reason");
+      if (badgeEl) {
+        badgeEl.textContent = lining.recommended ? "Recommended" : "Not required";
+        badgeEl.className = "badge " + (lining.recommended ? "badge-yes" : "badge-no");
+      }
+      if (typeEl)   typeEl.textContent   = lining.type   || "";
+      if (reasonEl) reasonEl.textContent = lining.reason || "";
+
+      const seamsEl = $("gd-seams");
+      if (seamsEl) {
+        seamsEl.innerHTML = "";
+        (data.seam_types || []).forEach((s: { name: string; description: string; where_used: string }) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML = `<div class="card-name">${s.name}</div>
+            <div class="card-detail">${s.description}</div>
+            <div class="card-meta">${s.where_used}</div>`;
+          seamsEl.appendChild(div);
+        });
+      }
+
+      const interfEl = $("gd-interfacing");
+      if (interfEl) {
+        interfEl.innerHTML = "";
+        (data.interfacing || []).forEach((i: { location: string; weight: string; type: string; reason: string }) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML = `<div class="card-name">${i.location}</div>
+            <div class="card-detail">${i.weight} — ${i.type}</div>
+            <div class="card-meta">${i.reason}</div>`;
+          interfEl.appendChild(div);
+        });
+      }
+
+      const closuresEl = $("gd-closures");
+      if (closuresEl) {
+        closuresEl.innerHTML = "";
+        (data.closure_options || []).forEach((c: { type: string; pros: string; cons: string; best_for: string }) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML = `<div class="card-name">${c.type}</div>
+            <div class="card-detail">↑ ${c.pros}</div>
+            <div class="card-detail">↓ ${c.cons}</div>
+            <div class="card-meta">Best for: ${c.best_for}</div>`;
+          closuresEl.appendChild(div);
+        });
+      }
+
+      const orderEl = $("gd-order");
+      if (orderEl) {
+        orderEl.innerHTML = "";
+        (data.construction_order || []).forEach((step: string) => {
+          const li = document.createElement("li");
+          li.textContent = step;
+          orderEl.appendChild(li);
+        });
+      }
+
+      const notesEl = $("gd-notes");
+      if (notesEl) {
+        notesEl.innerHTML = "";
+        (data.construction_notes || []).forEach((n: string) => {
+          const li = document.createElement("li");
+          li.textContent = n;
+          notesEl.appendChild(li);
+        });
+      }
+
+      const travelerSection = $("gd-traveler-section");
+      const travelerNotesEl = $("gd-traveler-notes");
+      const tNotes = data.traveler_notes || [];
+      if (travelerSection) {
+        travelerSection.style.display = tNotes.length > 0 ? "block" : "none";
+      }
+      if (travelerNotesEl) {
+        travelerNotesEl.innerHTML = "";
+        tNotes.forEach((n: string) => {
+          const li = document.createElement("li");
+          li.textContent = n;
+          travelerNotesEl.appendChild(li);
+        });
+      }
+
+      if (loadingEl) loadingEl.style.display = "none";
+      if (outputEl)  outputEl.style.display  = "block";
+
+    } catch (e) {
+      if (loadingEl) loadingEl.style.display = "none";
+      if (emptyEl)   emptyEl.style.display   = "block";
+      if (errEl) {
+        errEl.textContent = (e as Error)?.message || "Something went wrong.";
+        errEl.style.display = "block";
+      }
+    }
+  });
+})();
+</script>

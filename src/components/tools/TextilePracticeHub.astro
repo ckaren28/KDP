@@ -1,0 +1,171 @@
+---
+import styles from '../../pages/projects/textiles.module.css';
+const s = styles;
+
+const textile = [
+  {
+    href: '/projects/shibori',
+    image: '/images/shibori/Shibori1.jpg',
+    alt: 'Shibori indigo resist-dyed fabric',
+    label: 'Dyeing · Resist',
+    title: 'Shibori',
+    desc: 'Indigo shibori resist dyeing on cotton. Itajime, arashi, and kumo techniques explored across a series of scarves.',
+  },
+  {
+    href: '/projects/marbling',
+    image: '/images/marbling/marblingfinal1.png',
+    alt: 'Marbled fabric with violet, gold, and orange swirls',
+    label: 'Dyeing · Surface',
+    title: 'Marbling',
+    desc: 'Marbling exploring color, fluid pattern, and surface tension.',
+  },
+  {
+    href: '/projects/batik',
+    image: '/images/batik/Batik-final1.jpg',
+    alt: 'Batik wax-resist dyed fabric',
+    label: 'Dyeing · Resist',
+    title: 'Batik',
+    desc: 'Wax resist batik on fabric, exploring color layering and pattern.',
+  },
+  {
+    href: '/projects/blockprint',
+    image: '/images/blockprint/blockprint.jpg',
+    alt: 'Block printed fabric — linoleum carved pattern',
+    label: 'Printing · Relief',
+    title: 'Block Printing',
+    desc: 'Hand-carved relief blocks and repeat pattern development on muslin.',
+  },
+  {
+    href: '/projects/felting',
+    image: '/images/felting/felted-art1.JPG',
+    alt: 'Felted textile',
+    label: 'Fiber · Construction',
+    title: 'Felting',
+    desc: 'Felting exploration in texture and form.',
+  },
+  {
+    href: '/projects/weaving',
+    image: '/images/weaving/weaving.JPG',
+    alt: 'Woven sample with reclaimed yarn',
+    label: 'Fiber · Structure',
+    title: 'Weaving',
+    desc: 'Hand-woven textile exploring warp and weft structure. Materials sourced from a local weaving studio in the Upper East Side.',
+  },
+];
+
+const knitting = [
+  {
+    image: '/images/knitting/dress.jpg',
+    alt: 'Hand-knitted silk maxi dress in dove blue',
+    label: 'Hand Knitting · Self-taught',
+    title: 'Knit Dress',
+    desc: 'Hand-knitted button-front maxi dress in dove blue 100% silk yarn. Buttons are vintage French mother of pearl from the 1940s.',
+    caption: 'Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.',
+  },
+  {
+    image: '/images/knitting/vest.jpg',
+    alt: 'Hand-knitted cropped cashmere vest',
+    label: 'Hand Knitting · Self-taught',
+    title: 'Knit Vest',
+    desc: 'Hand-knitted cropped vest with button closure. Cashmere wool blend yarn. Buttons are vintage Italian navy mother of pearl from the 1990s.',
+    caption: 'Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.',
+  },
+];
+---
+
+<span class={s['section-heading']}>Dyeing, Printing &amp; Fiber</span>
+<div class={s['project-grid']}>
+  {textile.map(e => (
+    <a href={e.href} class={`${s['project-item']} reveal`}>
+      <div class={s['item-hero']}>
+        <img src={e.image} alt={e.alt} loading="lazy" />
+      </div>
+      <span class={s['item-tag']}>{e.label}</span>
+      <h2 class={s['item-title']}>{e.title}</h2>
+      <p class={s['item-desc']}>{e.desc}</p>
+      <span class={s['item-link']}>View project →</span>
+    </a>
+  ))}
+</div>
+
+<hr class={s['section-divider']} />
+
+<div class={s['knit-section']}>
+  <img src="/images/knitting/yarn-top.png" alt="" class={`${s['yarn-decor']} ${s['yarn-topright']}`} aria-hidden="true" />
+  <img src="/images/knitting/yarn-bottom.png" alt="" class={`${s['yarn-decor']} ${s['yarn-bottomleft']}`} aria-hidden="true" />
+  <span class={s['section-heading']}>Hand Knitting</span>
+  <div class={s['knit-slider']} id="knitSlider">
+    <div class={s['knit-track']}>
+      <div class={s['knit-slides']} id="knitSlides">
+        {knitting.map(k => (
+          <div class={s['knit-item']}>
+            <div class={s['knit-hero']} data-lightbox-trigger data-src={k.image} data-alt={k.alt}>
+              <img src={k.image} alt={k.alt} loading="lazy" />
+            </div>
+            <span class={s['knit-tag']}>{k.label}</span>
+            <h2 class={s['knit-title']}>{k.title}</h2>
+            <p class={s['knit-desc']}>{k.desc}</p>
+            <p class={s['knit-caption']}>{k.caption}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class={s['knit-nav']}>
+      <button class={s['knit-btn']} id="knitPrev">← Prev</button>
+      <div class={s['knit-dots']} id="knitDots"></div>
+      <button class={s['knit-btn']} id="knitNext">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class={s['knit-lightbox']} id="knitLightbox">
+  <button class={s['knit-lightbox-close']} id="knitLightboxClose">Close ×</button>
+  <img id="knitLightboxImg" src="" alt="" />
+</div>
+
+<script>
+  const slides = document.getElementById('knitSlides');
+  const prevBtn = document.getElementById('knitPrev') as HTMLButtonElement;
+  const nextBtn = document.getElementById('knitNext') as HTMLButtonElement;
+  const dotsContainer = document.getElementById('knitDots');
+  const total = slides ? slides.children.length : 0;
+  let current = 0;
+
+  const dots: HTMLButtonElement[] = [];
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('button');
+    d.className = 'knit-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsContainer?.appendChild(d);
+    dots.push(d);
+  }
+
+  function goTo(index: number) {
+    current = index;
+    if (slides) slides.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.disabled = current === total - 1;
+  }
+
+  prevBtn?.addEventListener('click', () => goTo(current - 1));
+  nextBtn?.addEventListener('click', () => goTo(current + 1));
+  goTo(0);
+
+  const knitLightbox = document.getElementById('knitLightbox');
+  const knitLightboxImg = document.getElementById('knitLightboxImg') as HTMLImageElement | null;
+
+  document.querySelectorAll('[data-lightbox-trigger]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (!knitLightbox || !knitLightboxImg) return;
+      knitLightboxImg.src = (el as HTMLElement).dataset.src || '';
+      knitLightboxImg.alt = (el as HTMLElement).dataset.alt || '';
+      knitLightbox.dataset.open = '';
+    });
+  });
+
+  function closeKnitLightbox() { knitLightbox?.removeAttribute('data-open'); }
+  document.getElementById('knitLightboxClose')?.addEventListener('click', closeKnitLightbox);
+  knitLightbox?.addEventListener('click', (e) => { if (e.target === knitLightbox) closeKnitLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeKnitLightbox(); });
+</script>

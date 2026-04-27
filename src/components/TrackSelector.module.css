@@ -1,0 +1,210 @@
+/* ── TRACK SELECTOR ── */
+
+.tracks-bordered {
+  border-top: 1px solid var(--border);
+  margin-top: 10vh;
+}
+
+.tracks-prompt {
+  padding: 32px 48px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tracks-split {
+  display: flex;
+  height: 82vh;
+  min-height: 480px;
+}
+
+.track {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: none;
+  transition: flex 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover flex expansion — these use compound class selectors which are fine in modules */
+.tracks-split:has(.track--fashion:hover) .track--fashion { flex: 1.7; }
+.tracks-split:has(.track--fashion:hover) .track--tech    { flex: 0.3; }
+.tracks-split:has(.track--tech:hover)    .track--tech    { flex: 1.7; }
+.tracks-split:has(.track--tech:hover)    .track--fashion { flex: 0.3; }
+
+.track-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+}
+.track-bg--fashion { background: var(--warm-white); }
+.track-bg--tech    { background: var(--black); }
+
+.track-lines-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: block;
+}
+
+.track--tech .track-cursor-blink {
+  position: absolute;
+  top: 48px; right: 48px;
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--sienna);
+  opacity: 0;
+  animation: blink 1.1s step-end infinite;
+  transition: opacity 0.4s ease;
+}
+.track--tech:hover .track-cursor-blink { opacity: 1; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+.track-content {
+  position: relative;
+  z-index: 1;
+  padding: 48px;
+  width: 100%;
+}
+
+.track-title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(52px, 6vw, 96px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  white-space: nowrap;
+  transition: color 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.track--fashion .track-title { color: var(--black); font-style: italic; }
+.track--tech    .track-title { color: var(--off-white); }
+.track:hover .track-title { transform: translateY(-4px); }
+
+.track-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+}
+.track--fashion .track-desc { color: var(--text-body); }
+.track--tech    .track-desc { color: rgba(237,229,208,0.62); }
+:global(html[data-theme="dark"]) .track--tech .track-desc { color: rgba(44,26,14,0.65); }
+.track:hover .track-desc { opacity: 1; transform: translateY(0); }
+
+.track-cta {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 300;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.35s ease 0.18s, transform 0.35s ease 0.18s, color 0.3s ease;
+}
+.track--fashion .track-cta { color: var(--sienna); }
+.track--tech    .track-cta { color: var(--sienna-light); }
+:global(html[data-theme="dark"]) .track--tech .track-cta { color: var(--sienna); }
+.track:hover .track-cta { opacity: 1; transform: translateX(0); }
+
+.track--fashion { border-right: 1px solid var(--border); }
+
+/* ── SAMPLER SVG (hidden geometry source) ── */
+.fashion-sampler-wrap {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* 1×1px keeps the SVG "rendered" so getPointAtLength() is reliable */
+:global(.fashion-sampler-wrap svg) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+
+/* ── FASHION FIGURE (p5 canvas) ── */
+.fashion-figure {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  height: 90%;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+:global(#fashion-p5-mount canvas) {
+  display: block !important;
+}
+
+/* ── TECH ILLUSTRATION ── */
+.tech-illustration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tech-laptop,
+.tech-hand {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  user-select: none;
+  animation: float 8s ease-in-out infinite;
+}
+.tech-laptop {
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4));
+}
+
+.tech-hand {
+  filter: brightness(4) contrast(0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.track--tech:hover .tech-hand {
+  opacity: 1;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+@media (max-width: 900px) {
+  .tracks-prompt { padding: 28px 24px 0; }
+  .tracks-split { flex-direction: column; height: auto; min-height: unset; }
+  .track { flex: none !important; min-height: 44vh; align-items: flex-end; }
+  .track--fashion { border-right: none; border-bottom: 1px solid var(--border); }
+  .track-content { padding: 36px 24px; }
+  .track-title { font-size: clamp(48px, 12vw, 72px); }
+  .track-desc, .track-cta { opacity: 1; transform: none; }
+  .fashion-figure { height: 90%; }
+}
+
+@media (max-width: 768px) {
+  .tech-hand { display: none; }
+  .tech-illustration { top: 20%; }
+}

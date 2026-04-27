@@ -1,0 +1,607 @@
+---
+import styles from '../../pages/projects/museum-label-generator.module.css';
+const s = styles;
+---
+
+<!-- ── HEADER VISUAL: artwork rotator + wall label card ── -->
+<div class={s['header-visual']}>
+
+  <div class={s['artwork-display']}>
+    <div class={s['artwork-frame-wrap']} id="artworkFrameWrap">
+      <div class={s['artwork-stage']} id="artworkStage">
+        <div class={s['artwork-loading']} id="artworkLoading"></div>
+      </div>
+      <img src="/images/frame.png" alt="" class={s['frame-img']} aria-hidden="true" />
+    </div>
+  </div>
+
+  <div class={s['wall-label-card']}>
+    <span class={s['wlc-eyebrow']}>Wall Label</span>
+    <div class={s['wlc-title']} id="wlc-title">Untitled</div>
+    <div class={s['wlc-meta']} id="wlc-meta">Artist unknown · Date unknown</div>
+    <p class={s['wlc-body']} data-placeholder id="wlc-body">AHH I don't know how to describe this?? Use the generator.</p>
+  </div>
+
+</div>
+
+<!-- ── TOOL GRID: form + output ── -->
+<div class={s['tool-grid']}>
+
+  <!-- FORM PANEL -->
+  <div class={s['panel']}>
+    <div class={s['workshop-row']}>
+      <label>
+        <input id="mlg-workshop" type="checkbox" />
+        Workshop mode
+      </label>
+    </div>
+
+    <div id="mlg-presets" class={s['presets-wrap']} style="display:none">
+      <div class={s['presets-label']}>Example inputs</div>
+      <div class={s['presets-list']}>
+        <button data-preset="abstract" type="button" class={s['preset-btn']}>Abstract painting</button>
+        <button data-preset="provenance" type="button" class={s['preset-btn']}>Archive object</button>
+        <button data-preset="photo" type="button" class={s['preset-btn']}>Contemporary photo</button>
+        <button data-preset="textile" type="button" class={s['preset-btn']}>Archive fashion object</button>
+      </div>
+    </div>
+
+    <div class={s['form-row']}>
+      <div class={s['form-field']}>
+        <label for="mlg-title">Title (optional)</label>
+        <input id="mlg-title" type="text" placeholder="Untitled (Blue Study)" />
+      </div>
+      <div class={s['form-field']}>
+        <label for="mlg-artist">Artist (optional)</label>
+        <input id="mlg-artist" type="text" placeholder="Unknown" />
+      </div>
+    </div>
+
+    <div class={s['form-row']}>
+      <div class={s['form-field']}>
+        <label for="mlg-year">Year (optional)</label>
+        <input id="mlg-year" type="text" placeholder="1970s (approx.)" />
+      </div>
+      <div class={s['form-field']}>
+        <label for="mlg-medium">Medium / Materials (optional)</label>
+        <input id="mlg-medium" type="text" placeholder="Cotton, linen, dye" />
+      </div>
+    </div>
+
+    <div class={s['form-field']} style="margin-bottom:0.25rem">
+      <label for="mlg-description">Source description (required)</label>
+      <textarea id="mlg-description" placeholder="Describe what the visitor sees, any known context, and what you want to emphasize..."></textarea>
+      <span class={s['form-hint']}>Minimum: ~30 characters</span>
+    </div>
+
+    <div class={s['form-options']}>
+      <div class={s['form-field']} style="margin:0">
+        <label for="mlg-tone" style="text-transform:uppercase;letter-spacing:0.1em;font-size:0.68rem">Tone</label>
+        <select id="mlg-tone">
+          <option value="neutral" selected>Neutral</option>
+          <option value="warm">Warm</option>
+          <option value="playful">Playful</option>
+          <option value="academic">Academic</option>
+        </select>
+      </div>
+      <label style="font-family:var(--font-body);font-size:0.75rem;color:var(--text-body);display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+        <input id="mlg-stayclose" type="checkbox" checked />
+        Stay close to source text
+      </label>
+    </div>
+
+    <button id="mlg-generate" class={s['btn-generate']} disabled type="button">Generate labels</button>
+
+    <div id="mlg-error" class={s['error-box']} style="display:none"></div>
+
+    <div id="mlg-facilitator" class={s['facilitator-box']} style="display:none">
+      <div class={s['facilitator-title']}>Facilitator notes</div>
+      <ol>
+        <li>Choose an example (or paste your own description).</li>
+        <li>Generate twice: with <em>Stay close</em> ON, then OFF.</li>
+        <li>Compare assumptions, tone, and accessibility. What needs human editing?</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class={s['panel']}>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+      <div>
+        <div class={s['panel-title']}>Output</div>
+        <div class={s['panel-subtitle']}>Copy individual sections for drafts and iteration.</div>
+      </div>
+      <button id="mlg-toggle-details" type="button" class={s['btn-toggle-details']}>Show prompt &amp; architecture</button>
+    </div>
+
+    <div id="mlg-empty" class={s['output-empty']}>Generate to see wall label drafts, alt text, and curator notes here.</div>
+    <div id="mlg-loading" class={s['output-loading']} style="display:none">Working…</div>
+
+    <div id="mlg-output" style="display:none">
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Wall label (50–70 words)</span>
+          <button data-copy="wall_label" type="button" class="btn-copy">Copy</button>
+        </div>
+        <p data-field="wall_label" class="output-text"></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Extended label (150–200 words)</span>
+          <button data-copy="extended_label" type="button" class="btn-copy">Copy</button>
+        </div>
+        <p data-field="extended_label" class="output-text"></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Kids label</span>
+          <button data-copy="kids_label" type="button" class="btn-copy">Copy</button>
+        </div>
+        <p data-field="kids_label" class="output-text"></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Audio guide script</span>
+          <button data-copy="audio_guide_script" type="button" class="btn-copy">Copy</button>
+        </div>
+        <p data-field="audio_guide_script" class="output-text"></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Alt text</span>
+          <button data-copy="alt_text" type="button" class="btn-copy">Copy</button>
+        </div>
+        <p data-field="alt_text" class="output-text"></p>
+      </div>
+
+      <div class={s['output-section']}>
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Curator notes</span>
+        </div>
+        <ul id="mlg-curator-notes" class={s['curator-notes-list']}></ul>
+      </div>
+
+      <div class={s['output-section']} style="border-bottom:none">
+        <div class={s['output-section-header']}>
+          <span class={s['output-section-title']}>Variations (alternate wall labels)</span>
+        </div>
+        <div id="mlg-variations"></div>
+      </div>
+
+      <div id="mlg-discussion" class={s['discussion-box']} style="display:none">
+        <div class={s['discussion-title']}>Discussion prompts</div>
+        <ul>
+          <li>What information did the model assume that wasn't in the source text?</li>
+          <li>Which version best respects the artist and audience?</li>
+          <li>What would you edit for clarity, accuracy, or cultural context?</li>
+          <li>What should never be automated in this workflow?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="mlg-details" class={s['details-box']} style="display:none">
+      <div class={s['details-title']}>Prompt &amp; architecture</div>
+      <div class={s['details-sub']}>System prompt</div>
+      <pre class={s['details-pre']} id="mlg-system"></pre>
+      <div class={s['details-sub']}>User prompt template</div>
+      <pre class={s['details-pre']} id="mlg-user"></pre>
+      <div class={s['details-sub']}>Architecture</div>
+      <pre class={s['details-pre']}>User input → Browser UI
+      ↓
+Netlify Function (secure)
+      ↓
+Anthropic API → JSON
+      ↓
+Render cards + copy tools</pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── YOUR ARTWORK ── -->
+<section class={s['your-artwork-section']} data-your-artwork-section>
+  <span class={s['section-label']}>Your artwork</span>
+  <div class={s['your-artwork-inner']}>
+
+    <div class={s['upload-area']} id="uploadArea">
+      <input type="file" id="artworkUpload" accept="image/jpeg,image/png,image/gif,image/webp" />
+      <div class={s['upload-placeholder']} id="uploadPlaceholder">
+        <div class={s['upload-icon']}>⊕</div>
+        <p><strong>Click or drag</strong> to upload<br>JPG · PNG · GIF · WebP</p>
+      </div>
+      <img class={s['uploaded-preview']} id="uploadedPreview" src="" alt="Your uploaded artwork" />
+    </div>
+
+    <div class={s['wall-label-card']}>
+      <span class={s['wlc-eyebrow']}>Wall Label</span>
+      <div class={s['wlc-title']} id="user-wlc-title">Untitled</div>
+      <div class={s['wlc-meta']} id="user-wlc-meta">Artist unknown · Date unknown</div>
+      <p class={s['wlc-body']} data-placeholder id="user-wlc-body">Generate a label above to see your draft here.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+// ── ARTWORK ROTATOR — Met Museum Open Access API ──
+(() => {
+  const MET_SEARCH = 'https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&isPublicDomain=true&q=painting';
+  const MET_OBJ    = (id: number) => `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+  const TARGET     = 5;
+  const POOL       = 20;
+
+  const stage     = document.getElementById('artworkStage')    as HTMLElement | null;
+  const loader    = document.getElementById('artworkLoading')  as HTMLElement | null;
+  const caption   = document.getElementById('artworkCaption')  as HTMLElement | null;
+  const frameWrap = document.getElementById('artworkFrameWrap') as HTMLElement | null;
+
+  const imgA = document.createElement('img');
+  const imgB = document.createElement('img');
+  for (const img of [imgA, imgB]) {
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.9s ease;opacity:0;';
+    stage?.appendChild(img);
+  }
+  let front = imgA;
+  let back  = imgB;
+
+  interface Artwork { url: string; title: string; artist: string; date: string; medium: string; }
+  let artworks: Artwork[] = [];
+  let current  = 0;
+  let timer: number | null = null;
+  let paused   = false;
+
+  function captionText(a: Artwork): string {
+    const meta = [a.artist, a.date].filter(Boolean).join(', ');
+    return [a.title, meta].filter(Boolean).join(' — ');
+  }
+
+  function updateHeaderCard(a: Artwork) {
+    const wlcTitle = document.getElementById('wlc-title');
+    const wlcMeta  = document.getElementById('wlc-meta');
+    if (wlcTitle) wlcTitle.textContent = a.title || 'Untitled';
+    if (wlcMeta) {
+      const parts = [a.artist, a.date, a.medium].filter(Boolean);
+      wlcMeta.textContent = parts.length ? parts.join(' · ') : 'Artist unknown';
+    }
+  }
+
+  function showArtwork(index: number, instant = false) {
+    const a = artworks[index];
+    if (!a) return;
+    back.src = a.url;
+
+    function reveal() {
+      front.style.opacity = '0';
+      back.style.opacity  = '1';
+      if (caption) {
+        caption.style.opacity = '0';
+        setTimeout(() => {
+          caption!.textContent = captionText(a);
+          caption!.style.opacity = '1';
+        }, 450);
+      }
+      updateHeaderCard(a);
+      [front, back] = [back, front];
+    }
+
+    if (instant || back.complete) {
+      reveal();
+    } else {
+      back.addEventListener('load',  reveal, { once: true });
+      back.addEventListener('error', reveal, { once: true });
+    }
+  }
+
+  function advance() {
+    if (paused || artworks.length < 2) return;
+    current = (current + 1) % artworks.length;
+    showArtwork(current);
+  }
+
+  function startCycle() {
+    if (timer !== null) clearInterval(timer);
+    timer = window.setInterval(advance, 4000);
+  }
+
+  frameWrap?.addEventListener('mouseenter', () => { paused = true; });
+  frameWrap?.addEventListener('mouseleave', () => { paused = false; });
+
+  async function fetchArtwork(id: number): Promise<Artwork> {
+    const resp = await fetch(MET_OBJ(id));
+    if (!resp.ok) throw new Error(`${resp.status}`);
+    const d = await resp.json();
+    if (!d.primaryImage) throw new Error('no image');
+    return {
+      url:    d.primaryImage       as string,
+      title:  (d.title             || 'Untitled') as string,
+      artist: (d.artistDisplayName || '')         as string,
+      date:   (d.objectDate        || '')         as string,
+      medium: (d.medium            || '')         as string,
+    };
+  }
+
+  function shuffle<T>(arr: T[]): T[] {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  async function init() {
+    let pool: number[] = [];
+    try {
+      const sr = await fetch(MET_SEARCH);
+      const sd = await sr.json();
+      pool = shuffle((sd.objectIDs as number[]) || []).slice(0, POOL);
+    } catch {
+      return;
+    }
+
+    for (const id of pool) {
+      if (artworks.length >= TARGET) break;
+      try {
+        const a = await fetchArtwork(id);
+        artworks.push(a);
+        if (artworks.length === 1) {
+          loader?.setAttribute('data-hidden', '');
+          showArtwork(0, true);
+        }
+      } catch {
+        // skip failed fetches
+      }
+    }
+
+    if (artworks.length >= 2) startCycle();
+  }
+
+  init();
+})();
+</script>
+
+<script>
+(() => {
+  const $ = (id: string) => document.getElementById(id);
+
+  const workshop    = $("mlg-workshop")    as HTMLInputElement    | null;
+  const presetsWrap = $("mlg-presets");
+  const facilitator = $("mlg-facilitator");
+  const discussion  = $("mlg-discussion");
+  const desc        = $("mlg-description") as HTMLTextAreaElement | null;
+  const btn         = $("mlg-generate")    as HTMLButtonElement   | null;
+  const err         = $("mlg-error");
+  const empty       = $("mlg-empty");
+  const loading     = $("mlg-loading");
+  const output      = $("mlg-output");
+  const details     = $("mlg-details");
+  const toggleDetails = $("mlg-toggle-details");
+  const title       = $("mlg-title")      as HTMLInputElement  | null;
+  const artist      = $("mlg-artist")     as HTMLInputElement  | null;
+  const year        = $("mlg-year")       as HTMLInputElement  | null;
+  const medium      = $("mlg-medium")     as HTMLInputElement  | null;
+  const tone        = $("mlg-tone")       as HTMLSelectElement | null;
+  const stayClose   = $("mlg-stayclose")  as HTMLInputElement  | null;
+  const sysBlock    = $("mlg-system");
+  const userBlock   = $("mlg-user");
+
+  const SYSTEM_PROMPT = `You are a museum interpretation assistant. Write clear, accurate interpretive text that respects artists and audiences.
+Constraints:
+- Do not invent facts. If information is missing, write around it or label as "Unknown".
+- Avoid academic jargon unless requested.
+- Be culturally sensitive; do not stereotype. Flag sensitive topics with care.
+- Keep claims grounded in the provided description.
+Return output as valid JSON only.`;
+
+  const USER_TEMPLATE = `Artwork info:
+- Title: {{title}}
+- Artist: {{artist}}
+- Year: {{year}}
+- Medium/Materials: {{medium}}
+- Description: {{description}}
+
+Preferences:
+- Tone: {{tone}}
+- Grounding: {{stayCloseToSource}}
+
+Return JSON with:
+wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_notes, variations`;
+
+  if (sysBlock) sysBlock.textContent = SYSTEM_PROMPT;
+  if (userBlock) userBlock.textContent = USER_TEMPLATE;
+
+  const presets: Record<string, { title: string; artist: string; year: string; medium: string; description: string }> = {
+    abstract: {
+      title: "Untitled (Blue Study)", artist: "Unknown", year: "Unknown", medium: "Acrylic on canvas",
+      description: "A large canvas filled with layered blue forms that shift from sharp edges to soft gradients. Faint scraping and reworking marks are visible across the surface. The composition feels quiet but restless, as if the shapes are moving in and out of focus."
+    },
+    provenance: {
+      title: "Ceremonial Mask", artist: "Unknown", year: "19th century (approx.)", medium: "Wood, pigment, fiber",
+      description: "A carved mask with geometric patterning and traces of red and black pigment. The museum record notes it entered a private collection in the early 1900s before being donated decades later. Provenance details are incomplete, and the cultural context in the archive is minimal."
+    },
+    photo: {
+      title: "Street Portrait", artist: "Unknown", year: "2018", medium: "Photograph",
+      description: "A portrait of a person standing in bright sunlight on a city sidewalk. The background is softly blurred while the subject's clothing and posture read as calm and self-possessed. Strong contrast between light and shadow shapes the mood of the image."
+    },
+    textile: {
+      title: "Coat", artist: "Cristóbal Balenciaga", year: "c. 1967", medium: "Wool gazar, fully lined silk",
+      description: "A sculptural cocoon coat in double-faced wool gazar, cut away from the body with a single-seam construction at the back. The silhouette is architectural — volume held entirely by the fabric's weight and structure rather than darts or boning. The collar rises stiffly from the shoulders. Interior construction is immaculate: French seams, hand-stitched hem. Acquired from a private Paris collection; no alterations noted."
+    }
+  };
+
+  function setPreset(p: { title: string; artist: string; year: string; medium: string; description: string }) {
+    if (title)  title.value  = p.title;
+    if (artist) artist.value = p.artist;
+    if (year)   year.value   = p.year;
+    if (medium) medium.value = p.medium;
+    if (desc)   desc.value   = p.description;
+    validate();
+  }
+
+  function validate() {
+    if (btn) btn.disabled = (desc?.value || "").trim().length < 30;
+  }
+  desc?.addEventListener("input", validate);
+  validate();
+
+  workshop?.addEventListener("change", () => {
+    const on = workshop.checked;
+    if (presetsWrap) presetsWrap.style.display = on ? "block" : "none";
+    if (facilitator) facilitator.style.display  = on ? "block" : "none";
+    if (discussion)  discussion.style.display   = on ? "block" : "none";
+    if (on && details) {
+      details.style.display = "block";
+      if (toggleDetails) toggleDetails.textContent = "Hide prompt & architecture";
+    }
+  });
+
+  presetsWrap?.addEventListener("click", (e) => {
+    const b = (e.target as Element).closest("button[data-preset]");
+    if (!b) return;
+    const p = presets[b.getAttribute("data-preset") || ""];
+    if (p) setPreset(p);
+  });
+
+  toggleDetails?.addEventListener("click", () => {
+    const hidden = details?.style.display === "none" || !details?.style.display;
+    if (details) details.style.display = hidden ? "block" : "none";
+    if (toggleDetails) toggleDetails.textContent = hidden ? "Hide prompt & architecture" : "Show prompt & architecture";
+  });
+
+  let lastData: Record<string, string> | null = null;
+  document.addEventListener("click", (e) => {
+    const copyBtn = (e.target as Element).closest("button[data-copy]");
+    if (!copyBtn || !lastData) return;
+    const key = copyBtn.getAttribute("data-copy") || "";
+    navigator.clipboard.writeText(lastData[key] || "");
+  });
+
+  btn?.addEventListener("click", async () => {
+    if (err)    { err.style.display    = "none"; err.textContent = ""; }
+    if (empty)   empty.style.display   = "none";
+    if (output)  output.style.display  = "none";
+    if (loading) loading.style.display = "block";
+
+    try {
+      const resp = await fetch("/.netlify/functions/museum-label", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title:             title?.value,
+          artist:            artist?.value,
+          year:              year?.value,
+          medium:            medium?.value,
+          description:       desc?.value,
+          tone:              tone?.value,
+          stayCloseToSource: stayClose?.checked
+        })
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data?.error || "Request failed.");
+
+      lastData = data;
+
+      document.querySelectorAll("[data-field]").forEach((el) => {
+        el.textContent = data[el.getAttribute("data-field") || ""] || "";
+      });
+
+      const ul = $("mlg-curator-notes");
+      if (ul) {
+        ul.innerHTML = "";
+        (data.curator_notes || []).forEach((n: string) => {
+          const li = document.createElement("li");
+          li.textContent = n;
+          ul.appendChild(li);
+        });
+      }
+
+      const varWrap = $("mlg-variations");
+      if (varWrap) {
+        varWrap.innerHTML = "";
+        (data.variations || []).forEach((v: string, i: number) => {
+          const box = document.createElement("div");
+          box.className = "variation-item";
+          box.innerHTML = `
+            <div class="variation-header">
+              <span class="variation-label">Option ${i + 1}</span>
+              <button type="button" class="btn-copy">Copy</button>
+            </div>
+            <p class="output-text"></p>
+          `;
+          const p = box.querySelector("p");
+          if (p) p.textContent = v;
+          box.querySelector("button")?.addEventListener("click", () => navigator.clipboard.writeText(v));
+          varWrap.appendChild(box);
+        });
+      }
+
+      const userWlcTitle = document.getElementById('user-wlc-title');
+      const userWlcMeta  = document.getElementById('user-wlc-meta');
+      const userWlcBody  = document.getElementById('user-wlc-body');
+      if (userWlcTitle) userWlcTitle.textContent = title?.value || 'Untitled';
+      if (userWlcMeta) {
+        const parts = [artist?.value, year?.value, medium?.value].filter(Boolean);
+        userWlcMeta.textContent = parts.length ? parts.join(' · ') : 'Artist unknown · Date unknown';
+      }
+      if (userWlcBody) {
+        userWlcBody.textContent = data.wall_label || '';
+        userWlcBody.removeAttribute('data-placeholder');
+      }
+      document.querySelector('[data-your-artwork-section]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (loading) loading.style.display = "none";
+      if (output)  output.style.display  = "block";
+    } catch (e) {
+      if (loading) loading.style.display = "none";
+      if (empty)   empty.style.display   = "block";
+      if (err) {
+        err.textContent = (e as Error)?.message || "Something went wrong.";
+        err.style.display = "block";
+      }
+    }
+  });
+})();
+</script>
+
+<script>
+// ── IMAGE UPLOAD ──
+(() => {
+  const uploadArea  = document.getElementById('uploadArea');
+  const uploadInput = document.getElementById('artworkUpload') as HTMLInputElement | null;
+  const placeholder = document.getElementById('uploadPlaceholder');
+  const preview     = document.getElementById('uploadedPreview') as HTMLImageElement | null;
+
+  function handleFile(file: File) {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (!preview || !placeholder) return;
+      preview.src = e.target?.result as string;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  uploadInput?.addEventListener('change', () => {
+    const file = uploadInput.files?.[0];
+    if (file) handleFile(file);
+  });
+
+  uploadArea?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.setAttribute('data-drag-over', '');
+  });
+  uploadArea?.addEventListener('dragleave', () => uploadArea.removeAttribute('data-drag-over'));
+  uploadArea?.addEventListener('drop', (e: DragEvent) => {
+    e.preventDefault();
+    uploadArea.removeAttribute('data-drag-over');
+    const file = e.dataTransfer?.files[0];
+    if (file) handleFile(file);
+  });
+})();
+</script>

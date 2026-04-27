@@ -4,10 +4,12 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    date: z.date(),
-    coverImage: z.string(),
+    track: z.enum(['tech', 'fashion', 'textiles']),
     tags: z.array(z.string()),
-    featured: z.boolean().optional(),
+    date: z.date(),
+    live_url: z.string().optional(),
+    github_url: z.string().optional(),
+    password_protected: z.boolean().optional().default(false),
   }),
 });
 
@@ -17,7 +19,7 @@ const illustrations = defineCollection({
     date: z.date(),
     image: z.string(),
     tags: z.array(z.string()),
-    description: z.string().optional(), // Add optional description
+    description: z.string().optional(),
   }),
 });
 
