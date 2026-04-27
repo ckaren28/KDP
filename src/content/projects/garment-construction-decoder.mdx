@@ -1,0 +1,161 @@
+---
+title: "Garment Construction Decoder"
+description: "Describe a garment and get a structured technical breakdown: seam types, fabric behavior, lining, interfacing, closure options, and a step-by-step construction order. Built at the intersection of pattern-making knowledge and language models."
+track: "tech"
+tags: ["Creative Technology", "AI", "Fashion Tech", "Construction", "Pattern Making"]
+date: 2024-11-01
+live_url: "https://karen-dettmar.netlify.app/projects/garment-construction-decoder"
+---
+
+import GarmentDecoderTool from '../../components/tools/GarmentDecoderTool.astro';
+
+<GarmentDecoderTool />
+
+## The problem
+
+Pattern-making knowledge is tacit. Most of it lives in the hands and eyes of experienced sewers — the judgment about when to use a French seam versus a flat-felled seam, how much interfacing a wool lapel needs, what order to assemble a lined jacket to avoid sewing yourself into a corner.
+
+That knowledge is also findable in books, pattern instructions, and fitting guides — dense, indexed, technical text. Language models have read a lot of that text. This tool tests whether that compressed knowledge is accessible in a useful form.
+
+## How it works
+
+The tool accepts a garment description — any level of detail — and an optional fabric type and garment category. A Netlify Function calls the Anthropic API with a structured prompt that requests a JSON response covering:
+
+- **Fabric behavior** — how the specific material will behave during construction
+- **Lining recommendation** — whether to line and why
+- **Seam types** — which seam finishes to use and where
+- **Interfacing** — which areas need support and what weight
+- **Closure options** — tradeoffs between zip, buttons, hooks, etc.
+- **Construction order** — the full step sequence, ordered to avoid assembly conflicts
+- **Construction notes** — technique warnings specific to the described garment
+
+**Traveler Mode** adds an additional output layer: construction advice optimized for packability and wrinkle resistance, surfacing material and silhouette tradeoffs specific to travel wear.
+
+## Architecture
+
+```
+User input (description + optional fields)
+        ↓
+Netlify Function
+        ↓
+Anthropic API → structured JSON
+        ↓
+Rendered as typed sections (fabric, lining, seams, etc.)
+```
+
+## Design decisions
+
+**Structured output over prose.** The model is instructed to return typed JSON, not a paragraph of advice. Sections render as cards and lists rather than flowing text. This makes the output scannable during construction — you can jump to the seam types section without reading everything.
+
+**Traveler Mode as an overlay.** The Traveler collection (see [Traveler →](/projects/traveller)) was the original design context for this project. The mode adds a lens without restructuring the core output — construction notes remain construction notes, but with an additional column of travel-specific tradeoffs.
+
+**Presets for quick testing.** Four preset garments (shirt dress, structured blazer, bias skirt, tailored trousers) cover a range of construction complexity and fabric behavior. They're useful for exploring the output before committing to a real project.
+
+{/* 
+
+---
+title: Garment Construction Decoder
+description: A tool that takes a garment description and returns a 
+  structured technical breakdown a sample maker can actually use.
+track: tech
+tags: [Claude API, Next.js, TypeScript, Netlify Functions, 
+  JSON structured output, Parsons, FIT]
+date: 2026-01-01
+live_url: https://karendettmar.com/projects/garment-construction-decoder
+github_url: https://github.com/karendettmar/garment-construction-decoder
+password_protected: false
+---
+
+import GarmentDecoderTool from '@/components/GarmentDecoderTool'
+
+## The problem
+
+Technical garment construction knowledge is largely tacit. It lives in 
+people's hands, in specialized books most designers don't own, and in 
+the institutional memory of experienced sample makers. A designer who 
+can sketch a beautiful bias-cut silk blouse may not know it needs French 
+seams, that the lining should be cut on grain, or that a centered 
+invisible zipper in silk charmeuse will pucker unless you interface the 
+seam allowance first.
+
+These gaps create errors in sampling, wasted fabric, and back-and-forth 
+with production teams that could have been avoided before anything was cut.
+
+## Why I could build this
+
+Most engineers couldn't scope this project because defining "correct 
+output" requires deep domain knowledge. My patternmaking training at 
+Parsons and garment construction coursework at FIT gave me the vocabulary 
+to specify exactly what the tool needed to produce: seam types by fabric 
+category, interfacing placement logic, lining cut direction, closure 
+mechanics.
+
+Without that background, the prompt produces plausible-sounding but 
+practically wrong results. A general-purpose model asked to describe 
+how to construct a bias-cut slip dress will recommend overlocked seams 
+where French seams are required, suggest interfacing that destroys the 
+drape, and sequence construction steps in a way that makes zipper 
+insertion physically impossible.
+
+## The output structure
+
+Every field maps to a real production decision. Nothing is decorative.
+
+| Field | What it solves |
+|---|---|
+| Seam types | The most common source of sampling errors. Fabric and construction style determine which finish is correct. This field prevents the "just sew it together" default. |
+| Fabric behavior | Informs handling before cutting. A sample maker who doesn't know silk charmeuse slips will cut inaccurate pieces. These are the things experienced pattern makers know implicitly. |
+| Interfacing | Often omitted from sketches entirely. Incorrect choices cause puckering, stiffness, or structure failures. The tool distinguishes fusible, sew-in, and stay-stitching as appropriate. |
+| Closure options | When placement is ambiguous, returns two options with tradeoffs rather than guessing. |
+| Construction order | Order matters: certain seams must be sewn before others become accessible. Getting this wrong wastes hours. The tool outputs a numbered sequence, not a flat list. |
+
+Here's actual output for a bias-cut silk charmeuse slip dress:
+
+**Seam types:** French seams (side seams), bias binding (neckline), 
+narrow rolled hem (hem)
+
+**Fabric behavior:** High slip, use weights not pins. Frays immediately, 
+minimize raw edges. Stretches on bias, allow ease.
+
+**Interfacing:** None (structure via bias cut). Lightweight silk organza 
+stay at neckline.
+
+**Closure options:** Invisible zipper (interface seam allowance first), 
+or exposed seam zipper (intentional detail).
+
+**Construction order:** 1. Stay neckline 2. Sew shoulder straps 
+3. Attach neckline binding 4. French seam sides 5. Insert zipper 
+6. Rolled hem
+
+Specific enough to hand to a sample maker.
+
+## Key design decisions
+
+**The "reason" field in every recommendation.** Not in the original 
+design. Added after testing revealed that sample makers trusted the 
+output more when they could see the reasoning, not just the 
+recommendation. Every seam type and closure option includes a reason 
+field in the JSON.
+
+**Closure disambiguation.** When placement is unclear, the prompt 
+instructs the model to return two options with tradeoffs rather than 
+guessing. This was added after testing showed the model would confidently 
+recommend the wrong closure for the fabric type.
+
+**The construction order constraint.** The hardest prompt rule to get 
+right: "no steps that require prior steps to be undone." Early versions 
+would sequence zipper insertion after side seams were sewn, which is 
+physically impossible on certain styles. The constraint forces the model 
+to reason about access windows.
+
+**Domain scope limited to womenswear.** Menswear tailoring, knitwear, 
+and technical outerwear are excluded. The prompt would need different 
+constraint sets for each, and the domain knowledge required to validate 
+those outputs isn't something I can verify yet.
+
+**Free-text input with optional structured fields.** The user can be 
+as precise or as vague as they want. The tradeoff: vague inputs produce 
+vague outputs. No guardrail currently prevents "a dress" from generating 
+a breakdown, which would be nearly useless.
+
+## Architecture */}

@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-local_backend: true 
+local_backend: true
 
 media_folder: "public/images"
 public_folder: "/images"
@@ -12,15 +12,26 @@ collections:
     label: "Projects"
     folder: "src/content/projects"
     create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
-      - { label: "Date", name: "date", widget: "datetime" }
-      - { label: "Cover Image", name: "coverImage", widget: "image" }
+      - label: "Track"
+        name: "track"
+        widget: "select"
+        options:
+          - { label: "Creative Technology", value: "tech" }
+          - { label: "Fashion", value: "fashion" }
+          - { label: "Textile Practice", value: "textiles" }
       - { label: "Tags", name: "tags", widget: "list" }
-      - { label: "Featured", name: "featured", widget: "boolean", required: false }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Live URL", name: "live_url", widget: "string", required: false }
+      - { label: "GitHub URL", name: "github_url", widget: "string", required: false }
+      - { label: "Password Protected", name: "password_protected", widget: "boolean", default: false, required: false }
       - { label: "Body", name: "body", widget: "markdown" }
-  
+
   - name: "illustrations"
     label: "Illustrations"
     folder: "src/content/illustrations"

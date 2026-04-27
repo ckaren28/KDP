@@ -1,0 +1,394 @@
+/* ── GENERATIVE TEXTILE PATTERN TOOL ── */
+
+.tool-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 48px 100px;
+}
+
+.back-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 48px;
+  transition: color 0.3s;
+}
+.back-nav:hover { color: var(--black); }
+
+/* ── PROJECT NAV ── */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+}
+.project-nav-link {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.project-nav-link:hover { color: var(--black); }
+
+.next-project {
+  margin-top: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.next-all {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.next-all:hover { color: var(--black); }
+
+.page-header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.page-eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 72px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.page-title em { font-style: italic; color: var(--sienna); }
+
+.page-desc {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-body);
+  font-weight: 300;
+  max-width: 560px;
+}
+
+/* ── TWO-COLUMN TOOL LAYOUT ── */
+.tool-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
+  align-items: start;
+  min-height: calc(100vh - 300px);
+}
+
+/* ── CONTROLS PANEL ── */
+.controls-panel {
+  border-right: 1px solid var(--border);
+  padding-right: 36px;
+  padding-bottom: 60px;
+}
+
+.ctrl-section {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.ctrl-section:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.ctrl-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-variant: small-caps;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* Concept textarea */
+.concept-textarea {
+  width: 100%;
+  resize: none;
+  border: 1px solid var(--border);
+  background: var(--off-white);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+.concept-textarea:focus { border-color: var(--black); }
+.concept-textarea::placeholder { color: var(--muted); }
+
+/* Generate button */
+.btn-generate {
+  width: 100%;
+  background: var(--black);
+  color: var(--off-white);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 13px 20px;
+  cursor: none;
+  transition: background 0.3s, opacity 0.3s;
+}
+.btn-generate:hover:not(:disabled) { background: var(--hover-sweep, #3D2B1A); }
+.btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Swatches — children are JS-created so use :global */
+.swatch-row {
+  margin-bottom: 12px;
+}
+:global(.swatch-item) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+:global(.swatch-block) {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+:global(.swatch-item:hover .swatch-block) {
+  box-shadow: 0 0 0 2px var(--black);
+}
+:global(.swatch-input) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+:global(.swatch-hex) {
+  font-family: 'Courier New', monospace;
+  font-size: 10.5px;
+  color: var(--muted);
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+:global(.swatch-edit) {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+:global(.swatch-item:hover .swatch-edit) { opacity: 1; }
+
+.mood-text {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.6;
+  min-height: 20px;
+}
+
+.error-msg {
+  font-size: 11px;
+  color: var(--sienna);
+  margin-top: 8px;
+  min-height: 16px;
+}
+
+/* Pattern type buttons
+   JS queries via [data-pattern-btn] attribute
+   Active state uses data-active attribute to avoid class-name hashing */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.btn-pattern {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  cursor: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-pattern:hover:not([data-active]) {
+  border-color: var(--black);
+}
+.btn-pattern[data-active] {
+  background: var(--black);
+  color: var(--off-white);
+  border-color: var(--black);
+}
+
+/* Density slider */
+.density-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1px;
+  background: var(--border);
+  outline: none;
+  margin-bottom: 8px;
+  cursor: none;
+}
+.density-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--black);
+  border-radius: 50%;
+  cursor: none;
+}
+.density-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--black);
+  border-radius: 50%;
+  border: none;
+  cursor: none;
+}
+.density-labels {
+  display: flex;
+  justify-content: space-between;
+}
+.density-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Download button */
+.btn-download {
+  width: 100%;
+  background: transparent;
+  color: var(--black);
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 13px 20px;
+  cursor: none;
+  transition: border-color 0.3s, color 0.3s;
+}
+.btn-download:hover {
+  border-color: var(--sienna);
+  color: var(--sienna);
+}
+
+/* ── CANVAS PANEL ── */
+.canvas-panel {
+  position: sticky;
+  top: 100px;
+  padding-left: 36px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+}
+
+.pattern-canvas {
+  flex: 1;
+  width: 100%;
+  background: var(--warm-white);
+  display: block;
+}
+
+.canvas-hint {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* ── MOCKUP SECTION ── */
+.mockup-section {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+.mockup-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+.mockup-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.mockup-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--warm-white, #F5F1E8);
+  padding: 28px 20px 20px;
+}
+.mockup-svg-container {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mockup-svg-container svg {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+.mockup-name {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

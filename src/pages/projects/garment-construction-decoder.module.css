@@ -1,0 +1,360 @@
+/* ── GARMENT CONSTRUCTION DECODER ── */
+
+.tool-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 2rem 8rem;
+  font-family: var(--font-display);
+  color: var(--black);
+}
+
+.back-nav {
+  padding: 2.5rem 0 4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.back-nav a:hover { color: var(--black); }
+
+.page-header {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.page-title {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.page-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  max-width: 52ch;
+  font-weight: 300;
+}
+
+/* ── TOOL GRID ── */
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .tool-grid { grid-template-columns: 1fr; }
+}
+
+/* ── PANELS ── */
+.panel {
+  border: 1px solid var(--border);
+  padding: 2rem;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 0.4rem;
+  color: var(--black);
+}
+
+.panel-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+/* ── FORM ── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--black);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--sienna);
+}
+
+.form-field textarea { min-height: 150px; resize: vertical; }
+
+.form-hint {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+
+/* ── TRAVELER TOGGLE ── */
+.traveler-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.traveler-row:has(input:checked) { border-color: var(--sienna); }
+
+.traveler-row label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-body);
+  cursor: pointer;
+  flex: 1;
+}
+
+.traveler-row .traveler-badge {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sienna);
+  border: 1px solid var(--sienna);
+  padding: 2px 8px;
+}
+
+/* ── BUTTONS ── */
+.btn-generate {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--off-white);
+  background: var(--black);
+  border: 1px solid var(--black);
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.btn-generate:hover:not(:disabled) { background: var(--sienna); border-color: var(--sienna); }
+.btn-generate:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── PRESETS ── */
+.presets-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.presets-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
+.preset-btn {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.preset-btn:hover { color: var(--black); border-color: var(--black); }
+
+/* ── ERROR ── */
+.error-box {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #a0291a;
+  border: 1px solid #e8c4be;
+  background: #fdf5f4;
+  padding: 10px 14px;
+  margin-top: 0.75rem;
+}
+
+/* ── OUTPUT STATES ── */
+.output-empty,
+.output-loading {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 3rem 0;
+  text-align: center;
+  border: 1px dashed var(--border);
+}
+
+/* ── OUTPUT SECTIONS ── */
+.output-section {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.output-section:first-child { border-top: 1px solid var(--border); }
+
+.output-section-title {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.output-text {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-body);
+}
+
+/* seam / interfacing / closure cards — JS creates these elements */
+.card-list { display: flex; flex-direction: column; gap: 8px; }
+
+:global(.card) {
+  border: 1px solid var(--border);
+  padding: 0.875rem 1rem;
+}
+:global(.card-name) {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 0.3rem;
+}
+:global(.card-detail) {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+:global(.card-meta) {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* numbered steps */
+.steps-list {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* bullet notes */
+.notes-list {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  padding-left: 1.25rem;
+}
+
+/* traveler highlight */
+.traveler-output {
+  border-left: 2px solid var(--sienna);
+  padding-left: 1rem;
+}
+.traveler-output .output-section-title { color: var(--sienna); }
+
+/* lining badge — JS sets className directly */
+.lining-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Badge base + states — JS sets these via className assignment */
+:global(.badge) {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+:global(.badge-yes) { color: #2d6a3f; border-color: #2d6a3f; }
+:global(.badge-no)  { color: var(--muted); border-color: var(--border); }
+
+/* ── PROJECT NAV ── */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+}
+.project-nav-link {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.project-nav-link:hover { color: var(--black); }
+
+.next-project {
+  margin-top: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.next-all {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.next-all:hover { color: var(--black); }
