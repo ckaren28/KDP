@@ -5,49 +5,55 @@ const s = styles;
 const textile = [
   {
     href: '/projects/shibori',
-    image: '/images/shibori/Shibori1.jpg',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/shibori/Shibori1',
     alt: 'Shibori indigo resist-dyed fabric',
     label: 'Dyeing · Resist',
+    category: 'dyeing',
     title: 'Shibori',
     desc: 'Indigo shibori resist dyeing on cotton. Itajime, arashi, and kumo techniques explored across a series of scarves.',
   },
   {
     href: '/projects/marbling',
-    image: '/images/marbling/marblingfinal1.png',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/marbling/marblingfinal1',
     alt: 'Marbled fabric with violet, gold, and orange swirls',
     label: 'Dyeing · Surface',
+    category: 'dyeing',
     title: 'Marbling',
     desc: 'Marbling exploring color, fluid pattern, and surface tension.',
   },
   {
     href: '/projects/batik',
-    image: '/images/batik/Batik-final1.jpg',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/batik/Batik-final1',
     alt: 'Batik wax-resist dyed fabric',
     label: 'Dyeing · Resist',
+    category: 'dyeing',
     title: 'Batik',
     desc: 'Wax resist batik on fabric, exploring color layering and pattern.',
   },
   {
     href: '/projects/blockprint',
-    image: '/images/blockprint/blockprint.jpg',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/blockprint/blockprint',
     alt: 'Block printed fabric — linoleum carved pattern',
     label: 'Printing · Relief',
+    category: 'printing',
     title: 'Block Printing',
     desc: 'Hand-carved relief blocks and repeat pattern development on muslin.',
   },
   {
     href: '/projects/felting',
-    image: '/images/felting/felted-art1.JPG',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/felting/felted-art1',
     alt: 'Felted textile',
     label: 'Fiber · Construction',
+    category: 'fiber',
     title: 'Felting',
     desc: 'Felting exploration in texture and form.',
   },
   {
     href: '/projects/weaving',
-    image: '/images/weaving/weaving.JPG',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/weaving/weaving',
     alt: 'Woven sample with reclaimed yarn',
     label: 'Fiber · Structure',
+    category: 'fiber',
     title: 'Weaving',
     desc: 'Hand-woven textile exploring warp and weft structure. Materials sourced from a local weaving studio in the Upper East Side.',
   },
@@ -55,7 +61,7 @@ const textile = [
 
 const knitting = [
   {
-    image: '/images/knitting/dress.jpg',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/knitting/dress-jpg',
     alt: 'Hand-knitted silk maxi dress in dove blue',
     label: 'Hand Knitting · Self-taught',
     title: 'Knit Dress',
@@ -63,7 +69,7 @@ const knitting = [
     caption: 'Hand-knitted from purchased patterns. Yarn and hardware selection by me. Part of an ongoing personal making practice.',
   },
   {
-    image: '/images/knitting/vest.jpg',
+    image: 'https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/knitting/vest',
     alt: 'Hand-knitted cropped cashmere vest',
     label: 'Hand Knitting · Self-taught',
     title: 'Knit Vest',
@@ -73,10 +79,19 @@ const knitting = [
 ];
 ---
 
-<span class={s['section-heading']}>Dyeing, Printing &amp; Fiber</span>
-<div class={s['project-grid']}>
+<div class={s['filters']}>
+  <span class={s['filter-label']}>Filter</span>
+  <button class={s['filter-btn']} data-textile-filter="all" data-active>All</button>
+  <button class={s['filter-btn']} data-textile-filter="dyeing">Dyeing</button>
+  <button class={s['filter-btn']} data-textile-filter="printing">Printing</button>
+  <button class={s['filter-btn']} data-textile-filter="fiber">Fiber</button>
+  <button class={s['filter-btn']} data-textile-filter="knitting">Knitting</button>
+</div>
+
+<span class={s['section-heading']} data-textile-heading>Dyeing, Printing &amp; Fiber</span>
+<div class={s['project-grid']} data-textile-grid>
   {textile.map(e => (
-    <a href={e.href} class={`${s['project-item']} reveal`}>
+    <a href={e.href} class={`${s['project-item']} reveal`} data-category={e.category}>
       <div class={s['item-hero']}>
         <img src={e.image} alt={e.alt} loading="lazy" />
       </div>
@@ -88,11 +103,11 @@ const knitting = [
   ))}
 </div>
 
-<hr class={s['section-divider']} />
+<hr class={s['section-divider']} data-section-divider />
 
-<div class={s['knit-section']}>
-  <img src="/images/knitting/yarn-top.png" alt="" class={`${s['yarn-decor']} ${s['yarn-topright']}`} aria-hidden="true" />
-  <img src="/images/knitting/yarn-bottom.png" alt="" class={`${s['yarn-decor']} ${s['yarn-bottomleft']}`} aria-hidden="true" />
+<div class={s['knit-section']} data-knit-section>
+  <img src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/knitting/yarn-top" alt="" class={`${s['yarn-decor']} ${s['yarn-topright']}`} aria-hidden="true" />
+  <img src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/knitting/yarn-bottom" alt="" class={`${s['yarn-decor']} ${s['yarn-bottomleft']}`} aria-hidden="true" />
   <span class={s['section-heading']}>Hand Knitting</span>
   <div class={s['knit-slider']} id="knitSlider">
     <div class={s['knit-track']}>
@@ -124,6 +139,7 @@ const knitting = [
 </div>
 
 <script>
+  // ── KNIT SLIDER ──
   const slides = document.getElementById('knitSlides');
   const prevBtn = document.getElementById('knitPrev') as HTMLButtonElement;
   const nextBtn = document.getElementById('knitNext') as HTMLButtonElement;
@@ -152,6 +168,7 @@ const knitting = [
   nextBtn?.addEventListener('click', () => goTo(current + 1));
   goTo(0);
 
+  // ── KNIT LIGHTBOX ──
   const knitLightbox = document.getElementById('knitLightbox');
   const knitLightboxImg = document.getElementById('knitLightboxImg') as HTMLImageElement | null;
 
@@ -168,4 +185,40 @@ const knitting = [
   document.getElementById('knitLightboxClose')?.addEventListener('click', closeKnitLightbox);
   knitLightbox?.addEventListener('click', (e) => { if (e.target === knitLightbox) closeKnitLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeKnitLightbox(); });
+
+  // ── TEXTILE FILTERS ──
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('[data-textile-filter]');
+  const textileCards = document.querySelectorAll<HTMLElement>('[data-category]');
+  const knitSectionEl = document.querySelector<HTMLElement>('[data-knit-section]');
+  const dividerEl = document.querySelector<HTMLElement>('[data-section-divider]');
+  const textileHeadingEl = document.querySelector<HTMLElement>('[data-textile-heading]');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', '');
+      const filter = btn.dataset.textileFilter!;
+
+      if (filter === 'all') {
+        textileCards.forEach(c => c.removeAttribute('hidden'));
+        textileHeadingEl?.removeAttribute('hidden');
+        dividerEl?.removeAttribute('hidden');
+        knitSectionEl?.removeAttribute('hidden');
+      } else if (filter === 'knitting') {
+        textileCards.forEach(c => c.setAttribute('hidden', ''));
+        textileHeadingEl?.setAttribute('hidden', '');
+        dividerEl?.setAttribute('hidden', '');
+        knitSectionEl?.removeAttribute('hidden');
+      } else {
+        textileCards.forEach(c => {
+          (c as HTMLElement).dataset.category === filter
+            ? c.removeAttribute('hidden')
+            : c.setAttribute('hidden', '');
+        });
+        textileHeadingEl?.removeAttribute('hidden');
+        dividerEl?.setAttribute('hidden', '');
+        knitSectionEl?.setAttribute('hidden', '');
+      }
+    });
+  });
 </script>

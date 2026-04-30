@@ -1,67 +1,4 @@
 ---
-title: "Museum Label Generator"
-description: "Draft wall labels, extended labels, kids labels, audio scripts, alt text, and curator notes from a source description. Built to support human editorial control — not to replace it."
-track: "tech"
-tags: ["Creative Technology", "AI", "Museum Tech", "Accessibility", "Editorial Tools"]
-date: 2024-09-15
-live_url: "https://karen-dettmar.netlify.app/projects/museum-label-generator"
----
-
-import MuseumLabelTool from '../../components/tools/MuseumLabelTool.astro';
-
-<MuseumLabelTool />
-
-## The problem
-
-Museum interpretation is slow, expensive, and under-resourced. A single wall label — 50 to 70 words, written to be understood by a 12-year-old while remaining accurate enough for a specialist — can take several rounds of drafting, editorial review, and curatorial sign-off. Multiply that by a collection of thousands.
-
-At the same time, the stakes are real. Labels make assumptions. They attribute meaning. They decide what to say about provenance, cultural context, and artist intent — and what to leave out. Automation that removes the human editorial step is a different kind of problem.
-
-This tool is built for the middle path: AI-drafted, human-edited.
-
-## How it works
-
-The tool takes artwork metadata (title, artist, year, medium) and a source description, then generates six output types simultaneously:
-
-- **Wall label** (50–70 words) — the standard interpretive label
-- **Extended label** (150–200 words) — for more context or complex works
-- **Kids label** — accessible language for younger visitors
-- **Audio guide script** — written for listening, not reading
-- **Alt text** — a functional image description
-- **Curator notes** — surfaced assumptions, gaps, and editorial flags
-
-**Variations** generate two alternate wall labels for comparison, making the editorial tradeoffs visible.
-
-**Workshop Mode** adds facilitator prompts and discussion questions, turning the tool into a teaching exercise: generate with *Stay close* ON and OFF, compare the outputs, discuss what changed and why.
-
-## Architecture
-
-```
-User input (description + optional metadata)
-        ↓
-Netlify Function (keeps API key server-side)
-        ↓
-Anthropic API → JSON { wall_label, extended_label, kids_label,
-                       audio_guide_script, alt_text,
-                       curator_notes, variations }
-        ↓
-Copy-enabled output sections
-```
-
-The artwork rotator (top of the page) pulls public-domain paintings from the Met Museum Open Access API — a pool of 20 random works, displayed in a crossfade cycle. It updates the wall label card with each artwork's metadata, making the tool immediately contextual without requiring user input.
-
-## Design decisions
-
-**Six outputs in one call.** Running six separate API calls for six label types would be slow and expensive. A single structured prompt produces all six fields as typed JSON keys. The constraint forces the model to hold the same source description in context for all output types simultaneously, which tends to produce more consistent tone across the outputs.
-
-**"Stay close to source text" as a first-class control.** This checkbox changes whether the model can draw inferences beyond the provided description. With it on, the output stays close to what's observable. With it off, the model may interpret, contextualize, or speculate. Neither is always right — the choice depends on what the curator knows and what they want the label to do.
-
-**Curator notes as audit layer.** The model is explicitly prompted to surface its own assumptions in the curator notes field: what it inferred, what's missing from the source text, what might need verification. This is an attempt to keep the human in the loop rather than hiding the model's reasoning inside a clean-looking output.
-
-**Originally built for museums.** The prompt system and output types are equally applicable to fashion archive documentation, garment description, collection notes, and exhibition copy — anywhere interpretive text needs to be drafted at scale with editorial control retained.
-
-
-{/* ---
 title: Museum Label Generator
 description: A tool that generates six interpretive text formats from a 
   single artwork description. Built to support human editorial control, 
@@ -74,8 +11,7 @@ github_url: https://github.com/karendettmar/museum-label-generator
 password_protected: false
 ---
 
-import MuseumLabelTool from '@/components/MuseumLabelTool'
-import ArchitectureDiagram from '@/components/ArchitectureDiagram'
+import MuseumLabelTool from '../../components/tools/MuseumLabelTool.astro'
 
 ## The problem
 
@@ -139,4 +75,6 @@ serverless function. The key never touches the browser. Cold starts add
 ~300ms latency on first request, which is an acceptable tradeoff for 
 a tool used in considered, not rapid-fire, workflows.
 
-## Architecture */}
+## Try it
+
+<MuseumLabelTool />

@@ -85,6 +85,7 @@
 .artwork-stage {
   position: absolute;
   inset: 5%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -188,6 +189,7 @@
 
 /* ── TOOL GRID ── */
 .tool-grid {
+  margin-top: 100px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;

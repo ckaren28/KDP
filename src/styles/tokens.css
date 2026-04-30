@@ -15,6 +15,9 @@
   --hover-sweep: #3D2B1A;
   --on-sweep: var(--off-white);
   --placeholder-bg: #DED5BE;
+
+  --fashion-bg: #f5f0e8;
+  --fashion-bg-dark: #1a110a;
 }
 
 /* ── DARK MODE ── */
@@ -31,4 +34,9 @@ html[data-theme="dark"] {
   --hover-sweep: #2C1F14;
   --on-sweep: #faf8f5;
   --placeholder-bg: #2C1F14;
+
+  --fashion-bg: #1a110a;
 }
+
+
+

@@ -1,0 +1,213 @@
+---
+import MainLayout from "./MainLayout.astro";
+import styles from "./fashion-collection-layout.module.css";
+const s = styles;
+
+interface ColorSwatch {
+  name: string;
+  hex: string;
+  note?: string;
+}
+
+interface Look {
+  title: string;
+  image: string;
+  caption?: string;
+}
+
+interface TechnicalFlat {
+  image: string;
+  caption?: string;
+}
+
+interface MaterialItem {
+  name: string;
+  note?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  season?: string;
+  year?: number;
+  logo?: string;
+  collection_icon?: string;
+  background_color?: string;
+  color_palette?: ColorSwatch[];
+  looks?: Look[];
+  technical_flats?: TechnicalFlat[];
+  fabric_notes?: string;
+  material_palette?: MaterialItem[];
+  tags?: string[];
+}
+
+const {
+  title,
+  description,
+  season,
+  year,
+  logo,
+  collection_icon,
+  background_color = "#faf8f5",
+  color_palette,
+  looks,
+  technical_flats,
+  fabric_notes,
+  material_palette,
+  tags = [],
+} = Astro.props;
+
+const seasonLabel = [season, year].filter(Boolean).join(" ");
+---
+
+<MainLayout title={`${title} — Karen Dettmar`}>
+  <div
+    class={s["collection-page"]}
+    style={`--collection-bg: ${background_color};`}
+  >
+    <!-- Back nav -->
+    <nav class={s["back-nav"]}>
+      <a href="/projects/fashion">← Fashion</a>
+    </nav>
+
+    <!-- Collection icon: animates in large, shrinks to ambient monogram -->
+    {
+      collection_icon && (
+        <div class={s["icon-wrap"]} aria-hidden="true">
+          <img src={collection_icon} alt="" class={s["collection-icon"]} />
+        </div>
+      )
+    }
+
+    <!-- Header -->
+    <header class={s["collection-header"]}>
+      {
+        logo ? (
+          <img src={logo} alt={`${title} logo`} class={s["collection-logo"]} />
+        ) : (
+          <h1 class={s["collection-title"]}>{title}</h1>
+        )
+      }
+      {seasonLabel && <span class={s["season-label"]}>{seasonLabel}</span>}
+      <p class={s["collection-desc"]}>{description}</p>
+      {
+        tags.length > 0 && (
+          <div class={s["tags"]}>
+            {tags.map((tag) => (
+              <span class={s["tag"]}>{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <!-- MDX prose body (concept, mood, etc.) -->
+    <div class={s["prose"]}>
+      <slot />
+    </div>
+
+    <!-- Looks grid -->
+    {
+      looks && looks.length > 0 && (
+        <section class={s["looks-section"]}>
+          <h2 class={s["section-heading"]}>The Collection</h2>
+          <div
+            class={s["looks-grid"]}
+            style={`--look-count: ${Math.min(looks.length, 5)};`}
+          >
+            {looks.map((look) => (
+              <figure class={s["look-item"]}>
+                <div class={s["look-img-wrap"]}>
+                  <img
+                    src={look.image}
+                    alt={look.title}
+                    class={s["look-img"]}
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption class={s["look-caption"]}>
+                  <span class={s["look-title"]}>{look.title}</span>
+                  {look.caption && (
+                    <span class={s["look-note"]}>{look.caption}</span>
+                  )}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Color palette -->
+    {
+      color_palette && color_palette.length > 0 && (
+        <section class={s["palette-section"]}>
+          <h2 class={s["section-heading"]}>Color Palette</h2>
+          <div class={s["palette-grid"]}>
+            {color_palette.map((swatch) => (
+              <div class={s["swatch-item"]}>
+                <div
+                  class={s["swatch-circle"]}
+                  style={`background: ${swatch.hex};`}
+                  title={swatch.hex}
+                />
+                <span class={s["swatch-name"]}>{swatch.name}</span>
+                {swatch.note && (
+                  <span class={s["swatch-note"]}>{swatch.note}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Material palette -->
+    {
+      material_palette && material_palette.length > 0 && (
+        <section class={s["materials-section"]}>
+          <h2 class={s["section-heading"]}>Materials</h2>
+          {fabric_notes && <p class={s["fabric-notes"]}>{fabric_notes}</p>}
+          <ul class={s["materials-list"]}>
+            {material_palette.map((m) => (
+              <li class={s["material-item"]}>
+                <span class={s["material-name"]}>{m.name}</span>
+                {m.note && <span class={s["material-note"]}>{m.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <!-- Technical flats -->
+    {
+      technical_flats && technical_flats.length > 0 && (
+        <section class={s["flats-section"]}>
+          <h2 class={s["section-heading"]}>Technical Development</h2>
+          <div class={s["flats-grid"]}>
+            {technical_flats.map((flat) => (
+              <figure class={s["flat-item"]}>
+                <img
+                  src={flat.image}
+                  alt={flat.caption ?? "Technical flat"}
+                  class={s["flat-img"]}
+                  loading="lazy"
+                />
+                {flat.caption && (
+                  <figcaption class={s["flat-caption"]}>
+                    {flat.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <div class={s["footer-nav"]}>
+      <a href="/projects/fashion">← Fashion</a>
+    </div>
+  </div>
+</MainLayout>

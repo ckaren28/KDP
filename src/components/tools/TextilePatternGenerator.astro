@@ -530,9 +530,9 @@ const s = styles;
   }
 
   Promise.all([
-    loadMockupSVG('/images/chair-textilegen.svg',   'mockupChair', 'mp-chair'),
-    loadMockupSVG('/images/coat-textilegen.svg',    'mockupCoat',  'mp-coat'),
-    loadMockupSVG('/images/totebag-textilegen.svg', 'mockupTote',  'mp-tote'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/chair-textilegen',   'mockupChair', 'mp-chair'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/coat-textilegen',    'mockupCoat',  'mp-coat'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/totebag-textilegen', 'mockupTote',  'mp-tote'),
   ]);
 
   // ── DRAW LOOP ──

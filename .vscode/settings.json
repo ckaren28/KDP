@@ -1,0 +1,15 @@
+{
+    // "workbench.editor.customLabels.patterns": {
+    //     "*.svg": "default"
+    // },
+    "workbench.editor.autoLockGroups": {
+        "default": true,
+        "workbench.editorinputs.sidebysideEditorInput": true,
+        "workbench.editor.browser": true,
+        "mainThreadWebview-markdown.preview": true,
+        "workbench.input.interactive": true,
+    },
+    "workbench.editorAssociations": {
+  "*.svg": "default"
+}
+}

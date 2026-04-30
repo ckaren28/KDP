@@ -1,0 +1,438 @@
+.collection-page {
+    background-color: var(--collection-bg, var(--off-white));
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding: 0 clamp(1.5rem, 6vw, 6rem);
+    padding-bottom: 6rem;
+}
+
+/* ── Back nav ── */
+.back-nav {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+.back-nav a {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-nav a:hover {
+    color: var(--black);
+}
+
+/* ── Collection icon — large on load, shrinks to ambient monogram ── */
+.icon-wrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.collection-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(200px, 40vw, 480px);
+    height: auto;
+    object-fit: contain;
+    opacity: 0;
+    animation:
+        icon-arrive 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards,
+        icon-retreat 1.8s cubic-bezier(0.16, 1, 0.3, 1) 2.4s forwards;
+}
+
+@keyframes icon-arrive {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -44%) scale(0.92);
+    }
+
+    to {
+        opacity: 0.12;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes icon-retreat {
+    from {
+        opacity: 0.12;
+        top: 50%;
+        left: 50%;
+        width: clamp(200px, 40vw, 480px);
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0.06;
+        top: 3.5rem;
+        left: auto;
+        right: clamp(1.5rem, 6vw, 6rem);
+        width: 48px;
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+/* ── Header ── */
+.collection-header {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.collection-logo {
+    max-height: 64px;
+    width: auto;
+    display: block;
+    margin-bottom: 1.25rem;
+}
+
+.collection-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.05;
+    color: var(--black);
+    margin: 0 0 1rem;
+    letter-spacing: -0.01em;
+}
+
+.season-label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+}
+
+.collection-desc {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text-body);
+    margin: 0 0 1.5rem;
+    max-width: 560px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.625rem;
+    border-radius: 2px;
+}
+
+/* ── Prose (MDX slot) ── */
+.prose {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-body);
+    padding-bottom: 3rem;
+}
+
+.prose :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--black);
+    margin: 3rem 0 1rem;
+}
+
+.prose :global(h3) {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2rem 0 0.75rem;
+}
+
+.prose :global(p) {
+    margin: 0 0 1.25rem;
+}
+
+.prose :global(strong) {
+    font-weight: 600;
+    color: var(--black);
+}
+
+.prose :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 2rem 0;
+    border-radius: 2px;
+}
+
+/* ── Section shared ── */
+.section-heading {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 2rem;
+    font-weight: 400;
+}
+
+/* ── Looks grid ── */
+.looks-section {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+}
+
+.looks-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--look-count, 5), 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .looks-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .looks-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.look-item {
+    margin: 0;
+}
+
+.look-img-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 3;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--collection-bg) 60%, var(--border));
+    border-radius: 2px;
+}
+
+.look-img {
+    width: 100%;
+    height: 70%;
+    object-fit: contain;
+    object-position: top;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.look-item:hover .look-img {
+    transform: scale(1.03);
+}
+
+.look-caption {
+    padding-top: 0.625rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.look-title {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.look-note {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+/* ── Color palette ── */
+.palette-section {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+}
+
+.palette-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.swatch-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 64px;
+}
+
+.swatch-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.swatch-name {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-align: center;
+    line-height: 1.3;
+}
+
+.swatch-note {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* ── Materials ── */
+.materials-section {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+}
+
+.fabric-notes {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--text-body);
+    margin: 0 0 1.5rem;
+    max-width: 560px;
+}
+
+.materials-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.material-item {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.material-item:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.material-name {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--black);
+    min-width: 160px;
+    letter-spacing: 0.02em;
+}
+
+.material-note {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ── Technical flats ── */
+.flats-section {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+}
+
+.flats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.flat-item {
+    margin: 0;
+}
+
+.flat-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+}
+
+.flat-caption {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    letter-spacing: 0.03em;
+}
+
+/* ── Footer nav ── */
+.footer-nav {
+    position: relative;
+    z-index: 1;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+}
+
+.footer-nav a {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-nav a:hover {
+    color: var(--black);
+}

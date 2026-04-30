@@ -1,0 +1,200 @@
+/* ── TOP LAYOUT: two-column form + silhouette ── */
+
+.layout-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 900px) {
+  .layout-top { grid-template-columns: 1fr; }
+}
+
+/* ── BOTTOM LAYOUT: full-width output ── */
+
+.layout-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.output-header {
+  margin-bottom: 1.5rem;
+}
+
+/* output-body is set to display:grid via JS; these properties activate then */
+.output-body {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem 2rem;
+  align-items: start;
+}
+/* note spans all columns */
+.output-body > .output-note {
+  grid-column: 1 / -1;
+}
+/* override page-module output-section borders for grid context */
+.output-body :global([class*="output-section"]) {
+  border-top: 1px solid var(--border) !important;
+  border-bottom: none !important;
+  padding: 0.75rem 0 0 !important;
+}
+@media (max-width: 900px) {
+  .output-body { grid-template-columns: 1fr; }
+}
+
+/* ── SILHOUETTE DISPLAY PANEL ── */
+
+.silhouette-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem 1.5rem 130px;
+  border: 1px dashed var(--border);
+  min-height: 80px;
+  position: relative;
+  overflow: visible;
+}
+
+.silhouette-placeholder {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
+.silhouette-wrap {
+  width: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+.silhouette-wrap svg:not(.gd-annotation-overlay) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* viewBox is 430×500 (300 garment + 130 label margin) — enforce ratio to match garment height */
+:global(.gd-annotation-overlay) {
+  aspect-ratio: 43 / 50;
+  height: auto !important;
+}
+
+/* ── SCOPE DISCLAIMER ── */
+
+.scope-disclaimer {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+/* ── IMAGE UPLOAD ZONE ── */
+
+.upload-hint {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.upload-zone {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+.upload-zone:not([data-has-image]) {
+  border: 1.5px dashed var(--border);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+}
+.upload-zone:not([data-has-image]):hover,
+.upload-zone:not([data-has-image])[data-drag-over] {
+  border-color: var(--muted);
+}
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+.upload-icon {
+  font-size: 1.4rem;
+  color: var(--muted);
+  opacity: 0.35;
+}
+.upload-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+.upload-preview-wrap {
+  position: relative;
+  width: 100%;
+}
+.upload-preview {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.upload-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  background: var(--black);
+  color: var(--off-white);
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  z-index: 3;
+}
+.upload-remove:hover { opacity: 1; }
+
+/* image-only response note */
+.output-note {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.silhouette-label {
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}

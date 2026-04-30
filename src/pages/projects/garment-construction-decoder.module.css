@@ -238,7 +238,7 @@
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.75rem;
-  display: block;
+  /* display: block; */
 }
 
 .output-text {

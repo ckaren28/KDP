@@ -32,6 +32,76 @@ collections:
       - { label: "Password Protected", name: "password_protected", widget: "boolean", default: false, required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
+  - name: "fashion_collections"
+    label: "Fashion Collections"
+    folder: "src/content/fashion"
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Season", name: "season", widget: "string", required: false, hint: "e.g. Fall/Winter 2025" }
+      - { label: "Year", name: "year", widget: "number", required: false }
+      - label: "Logo"
+        name: "logo"
+        widget: "image"
+        required: false
+        hint: "Wordmark or logotype for this collection"
+      - label: "Collection Icon"
+        name: "collection_icon"
+        widget: "image"
+        required: false
+        hint: "Object image (e.g. suitcase) — animates on load, shrinks to ambient monogram"
+      - label: "Background Color"
+        name: "background_color"
+        widget: "color"
+        required: false
+        default: "#faf8f5"
+        hint: "Page background tint for this collection"
+      - label: "Color Palette"
+        name: "color_palette"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Hex", name: "hex", widget: "color" }
+          - { label: "Note", name: "note", widget: "string", required: false }
+      - label: "Moodboard"
+        name: "moodboard"
+        widget: "image"
+        required: false
+      - label: "Looks"
+        name: "looks"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+      - label: "Technical Flats"
+        name: "technical_flats"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+      - label: "Fabric Notes"
+        name: "fabric_notes"
+        widget: "text"
+        required: false
+      - label: "Material Palette"
+        name: "material_palette"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Note", name: "note", widget: "string", required: false }
+      - { label: "Tags", name: "tags", widget: "list" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown", required: false }    
+
   - name: "illustrations"
     label: "Illustrations"
     folder: "src/content/illustrations"
