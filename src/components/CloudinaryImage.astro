@@ -1,0 +1,17 @@
+---
+import { buildUrl } from '../utils/cloudinary';
+
+interface Props {
+  publicId: string;
+  alt: string;
+  w?: number;
+  h?: number;
+  fit?: string;
+  class?: string;
+}
+
+const { publicId, alt, w, h, fit, class: className } = Astro.props;
+const src = buildUrl(publicId, { w, h, fit });
+---
+
+<img src={src} alt={alt} class={className} />

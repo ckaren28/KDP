@@ -1,0 +1,66 @@
+---
+import MainLayout from "./MainLayout.astro";
+import styles from "./textiles-layout.module.css";
+const s = styles;
+
+interface Props {
+  title: string;
+  description: string;
+  track: "fashion" | "textiles";
+  tags: string[];
+}
+
+const {
+  title,
+  description,
+  track,
+  tags = [],
+} = Astro.props;
+
+const backHref =
+  track === "fashion" ? "/projects/fashion" : "/projects/textiles";
+const backLabel = track === "fashion" ? "← Fashion" : "← Textile Practice";
+const trackLabel = track === "fashion" ? "Fashion" : "Textile Practice";
+---
+
+<MainLayout title={`${title} — Karen Dettmar`}>
+  <div class={s["page"]}>
+
+    <nav class={s["back-nav"]}>
+      <a href={backHref}>{backLabel}</a>
+    </nav>
+
+    <header class={s["page-header"]}>
+      <span class={s["page-label"]}>{trackLabel}</span>
+      <h1 class={s["page-title"]}>{title}</h1>
+      <p class={s["page-desc"]}>{description}</p>
+      {
+        tags.length > 0 && (
+          <div class={s["tags"]}>
+            {tags.map((tag) => (
+              <span class={s["tag"]}>{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class={s["prose"]}>
+      <slot />
+    </div>
+
+    <div class={s["footer-nav"]}>
+      <a href={backHref}>{backLabel}</a>
+    </div>
+  </div>
+<script>
+  const drip = document.getElementById('marbling-drip');
+  if (drip) {
+    window.addEventListener('scroll', () => {
+      const ratio = Math.min(window.scrollY / 300, 1);
+      drip.style.opacity = String(1 - ratio);
+      drip.style.transform = `translateY(${ratio * 60}px)`;
+    });
+  }
+</script>
+</MainLayout>

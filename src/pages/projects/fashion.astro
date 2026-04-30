@@ -1,69 +1,73 @@
 ---
-import MainLayout from '../../layouts/MainLayout.astro';
+import MainLayout from "../../layouts/MainLayout.astro";
 
 const projects = [
   {
-    title: 'Traveler',
-    slug: '/projects/traveller',
-    tag: 'collection-concept',
-    tagLabel: 'Collection Concept',
-    desc: 'A wearable collection built for movement and impermanence.',
-    image: '/images/traveller/Traveller-moodboard.png',
+    title: "Traveler",
+    slug: "/projects/traveller",
+    tag: "collection-concept",
+    tagLabel: "Collection Concept",
+    desc: "A wearable collection built for movement and impermanence.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/traveller/Traveller-moodboard",
     featured: true,
   },
   {
-    title: 'Clover Dress',
-    slug: '/projects/clover-dress',
-    tag: 'garment-construction',
-    tagLabel: 'Garment Construction',
-    desc: 'Tea-length dress with princess seams, four clover-inspired pockets, and French seam finishing.',
-    image: '/images/constructions-2/lucky-dress1.JPG',
+    title: "Clover Dress",
+    slug: "/projects/clover-dress",
+    tag: "garment-construction",
+    tagLabel: "Garment Construction",
+    desc: "Tea-length dress with princess seams, four clover-inspired pockets, and French seam finishing.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/constructions-2/lucky-dress1",
   },
   {
-    title: 'Lined Blazer',
-    slug: '/projects/lined-blazer',
-    tag: 'garment-construction',
-    tagLabel: 'Garment Construction',
-    desc: 'Fully lined blazer with welt pockets, darts, sleeve heads, and shoulder pads.',
-    image: '/images/lined-blazer/blazer-front.jpg',
+    title: "Lined Blazer",
+    slug: "/projects/lined-blazer",
+    tag: "garment-construction",
+    tagLabel: "Garment Construction",
+    desc: "Fully lined blazer with welt pockets, darts, sleeve heads, and shoulder pads.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/lined-blazer/blazer-front",
   },
   {
-    title: 'Canvas Zip Jacket',
-    slug: '/projects/canvas-jacket',
-    tag: 'garment-construction',
-    tagLabel: 'Garment Construction',
-    desc: 'Off-white cotton canvas zip jacket with large circular pockets.',
-    image: '/images/canvas-jacket/jacket-front.jpg',
+    title: "Canvas Zip Jacket",
+    slug: "/projects/canvas-jacket",
+    tag: "garment-construction",
+    tagLabel: "Garment Construction",
+    desc: "Off-white cotton canvas zip jacket with large circular pockets.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/canvas-jacket/jacket-front",
   },
   {
-    title: 'Technical Flats',
-    slug: '/projects/technical-flats',
-    tag: 'flats',
-    tagLabel: 'Flats',
-    desc: 'CAD technical flats produced for Parsons Flats course.',
-    image: '/images/technical-flats/flat-01.png',
+    title: "Technical Flats",
+    slug: "/projects/technical-flats",
+    tag: "flats",
+    tagLabel: "Flats",
+    desc: "CAD technical flats produced for Parsons Flats course.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/technical-flats/flat-01",
   },
   {
-    title: 'Textile Practice',
-    slug: '/projects/textiles',
-    tag: 'textiles',
-    tagLabel: 'Textiles',
-    desc: 'Dyeing, printing, weaving, resist techniques, and hand knitting. A record of making where process drives design.',
-    image: '/images/shibori/Shibori1.jpg',
+    title: "Textile Practice",
+    slug: "/projects/textiles",
+    tag: "textiles",
+    tagLabel: "Textiles",
+    desc: "Dyeing, printing, weaving, resist techniques, and hand knitting. A record of making where process drives design.",
+    image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/shibori/Shibori1",
   },
 ];
 ---
 
 <MainLayout title="Fashion — Karen Dettmar">
-
   <style>
+    /* ── FASHION PAGE BACKGROUND ── */
+    /* Uses --fashion-bg token so it responds to dark mode */
+    body:has(.fashion-page) {
+      background-color: var(--fashion-bg, var(--off-white));
+    }
+
     .fashion-page {
       max-width: 1200px;
       margin: 0 auto;
       padding: 120px 48px 100px;
     }
 
-    /* header */
     .page-header {
       margin-bottom: 48px;
       padding-bottom: 32px;
@@ -85,9 +89,11 @@ const projects = [
       line-height: 0.95;
       letter-spacing: -0.02em;
     }
-    .page-title em { font-style: italic; color: var(--sienna); }
+    .page-title em {
+      font-style: italic;
+      color: var(--sienna);
+    }
 
-    /* filters */
     .filters {
       display: flex;
       align-items: center;
@@ -101,6 +107,7 @@ const projects = [
       text-transform: uppercase;
       color: var(--muted);
       margin-right: 8px;
+      font-family: var(--font-body);
     }
     .filter-btn {
       background: none;
@@ -111,8 +118,11 @@ const projects = [
       text-transform: uppercase;
       color: var(--muted);
       padding: 7px 14px;
-      cursor: none;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      cursor: pointer;
+      transition:
+        border-color 0.2s,
+        color 0.2s,
+        background 0.2s;
     }
     .filter-btn:hover {
       color: var(--black);
@@ -124,20 +134,20 @@ const projects = [
       border-color: var(--black);
     }
 
-    /* grid */
     .project-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
-
     .project-card {
       display: block;
       text-decoration: none;
       color: inherit;
-      cursor: none;
+      cursor: pointer;
     }
-    .project-card[hidden] { display: none; }
+    .project-card[hidden] {
+      display: none;
+    }
 
     .card-img {
       aspect-ratio: 3 / 4;
@@ -149,7 +159,9 @@ const projects = [
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      transition:
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.4s ease;
       opacity: 0.88;
     }
     .project-card:hover .card-img img {
@@ -163,6 +175,8 @@ const projects = [
       text-transform: uppercase;
       color: var(--sienna);
       margin-bottom: 6px;
+      display: block;
+      font-family: var(--font-body);
     }
     .card-title {
       font-family: var(--font-display);
@@ -174,25 +188,34 @@ const projects = [
       margin-bottom: 6px;
       transition: color 0.3s;
     }
-    .project-card:hover .card-title { color: var(--sienna); }
+    .project-card:hover .card-title {
+      color: var(--sienna);
+    }
     .card-desc {
       font-size: 12px;
       color: var(--muted);
       line-height: 1.6;
       font-weight: 300;
+      font-family: var(--font-body);
     }
 
     @media (max-width: 900px) {
-      .fashion-page { padding: 100px 24px 72px; }
-      .project-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .fashion-page {
+        padding: 100px 24px 72px;
+      }
+      .project-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
     }
     @media (max-width: 540px) {
-      .project-grid { grid-template-columns: 1fr; }
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 
   <div class="fashion-page">
-
     <header class="page-header reveal">
       <span class="page-eyebrow">Fashion Design</span>
       <h1 class="page-title"><em>Fashion</em></h1>
@@ -201,52 +224,47 @@ const projects = [
     <div class="filters reveal">
       <span class="filter-label">Filter</span>
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="collection-concept">Collection Concept</button>
-      <button class="filter-btn" data-filter="garment-construction">Garment Construction</button>
+      <button class="filter-btn" data-filter="collection-concept"
+        >Collection Concept</button
+      >
+      <button class="filter-btn" data-filter="garment-construction"
+        >Garment Construction</button
+      >
       <button class="filter-btn" data-filter="flats">Flats</button>
       <button class="filter-btn" data-filter="textiles">Textiles</button>
     </div>
 
     <div class="project-grid" id="fashionGrid">
-      {projects.map(p => (
-        <a
-          href={p.slug}
-          class="project-card reveal"
-          data-tag={p.tag}
-        >
-          <div class="card-img">
-            <img src={p.image} alt={p.title} />
-          </div>
-          <span class="card-tag">{p.tagLabel}</span>
-          <h2 class="card-title">{p.title}</h2>
-          <p class="card-desc">{p.desc}</p>
-        </a>
-      ))}
+      {
+        projects.map((p) => (
+          <a href={p.slug} class="project-card reveal" data-tag={p.tag}>
+            <div class="card-img">
+              <img src={p.image} alt={p.title} loading="lazy" />
+            </div>
+            <span class="card-tag">{p.tagLabel}</span>
+            <h2 class="card-title">{p.title}</h2>
+            <p class="card-desc">{p.desc}</p>
+          </a>
+        ))
+      }
     </div>
-
   </div>
 
   <script>
-    const btns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-    const cards = document.querySelectorAll<HTMLElement>('.project-card');
-
-    btns.forEach(btn => {
-      btn.addEventListener('click', () => {
+    const btns = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+    const cards = document.querySelectorAll<HTMLElement>(".project-card");
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
         const filter = btn.dataset.filter!;
-
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        cards.forEach(card => {
-          const match = filter === 'all' || card.dataset.tag === filter;
-          if (match) {
-            card.removeAttribute('hidden');
-          } else {
-            card.setAttribute('hidden', '');
-          }
+        btns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        cards.forEach((card) => {
+          const match = filter === "all" || card.dataset.tag === filter;
+          match
+            ? card.removeAttribute("hidden")
+            : card.setAttribute("hidden", "");
         });
       });
     });
   </script>
-
 </MainLayout>

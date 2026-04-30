@@ -52,6 +52,41 @@
   font-weight: 300;
 }
 
+/* ── FILTER BAR ── */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+.filter-label {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.filter-btn {
+  background: none;
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.filter-btn:hover { color: var(--black); border-color: var(--black); }
+.filter-btn[data-active] {
+  background: var(--black);
+  color: var(--off-white);
+  border-color: var(--black);
+}
+
 /* ── SECTION DIVIDER ── */
 .section-heading {
   font-family: var(--font-body);
@@ -78,6 +113,8 @@
   flex-direction: column;
   text-decoration: none;
   color: inherit;
+  border: 1px solid var(--border);
+  padding: 1rem 1rem 1.25rem;
 }
 
 .item-hero {
@@ -85,7 +122,6 @@
   height: 260px;
   overflow: hidden;
   display: block;
-  margin-bottom: 1rem;
 }
 
 .item-hero img {
@@ -144,15 +180,14 @@
 }
 .project-item:hover .item-link { color: var(--sienna); border-color: var(--sienna); }
 
-.section-divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 0 0 0;
-}
+/* .section-divider {
+  display: none;
+} */
 
 /* ── KNIT SLIDER ── */
 .knit-slider {
   position: relative;
+  z-index: 1;
   max-width: 300px;
   margin: 0 auto 1.5rem;
 }
@@ -314,16 +349,18 @@
   z-index: 0;
 }
 .yarn-topright {
-  top: 0;
-  right: -50px;
-  bottom: 0;
-  width: 400px;
-  height: 116%;
+  top: -4rem;
+  right: -4rem;
+  width: 400px !important;
+  height: 90% !important;
+  object-fit: contain !important;
 }
 .yarn-bottomleft {
-  bottom: -7em;
-  left: 15%;
-  width: 160px;
+  bottom: -6rem;
+  left: -30px;
+  width: 160px !important;
+  height: auto !important;
+  object-fit: contain !important;
 }
 .knit-slider-wrap {
   position: relative;
@@ -370,7 +407,14 @@
   .yarn-decor { display: none; }
   .knit-hero { height: 360px; }
   .knit-slider { max-width: 100%; }
+    .yarn-decor {
+      opacity: 40%;
+    }
 }
 @media (max-width: 480px) {
   .project-grid { grid-template-columns: 1fr; }
+  .yarn-decor {
+    opacity: 0%;
+    display: none !important;
+  }
 }

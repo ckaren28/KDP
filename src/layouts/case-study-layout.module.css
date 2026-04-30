@@ -213,6 +213,49 @@
   border-top: 1px solid var(--border);
   margin: 4rem 0;
 }
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.prose thead tr {
+  border-bottom: 2px solid var(--border);
+}
+
+.prose th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.prose td {
+  padding: 0.875rem 1rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-body);
+  line-height: 1.6;
+}
+
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+/* First column narrower, label-like */
+.prose td:first-child,
+.prose th:first-child {
+  width: 160px;
+  min-width: 120px;
+  font-weight: 500;
+  color: var(--black);
+  white-space: nowrap;
+}
 
 /* ── FOOTER NAV ── */
 .footer-nav {

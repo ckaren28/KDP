@@ -1,10 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
-import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
+import { getCollection } from "astro:content";
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import FashionCollectionLayout from "../../layouts/FashionCollectionLayout.astro";
+import TextilesLayout from "../../layouts/TextilesLayout.astro";
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map(entry => ({
+  const projects = await getCollection("projects");
+  return projects.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
   }));
@@ -12,18 +14,58 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { title, description, track, tags, live_url, github_url, password_protected } = entry.data;
+
+// Fashion collection: has structured data (looks, palette, icon)
+const isFashionCollection =
+  entry.data.track === "fashion" &&
+  (entry.data.looks || entry.data.color_palette || entry.data.collection_icon);
+
+// Textiles or fashion project pages (not collections, not tech)
+const isTextilesOrFashionProject =
+  entry.data.track === "textiles" ||
+  (entry.data.track === "fashion" && !isFashionCollection);
 ---
 
-<CaseStudyLayout
-  title={title}
-  description={description}
-  track={track}
-  tags={tags}
-  live_url={live_url}
-  github_url={github_url}
-  password_protected={password_protected}
-  slug={entry.slug}
->
-  <Content />
-</CaseStudyLayout>
+{
+  isFashionCollection ? (
+    <FashionCollectionLayout
+      title={entry.data.title}
+      description={entry.data.description}
+      season={entry.data.season}
+      year={entry.data.year}
+      logo={entry.data.logo}
+      collection_icon={entry.data.collection_icon}
+      background_color={entry.data.background_color}
+      color_palette={entry.data.color_palette}
+      looks={entry.data.looks}
+      technical_flats={entry.data.technical_flats}
+      fabric_notes={entry.data.fabric_notes}
+      material_palette={entry.data.material_palette}
+      tags={entry.data.tags}
+    >
+      <Content />
+    </FashionCollectionLayout>
+  ) : isTextilesOrFashionProject ? (
+    <TextilesLayout
+      title={entry.data.title}
+      description={entry.data.description}
+      track={entry.data.track as "fashion" | "textiles"}
+      tags={entry.data.tags}
+    >
+      <Content />
+    </TextilesLayout>
+  ) : (
+    <CaseStudyLayout
+      title={entry.data.title}
+      description={entry.data.description}
+      track={entry.data.track}
+      tags={entry.data.tags}
+      live_url={entry.data.live_url}
+      github_url={entry.data.github_url}
+      password_protected={entry.data.password_protected}
+      slug={entry.slug}
+    >
+      <Content />
+    </CaseStudyLayout>
+  )
+}

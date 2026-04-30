@@ -1,0 +1,743 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import TextilePatternGenerator from '../../components/tools/TextilePatternGenerator.astro';
+
+const collections = [
+  {
+    title: "Traveler",
+    slug: "/projects/traveller",
+    category: "Collection",
+    year: "2025",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/traveller/Traveller-moodboard",
+    accent: "#c9b99a",
+  },
+];
+
+const practice = [
+  {
+    title: "Shibori",
+    slug: "/projects/shibori",
+    category: "Dyeing · Resist",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/shibori/Shibori1",
+  },
+  {
+    title: "Marbling",
+    slug: "/projects/marbling",
+    category: "Dyeing · Surface",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/marbling/marblingfinal1",
+  },
+  {
+    title: "Block Printing",
+    slug: "/projects/blockprint",
+    category: "Printing · Relief",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/blockprint/blockprint",
+  },
+  {
+    title: "Batik",
+    slug: "/projects/batik",
+    category: "Dyeing · Resist",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/batik/Batik-final1",
+  },
+  {
+    title: "Weaving",
+    slug: "/projects/weaving",
+    category: "Fiber · Structure",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/weaving/weaving",
+  },
+  {
+    title: "Felting",
+    slug: "/projects/felting",
+    category: "Fiber · Construction",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/felting/felted-art1",
+  },
+];
+
+const construction = [
+  {
+    title: "Clover Dress",
+    slug: "/projects/clover-dress",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/constructions-2/lucky-dress1",
+  },
+  {
+    title: "Lined Blazer",
+    slug: "/projects/lined-blazer",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/lined-blazer/blazer-front",
+  },
+  {
+    title: "Canvas Jacket",
+    slug: "/projects/canvas-jacket",
+    image:
+      "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/canvas-jacket/jacket-front",
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio — Karen Dettmar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Archivo:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --black: #2c1a0e;
+        --off-white: #faf8f5;
+        --warm: #f5f0e8;
+        --sienna: #b85c38;
+        --muted: #9a8872;
+        --border: rgba(44, 26, 14, 0.12);
+        --font-display: "Cormorant Garamond", serif;
+        --font-body: "Archivo", sans-serif;
+        --text-body: #5a4030;
+      }
+
+      html {
+        background: var(--warm);
+        color: var(--black);
+      }
+      body {
+        min-height: 100vh;
+      }
+
+      /* ── STUDIO NAV ── */
+      .studio-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25rem clamp(1.5rem, 5vw, 4rem);
+        background: var(--warm);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-wordmark {
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--black);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--black);
+      }
+
+      .nav-tech-link {
+        font-family: var(--font-body);
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        padding: 5px 12px;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+        opacity: 0.7;
+      }
+      .nav-tech-link:hover {
+        color: var(--black);
+        border-color: var(--black);
+        opacity: 1;
+      }
+
+      /* ── PAGE WRAPPER ── */
+      .studio-page {
+        padding-top: 64px;
+      }
+
+      /* ── HERO COLLAGE ── */
+      .hero {
+        position: relative;
+        min-height: 100svh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+      }
+
+      .hero-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: clamp(2rem, 6vw, 5rem);
+        padding-right: 2rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero-eyebrow {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .hero-title {
+        font-family: var(--font-display);
+        font-size: clamp(4rem, 10vw, 9rem);
+        font-weight: 300;
+        font-style: italic;
+        line-height: 0.9;
+        letter-spacing: -0.02em;
+        color: var(--black);
+        margin-bottom: 2.5rem;
+      }
+
+      .hero-statement {
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        line-height: 1.8;
+        color: var(--text-body);
+        max-width: 38ch;
+        font-weight: 300;
+        margin-bottom: 3rem;
+      }
+
+      .hero-scroll {
+        font-family: var(--font-body);
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .hero-scroll::after {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 1px;
+        background: var(--muted);
+      }
+
+      /* ── COLLAGE RIGHT ── */
+      .hero-right {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .collage-img {
+        position: absolute;
+        overflow: hidden;
+      }
+
+      .collage-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .collage-img:hover img {
+        transform: scale(1.04);
+      }
+
+      /* Deliberate overlapping collage positions */
+      .collage-img:nth-child(1) {
+        top: 8%;
+        left: 5%;
+        width: 58%;
+        height: 52%;
+        rotate: -1.5deg;
+        z-index: 2;
+      }
+      .collage-img:nth-child(2) {
+        top: 18%;
+        right: -2%;
+        width: 48%;
+        height: 44%;
+        rotate: 2deg;
+        z-index: 3;
+      }
+      .collage-img:nth-child(3) {
+        bottom: 8%;
+        left: 12%;
+        width: 42%;
+        height: 38%;
+        rotate: -0.8deg;
+        z-index: 1;
+      }
+      .collage-img:nth-child(4) {
+        bottom: 5%;
+        right: 4%;
+        width: 44%;
+        height: 36%;
+        rotate: 1.2deg;
+        z-index: 2;
+      }
+
+      /* ── SECTIONS ── */
+      .section {
+        padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 5vw, 4rem);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 3rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-title {
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 300;
+        font-style: italic;
+        color: var(--black);
+        letter-spacing: -0.01em;
+      }
+
+      .section-count {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ── COLLECTION FEATURE ── */
+      .collection-feature {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+
+      .collection-img {
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        background: var(--border);
+      }
+
+      .collection-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .collection-img:hover img {
+        transform: scale(1.03);
+      }
+
+      .collection-info {
+        padding: 2rem 0;
+      }
+
+      .collection-category {
+        font-family: var(--font-body);
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--sienna);
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .collection-title {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 300;
+        font-style: italic;
+        line-height: 1;
+        color: var(--black);
+        margin-bottom: 1.5rem;
+      }
+
+      .collection-desc {
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        line-height: 1.8;
+        color: var(--text-body);
+        font-weight: 300;
+        max-width: 42ch;
+        margin-bottom: 2.5rem;
+      }
+
+      .collection-link {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--black);
+        text-decoration: none;
+        border-bottom: 1px solid var(--black);
+        padding-bottom: 2px;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        display: inline-block;
+      }
+      .collection-link:hover {
+        color: var(--sienna);
+        border-color: var(--sienna);
+      }
+
+      /* ── PRACTICE GRID ── */
+      .practice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem 1rem;
+      }
+
+      .practice-item {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .practice-img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background: var(--border);
+        margin-bottom: 0.875rem;
+      }
+
+      .practice-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition:
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.4s;
+        opacity: 0.85;
+      }
+      .practice-item:hover .practice-img img {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+
+      .practice-category {
+        font-family: var(--font-body);
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--sienna);
+        margin-bottom: 0.25rem;
+        display: block;
+      }
+
+      .practice-title {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 300;
+        font-style: italic;
+        color: var(--black);
+        line-height: 1.1;
+        transition: color 0.2s;
+      }
+      .practice-item:hover .practice-title {
+        color: var(--sienna);
+      }
+
+      /* ── CONSTRUCTION STRIP ── */
+      .construction-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .construction-item {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .construction-img {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        overflow: hidden;
+        background: var(--border);
+        margin-bottom: 0.75rem;
+      }
+
+      .construction-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .construction-item:hover .construction-img img {
+        transform: scale(1.04);
+      }
+
+      .construction-title {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        font-weight: 300;
+        font-style: italic;
+        color: var(--black);
+        transition: color 0.2s;
+      }
+      .construction-item:hover .construction-title {
+        color: var(--sienna);
+      }
+
+      /* ── STUDIO FOOTER ── */
+      .studio-footer {
+        padding: 3rem clamp(1.5rem, 5vw, 4rem);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .footer-copy {
+        font-family: var(--font-body);
+        font-size: 0.7rem;
+        color: var(--muted);
+        letter-spacing: 0.06em;
+      }
+
+      .footer-tech {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .footer-tech:hover {
+        color: var(--black);
+      }
+
+      /* ── DIVIDER ── */
+      .section-divider {
+        width: clamp(1.5rem, 5vw, 4rem);
+        height: 1px;
+        background: var(--border);
+        margin: 0 auto;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: auto;
+        }
+        .hero-right {
+          height: 60vw;
+        }
+        .collection-feature {
+          grid-template-columns: 1fr;
+        }
+        .practice-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .practice-grid {
+          grid-template-columns: 1fr;
+        }
+        .construction-strip {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Studio Nav -->
+    <nav class="studio-nav">
+      <a href="/studio" class="nav-wordmark">Karen Dettmar</a>
+      <ul class="nav-links">
+        <li><a href="#collections">Collections</a></li>
+        <li><a href="#practice">Practice</a></li>
+        <li><a href="#construction">Construction</a></li>
+      </ul>
+      <a href="/" class="nav-tech-link">Creative Technology ↗</a>
+    </nav>
+
+    <div class="studio-page">
+      <!-- Hero Collage -->
+      <section class="hero">
+        <div class="hero-left">
+          <span class="hero-eyebrow">Studio</span>
+          <h1 class="hero-title">Fashion<br />&amp; Textile</h1>
+          <p class="hero-statement">
+            Parsons-trained. Process-driven. Work that begins with material
+            curiosity and ends somewhere worth wearing.
+          </p>
+          <span class="hero-scroll">Scroll to explore</span>
+        </div>
+
+        <div class="hero-right">
+          <div class="collage-img">
+            <img
+              src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_800/portfolio/traveller/Traveller-moodboard"
+              alt="Traveler collection moodboard"
+            />
+          </div>
+          <div class="collage-img">
+            <img
+              src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/marbling/marblingfinal1"
+              alt="Marbled fabric"
+            />
+          </div>
+          <div class="collage-img">
+            <img
+              src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/shibori/Shibori1"
+              alt="Shibori indigo fabric"
+            />
+          </div>
+          <div class="collage-img">
+            <img
+              src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_600/portfolio/blockprint/blockprint"
+              alt="Block printed fabric"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Collections -->
+      <section class="section" id="collections">
+        <div class="section-header">
+          <h2 class="section-title">Collections</h2>
+          <span class="section-count">01</span>
+        </div>
+
+        <div class="collection-feature">
+          <a href="/projects/traveller" class="collection-img">
+            <img
+              src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/traveller/Traveller-moodboard"
+              alt="Traveler collection"
+            />
+          </a>
+          <div class="collection-info">
+            <span class="collection-category">Collection Concept · 2025</span>
+            <h3 class="collection-title">Traveler</h3>
+            <p class="collection-desc">
+              A modular collection for living in motion. Designed for packing
+              light, wearing twice, and arriving ready. Each piece considered
+              for the suitcase first.
+            </p>
+            <a href="/projects/traveller" class="collection-link"
+              >View collection →</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Textile Practice -->
+      <section
+        class="section"
+        id="practice"
+        style="background: rgba(44,26,14,0.02);"
+      >
+        <div class="section-header">
+          <h2 class="section-title">Textile Practice</h2>
+          <span class="section-count">06</span>
+        </div>
+
+        <div class="practice-grid">
+          {
+            practice.map((p) => (
+              <a href={p.slug} class="practice-item">
+                <div class="practice-img">
+                  <img src={p.image} alt={p.title} loading="lazy" />
+                </div>
+                <span class="practice-category">{p.category}</span>
+                <h3 class="practice-title">{p.title}</h3>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- Garment Construction -->
+      <section class="section" id="construction">
+        <div class="section-header">
+          <h2 class="section-title">Construction</h2>
+          <span class="section-count">03</span>
+        </div>
+
+        <div class="construction-strip">
+          {
+            construction.map((c) => (
+              <a href={c.slug} class="construction-item">
+                <div class="construction-img">
+                  <img src={c.image} alt={c.title} loading="lazy" />
+                </div>
+                <h3 class="construction-title">{c.title}</h3>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- Pattern Generator -->
+      <section class="section" id="tools">
+        <div class="section-header">
+          <h2 class="section-title">Pattern Generator</h2>
+          <span class="section-count">Tool</span>
+        </div>
+        <TextilePatternGenerator />
+      </section>
+
+      <!-- Footer -->
+      <footer class="studio-footer">
+        <span class="footer-copy">© 2026 Karen Dettmar</span>
+        <a href="/" class="footer-tech">← Creative Technology</a>
+      </footer>
+    </div>
+  </body>
+</html>
