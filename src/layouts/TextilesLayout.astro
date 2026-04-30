@@ -8,6 +8,7 @@ interface Props {
   description: string;
   track: "fashion" | "textiles";
   tags: string[];
+  filterable?: boolean;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description,
   track,
   tags = [],
+  filterable = false,
 } = Astro.props;
 
 const backHref =
@@ -37,9 +39,19 @@ const trackLabel = track === "fashion" ? "Fashion" : "Textile Practice";
       {
         tags.length > 0 && (
           <div class={s["tags"]}>
-            {tags.map((tag) => (
-              <span class={s["tag"]}>{tag}</span>
-            ))}
+            {filterable
+              ? tags.map((tag, i) => (
+                  <button
+                    class={s["tag"]}
+                    data-textile-filter={tag.toLowerCase()}
+                    {...(i === 0 ? { "data-active": "" } : {})}
+                  >
+                    {tag}
+                  </button>
+                ))
+              : tags.map((tag) => (
+                  <span class={s["tag"]}>{tag}</span>
+                ))}
           </div>
         )
       }
@@ -49,11 +61,19 @@ const trackLabel = track === "fashion" ? "Fashion" : "Textile Practice";
       <slot />
     </div>
 
+    <!-- Lightbox overlay for image zoom -->
+    <div class={s["lightbox"]} id="prose-lightbox">
+      <button class={s["lightbox-close"]} id="proseLightboxClose">Close ×</button>
+      <img id="proseLightboxImg" src="" alt="" />
+    </div>
+
     <div class={s["footer-nav"]}>
       <a href={backHref}>{backLabel}</a>
     </div>
   </div>
+
 <script>
+  // ── DRIP SCROLL ──
   const drip = document.getElementById('marbling-drip');
   if (drip) {
     window.addEventListener('scroll', () => {
@@ -62,5 +82,28 @@ const trackLabel = track === "fashion" ? "Fashion" : "Textile Practice";
       drip.style.transform = `translateY(${ratio * 60}px)`;
     });
   }
+
+  // ── LIGHTBOX for image grids ──
+  const lightbox = document.getElementById('prose-lightbox') as HTMLElement | null;
+  const lbImg = document.getElementById('proseLightboxImg') as HTMLImageElement | null;
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lbImg) return;
+    lbImg.src = src;
+    lbImg.alt = alt;
+    lightbox.dataset.open = '';
+  }
+  function closeLightbox() {
+    lightbox?.removeAttribute('data-open');
+  }
+
+  document.querySelectorAll<HTMLImageElement>('.image-grid--flats img, .results-grid img, .image-grid--process img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  document.getElementById('proseLightboxClose')?.addEventListener('click', closeLightbox);
+  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 </MainLayout>

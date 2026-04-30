@@ -94,10 +94,15 @@
 }
 
 .collection-logo {
-    max-height: 64px;
+    max-width: min(520px, 80vw);
     width: auto;
+    height: auto;
     display: block;
     margin-bottom: 1.25rem;
+}
+
+:global(html[data-theme="dark"]) .collection-logo {
+    filter: invert(1);
 }
 
 .collection-title {

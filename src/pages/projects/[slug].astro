@@ -51,6 +51,7 @@ const isTextilesOrFashionProject =
       description={entry.data.description}
       track={entry.data.track as "fashion" | "textiles"}
       tags={entry.data.tags}
+      filterable={entry.slug === 'textiles'}
     >
       <Content />
     </TextilesLayout>

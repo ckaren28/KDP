@@ -485,24 +485,30 @@ const s = styles;
       pat.appendChild(imgNode);
       defs.appendChild(pat);
 
-      svgEl.querySelectorAll('[style]').forEach(el => {
+      // Apply pattern fill to fabric elements; normalise stroke color everywhere
+      const allEls = svgEl.querySelectorAll('[id],[style],[fill]');
+      allEls.forEach(el => {
         const id = (el.getAttribute('id') || '').toLowerCase();
-        const isFabric = id.includes('fabric');
+        const isFabric = id.includes('fabric') || id.includes('cloth') || id.includes('textile') || id.includes('material');
         let s = el.getAttribute('style') || '';
 
         if (isFabric) {
+          // Handle fill in style attribute
           if (/fill:\s*[^;]+/.test(s)) {
             s = s.replace(/fill:\s*[^;]+/, `fill: url(#${patternId})`);
           } else {
             s = `fill: url(#${patternId}); ${s}`;
+          }
+          // Handle fill as a direct attribute
+          if (el.hasAttribute('fill')) {
+            el.setAttribute('fill', `url(#${patternId})`);
           }
         }
 
         if (s.includes('stroke:')) {
           s = s.replace(/stroke:\s*#[0-9a-fA-F]+/, `stroke: ${STROKE}`);
         }
-
-        el.setAttribute('style', s);
+        if (s) el.setAttribute('style', s);
       });
 
       svgEl.setAttribute('width', '100%');
@@ -530,9 +536,9 @@ const s = styles;
   }
 
   Promise.all([
-    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/chair-textilegen',   'mockupChair', 'mp-chair'),
-    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/coat-textilegen',    'mockupCoat',  'mp-coat'),
-    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/totebag-textilegen', 'mockupTote',  'mp-tote'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/chair-textilegen.svg',   'mockupChair', 'mp-chair'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/coat-textilegen.svg',    'mockupCoat',  'mp-coat'),
+    loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/totebag-textilegen.svg', 'mockupTote',  'mp-tote'),
   ]);
 
   // ── DRAW LOOP ──
