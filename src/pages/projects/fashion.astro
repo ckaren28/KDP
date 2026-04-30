@@ -73,14 +73,18 @@ const projects = [
       padding-bottom: 32px;
       border-bottom: 1px solid var(--border);
     }
+    .page-header-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
     .page-eyebrow {
-      display: block;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 12px;
     }
     .page-title {
       font-family: var(--font-display);
@@ -92,6 +96,17 @@ const projects = [
     .page-title em {
       font-style: italic;
       color: var(--sienna);
+    }
+    .cross-link {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .cross-link:hover {
+      color: var(--black);
     }
 
     .filters {
@@ -217,7 +232,10 @@ const projects = [
 
   <div class="fashion-page">
     <header class="page-header reveal">
-      <span class="page-eyebrow">Fashion Design</span>
+      <div class="page-header-top">
+        <span class="page-eyebrow">Fashion Design</span>
+        <a href="/projects/tech" class="cross-link">→ View creative technology</a>
+      </div>
       <h1 class="page-title"><em>Fashion</em></h1>
     </header>
 

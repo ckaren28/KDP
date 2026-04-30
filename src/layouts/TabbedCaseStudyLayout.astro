@@ -16,6 +16,7 @@ interface Props {
   track: "tech" | "fashion" | "textiles";
   tags?: string[];
   github_url?: string;
+  coverImage?: string;
   password_protected?: boolean;
   slug?: string;
   // Overview tab — structured sections (all optional)
@@ -45,6 +46,7 @@ const {
   track,
   tags = [],
   github_url,
+  coverImage,
   password_protected = false,
   slug: slugProp,
   hero_image,
@@ -155,27 +157,38 @@ const tabs = [
     </nav>
 
     <header class={s["page-header"]}>
-      <span class={s["page-label"]}>{trackLabel}</span>
-      <h1 class={s["page-title"]}>{title}</h1>
-      <p class={s["page-desc"]}>{description}</p>
+      <div class={s["page-header-copy"]}>
+        <span class={s["page-label"]}>{trackLabel}</span>
+        <h1 class={s["page-title"]}>{title}</h1>
+        <p class={s["page-desc"]}>{description}</p>
 
-      {tags.length > 0 && (
-        <div class={s["tags"]}>
-          {tags.map((tag) => (
-            <span class={s["tag"]}>{tag}</span>
-          ))}
-        </div>
-      )}
+        {tags.length > 0 && (
+          <div class={s["tags"]}>
+            {tags.map((tag) => (
+              <span class={s["tag"]}>{tag}</span>
+            ))}
+          </div>
+        )}
 
-      {github_url && (
-        <a
-          href={github_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class={s["gh-link"]}
-        >
-          GitHub ↗
-        </a>
+        {github_url && (
+          <a
+            href={github_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={s["gh-link"]}
+          >
+            GitHub ↗
+          </a>
+        )}
+      </div>
+
+      {coverImage && (
+        <img
+          src={coverImage}
+          alt=""
+          class={s["page-cover"]}
+          loading="eager"
+        />
       )}
     </header>
 

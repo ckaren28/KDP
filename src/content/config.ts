@@ -44,6 +44,7 @@ const projects = defineCollection({
     track: z.enum(['tech', 'fashion', 'textiles']),
     tags: z.array(z.string()),
     date: z.date(),
+    coverImage: z.string().optional(),
     live_url: z.string().optional(),
     github_url: z.string().optional(),
     password_protected: z.boolean().optional().default(false),
