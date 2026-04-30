@@ -2,6 +2,7 @@
 import styles from '../../pages/projects/garment-construction-decoder.module.css';
 const s = styles;
 import g from './GarmentDecoderTool.module.css';
+import LoadingState from '../LoadingState.astro';
 
 import shirtDressSvg    from './silhouettes/shirt-dress.svg?raw';
 import blazerSvg        from './silhouettes/blazer.svg?raw';
@@ -116,7 +117,9 @@ import croppedJacketSvg from './silhouettes/cropped-jacket.svg?raw';
   </div>
 
   <div id="gd-empty" class={s['output-empty']}>Describe your garment to see the full technical breakdown here.</div>
-  <div id="gd-loading" class={s['output-loading']} style="display:none">Analysing construction…</div>
+  <div id="gd-loading" class={s['loading-wrap']} style="display:none">
+    <LoadingState />
+  </div>
 
   <div id="gd-output" class={g['output-body']} style="display:none">
 

@@ -38,6 +38,23 @@ export function init(): { validate: () => void } {
   const outputEl   = $('gd-output');
   const noteEl     = $('gd-note');
 
+  function setLoading(message?: string): void {
+    if (!loadingEl) return;
+    const loader = loadingEl.querySelector('[data-loading-state]') as HTMLElement | null;
+    const messageEl = loadingEl.querySelector('[data-loading-message]');
+    const cleanMessage = message?.trim() || '';
+    if (loader) loader.dataset.variant = cleanMessage ? 'progress' : 'stitch';
+    if (messageEl) messageEl.textContent = cleanMessage;
+    loadingEl.style.display = 'block';
+  }
+
+  function loadingMessage(): string {
+    const garment = (garmentEl?.value || '').trim();
+    const fabric = (fabricEl?.value || '').trim();
+    const subject = [fabric, garment].filter(Boolean).join(' ');
+    return subject ? `Analyzing construction for ${subject}...` : '';
+  }
+
   function validate(): void {
     if (btn) btn.disabled = (descEl?.value || '').trim().length < 20 && !getImageBase64();
   }
@@ -62,7 +79,7 @@ export function init(): { validate: () => void } {
     if (errEl)    { errEl.style.display    = 'none'; errEl.textContent = ''; }
     if (emptyEl)   emptyEl.style.display   = 'none';
     if (outputEl)  outputEl.style.display  = 'none';
-    if (loadingEl) loadingEl.style.display = 'block';
+    setLoading(loadingMessage());
     clearAnnotations();
 
     try {
@@ -90,6 +107,9 @@ export function init(): { validate: () => void } {
         throw new Error(`Server error ${resp.status}: ${rawText.slice(0, 120)}`);
       }
       if (!resp.ok) throw new Error(data?.error || 'Request failed.');
+
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (outputEl)  outputEl.style.display  = 'grid';
 
       const fbEl = $('gd-fabric-behavior');
       if (fbEl) fbEl.textContent = data.fabric_behavior || '';
@@ -189,8 +209,6 @@ export function init(): { validate: () => void } {
         }
       }
 
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (outputEl)  outputEl.style.display  = 'grid';
       renderAnnotations(data.annotations || []);
 
     } catch (e) {

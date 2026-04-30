@@ -65,6 +65,11 @@ const projects = [
       text-transform: uppercase;
       color: var(--muted);
     }
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
     .github-link {
       font-size: 10px;
       letter-spacing: 0.14em;
@@ -202,7 +207,10 @@ const projects = [
     <header class="page-header reveal">
       <div class="page-header-top">
         <span class="page-eyebrow">Creative Technology</span>
-        <a href="https://github.com/ckaren28" target="_blank" rel="noopener" class="github-link">github.com/ckaren28</a>
+        <div class="header-links">
+          <a href="/projects/fashion" class="github-link">→ View design work</a>
+          <a href="https://github.com/ckaren28" target="_blank" rel="noopener" class="github-link">github.com/ckaren28</a>
+        </div>
       </div>
       <h1 class="page-title"><em>Technology</em></h1>
     </header>

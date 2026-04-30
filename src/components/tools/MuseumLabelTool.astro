@@ -2,40 +2,8 @@
 import styles from '../../pages/projects/museum-label-generator.module.css';
 const s = styles;
 import g from './MuseumLabelTool.module.css';
+import LoadingState from '../LoadingState.astro';
 ---
-
-<!-- ── HEADER VISUAL: artwork rotator + wall label card ── -->
-<div class={s['header-visual']}>
-
-  <div class={s['artwork-display']}>
-    <div class={s['artwork-frame-wrap']} id="artworkFrameWrap">
-      <div class={s['artwork-stage']} id="artworkStage">
-        <div class={s['artwork-loading']} id="artworkLoading"></div>
-      </div>
-      <img src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/frame" alt="" class={s['frame-img']} aria-hidden="true" />
-      <span id="artworkPauseIndicator" style="position:absolute;top:10px;right:10px;z-index:10;opacity:0;transition:opacity 0.2s ease;pointer-events:none;font-family:var(--font-body);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,248,245,0.92);background:rgba(0,0,0,0.38);padding:3px 8px">⏸ Paused</span>
-    </div>
-    <p style="font-family:var(--font-body);font-size:0.65rem;color:var(--muted);letter-spacing:0.05em;margin:0.4rem 0 0;text-align:center">Click to pause · Double-click to resume</p>
-  </div>
-
-  <div class={s['wall-label-card']} style="max-width:30vw;align-self:center">
-    <span class={s['wlc-eyebrow']}>Wall Label</span>
-    <div class={s['wlc-title']} id="wlc-title">Untitled</div>
-    <div class={s['wlc-meta']} id="wlc-meta">Artist unknown · Date unknown</div>
-    <p class={s['wlc-body']} data-placeholder id="wlc-body">Famille noire porcelain exemplifying the Kangxi 
-period's apotheosis of ferric oxide reduction firing, the pictorial 
-program articulating a syncretic cosmological schema through the 
-deployment of peony, prunus, and corvid iconography within a horror 
-vacui compositional field. The inversion of conventional polychrome 
-hierarchy achieved through vitreous enamel suspension in a 
-reduced-oxygen atmosphere signals the atelier's command of 
-technically demanding copper-red and aubergine colorant sequences, 
-situating the vessel within the taxonomic discourse of 
-connoisseurship as a superlative exemplar of its typological class.
-<b>Wait, what? Use the generator.</b></p>
-  </div>
-
-</div>
 
 <!-- ── TOOL GRID: form + output ── -->
 <div class={s['tool-grid']}>
@@ -128,7 +96,9 @@ connoisseurship as a superlative exemplar of its typological class.
     </div>
 
     <div id="mlg-empty" class={s['output-empty']}>Generate to see wall label drafts, alt text, and curator notes here.</div>
-    <div id="mlg-loading" class={s['output-loading']} style="display:none">Working…</div>
+    <div id="mlg-loading" class={s['loading-wrap']} style="display:none">
+      <LoadingState message="Generating interpretive label drafts..." />
+    </div>
 
     <div id="mlg-output" style="display:none">
       <div class={s['output-section']}>
@@ -255,10 +225,8 @@ Render cards + copy tools</pre>
 </section>
 
 <script>
-import { init as initRotator }   from './artworkRotator';
 import { init as initGenerator } from './labelGenerator';
 import { init as initSpotlight } from './gallerySpotlight';
-initRotator();
 initGenerator();
 initSpotlight();
 </script>

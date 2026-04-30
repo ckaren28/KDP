@@ -30,6 +30,20 @@ collections:
       - { label: "Live URL", name: "live_url", widget: "string", required: false }
       - { label: "GitHub URL", name: "github_url", widget: "string", required: false }
       - { label: "Password Protected", name: "password_protected", widget: "boolean", default: false, required: false }
+      - label: "Textile Category"
+        name: "textile_category"
+        widget: "select"
+        required: false
+        hint: "Textile Practice track only. Controls which filter button this project appears under. To add a new category, also update src/content/config.ts and src/content/projects/textiles.mdx."
+        options:
+          - { label: "Dyeing", value: "dyeing" }
+          - { label: "Printing", value: "printing" }
+          - { label: "Fiber", value: "fiber" }
+      - label: "Hero Image (Textile Hub)"
+        name: "hero_image"
+        widget: "string"
+        required: false
+        hint: "Cloudinary URL for the grid card thumbnail on the Textile Practice hub. e.g. https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/your-folder/image-name"
       - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "fashion_collections"

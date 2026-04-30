@@ -78,14 +78,14 @@
 
 .artwork-frame-wrap {
   position: relative;
-  width: 30vw;
+  width: 15vw;
   aspect-ratio: 4 / 3;
 }
 
 .artwork-stage {
   position: absolute;
   inset: 5%;
-  height: 100%;
+  height: 93%;
   overflow: hidden;
 }
 
@@ -189,7 +189,7 @@
 
 /* ── TOOL GRID ── */
 .tool-grid {
-  margin-top: 100px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
@@ -365,13 +365,17 @@
 }
 
 /* ── OUTPUT STATES ── */
-.output-empty,
-.output-loading {
+.output-empty {
   font-family: var(--font-body);
   font-size: 0.8rem;
   color: var(--muted);
   padding: 3rem 0;
   text-align: center;
+  border: 1px dashed var(--border);
+}
+
+.loading-wrap {
+  padding: 2rem;
   border: 1px dashed var(--border);
 }
 

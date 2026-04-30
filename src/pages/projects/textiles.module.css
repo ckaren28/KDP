@@ -180,9 +180,11 @@
 }
 .project-item:hover .item-link { color: var(--sienna); border-color: var(--sienna); }
 
-/* .section-divider {
-  display: none;
-} */
+/* ── FILTER: ensure [hidden] always wins regardless of Tailwind preflight order ── */
+.project-item[hidden]   { display: none !important; }
+.section-heading[hidden] { display: none !important; }
+.knit-section[hidden]   { display: none !important; }
+.section-divider[hidden] { display: none !important; }
 
 /* ── KNIT SLIDER ── */
 .knit-slider {

@@ -214,13 +214,17 @@
 }
 
 /* ── OUTPUT STATES ── */
-.output-empty,
-.output-loading {
+.output-empty {
   font-family: var(--font-body);
   font-size: 0.8rem;
   color: var(--muted);
   padding: 3rem 0;
   text-align: center;
+  border: 1px dashed var(--border);
+}
+
+.loading-wrap {
+  padding: 2rem;
   border: 1px dashed var(--border);
 }
 

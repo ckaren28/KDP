@@ -22,6 +22,15 @@ export function init(): void {
   const sysBlock      = $("mlg-system");
   const userBlock     = $("mlg-user");
 
+  function setLoading(message: string): void {
+    if (!loading) return;
+    const loader = loading.querySelector('[data-loading-state]') as HTMLElement | null;
+    const messageEl = loading.querySelector('[data-loading-message]');
+    if (loader) loader.dataset.variant = message ? 'progress' : 'stitch';
+    if (messageEl) messageEl.textContent = message;
+    loading.style.display = "block";
+  }
+
   const SYSTEM_PROMPT = `You are a museum interpretation assistant. Write clear, accurate interpretive text that respects artists and audiences.
 Constraints:
 - Do not invent facts. If information is missing, write around it or label as "Unknown".
@@ -117,7 +126,7 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
     if (err)    { err.style.display    = "none"; err.textContent = ""; }
     if (empty)   empty.style.display   = "none";
     if (output)  output.style.display  = "none";
-    if (loading) loading.style.display = "block";
+    setLoading("Generating interpretive label drafts...");
 
     try {
       const resp = await fetch("/.netlify/functions/museum-label", {
@@ -138,6 +147,8 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
       if (!resp.ok) throw new Error(data?.error || "Request failed.");
 
       lastData = data;
+      if (loading) loading.style.display = "none";
+      if (output)  output.style.display  = "block";
 
       document.querySelectorAll("[data-field]").forEach((el) => {
         el.textContent = data[el.getAttribute("data-field") || ""] || "";
@@ -187,8 +198,6 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
       }
       document.querySelector('[data-your-artwork-section]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      if (loading) loading.style.display = "none";
-      if (output)  output.style.display  = "block";
     } catch (e) {
       if (loading) loading.style.display = "none";
       if (empty)   empty.style.display   = "block";

@@ -1,0 +1,521 @@
+---
+import MainLayout from "./MainLayout.astro";
+import PasswordGate from "../components/PasswordGate.astro";
+import MuseumHeaderVisual from "../components/tools/MuseumHeaderVisual.astro";
+import styles from "./tabbed-case-study.module.css";
+const s = styles;
+
+interface OutputRow       { field: string; what_it_solves: string; }
+interface DesignDecision  { title: string; body: string; }
+interface ImageItem       { image: string; caption?: string; }
+interface ArchitectureNode { title: string; meta: string; }
+
+interface Props {
+  title: string;
+  description: string;
+  track: "tech" | "fashion" | "textiles";
+  tags?: string[];
+  github_url?: string;
+  password_protected?: boolean;
+  slug?: string;
+  // Overview tab — structured sections (all optional)
+  hero_image?: string;
+  problem_statement?: string;
+  who_its_for?: string;
+  why_i_built_it?: string;
+  scope_constraints?: string;
+  // How it works tab (any one enables the tab)
+  architecture_diagram?: string;
+  output_structure?: OutputRow[];
+  sample_output?: string;
+  design_decisions?: DesignDecision[];
+  // Try it tab (any one enables the tab)
+  live_url?: string;
+  live_embed_url?: string;
+  live_embed_note?: string;
+  // Process tab
+  process_images?: ImageItem[];
+  // Results tab
+  results_images?: ImageItem[];
+}
+
+const {
+  title,
+  description,
+  track,
+  tags = [],
+  github_url,
+  password_protected = false,
+  slug: slugProp,
+  hero_image,
+  problem_statement,
+  who_its_for,
+  why_i_built_it,
+  scope_constraints,
+  architecture_diagram,
+  output_structure,
+  sample_output,
+  design_decisions,
+  live_url,
+  live_embed_url,
+  live_embed_note,
+  process_images,
+  results_images,
+} = Astro.props;
+
+const slug       = slugProp ?? Astro.url.pathname.split("/").filter(Boolean).pop() ?? "";
+const backHref   = track === "tech" ? "/projects/tech" : "/projects/fashion";
+const backLabel  = track === "tech" ? "← Creative Technology" : "← Fashion";
+const trackLabel = track === "tech" ? "Creative Technology" : "Fashion";
+
+const overviewCards = [
+  { label: "The problem", body: problem_statement },
+  { label: "Who it's for", body: who_its_for },
+  { label: "Why I built it", body: why_i_built_it },
+  { label: "Scope", body: scope_constraints },
+].filter((card) => card.body);
+
+const hasOverviewCards = overviewCards.length > 0;
+const architectureBySlug: Record<string, {
+  body: string;
+  nodes: ArchitectureNode[];
+  prompt: string;
+  optional: string;
+}> = {
+  "garment-construction-decoder": {
+    body: "A Next.js frontend calls a Netlify serverless function, which constructs the prompt and hits the Claude API. The response is parsed into a typed JSON schema before returning to the client.",
+    nodes: [
+      { title: "Browser", meta: "Next.js / React" },
+      { title: "Netlify Function", meta: "TypeScript serverless" },
+      { title: "Claude API", meta: "claude-sonnet" },
+      { title: "JSON parser", meta: "typed schema" },
+      { title: "UI render", meta: "structured output" },
+    ],
+    prompt: "Structured output · Constrained ordering · Closure disambiguation",
+    optional: "Photo upload → Claude vision identifies construction before prompt runs",
+  },
+  "museum-label-generator": {
+    body: "A browser form collects artwork metadata, source description, tone, and grounding preferences. A Netlify function keeps the API key server-side, sends one Claude request, validates the JSON response, and renders each label format as an editable draft.",
+    nodes: [
+      { title: "Browser", meta: "form + tone controls" },
+      { title: "Netlify Function", meta: "secure API route" },
+      { title: "Claude API", meta: "interpretation prompt" },
+      { title: "JSON parser", meta: "six label fields" },
+      { title: "UI render", meta: "copyable cards" },
+    ],
+    prompt: "Single source text · Six formats · Tone control · Accessibility constraints",
+    optional: "Artwork upload stays local as gallery context; source text remains the model input",
+  },
+  "textile-pattern-generator": {
+    body: "The browser owns the live pattern canvas and mockup previews. A Netlify function asks Claude for a palette and suggested pattern style, then the client applies those values to hand-coded Canvas algorithms and SVG export.",
+    nodes: [
+      { title: "Browser", meta: "Canvas UI" },
+      { title: "Netlify Function", meta: "palette prompt" },
+      { title: "Claude API", meta: "color + style JSON" },
+      { title: "Canvas renderer", meta: "live pattern loop" },
+      { title: "SVG export", meta: "static snapshot" },
+    ],
+    prompt: "AI suggests palette/style · Designer edits colors, density, and pattern",
+    optional: "Text concept only; no photo upload in this tool",
+  },
+};
+const architecture = architectureBySlug[slug];
+const showArchitecture = !!architecture_diagram || !!architecture;
+const showMuseumOverviewVisual = slug === "museum-label-generator";
+const showGarmentToolPreview = slug === "garment-construction-decoder";
+
+// Tab visibility — a tab only renders if it has content to show
+const hasHowItWorks = !!(
+  architecture_diagram ||
+  architecture ||
+  output_structure?.length ||
+  sample_output ||
+  design_decisions?.length
+);
+const hasTryIt   = !!(live_url || live_embed_url);
+const hasProcess = !!(process_images?.length);
+const hasResults = !!(results_images?.length);
+
+const tabs = [
+  { id: "overview",     label: "Overview",     show: true },
+  { id: "how-it-works", label: "How it works", show: hasHowItWorks },
+  { id: "try-it",       label: "Try it",       show: hasTryIt },
+  { id: "process",      label: "Process",      show: hasProcess },
+  { id: "results",      label: "Results",      show: hasResults },
+].filter((t) => t.show);
+
+
+---
+
+<MainLayout title={`${title} — Karen Dettmar`}>
+  <div class={s["page"]}>
+
+    <nav class={s["back-nav"]}>
+      <a href={backHref}>{backLabel}</a>
+    </nav>
+
+    <header class={s["page-header"]}>
+      <span class={s["page-label"]}>{trackLabel}</span>
+      <h1 class={s["page-title"]}>{title}</h1>
+      <p class={s["page-desc"]}>{description}</p>
+
+      {tags.length > 0 && (
+        <div class={s["tags"]}>
+          {tags.map((tag) => (
+            <span class={s["tag"]}>{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {github_url && (
+        <a
+          href={github_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={s["gh-link"]}
+        >
+          GitHub ↗
+        </a>
+      )}
+    </header>
+
+    {/* Tab bar + panels — optionally password-gated */}
+    {password_protected ? (
+      <>
+        <PasswordGate slug={slug} />
+        <div id="gated-content" style="display:none">
+          <div class={s["tab-bar"]} role="tablist" id="cs-tab-bar">
+            {tabs.map((tab, i) => (
+              <button
+                role="tab"
+                class={s["tab-btn"]}
+                data-tab={tab.id}
+                {...(i === 0 ? { "data-active": "" } : {})}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div id="cs-panels">
+            {/* ── OVERVIEW ── */}
+            <div role="tabpanel" class={s["tab-panel"]} data-panel="overview" data-active>
+              {hero_image && (
+                <img src={hero_image} alt="" class={s["hero-img"]} />
+              )}
+              {showGarmentToolPreview && (
+                <div class={s["tool-preview"]}>
+                  <span class={s["tool-preview-label"]}>Tool preview</span>
+                  <div class={s["tool-preview-grid"]}>
+                    <div class={s["tool-preview-panel"]}>
+                      <span class={s["tool-preview-kicker"]}>Quick examples</span>
+                      <div class={s["tool-preview-buttons"]}>
+                        <span>Shirt dress</span>
+                        <span>Structured blazer</span>
+                        <span>Bias-cut skirt</span>
+                      </div>
+                      <span class={s["tool-preview-kicker"]}>Fabric</span>
+                      <div class={s["tool-preview-input"]}>silk charmeuse</div>
+                      <span class={s["tool-preview-kicker"]}>Description</span>
+                      <div class={s["tool-preview-textarea"]}>Bias-cut slip dress, thin straps, invisible zipper at side...</div>
+                    </div>
+                    <div class={s["tool-preview-panel"]}>
+                      <span class={s["tool-preview-kicker"]}>Output</span>
+                      <dl class={s["tool-preview-output"]}>
+                        <dt>Seam types</dt>
+                        <dd>French seams (sides), bias binding (neckline)</dd>
+                        <dt>Fabric behavior</dt>
+                        <dd>High slip — use weights not pins</dd>
+                        <dt>Interfacing</dt>
+                        <dd>None. Silk organza stay at neckline</dd>
+                        <dt>Construction order</dt>
+                        <dd>Stay neckline, sew straps, French seam sides, insert zipper, rolled hem</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {showMuseumOverviewVisual ? (
+                <div class={s["overview-feature"]}>
+                  {hasOverviewCards && (
+                    <div class={s["overview-grid"]}>
+                      {overviewCards.map((card) => (
+                        <div class={s["overview-card"]}>
+                          <span class={s["card-label"]}>{card.label}</span>
+                          <p class={s["card-body"]}>{card.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <MuseumHeaderVisual />
+                </div>
+              ) : (
+                hasOverviewCards && (
+                  <div class={s["overview-grid"]}>
+                    {overviewCards.map((card) => (
+                      <div class={s["overview-card"]}>
+                        <span class={s["card-label"]}>{card.label}</span>
+                        <p class={s["card-body"]}>{card.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
+              {!hasTryIt && (
+                <div class={s["prose-wrap"]}>
+                  <div class={s["prose"]}><slot /></div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    ) : (
+      <>
+        <div class={s["tab-bar"]} role="tablist" id="cs-tab-bar">
+          {tabs.map((tab, i) => (
+            <button
+              role="tab"
+              class={s["tab-btn"]}
+              data-tab={tab.id}
+              {...(i === 0 ? { "data-active": "" } : {})}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div id="cs-panels">
+
+          {/* ── OVERVIEW ── */}
+          <div role="tabpanel" class={s["tab-panel"]} data-panel="overview" data-active>
+            {hero_image && (
+              <img src={hero_image} alt="" class={s["hero-img"]} />
+            )}
+            {showGarmentToolPreview && (
+              <div class={s["tool-preview"]}>
+                <span class={s["tool-preview-label"]}>Tool preview</span>
+                <div class={s["tool-preview-grid"]}>
+                  <div class={s["tool-preview-panel"]}>
+                    <span class={s["tool-preview-kicker"]}>Quick examples</span>
+                    <div class={s["tool-preview-buttons"]}>
+                      <span>Shirt dress</span>
+                      <span>Structured blazer</span>
+                      <span>Bias-cut skirt</span>
+                    </div>
+                    <span class={s["tool-preview-kicker"]}>Fabric</span>
+                    <div class={s["tool-preview-input"]}>silk charmeuse</div>
+                    <span class={s["tool-preview-kicker"]}>Description</span>
+                    <div class={s["tool-preview-textarea"]}>Bias-cut slip dress, thin straps, invisible zipper at side...</div>
+                  </div>
+                  <div class={s["tool-preview-panel"]}>
+                    <span class={s["tool-preview-kicker"]}>Output</span>
+                    <dl class={s["tool-preview-output"]}>
+                      <dt>Seam types</dt>
+                      <dd>French seams (sides), bias binding (neckline)</dd>
+                      <dt>Fabric behavior</dt>
+                      <dd>High slip — use weights not pins</dd>
+                      <dt>Interfacing</dt>
+                      <dd>None. Silk organza stay at neckline</dd>
+                      <dt>Construction order</dt>
+                      <dd>Stay neckline, sew straps, French seam sides, insert zipper, rolled hem</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showMuseumOverviewVisual ? (
+              <div class={s["overview-feature"]}>
+                {hasOverviewCards && (
+                  <div class={s["overview-grid"]}>
+                    {overviewCards.map((card) => (
+                      <div class={s["overview-card"]}>
+                        <span class={s["card-label"]}>{card.label}</span>
+                        <p class={s["card-body"]}>{card.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <MuseumHeaderVisual />
+              </div>
+            ) : (
+              hasOverviewCards && (
+                <div class={s["overview-grid"]}>
+                  {overviewCards.map((card) => (
+                    <div class={s["overview-card"]}>
+                      <span class={s["card-label"]}>{card.label}</span>
+                      <p class={s["card-body"]}>{card.body}</p>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+            {!hasTryIt && (
+              <div class={s["prose-wrap"]}>
+                <div class={s["prose"]}><slot /></div>
+              </div>
+            )}
+          </div>
+
+          {/* ── HOW IT WORKS ── */}
+          {hasHowItWorks && (
+            <div role="tabpanel" class={s["tab-panel"]} data-panel="how-it-works">
+              {showArchitecture && (
+                <div class={s["hw-section"]}>
+                  <h2 class={s["hw-title"]}>Architecture</h2>
+                  {architecture && <p class={s["hw-intro"]}>{architecture.body}</p>}
+                  {architecture_diagram ? (
+                    <img
+                      src={architecture_diagram}
+                      alt="Architecture diagram"
+                      class={s["arch-img"]}
+                    />
+                  ) : (
+                    <div class={s["arch-diagram"]}>
+                      <span class={s["arch-label"]}>Request flow</span>
+                      <div class={s["arch-flow"]}>
+                        {architecture?.nodes.map((node, index) => (
+                          <>
+                            <div class={s["arch-node"]}>
+                              <strong>{node.title}</strong>
+                              <span>{node.meta}</span>
+                            </div>
+                            {index < architecture.nodes.length - 1 && (
+                              <span class={s["arch-arrow"]} aria-hidden="true">→</span>
+                            )}
+                          </>
+                        ))}
+                      </div>
+                      <div class={s["arch-info"]}>
+                        <div class={s["arch-info-row"]}>
+                          <span>Prompt strategy</span>
+                          <p>{architecture?.prompt}</p>
+                        </div>
+                        <div class={s["arch-info-row"]}>
+                          <span>Optional input</span>
+                          <p>{architecture?.optional}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {output_structure && output_structure.length > 0 && (
+                <div class={s["hw-section"]}>
+                  <span class={s["section-label"]}>Output structure</span>
+                  <table class={s["output-table"]}>
+                    <tbody>
+                      {output_structure.map((row) => (
+                        <tr>
+                          <td class={s["output-table__label"]}>{row.field}</td>
+                          <td class={s["output-table__desc"]}>{row.what_it_solves}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {sample_output && (
+                <div class={s["hw-section"]}>
+                  <span class={s["section-label"]}>Sample output</span>
+                  <pre class={s["sample-code"]}>{sample_output}</pre>
+                </div>
+              )}
+              {design_decisions && design_decisions.length > 0 && (
+                <div class={s["hw-section"]}>
+                  <span class={s["section-label"]}>Key design decisions</span>
+                  <ul class={s["decisions-list"]}>
+                    {design_decisions.map((d) => (
+                      <li>
+                        <span class={s["decision-title"]}>{d.title}</span>
+                        <span class={s["decision-body"]}>{d.body}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── TRY IT ── */}
+          {hasTryIt && (
+            <div role="tabpanel" class={s["tab-panel"]} data-panel="try-it">
+              {live_embed_url ? (
+                <div class={s["embed-wrapper"]}>
+                  <iframe
+                    src={live_embed_url}
+                    class={s["embed-frame"]}
+                    title={`${title} — live tool`}
+                    loading="lazy"
+                  />
+                  {live_embed_note && (
+                    <p class={s["embed-note"]}>{live_embed_note}</p>
+                  )}
+                </div>
+              ) : (
+                <div class={s["prose-wrap"]}>
+                  <div class={s["prose"]}><slot /></div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── PROCESS ── */}
+          {hasProcess && (
+            <div role="tabpanel" class={s["tab-panel"]} data-panel="process">
+              <div class={s["image-grid"]}>
+                {process_images!.map((item) => (
+                  <figure class={s["grid-figure"]}>
+                    <img src={item.image} alt={item.caption ?? ""} />
+                    {item.caption && <figcaption>{item.caption}</figcaption>}
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── RESULTS ── */}
+          {hasResults && (
+            <div role="tabpanel" class={s["tab-panel"]} data-panel="results">
+              <div class={s["image-grid"]}>
+                {results_images!.map((item) => (
+                  <figure class={s["grid-figure"]}>
+                    <img src={item.image} alt={item.caption ?? ""} />
+                    {item.caption && <figcaption>{item.caption}</figcaption>}
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </>
+    )}
+
+    <div class={s["footer-nav"]}>
+      <a href={backHref}>{backLabel}</a>
+    </div>
+
+  </div>
+</MainLayout>
+
+<script>
+  const bar    = document.getElementById("cs-tab-bar");
+  const panels = document.getElementById("cs-panels");
+
+  if (bar && panels) {
+    bar.querySelectorAll<HTMLButtonElement>("[data-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        bar.querySelectorAll("[data-tab]").forEach((b) => b.removeAttribute("data-active"));
+        panels.querySelectorAll("[data-panel]").forEach((p) => p.removeAttribute("data-active"));
+        btn.setAttribute("data-active", "");
+        const target = panels.querySelector(`[data-panel="${btn.dataset.tab}"]`);
+        if (target) {
+          target.setAttribute("data-active", "");
+          window.dispatchEvent(new CustomEvent("case-study-tab-active", {
+            detail: { tab: btn.dataset.tab },
+          }));
+        }
+      });
+    });
+  }
+</script>

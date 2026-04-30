@@ -1,6 +1,7 @@
 ---
 import styles from '../../pages/projects/textile-pattern-generator.module.css';
 const s = styles;
+import LoadingState from '../LoadingState.astro';
 ---
 
 <!-- ── MOCKUP PREVIEWS ── -->
@@ -74,6 +75,9 @@ const s = styles;
 
   <!-- CANVAS -->
   <div class={s['canvas-panel']}>
+    <div id="tpg-loading" class={s['loading-wrap']} style="display:none">
+      <LoadingState message="Generating palette..." />
+    </div>
     <canvas id="patternCanvas" class={s['pattern-canvas']}></canvas>
     <p class={s['canvas-hint']}>Click to pause · Click again to resume</p>
   </div>
@@ -101,11 +105,39 @@ const s = styles;
   const moodText = document.getElementById('moodText') as HTMLElement;
   const densitySlider = document.getElementById('densitySlider') as HTMLInputElement;
   const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement;
+  const loadingEl = document.getElementById('tpg-loading') as HTMLElement | null;
 
   // ── CANVAS RESIZE ──
   function resize() {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
+  }
+
+  function refreshVisibleCanvas() {
+    resize();
+    if (canvas.width && canvas.height && patternType !== 'organic' && patternType !== 'organic2') {
+      const tileSize = getTileSize();
+      if (patternType === 'geometric') drawGeometric(ctx, canvas.width, canvas.height, colors, tileSize, frame);
+      else if (patternType === 'stripe') drawStripe(ctx, canvas.width, canvas.height, colors, tileSize, frame);
+      else if (patternType === 'grid') drawGrid(ctx, canvas.width, canvas.height, colors, tileSize, frame);
+    }
+    updateMockupPatterns();
+  }
+
+  function setLoading(message: string) {
+    if (!loadingEl) return;
+    const loader = loadingEl.querySelector('[data-loading-state]') as HTMLElement | null;
+    const messageEl = loadingEl.querySelector('[data-loading-message]');
+    if (loader) loader.dataset.variant = message ? 'progress' : 'stitch';
+    if (messageEl) messageEl.textContent = message;
+    loadingEl.style.display = 'flex';
+    canvas.style.display = 'none';
+  }
+
+  function clearLoading() {
+    if (loadingEl) loadingEl.style.display = 'none';
+    canvas.style.display = 'block';
+    requestAnimationFrame(refreshVisibleCanvas);
   }
 
   // ── TILE SIZE ──
@@ -539,7 +571,7 @@ const s = styles;
     loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/chair-textilegen.svg',   'mockupChair', 'mp-chair'),
     loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/coat-textilegen.svg',    'mockupCoat',  'mp-coat'),
     loadMockupSVG('https://res.cloudinary.com/deqij2maw/image/upload/portfolio/totebag-textilegen.svg', 'mockupTote',  'mp-tote'),
-  ]);
+  ]).then(() => updateMockupPatterns());
 
   // ── DRAW LOOP ──
   function draw() {
@@ -731,8 +763,8 @@ ${weft}${warp}${intersections}</svg>`;
       return;
     }
     errorMsg.textContent = '';
-    generateBtn.textContent = 'Generating…';
     generateBtn.disabled = true;
+    setLoading(`Generating palette for ${concept}...`);
 
     try {
       const res = await fetch('/.netlify/functions/textile-palette', {
@@ -753,8 +785,8 @@ ${weft}${warp}${intersections}</svg>`;
     } catch {
       errorMsg.textContent = 'Network error. Please try again.';
     } finally {
-      generateBtn.textContent = 'Generate Palette';
       generateBtn.disabled = false;
+      clearLoading();
     }
   });
 
@@ -767,6 +799,7 @@ ${weft}${warp}${intersections}</svg>`;
       if (next === 'organic')  startOrganicLoop();
       if (next === 'organic2') startOrganic2Loop();
       updatePatternBtns();
+      refreshVisibleCanvas();
     });
   });
 
@@ -785,7 +818,11 @@ ${weft}${warp}${intersections}</svg>`;
     }
   });
 
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', refreshVisibleCanvas);
+  window.addEventListener('case-study-tab-active', ((event: CustomEvent) => {
+    if (event.detail?.tab !== 'try-it') return;
+    requestAnimationFrame(refreshVisibleCanvas);
+  }) as EventListener);
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
