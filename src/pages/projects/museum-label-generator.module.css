@@ -115,13 +115,37 @@
 .artwork-loading {
   position: absolute;
   inset: 0;
-  background: #EDE6D8;
+  background: var(--warm-white);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.6s ease;
 }
+
+.artwork-loading-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  opacity: 0.7;
+  animation: artwork-loading-pulse 1.4s ease-in-out infinite;
+}
+
 /* JS sets data-hidden via setAttribute('data-hidden', '') */
 .artwork-loading[data-hidden] {
   opacity: 0;
   pointer-events: none;
+}
+
+@keyframes artwork-loading-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
 }
 
 .artwork-caption {
