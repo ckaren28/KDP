@@ -1,80 +1,42 @@
 ---
 title: Museum Label Generator
-description: A tool that generates six interpretive text formats from a 
-  single artwork description. Built to support human editorial control, 
-  not replace it.
+description: A tool that generates six interpretive text formats from a single artwork description. Built to support human editorial control, not replace it.
 track: tech
 tags: [Claude API, Next.js, TypeScript, Netlify Functions, JSON structured output]
 date: 2026-01-01
 live_url: https://karendettmar.com/projects/museum-label-generator
 github_url: https://github.com/karendettmar/museum-label-generator
 password_protected: false
+
+problem_statement: "Museum wall labels are written for visitors who already speak the language of art history. For everyone else — a child, a casual visitor, a designer who thinks visually — the infrastructure meant to help them often doesn't. Labels are a bottleneck: curators are overworked, the writing process is slow, and scaling across formats (audio, kids, alt text) is rarely prioritized. The tool takes a single artwork description and generates six interpretive formats simultaneously. The AI acts as a starting point. Human editorial control is built in at every step."
+
+output_structure:
+  - field: "Wall label"
+    what_it_solves: "Standing visitor, 15 seconds — ~80 words, no jargon."
+  - field: "Extended label"
+    what_it_solves: "Visitor who pauses — ~200 words, permits depth."
+  - field: "Kids label"
+    what_it_solves: "Age 6–10 — not simplified, differently framed. Questions, wonder, sensory detail."
+  - field: "Audio guide script"
+    what_it_solves: "Listener, not reader — written for the ear. Conversational rhythm, present tense, ~45 seconds spoken."
+  - field: "Alt text"
+    what_it_solves: "Screen reader user — functional replacement for a visual. Objective, WCAG-compliant, no interpretation."
+  - field: "Curator notes"
+    what_it_solves: "Internal — flags ambiguities, suggests research directions, notes what the source description didn't specify."
+
+design_decisions:
+  - title: "Structured JSON over streaming text"
+    body: "All six formats arrive together and render into independent copyable cards. Streaming would have made per-section copy interactions much more complex, and curators typically want all formats at once anyway."
+  - title: "A single API call for all six formats"
+    body: "Higher latency per generation, but simpler architecture and a better match for how the tool gets used. The tradeoff was worth it."
+  - title: "Tone as a prompt injection, not a separate system prompt"
+    body: "The tone dropdown (Neutral, Warm, Playful, Academic) injects into the user prompt rather than switching system prompts. Less precise, but much simpler to maintain as a single prompt template."
+  - title: "The 'Show Prompt & Architecture' toggle"
+    body: "Exposes the system prompt, user template, and call flow to anyone who wants to see them. Institutional adopters want to audit what the model is doing before they trust it with their collections. Showing the work is also a trust signal for visitors skeptical of AI tools in cultural contexts."
+  - title: "API key security via Netlify Function"
+    body: "All calls route through a serverless function. The key never touches the browser. Cold starts add ~300ms latency on first request — acceptable for a tool used in considered, not rapid-fire, workflows."
 ---
 
 import MuseumLabelTool from '../../components/tools/MuseumLabelTool.astro'
-
-## The problem
-
-Museum wall labels are written for visitors who already speak the language 
-of art history. For everyone else, a child, a casual visitor, a designer 
-who thinks visually, the infrastructure meant to help them often doesn't. 
-Labels are a bottleneck: curators are overworked, the writing process is 
-slow, and scaling across formats (audio, kids, alt text) is rarely 
-prioritized.
-
-The tool takes a single artwork description and generates six interpretive 
-formats simultaneously. The AI acts as a starting point. Human editorial 
-control is built in at every step.
-
-## The output system
-
-The design challenge wasn't building an API call. It was defining what 
-"accessible" means across six different audiences and encoding those 
-distinctions precisely into the prompt structure.
-
-| Format | Reader | Constraint |
-|---|---|---|
-| Wall label | Standing visitor, 15 seconds | ~80 words, no jargon |
-| Extended label | Visitor who pauses | ~200 words, permits depth |
-| Kids label | Age 6-10 | Not simplified, differently framed. Questions, wonder, sensory detail |
-| Audio guide script | Listener, not reader | Written for the ear. Conversational rhythm, present tense, ~45 seconds spoken |
-| Alt text | Screen reader user | Functional replacement for a visual. Objective, WCAG-compliant, no interpretation |
-| Curator notes | Internal | Flags ambiguities, suggests research directions, notes what the source description didn't specify |
-
-All six formats are generated in a single API call using structured JSON 
-output. Each is independently copyable and regeneratable. Forcing curators 
-to regenerate all six when they only want to tweak one is friction that 
-kills adoption. The copy-per-section architecture respects how editorial 
-workflows actually run.
-
-## Key design decisions
-
-**Structured JSON over streaming text.** All six formats arrive together 
-and render into independent copyable cards. Streaming would have made 
-per-section copy interactions much more complex, and curators typically 
-want all formats at once anyway.
-
-**A single API call for all six formats.** Higher latency per generation, 
-but simpler architecture and a better match for how the tool gets used. 
-The tradeoff was worth it.
-
-**Tone as a prompt injection, not a separate system prompt.** The tone 
-dropdown (Neutral, Warm, Playful, Academic) injects into the user prompt 
-rather than switching system prompts. Less precise, but much simpler to 
-maintain as a single prompt template.
-
-**The "Show Prompt & Architecture" toggle.** Exposes the system prompt, 
-user template, and call flow to anyone who wants to see them. This was 
-a deliberate transparency decision. Institutional adopters want to audit 
-what the model is doing before they trust it with their collections. 
-Showing the work is also a trust signal for visitors who are skeptical 
-of AI tools in cultural contexts.
-
-**API key security via Netlify Function.** All calls route through a 
-serverless function. The key never touches the browser. Cold starts add 
-~300ms latency on first request, which is an acceptable tradeoff for 
-a tool used in considered, not rapid-fire, workflows.
-
-## Try it
 
 <MuseumLabelTool />

@@ -1,0 +1,770 @@
+/* ── PAGE WRAPPER ── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 2rem 8rem;
+  color: var(--black);
+}
+
+/* ── BACK NAV ── */
+.back-nav {
+  padding: 2.5rem 0 4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.back-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-nav a:hover { color: var(--black); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  margin-bottom: 2rem;
+  color: var(--black);
+}
+
+.page-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  max-width: 52ch;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+
+/* ── TAGS ── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+/* ── GITHUB LINK ── */
+.gh-link {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  display: inline-block;
+  transition: color 0.2s, border-color 0.2s;
+}
+.gh-link:hover {
+  color: var(--black);
+  border-color: var(--black);
+}
+
+/* ── TAB BAR ── */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4rem;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 20px 11px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  position: relative;
+  bottom: -1px;
+}
+.tab-btn:hover { color: var(--black); }
+.tab-btn[data-active] {
+  color: var(--black);
+  border-bottom-color: var(--black);
+}
+
+/* ── TAB PANELS ── */
+.tab-panel { display: none; }
+.tab-panel[data-active] { display: block; }
+
+/* ── HERO IMAGE ── */
+.hero-img {
+  width: 100%;
+  height: auto;
+  max-height: 540px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 4rem;
+}
+
+/* ── OVERVIEW: Card grid ── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.overview-card {
+  background: var(--warm-white, var(--off-white));
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 8px;
+  padding: 2rem 2.25rem;
+}
+
+.card-label {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.card-body {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  font-weight: 300;
+  margin: 0;
+}
+
+.overview-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+.overview-feature .overview-grid {
+  grid-template-columns: 1fr;
+  margin-bottom: 0;
+}
+
+.overview-feature :global(.header-visual) {
+  gap: 1rem;
+}
+
+.overview-feature :global(.artwork-frame-wrap) {
+  width: 100%;
+  min-width: 0;
+}
+
+.overview-feature :global(.wall-label-card) {
+  max-width: none;
+  align-self: stretch;
+}
+
+/* ── OVERVIEW: tool preview ── */
+.tool-preview {
+  background: var(--warm-white, var(--off-white));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2.5rem 4rem;
+  margin-bottom: 3rem;
+}
+
+.tool-preview-label,
+.tool-preview-kicker {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tool-preview-label { margin-bottom: 1.5rem; }
+.tool-preview-kicker { margin-bottom: 0.65rem; }
+
+.tool-preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.tool-preview-panel {
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.6rem;
+}
+
+.tool-preview-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tool-preview-buttons span,
+.tool-preview-input,
+.tool-preview-textarea {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-body);
+  border: 1px solid var(--border);
+  background: var(--warm-white, var(--off-white));
+}
+
+.tool-preview-buttons span {
+  padding: 0.35rem 0.7rem;
+  line-height: 1;
+}
+
+.tool-preview-input,
+.tool-preview-textarea {
+  padding: 0.7rem 0.8rem;
+  margin-bottom: 0.9rem;
+  line-height: 1.5;
+}
+
+.tool-preview-textarea {
+  min-height: 68px;
+}
+
+.tool-preview-output {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.8rem 1.1rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.tool-preview-output dt {
+  font-weight: 500;
+  color: var(--black);
+}
+
+.tool-preview-output dd {
+  margin: 0;
+  color: var(--text-body);
+}
+
+/* Section label — used by How it works sections */
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* ── PROSE: MDX slot content ── */
+.prose {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  font-weight: 300;
+}
+.prose-wrap {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
+}
+/* Remove top border when there are no frontmatter sections above */
+.prose-wrap:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.prose :global(h2) {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: var(--black);
+  margin: 4rem 0 1.5rem;
+  padding-top: 4rem;
+  border-top: 1px solid var(--border);
+}
+.prose :global(h2:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.prose :global(h3) {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--black);
+  margin: 2.5rem 0 1rem;
+}
+
+.prose :global(p) {
+  margin-bottom: 1.4rem;
+  max-width: 68ch;
+}
+
+.prose :global(ul),
+.prose :global(ol) {
+  padding-left: 1.5rem;
+  margin-bottom: 1.4rem;
+  max-width: 68ch;
+}
+.prose :global(li) { margin-bottom: 0.4rem; }
+
+.prose :global(strong) {
+  font-weight: 500;
+  color: var(--black);
+}
+.prose :global(em) { font-style: italic; }
+
+.prose :global(a) {
+  color: var(--sienna);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+.prose :global(a:hover) { color: var(--black); }
+
+.prose :global(blockquote) {
+  border-left: 2px solid var(--sienna);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose :global(code) {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82em;
+  background: rgba(44, 26, 14, 0.05);
+  padding: 2px 5px;
+}
+
+.prose :global(pre) {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  background: rgba(44, 26, 14, 0.04);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.prose :global(img) {
+  max-width: 100%;
+  display: block;
+  margin: 2rem 0;
+}
+
+.prose :global(hr) {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4rem 0;
+}
+
+/* italic-only em as a caption (markdown *text* after an image) */
+.prose :global(p em:only-child) {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--muted);
+  display: block;
+  margin-top: -1.25rem;
+  margin-bottom: 2rem;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+/* ── PROSE: Tables (museum-label, garment-decoder, etc.) ── */
+.prose :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.875rem;
+}
+.prose :global(thead tr) { border-bottom: 2px solid var(--border); }
+.prose :global(th) {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.prose :global(td) {
+  padding: 0.875rem 1rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-body);
+  line-height: 1.6;
+}
+.prose :global(tr:last-child td) { border-bottom: none; }
+.prose :global(td:first-child),
+.prose :global(th:first-child) {
+  width: 160px;
+  min-width: 120px;
+  font-weight: 500;
+  color: var(--black);
+  white-space: nowrap;
+}
+
+/* ── PROSE: Technical flats grid (.image-grid--flats used in MDX) ── */
+.prose :global(.image-grid--flats) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.prose :global(.image-grid--flats img) {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: var(--off-white);
+  display: block;
+  margin: 0;
+}
+
+/* ── HOW IT WORKS: shared section wrapper ── */
+.hw-section {
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.hw-section:first-child { padding-top: 0; }
+.hw-section:last-child { border-bottom: none; }
+
+/* ── HOW IT WORKS: Architecture diagram ── */
+.hw-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--black);
+  margin: 0 0 1rem;
+}
+
+.hw-intro {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  max-width: 78ch;
+  margin: 0 0 2rem;
+}
+
+.arch-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--border);
+}
+
+.arch-diagram {
+  background: var(--warm-white, var(--off-white));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3rem 2rem;
+}
+
+.arch-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.arch-flow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 760px;
+  margin: 0 auto 1.6rem;
+  flex-wrap: wrap;
+}
+
+.arch-node {
+  flex: 1 1 0;
+  min-width: 140px;
+  min-height: 70px;
+  border: 1px solid var(--border);
+  background: var(--off-white);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem;
+  text-align: center;
+  font-family: var(--font-body);
+  line-height: 1.45;
+  color: var(--black);
+}
+
+.arch-node strong {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--black);
+}
+
+.arch-node span {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.arch-arrow {
+  display: block;
+  flex: 0 0 auto;
+  font-family: var(--font-body);
+  color: var(--muted);
+}
+
+.arch-info {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.arch-info-row {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+}
+
+.arch-info-row span {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.arch-info-row p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+/* ── HOW IT WORKS: Output structure table ── */
+.output-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+.output-table__label {
+  font-weight: 500;
+  color: var(--black);
+  padding: 0.8rem 1.5rem 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+  width: 180px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.output-table__desc {
+  color: var(--text-body);
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+}
+.output-table tr:last-child .output-table__label,
+.output-table tr:last-child .output-table__desc {
+  border-bottom: none;
+}
+
+/* ── HOW IT WORKS: Sample output code block ── */
+.sample-code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  background: rgba(44, 26, 14, 0.04);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-x: auto;
+  line-height: 1.7;
+  white-space: pre;
+  margin-top: 1rem;
+}
+
+/* ── HOW IT WORKS: Design decisions list ── */
+.decisions-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  max-width: 68ch;
+}
+.decisions-list li {
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.875rem 0 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  max-width: 68ch;
+}
+.decisions-list li:last-child { border-bottom: none; }
+.decisions-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.25em;
+  width: 4px;
+  height: 4px;
+  background: var(--sienna);
+  border-radius: 50%;
+}
+
+.decision-title {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.5;
+}
+
+.decision-body {
+  font-size: 0.85rem;
+  color: var(--text-body);
+  line-height: 1.7;
+}
+
+/* ── TRY IT: iframe embed ── */
+.embed-wrapper { width: 100%; }
+.embed-frame {
+  width: 100%;
+  min-height: 700px;
+  border: 0;
+  display: block;
+}
+.embed-note {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
+/* ── PROCESS / RESULTS: image grids ── */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.grid-figure { margin: 0; }
+.grid-figure img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+.grid-figure figcaption {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  letter-spacing: 0.02em;
+  font-style: normal;
+}
+
+/* ── FOOTER NAV ── */
+.footer-nav {
+  margin-top: 6rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.footer-nav a {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-nav a:hover { color: var(--black); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .page { padding: 100px 1.5rem 6rem; }
+  .back-nav { padding: 1.5rem 0 2.5rem; }
+  .page-header { margin-bottom: 3rem; }
+  .overview-feature,
+  .tool-preview-grid { grid-template-columns: 1fr; }
+  .tool-preview { padding: 1.5rem; }
+  .overview-grid { grid-template-columns: 1fr; }
+  .arch-diagram { padding: 1.25rem; }
+  .arch-flow { flex-direction: column; }
+  .arch-node { width: 100%; }
+  .arch-arrow { transform: rotate(90deg); }
+  .arch-info-row { grid-template-columns: 1fr; gap: 0.45rem; }
+  .image-grid { grid-template-columns: 1fr; }
+  .prose :global(.image-grid--flats) { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .prose :global(.image-grid--flats) { grid-template-columns: 1fr; }
+}

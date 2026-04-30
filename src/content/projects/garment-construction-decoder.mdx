@@ -1,100 +1,65 @@
 ---
 title: Garment Construction Decoder
-description: A tool that takes a garment description and returns a 
-  structured technical breakdown a sample maker can actually use.
+description: A tool that takes a garment description and returns a structured technical breakdown a sample maker can actually use.
 track: tech
-tags: [Claude API, Next.js, TypeScript, Netlify Functions, 
-  JSON structured output, Parsons, FIT]
+tags: [Claude API, Next.js, TypeScript, Netlify Functions, JSON structured output, Parsons, FIT]
 date: 2026-01-01
 live_url: https://karendettmar.com/projects/garment-construction-decoder
 github_url: https://github.com/karendettmar/garment-construction-decoder
 password_protected: false
+
+problem_statement: "Technical garment construction knowledge is largely tacit. It lives in people's hands, in specialized books most designers don't own, and in the institutional memory of experienced sample makers. A designer who can sketch a beautiful bias-cut silk blouse may not know it needs French seams, that the lining should be cut on grain, or that a centered invisible zipper in silk charmeuse will pucker unless you interface the seam allowance first. These gaps create errors in sampling, wasted fabric, and back-and-forth with production teams that could have been avoided before anything was cut."
+
+who_its_for: "Students learning garment construction, home sewists, hobbyist makers, sample room workers, pattern makers, and anyone curious about how clothes are actually put together."
+
+why_i_built_it: "I wanted a tool I could use myself. Something that would recommend the right finishes and construction notes for a given garment, which I could then check against my own background in sewing and pattern-making. It started as a personal experiment."
+
+scope_constraints: "Currently covers womenswear in silk, wool, cotton, and linen. Knitwear, menswear tailoring, and technical outerwear are excluded — the domain knowledge required to validate those outputs isn't something I can verify yet."
+
+output_structure:
+  - field: "Seam types"
+    what_it_solves: "The most common source of sampling errors. Fabric and construction style determine which finish is correct — prevents the just-sew-it-together default."
+  - field: "Fabric behavior"
+    what_it_solves: "Informs handling before cutting. A sample maker who doesn't know silk charmeuse slips will cut inaccurate pieces."
+  - field: "Interfacing"
+    what_it_solves: "Often omitted from sketches entirely. The tool distinguishes fusible, sew-in, and stay-stitching as appropriate."
+  - field: "Closure options"
+    what_it_solves: "When placement is ambiguous, returns two options with tradeoffs rather than guessing."
+  - field: "Construction order"
+    what_it_solves: "Order matters — certain seams must be sewn before others become accessible. Outputs a numbered sequence, not a flat list."
+
+sample_output: |
+  Input: bias-cut silk charmeuse slip dress
+
+  Seam types: French seams (side seams), bias binding (neckline), narrow rolled hem (hem)
+
+  Fabric behavior: High slip — use weights not pins. Frays immediately, minimize raw edges. Stretches on bias, allow ease.
+
+  Interfacing: None (structure via bias cut). Lightweight silk organza stay at neckline.
+
+  Closure options:
+    A. Invisible zipper — interface seam allowance first
+    B. Exposed seam zipper — intentional detail
+
+  Construction order:
+    1. Stay neckline
+    2. Sew shoulder straps
+    3. Attach neckline binding
+    4. French seam sides
+    5. Insert zipper
+    6. Rolled hem
+
+design_decisions:
+  - title: "The reason field in every recommendation"
+    body: "Not in the original design. Added after testing revealed I trusted the output more when I could see the reasoning. Every seam type and closure option includes a reason field in the JSON."
+  - title: "Closure disambiguation"
+    body: "When placement is unclear, the prompt instructs the model to return two options with tradeoffs rather than guessing. Added after testing showed the model would confidently recommend the wrong closure for the fabric type."
+  - title: "The construction order constraint"
+    body: "The hardest prompt rule to get right: no steps that require prior steps to be undone. Early versions would sequence zipper insertion after side seams were sewn, which is physically impossible on certain styles."
+  - title: "Free-text input with optional structured fields"
+    body: "The user can be as precise or as vague as they want. The tradeoff: vague inputs produce vague outputs. No guardrail currently prevents a dress from generating a breakdown, which would be nearly useless."
 ---
 
 import GarmentDecoderTool from '../../components/tools/GarmentDecoderTool.astro'
-
-
-## The problem
-
-Technical garment construction knowledge is largely tacit. It lives in 
-people's hands, in specialized books most designers don't own, and in 
-the institutional memory of experienced sample makers. A designer who 
-can sketch a beautiful bias-cut silk blouse may not know it needs French 
-seams, that the lining should be cut on grain, or that a centered 
-invisible zipper in silk charmeuse will pucker unless you interface the 
-seam allowance first.
-
-These gaps create errors in sampling, wasted fabric, and back-and-forth 
-with production teams that could have been avoided before anything was cut.
-
-## Who is this for
-Students learning garment construction, home sewists, hobbyist makers, sample room workers, pattern makers, and anyone curious about how clothes are actually put together.
-
-## Why I could build this
-
-I wanted a tool I could use myself. Something that would recommend the right finishes and construction notes for a given garment, which I could then check against my own background in sewing and pattern-making. It started as a personal experiment. I'm happy to share it with others who are interested in the same questions.
-
-## The output structure
-
-Every field maps to a real production decision. Nothing is decorative.
-
-| Field | What it solves |
-|---|---|
-| Seam types | The most common source of sampling errors. Fabric and construction style determine which finish is correct. This field prevents the "just sew it together" default. |
-| Fabric behavior | Informs handling before cutting. A sample maker who doesn't know silk charmeuse slips will cut inaccurate pieces. These are the things experienced pattern makers know implicitly. |
-| Interfacing | Often omitted from sketches entirely. Incorrect choices cause puckering, stiffness, or structure failures. The tool distinguishes fusible, sew-in, and stay-stitching as appropriate. |
-| Closure options | When placement is ambiguous, returns two options with tradeoffs rather than guessing. |
-| Construction order | Order matters: certain seams must be sewn before others become accessible. Getting this wrong wastes hours. The tool outputs a numbered sequence, not a flat list. |
-
-Here's actual output for a bias-cut silk charmeuse slip dress:
-
-**Seam types:** French seams (side seams), bias binding (neckline), 
-narrow rolled hem (hem)
-
-**Fabric behavior:** High slip, use weights not pins. Frays immediately, 
-minimize raw edges. Stretches on bias, allow ease.
-
-**Interfacing:** None (structure via bias cut). Lightweight silk organza 
-stay at neckline.
-
-**Closure options:** Invisible zipper (interface seam allowance first), 
-or exposed seam zipper (intentional detail).
-
-**Construction order:** 1. Stay neckline 2. Sew shoulder straps 
-3. Attach neckline binding 4. French seam sides 5. Insert zipper 
-6. Rolled hem
-
-Specific enough to hand to a sample maker.
-
-## Key design decisions
-
-**The "reason" field in every recommendation.** Not in the original 
-design. Added after testing revealed I trusted the 
-output more when I could see the reasoning, not just the 
-recommendation. Every seam type and closure option includes a reason 
-field in the JSON.
-
-**Closure disambiguation.** When placement is unclear, the prompt 
-instructs the model to return two options with tradeoffs rather than 
-guessing. This was added after testing showed the model would confidently 
-recommend the wrong closure for the fabric type.
-
-**The construction order constraint.** The hardest prompt rule to get 
-right: "no steps that require prior steps to be undone." Early versions 
-would sequence zipper insertion after side seams were sewn, which is 
-physically impossible on certain styles. The constraint forces the model 
-to reason about access windows.
-
-**Domain scope limited to womenswear.** Menswear tailoring, knitwear, 
-and technical outerwear are excluded. The prompt would need different 
-constraint sets for each, and the domain knowledge required to validate 
-those outputs isn't something I can verify yet.
-
-**Free-text input with optional structured fields.** The user can be 
-as precise or as vague as they want. The tradeoff: vague inputs produce 
-vague outputs. No guardrail currently prevents "a dress" from generating 
-a breakdown, which would be nearly useless.
-
-## Try it
 
 <GarmentDecoderTool />
