@@ -20,27 +20,33 @@
         z-index: 0;
         border-top: 3px solid var(--border);
 }
-/* .drip-wrap {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 180px;
+
+:global(#marbling-drip) {
+    position: fixed;
+    top: 5rem;
+    right: 30%;
+    width: 200px;
     pointer-events: none;
     z-index: 0;
-    overflow: visible;
+    border-top: 3px solid var(--border);
 }
-.drip-img {
+
+:global(#marbling-drip img) {
     width: 100%;
-    height: auto;
-    display: block;
     mix-blend-mode: multiply;
     opacity: 0.75;
-} */
+}
 
-html[data-theme="dark"] .drip-img {
+html[data-theme="dark"] :global(#marbling-drip img) {
     mix-blend-mode: screen;
     opacity: 0.35;
 }
+
+/* ── MARBLING SWATCH COLORS ── */
+.prose :global(.swatch--violet) { background: #6B55A2; }
+.prose :global(.swatch--gold)   { background: #C8961C; }
+.prose :global(.swatch--orange) { background: #C4773E; }
+.prose :global(.swatch--sage)   { background: #7AAEB4; }
 
 /* ── BACK NAV ── */
 .back-nav {
@@ -177,7 +183,7 @@ html[data-theme="dark"] .drip-img {
 .prose :global(img) {
     width: 100%;
     height: 280px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
@@ -211,7 +217,7 @@ html[data-theme="dark"] .drip-img {
 .prose :global(.image-grid img) {
     width: 100%;
     height: 320px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
@@ -240,7 +246,7 @@ html[data-theme="dark"] .drip-img {
     width: 100%;
     height: auto;
     max-height: 480px;
-    object-fit: cover;
+    object-fit: contain;
     margin: 2rem 0;
 }
 
@@ -341,6 +347,148 @@ html[data-theme="dark"] .drip-img {
   height: auto;
   margin-bottom: 0.75rem;
   break-inside: avoid;
+}
+
+/* ── PROCESS GRID — 4 equal-height images with captions ── */
+.prose :global(.image-grid--process) {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 2rem 0;
+}
+.prose :global(.image-grid--process figure) {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.prose :global(.image-grid--process img) {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+}
+.prose :global(.image-grid--process figcaption) {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  letter-spacing: 0.02em;
+  font-style: normal;
+}
+
+/* ── RESULTS GRID — 3-col grid with captions ── */
+.prose :global(.results-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem 0.75rem;
+  margin: 2rem 0;
+}
+.prose :global(.results-grid figure) {
+  margin: 0;
+}
+.prose :global(.results-grid img) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.prose :global(.results-grid figcaption) {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  letter-spacing: 0.02em;
+  font-style: normal;
+}
+
+/* ── FLATS GRID — contain full image, no crop ── */
+.prose :global(.image-grid--flats) {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.prose :global(.image-grid--flats img) {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: var(--off-white);
+  display: block;
+  cursor: zoom-in;
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 10, 0.96);
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  cursor: zoom-out;
+}
+.lightbox[data-open] { display: flex; }
+.lightbox img {
+  max-width: 100%;
+  max-height: 92vh;
+  object-fit: contain;
+  display: block;
+  cursor: default;
+  background: var(--off-white);
+}
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  background: none;
+  border: none;
+  color: rgba(237, 229, 208, 0.5);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: color 0.2s;
+}
+.lightbox-close:hover { color: rgba(237, 229, 208, 1); }
+
+/* ── FILTERABLE TAGS (buttons styled as tags) ── */
+.tag:is(button) {
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.tag:is(button):hover {
+  color: var(--black);
+  border-color: var(--black);
+}
+.tag:is(button)[data-active] {
+  background: var(--black);
+  color: var(--off-white);
+  border-color: var(--black);
+}
+
+@media (max-width: 768px) {
+  .prose :global(.image-grid--process) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .prose :global(.results-grid) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .prose :global(.image-grid--flats) {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Yarn decoration images inside .prose — override the global img rule */
