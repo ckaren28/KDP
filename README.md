@@ -1,6 +1,7 @@
-# fashion-portfolio
+# karendettmar.com
 
-Karen Dettmar's personal portfolio — [karendettmar.com](https://karendettmar.com)
+Portfolio site for Karen Dettmar, Creative Technologist and Fashion Designer
+based in New York City — [karendettmar.com](https://karendettmar.com)
 
 Built with Astro, TypeScript, and MDX. Deployed to Netlify.
 
@@ -47,10 +48,19 @@ Each tool in `src/components/tools/` pairs an `.astro` file with extracted `.ts`
 - No hardcoded hex colors or gradient defs
 - Annotation anchor points: `<circle id="ap-{name}" cx="…" cy="…" r="2" fill="none"/>` directly in a `<g id="ap-">` group
 
+## Project case studies
+
+Case studies live as MDX files in `/src/content/projects/`. Each file is
+the source of truth for that project page on the site.
+
+To add a new case study: create a new `.mdx` file in `/src/content/projects/`
+following the schema in `/src/content/config.ts`.
+
 ## Local development
 
 ```bash
 npm install
+cp .env.example .env
 netlify dev        # runs Astro + Netlify functions together
 # or
 npm run dev        # Astro only (tool API calls will 404)
@@ -61,3 +71,5 @@ Build:
 ```bash
 npm run build
 ```
+
+## Environment variables
