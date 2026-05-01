@@ -22,6 +22,11 @@ const materialItem = z.object({
   note: z.string().optional(),
 });
 
+const principle = z.object({
+  title: z.string(),
+  body: z.string(),
+});
+
 const outputRow = z.object({
   field: z.string(),
   what_it_solves: z.string(),
@@ -58,11 +63,17 @@ const projects = defineCollection({
     season: z.string().optional(),
     year: z.number().optional(),
     logo: z.string().optional(),
+    collection_logo: z.string().optional(),
     collection_icon: z.string().optional(),
     background_color: z.string().optional(),
+    dark_color: z.string().optional(),
+    mood_image: z.string().optional(),
+    fabric_swatch_image: z.string().optional(),
+    principles: z.array(principle).optional(),
     color_palette: z.array(colorSwatch).optional(),
     looks: z.array(look).optional(),
     technical_flats: z.array(technicalFlat).optional(),
+    final_garments: z.array(imageItem).optional(),
     fabric_notes: z.string().optional(),
     material_palette: z.array(materialItem).optional(),
     // ── Tabbed case study layout fields ──

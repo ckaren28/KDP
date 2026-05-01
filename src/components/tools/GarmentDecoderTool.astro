@@ -76,6 +76,12 @@ import croppedJacketSvg from './silhouettes/cropped-jacket.svg?raw';
   <!-- SILHOUETTE COLUMN -->
   <div class={g['silhouette-panel']} data-silhouette-panel>
     <div class={g['silhouette-placeholder']} data-silhouette-placeholder>Silhouette appears after generation</div>
+    <div class={g['silhouette-upload']} data-silhouette-upload style="display:none">
+      <div class={g['silhouette-upload-frame']} data-silhouette-upload-frame>
+        <img src="" alt="Uploaded garment photo" data-silhouette-upload-image />
+        <div class={g['image-annotations']} data-image-annotations></div>
+      </div>
+    </div>
     <div class={g['silhouette-wrap']} data-silhouette="shirt-dress" style="display:none">
       <Fragment set:html={shirtDressSvg} />
       <div class={g['silhouette-label']}>shirt dress</div>

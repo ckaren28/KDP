@@ -1,7 +1,14 @@
 import { clearAnnotations, renderAnnotations, updateSilhouette } from './garmentAnnotations';
-import { getImageBase64, getImageMediaType } from './garmentImageUpload';
+import { getImageBase64, getImageMediaType, getImagePreviewUrl } from './garmentImageUpload';
 
 const $ = (id: string) => document.getElementById(id);
+
+type ImageAnnotation = {
+  x: number;
+  y: number;
+  label: string;
+  reason?: string;
+};
 
 const presets: Record<string, { garmentType: string; fabric: string; description: string }> = {
   shirtdress: {
@@ -55,6 +62,69 @@ export function init(): { validate: () => void } {
     return subject ? `Analyzing construction for ${subject}...` : '';
   }
 
+  function setSilhouetteUpload(isVisible: boolean): void {
+    const panel = document.querySelector('[data-silhouette-panel]');
+    if (!panel) return;
+
+    const upload = panel.querySelector<HTMLElement>('[data-silhouette-upload]');
+    const uploadImage = panel.querySelector<HTMLImageElement>('[data-silhouette-upload-image]');
+    const placeholder = panel.querySelector<HTMLElement>('[data-silhouette-placeholder]');
+    const previewUrl = getImagePreviewUrl();
+
+    if (isVisible && previewUrl && upload && uploadImage) {
+      uploadImage.src = previewUrl;
+      upload.style.display = 'flex';
+      if (placeholder) placeholder.style.display = 'none';
+      panel.querySelectorAll<HTMLElement>('[data-silhouette]').forEach(w => {
+        w.style.display = 'none';
+      });
+      return;
+    }
+
+    if (upload) upload.style.display = 'none';
+    if (uploadImage) uploadImage.src = '';
+    clearImageAnnotations();
+    updateSilhouette(garmentEl?.value || '');
+  }
+
+  function clearImageAnnotations(): void {
+    document.querySelector('[data-image-annotations]')?.replaceChildren();
+  }
+
+  function renderImageAnnotations(annotations: ImageAnnotation[]): void {
+    const layer = document.querySelector<HTMLElement>('[data-image-annotations]');
+    if (!layer) return;
+    layer.replaceChildren();
+
+    annotations
+      .filter((ann) => Number.isFinite(ann.x) && Number.isFinite(ann.y) && ann.label)
+      .slice(0, 5)
+      .forEach((ann) => {
+        const x = Math.max(4, Math.min(96, ann.x));
+        const y = Math.max(4, Math.min(96, ann.y));
+        const marker = document.createElement('div');
+        const label = document.createElement('span');
+        marker.className = 'image-annotation';
+        marker.style.left = `${x}%`;
+        marker.style.top = `${y}%`;
+        if (x > 72) marker.dataset.edge = 'right';
+        if (y > 82) marker.dataset.edge = 'bottom';
+        label.textContent = ann.label;
+        if (ann.reason) marker.title = ann.reason;
+        marker.appendChild(label);
+        layer.appendChild(marker);
+      });
+  }
+
+  function hasLabeledSilhouette(): boolean {
+    const panel = document.querySelector('[data-silhouette-panel]');
+    if (!panel) return false;
+    const activeSilhouette = Array.from(
+      panel.querySelectorAll<HTMLElement>('[data-silhouette]')
+    ).some(w => w.style.display !== 'none');
+    return activeSilhouette && Boolean(panel.querySelector('.gd-annotation-overlay'));
+  }
+
   function validate(): void {
     if (btn) btn.disabled = (descEl?.value || '').trim().length < 20 && !getImageBase64();
   }
@@ -80,6 +150,8 @@ export function init(): { validate: () => void } {
     if (emptyEl)   emptyEl.style.display   = 'none';
     if (outputEl)  outputEl.style.display  = 'none';
     setLoading(loadingMessage());
+    setSilhouetteUpload(Boolean(getImageBase64()));
+    clearImageAnnotations();
     clearAnnotations();
 
     try {
@@ -110,6 +182,7 @@ export function init(): { validate: () => void } {
 
       if (loadingEl) loadingEl.style.display = 'none';
       if (outputEl)  outputEl.style.display  = 'grid';
+      setSilhouetteUpload(false);
 
       const fbEl = $('gd-fabric-behavior');
       if (fbEl) fbEl.textContent = data.fabric_behavior || '';
@@ -210,10 +283,15 @@ export function init(): { validate: () => void } {
       }
 
       renderAnnotations(data.annotations || []);
+      if (getImageBase64() && !hasLabeledSilhouette()) {
+        setSilhouetteUpload(true);
+        renderImageAnnotations(data.image_annotations || []);
+      }
 
     } catch (e) {
       if (loadingEl) loadingEl.style.display = 'none';
       if (emptyEl)   emptyEl.style.display   = 'block';
+      setSilhouetteUpload(false);
       if (errEl) {
         errEl.textContent = (e as Error)?.message || 'Something went wrong.';
         errEl.style.display = 'block';
