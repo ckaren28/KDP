@@ -3,6 +3,11 @@ import MainLayout from "./MainLayout.astro";
 import styles from "./fashion-collection-layout.module.css";
 const s = styles;
 
+interface Principle {
+  title: string;
+  body: string;
+}
+
 interface ColorSwatch {
   name: string;
   hex: string;
@@ -20,194 +25,259 @@ interface TechnicalFlat {
   caption?: string;
 }
 
-interface MaterialItem {
-  name: string;
-  note?: string;
+interface ImageItem {
+  image: string;
+  caption?: string;
 }
 
 interface Props {
   title: string;
   description: string;
-  season?: string;
-  year?: number;
-  logo?: string;
+  collection_logo?: string;
   collection_icon?: string;
   background_color?: string;
+  dark_color?: string;
+  mood_image?: string;
+  fabric_swatch_image?: string;
+  principles?: Principle[];
   color_palette?: ColorSwatch[];
   looks?: Look[];
   technical_flats?: TechnicalFlat[];
-  fabric_notes?: string;
-  material_palette?: MaterialItem[];
+  final_garments?: ImageItem[];
   tags?: string[];
 }
 
 const {
   title,
   description,
-  season,
-  year,
-  logo,
+  collection_logo,
   collection_icon,
   background_color = "#faf8f5",
+  dark_color = "#1a1a14",
+  mood_image,
+  fabric_swatch_image,
+  principles,
   color_palette,
   looks,
   technical_flats,
-  fabric_notes,
-  material_palette,
+  final_garments,
   tags = [],
 } = Astro.props;
-
-const seasonLabel = [season, year].filter(Boolean).join(" ");
 ---
 
 <MainLayout title={`${title} — Karen Dettmar`}>
-  <div
-    class={s["collection-page"]}
-    style={`--collection-bg: ${background_color};`}
-  >
-    <!-- Back nav -->
-    <nav class={s["back-nav"]}>
-      <a href="/projects/fashion">← Fashion</a>
+  <div class={s.page} style={`--collection-bg: ${background_color}; --collection-dark-bg: ${dark_color};`}>
+
+    <!-- 1. Nav bar -->
+    <nav class={s.nav}>
+      <a href="/projects/fashion" class={s["nav-back"]}>← Fashion</a>
+      <span class={s["nav-brand"]}>Karen Dettmar</span>
     </nav>
 
-    <!-- Collection icon: animates in large, shrinks to ambient monogram -->
-    {
-      collection_icon && (
-        <div class={s["icon-wrap"]} aria-hidden="true">
-          <img src={collection_icon} alt="" class={s["collection-icon"]} />
-        </div>
-      )
-    }
-
-    <!-- Header -->
-    <header class={s["collection-header"]}>
-      {
-        logo ? (
-          <img src={logo} alt={`${title} logo`} class={s["collection-logo"]} />
-        ) : (
-          <h1 class={s["collection-title"]}>{title}</h1>
-        )
-      }
-      {seasonLabel && <span class={s["season-label"]}>{seasonLabel}</span>}
-      <p class={s["collection-desc"]}>{description}</p>
-      {
-        tags.length > 0 && (
-          <div class={s["tags"]}>
-            {tags.map((tag) => (
-              <span class={s["tag"]}>{tag}</span>
-            ))}
+    <!-- 2. Hero: logo + desc + tags | moodboard crop + suitcase -->
+    <section class={s.hero} id="collection-hero">
+      <div class={s["hero-left"]}>
+        {collection_logo && (
+          <img src={collection_logo} alt={title} class={s["hero-logo"]} />
+        )}
+        <p class={s["hero-desc"]}>{description}</p>
+        {tags.length > 0 && (
+          <div class={s["hero-tags"]}>
+            {tags.map((t) => <span class={s.tag}>{t}</span>)}
           </div>
-        )
-      }
-    </header>
-
-    <!-- MDX prose body (concept, mood, etc.) -->
-    <div class={s["prose"]}>
-      <slot />
-    </div>
-
-    <!-- Looks grid -->
-    {
-      looks && looks.length > 0 && (
-        <section class={s["looks-section"]}>
-          <h2 class={s["section-heading"]}>The Collection</h2>
-          <div
-            class={s["looks-grid"]}
-            style={`--look-count: ${Math.min(looks.length, 5)};`}
-          >
-            {looks.map((look) => (
-              <figure class={s["look-item"]}>
-                <div class={s["look-img-wrap"]}>
-                  <img
-                    src={look.image}
-                    alt={look.title}
-                    class={s["look-img"]}
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption class={s["look-caption"]}>
-                  <span class={s["look-title"]}>{look.title}</span>
-                  {look.caption && (
-                    <span class={s["look-note"]}>{look.caption}</span>
-                  )}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      )
-    }
-
-    <!-- Color palette -->
-    {
-      color_palette && color_palette.length > 0 && (
-        <section class={s["palette-section"]}>
-          <h2 class={s["section-heading"]}>Color Palette</h2>
-          <div class={s["palette-grid"]}>
-            {color_palette.map((swatch) => (
-              <div class={s["swatch-item"]}>
-                <div
-                  class={s["swatch-circle"]}
-                  style={`background: ${swatch.hex};`}
-                  title={swatch.hex}
-                />
-                <span class={s["swatch-name"]}>{swatch.name}</span>
-                {swatch.note && (
-                  <span class={s["swatch-note"]}>{swatch.note}</span>
-                )}
+        )}
+      </div>
+      <div
+        class={s["hero-right"]}
+        style={mood_image ? `background-image: url(${mood_image});` : ""}
+      >
+        <div class={s["hero-overlay"]} aria-hidden="true"></div>
+        {collection_icon && (
+          <div class={s["suitcase-wrap"]} aria-hidden="true">
+            <div class={s["suitcase-scroll"]} id="suitcase-scroll">
+              <div class={s["suitcase-inner"]}>
+                <img src={collection_icon} alt="" class={s["suitcase-img"]} />
+                <div class={s["suitcase-shadow"]}></div>
               </div>
-            ))}
+            </div>
           </div>
-        </section>
-      )
-    }
+        )}
+      </div>
+    </section>
 
-    <!-- Material palette -->
-    {
-      material_palette && material_palette.length > 0 && (
-        <section class={s["materials-section"]}>
-          <h2 class={s["section-heading"]}>Materials</h2>
-          {fabric_notes && <p class={s["fabric-notes"]}>{fabric_notes}</p>}
-          <ul class={s["materials-list"]}>
-            {material_palette.map((m) => (
-              <li class={s["material-item"]}>
-                <span class={s["material-name"]}>{m.name}</span>
-                {m.note && <span class={s["material-note"]}>{m.note}</span>}
+    <!-- 3. Concept -->
+    <section class={s.concept}>
+      <div class={s["section-label"]}>Concept</div>
+      <div class={s["concept-body"]}>
+        <slot />
+      </div>
+    </section>
+
+    <!-- 4. Principles (conditional) -->
+    {principles && principles.length > 0 && (
+      <section class={s.principles}>
+        <div class={s["section-label"]}>Principles</div>
+        <div class={s["principles-grid"]}>
+          {principles.map((p, i) => (
+            <div class={s["principle-item"]}>
+              <span class={s["principle-num"]}>{String(i + 1).padStart(2, "0")}</span>
+              <h3 class={s["principle-title"]}>{p.title}</h3>
+              <p class={s["principle-body"]}>{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 5. Mood: full-bleed (conditional) -->
+    {mood_image && (
+      <div class={s.mood}>
+        <img src={mood_image} alt="" class={s["mood-img"]} loading="lazy" />
+      </div>
+    )}
+
+    <!-- 6. Color Palette + Fabrics (conditional) -->
+    {color_palette && color_palette.length > 0 && (
+      <section class={s["palette-fabrics"]}>
+        <div class={s["palette-col"]}>
+          <div class={s["section-label"]}>Color Palette</div>
+          <ul class={s["palette-list"]}>
+            {color_palette.map((sw) => (
+              <li class={s["palette-row"]}>
+                <span
+                  class={s["palette-dot"]}
+                  style={`background: ${sw.hex};`}
+                ></span>
+                <span class={s["palette-name"]}>{sw.name}</span>
+                <span class={s["palette-hex"]}>{sw.hex.toUpperCase()}</span>
               </li>
             ))}
           </ul>
-        </section>
-      )
-    }
+        </div>
+        {fabric_swatch_image && (
+          <div class={s["fabrics-col"]}>
+            <div class={s["section-label"]}>Fabrics</div>
+            <img
+              src={fabric_swatch_image}
+              alt="Fabric swatches"
+              class={s["fabrics-img"]}
+              loading="lazy"
+            />
+          </div>
+        )}
+      </section>
+    )}
 
-    <!-- Technical flats -->
-    {
-      technical_flats && technical_flats.length > 0 && (
-        <section class={s["flats-section"]}>
-          <h2 class={s["section-heading"]}>Technical Development</h2>
-          <div class={s["flats-grid"]}>
-            {technical_flats.map((flat) => (
-              <figure class={s["flat-item"]}>
+    <!-- 7. Looks grid (conditional) -->
+    {looks && looks.length > 0 && (
+      <section class={s.looks}>
+        <div class={s["section-label"]}>
+          Sketches
+        </div>
+        <div
+          class={s["looks-grid"]}
+          style={`--look-count: ${Math.min(looks.length, 5)};`}
+        >
+          {looks.map((look) => (
+            <figure class={s["look-item"]}>
+              <div class={s["look-img-wrap"]}>
                 <img
-                  src={flat.image}
-                  alt={flat.caption ?? "Technical flat"}
-                  class={s["flat-img"]}
+                  src={look.image}
+                  alt={look.title}
+                  class={s["look-img"]}
                   loading="lazy"
                 />
-                {flat.caption && (
-                  <figcaption class={s["flat-caption"]}>
-                    {flat.caption}
-                  </figcaption>
+              </div>
+              <figcaption class={s["look-caption"]}>
+                <span class={s["look-title"]}>{look.title}</span>
+                {look.caption && (
+                  <span class={s["look-note"]}>{look.caption}</span>
                 )}
-              </figure>
-            ))}
-          </div>
-        </section>
-      )
-    }
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
 
-    <div class={s["footer-nav"]}>
-      <a href="/projects/fashion">← Fashion</a>
-    </div>
+    <!-- 8. Technical Development (conditional) -->
+    {technical_flats && technical_flats.length > 0 && (
+      <section class={s.technical}>
+        <div class={s["section-label"]}>Technical Development</div>
+        <div class={s["flats-grid"]}>
+          {technical_flats.map((flat) => (
+            <figure class={s["flat-item"]}>
+              <img
+                src={flat.image}
+                alt={flat.caption ?? "Technical flat"}
+                class={s["flat-img"]}
+                loading="lazy"
+              />
+              {flat.caption && (
+                <figcaption class={s["flat-caption"]}>{flat.caption}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 9. Final Garments (conditional) -->
+    {final_garments && final_garments.length > 0 && (
+      <section class={s.final}>
+        <div class={s["section-label"]}>Final Garments</div>
+        <div class={s["final-grid"]}>
+          {final_garments.map((g) => (
+            <figure class={s["final-item"]}>
+              <img
+                src={g.image}
+                alt={g.caption ?? ""}
+                class={s["final-img"]}
+                loading="lazy"
+              />
+              {g.caption && (
+                <figcaption class={s["final-caption"]}>{g.caption}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Footer -->
+    <footer class={s["footer-nav"]}>
+      <a href="/projects/fashion" class={s["footer-back"]}>← Fashion</a>
+    </footer>
+
   </div>
+
+  <!-- Suitcase scroll fade: drifts right and fades as hero leaves viewport -->
+  <script>
+    (function () {
+      var hero = document.getElementById('collection-hero');
+      var el = document.getElementById('suitcase-scroll');
+      if (!hero || !el) return;
+
+      var rafId: number | null = null;
+
+      function update() {
+        var rect = hero!.getBoundingClientRect();
+        var heroH = rect.height || 1;
+        // scrolledPast = how many px of the hero top have gone above the viewport
+        var scrolledPast = Math.max(0, -rect.top);
+        // fade over the first 60% of the hero scrolling past
+        var progress = Math.max(0, Math.min(1, 1 - scrolledPast / (heroH * 0.6)));
+        el!.style.opacity = String(progress);
+        el!.style.transform = 'translateX(' + (1 - progress) * 220 + 'px)';
+        rafId = null;
+      }
+
+      function onScroll() {
+        if (!rafId) rafId = requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      update();
+    })();
+  </script>
 </MainLayout>
