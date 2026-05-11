@@ -143,6 +143,10 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
         })
       });
 
+      const ct = resp.headers.get("content-type") ?? "";
+      if (!ct.includes("application/json")) {
+        throw new Error("Service temporarily unavailable — please try again in a moment.");
+      }
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || "Request failed.");
 

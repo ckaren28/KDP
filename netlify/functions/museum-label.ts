@@ -9,10 +9,12 @@ type HandlerResponse = {
   body: string;
 };
 
+const JSON_HEADERS = { "content-type": "application/json", "cache-control": "no-store" };
+
 export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
   try {
     if (event.httpMethod !== "POST") {
-      return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+      return { statusCode: 405, headers: JSON_HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
     }
 
     const body = JSON.parse(event.body || "{}") as {
@@ -35,7 +37,7 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
     } = body;
 
     if (!description || String(description).trim().length < 30) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Please include a longer artwork description (30+ chars)." }) };
+      return { statusCode: 400, headers: JSON_HEADERS, body: JSON.stringify({ error: "Please include a longer artwork description (30+ chars)." }) };
     }
 
     const system = `
@@ -83,7 +85,7 @@ Rules:
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      return { statusCode: 500, body: JSON.stringify({ error: "Server missing ANTHROPIC_API_KEY." }) };
+      return { statusCode: 500, headers: JSON_HEADERS, body: JSON.stringify({ error: "Server missing ANTHROPIC_API_KEY." }) };
     }
 
     const resp = await fetch("https://api.anthropic.com/v1/messages", {
@@ -102,9 +104,15 @@ Rules:
       }),
     });
 
-    const raw = await resp.json() as { content?: Array<{ type: string; text: string }>; error?: { message: string } };
+    const rawText = await resp.text();
+    let raw: { content?: Array<{ type: string; text: string }>; error?: { message: string } };
+    try {
+      raw = JSON.parse(rawText) as typeof raw;
+    } catch {
+      return { statusCode: 502, headers: JSON_HEADERS, body: JSON.stringify({ error: "Anthropic API returned an unexpected response. Please try again." }) };
+    }
     if (!resp.ok) {
-      return { statusCode: resp.status, body: JSON.stringify({ error: raw?.error?.message || "Anthropic API error." }) };
+      return { statusCode: resp.status, headers: JSON_HEADERS, body: JSON.stringify({ error: raw?.error?.message || "Anthropic API error." }) };
     }
 
     const text = (raw?.content || [])
@@ -124,16 +132,16 @@ Rules:
       if (start >= 0 && end > start) {
         data = JSON.parse(cleaned.slice(start, end + 1));
       } else {
-        return { statusCode: 500, body: JSON.stringify({ error: "Model returned invalid JSON. Try again." }) };
+        return { statusCode: 500, headers: JSON_HEADERS, body: JSON.stringify({ error: "Model returned invalid JSON. Try again." }) };
       }
     }
 
     return {
       statusCode: 200,
-      headers: { "content-type": "application/json" },
+      headers: JSON_HEADERS,
       body: JSON.stringify(data),
     };
   } catch {
-    return { statusCode: 500, body: JSON.stringify({ error: "Server error." }) };
+    return { statusCode: 500, headers: JSON_HEADERS, body: JSON.stringify({ error: "Server error." }) };
   }
 }
