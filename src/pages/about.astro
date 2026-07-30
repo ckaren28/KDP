@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import TrackSelector from '../components/TrackSelector.astro';
 import styles from './about.module.css';
 const s = styles;
 ---
@@ -91,6 +92,9 @@ const s = styles;
     </div>
 
   </div><!-- /about-wrapper -->
+
+  <!-- WORK SPLIT — Fashion (studio subdomain) / Technology -->
+  <TrackSelector bordered={true} prompt="Explore the work" />
 
   <!-- Easter egg: floating note (fixed, top-right) -->
   <div class={s['egg-note']} id="eggNote" aria-hidden="true">

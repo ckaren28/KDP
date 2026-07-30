@@ -1,7 +1,5 @@
 ---
-import TrackSelector from '../components/TrackSelector.astro';
 import '../styles/index-page.css';
-import { hasIllustrations } from '../utils/illustrations';
 ---
 
 <!DOCTYPE html>
@@ -34,7 +32,6 @@ import { hasIllustrations } from '../utils/illustrations';
     <ul class="nav-links">
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>
-      {hasIllustrations && <li><a href="/illustrations">Illustrations</a></li>}
       <li><a href="/cv">CV</a></li>
     </ul>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
@@ -66,16 +63,6 @@ import { hasIllustrations } from '../utils/illustrations';
         <span class="scene-link">View project</span>
       </div>
 
-      <!-- Suitcase: on top, left of center, z-index 1 -->
-      <div class="scene-suitcase-wrap" id="suitcaseWrap">
-        <img class="scene-suitcase" src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/suitcase" alt="Traveler suitcase" />
-      </div>
-      <div class="scene-overlay scene-overlay--suitcase" id="overlaySuitcase">
-        <span class="scene-tag">Studio</span>
-        <span class="scene-title">Traveler</span>
-        <span class="scene-link">View collection ↗</span>
-      </div>
-
       <!-- Museum Tag: hangs from top, z-index 1 -->
       <div class="scene-tag-wrap" id="tagWrap">
         <img class="scene-tag-img" src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/museum-tag" alt="Museum archive tag" />
@@ -91,12 +78,6 @@ import { hasIllustrations } from '../utils/illustrations';
 
     <!-- Mobile fallback — shown only when canvas is hidden (< 768px) -->
     <div class="featured-mobile">
-      <a href="https://studio.karendettmar.com/projects/traveller" class="fmob-item">
-        <span class="fmob-tag">Studio</span>
-        <span class="fmob-title">Traveler</span>
-        <p class="fmob-desc">A travel-ready collection exploring movement, materiality, and the aesthetics of transit.</p>
-        <span class="fmob-link">View project →</span>
-      </a>
       <a href="/projects/textile-pattern-generator" class="fmob-item">
         <span class="fmob-tag">Technology</span>
         <span class="fmob-title">Generative Textile Pattern Tool</span>
@@ -114,9 +95,6 @@ import { hasIllustrations } from '../utils/illustrations';
   </section>
 
  
-
-  <!-- WORK SPLIT — Fashion / Technology -->
-  <TrackSelector bordered={true} prompt="Explore the work" />
 
   <!-- CONTACT -->
   <div class="contact-section reveal">
@@ -140,10 +118,8 @@ import { hasIllustrations } from '../utils/illustrations';
     // CINEMATIC SCENE — hover on wrapper divs, overlay centered over wrapper
     const sceneCanvas     = document.getElementById('sceneCanvas')    as HTMLElement | null;
     const vidScarf        = document.getElementById('vidScarf')       as HTMLVideoElement | null;
-    const suitcaseWrap    = document.getElementById('suitcaseWrap')   as HTMLElement | null;
     const scarfWrap       = document.getElementById('scarfWrap')      as HTMLElement | null;
     const tagWrap         = document.getElementById('tagWrap')        as HTMLElement | null;
-    const overlaySuitcase = document.getElementById('overlaySuitcase') as HTMLElement | null;
     const overlayScarf    = document.getElementById('overlayScarf')    as HTMLElement | null;
     const overlayTag      = document.getElementById('overlayTag')      as HTMLElement | null;
 
@@ -155,14 +131,6 @@ import { hasIllustrations } from '../utils/illustrations';
       overlay.style.top       = (er.top  - cr.top  + er.height / 2) + 'px';
       overlay.style.transform = 'translate(-50%, -50%)';
     }
-
-    suitcaseWrap?.addEventListener('mouseenter', () => {
-      if (overlaySuitcase && suitcaseWrap) { centerOverlay(suitcaseWrap, overlaySuitcase); overlaySuitcase.classList.add('visible'); }
-    });
-    suitcaseWrap?.addEventListener('mouseleave', () => {
-      overlaySuitcase?.classList.remove('visible');
-    });
-    suitcaseWrap?.addEventListener('click', () => { window.location.href = 'https://studio.karendettmar.com/projects/traveller'; });
 
     scarfWrap?.addEventListener('mouseenter', () => {
       vidScarf?.pause();

@@ -48,14 +48,4 @@ const projects = defineCollection({
   }),
 });
 
-const illustrations = defineCollection({
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    image: z.string(),
-    tags: z.array(z.string()),
-    description: z.string().optional(),
-  }),
-});
-
-export const collections = { projects, illustrations };
+export const collections = { projects };

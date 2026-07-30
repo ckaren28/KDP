@@ -201,35 +201,6 @@ nav {
   display: block;
 }
 
-@keyframes suitcase-float {
-  0%   { transform: translateY(0px)   rotate(-0.5deg); }
-  100% { transform: translateY(-8px)  rotate(0.5deg); }
-}
-
-.scene-suitcase-wrap {
-  position: absolute;
-  left: 25%;
-  top: 60%;
-  transform: translate(-50%, -50%);
-  overflow: visible;
-  z-index: 1;
-  cursor: pointer;
-}
-
-.scene-suitcase {
-  display: block;
-  width: 45rem;
-  border: none; outline: none;
-  animation: suitcase-float 3s ease-in-out infinite alternate;
-  transition: filter 0.3s ease;
-  filter: brightness(1);
-}
-
-.scene-suitcase-wrap:hover .scene-suitcase {
-  animation-play-state: paused;
-  filter: brightness(0.6);
-}
-
 .scene-hover-dark {
   position: absolute;
   inset: 0;
@@ -239,8 +210,7 @@ nav {
   pointer-events: none;
   z-index: 0;
 }
-.scene-suitcase-wrap:hover .scene-hover-dark,
-.scene-scarf-wrap:hover     .scene-hover-dark { opacity: 1; }
+.scene-scarf-wrap:hover .scene-hover-dark { opacity: 1; }
 
 .scene-scarf-wrap {
   position: absolute;
@@ -272,7 +242,6 @@ nav {
   gap: 8px;
 }
 .scene-overlay.visible { opacity: 1; }
-.scene-overlay--suitcase { z-index: 2; }
 .scene-overlay--scarf    { z-index: 3; }
 .scene-overlay--tag      { z-index: 2; }
 

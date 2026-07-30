@@ -27,6 +27,11 @@
   status = 301
 
 [[redirects]]
+  from = "/illustrations"
+  to = "https://studio.karendettmar.com/illustrations"
+  status = 301
+
+[[redirects]]
   from = "/projects/clover-dress"
   to = "https://studio.karendettmar.com/projects/clover-dress"
   status = 301
