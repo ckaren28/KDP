@@ -3,23 +3,6 @@ import MainLayout from '../../layouts/MainLayout.astro';
 
 const projects = [
   {
-    title: 'Generative Textile Pattern Tool',
-    subtitle: 'Living patterns generated from collection concepts',
-    desc: 'Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable. Export as SVG.',
-    tags: ['Claude API', 'Canvas', 'Generative Art', 'Textile Design'],
-    status: 'Live',
-    link: '/projects/textile-pattern-generator',
-    featured: true,
-  },
-  {
-    title: 'Garment Construction Decoder',
-    subtitle: 'Structured technical breakdown for garment construction',
-    desc: 'Describe a garment and get a technical breakdown — seam types, fabric behavior, lining, interfacing, closure options, and construction order. Includes Traveler Mode for packability constraints.',
-    tags: ['Claude API', 'Netlify Functions', 'Construction'],
-    status: 'Live',
-    link: '/projects/garment-construction-decoder',
-  },
-  {
     title: 'Museum Label Generator',
     subtitle: 'AI-powered interpretive text for cultural institutions',
     desc: 'Generates accessible, engaging museum label copy from structured object data — built for fashion archives, textile collections, and cultural institutions.',
@@ -35,10 +18,26 @@ const projects = [
     status: '2022',
     link: '/projects/wix-devcon',
   },
+  {
+    title: 'Generative Textile Pattern Tool',
+    subtitle: 'Living patterns generated from collection concepts',
+    desc: 'Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable. Export as SVG.',
+    tags: ['Claude API', 'Canvas', 'Generative Art', 'Textile Design'],
+    status: 'Live',
+    link: '/projects/textile-pattern-generator',
+  },
+  {
+    title: 'Garment Construction Decoder',
+    subtitle: 'Structured technical breakdown for garment construction',
+    desc: 'Describe a garment and get a technical breakdown — seam types, fabric behavior, lining, interfacing, closure options, and construction order. Includes Traveler Mode for packability constraints.',
+    tags: ['Claude API', 'Netlify Functions', 'Construction'],
+    status: 'Live',
+    link: '/projects/garment-construction-decoder',
+  },
 ];
 ---
 
-<MainLayout title="Creative Technology — Karen Dettmar">
+<MainLayout title="Work — Karen Dettmar">
 
   <style>
     .tech-page {
@@ -194,11 +193,69 @@ const projects = [
       display: block;
     }
 
+    /* ── FASHION LINK-OUT ── */
+    .fashion-linkout {
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .fashion-linkout-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .fashion-linkout-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      text-decoration: none;
+      color: inherit;
+      cursor: none;
+      max-width: 420px;
+    }
+    .fashion-linkout-img {
+      width: 88px;
+      height: 110px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .fashion-linkout-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+    .fashion-linkout-card:hover .fashion-linkout-img img {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+    .fashion-linkout-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2vw, 26px);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--black);
+      transition: color 0.3s;
+    }
+    .fashion-linkout-card:hover .fashion-linkout-title { color: var(--sienna); }
+    .fashion-linkout-arrow {
+      display: inline-block;
+      margin-left: 4px;
+      transition: transform 0.3s ease;
+    }
+    .fashion-linkout-card:hover .fashion-linkout-arrow { transform: translateX(4px); }
+
     @media (max-width: 900px) {
       .tech-page { padding: 100px 24px 72px; }
       .project-grid { grid-template-columns: 1fr; }
       .project-card { padding: 28px 24px; }
       .canvas-section { height: 50vh; min-height: 320px; margin-bottom: 40px; }
+      .fashion-linkout { margin-top: 48px; padding-top: 32px; }
     }
   </style>
 
@@ -206,13 +263,12 @@ const projects = [
 
     <header class="page-header reveal">
       <div class="page-header-top">
-        <span class="page-eyebrow">Creative Technology</span>
+        <span class="page-eyebrow">Work</span>
         <div class="header-links">
-          <a href="/projects/fashion" class="github-link">→ View design work</a>
           <a href="https://github.com/ckaren28" target="_blank" rel="noopener" class="github-link">github.com/ckaren28</a>
         </div>
       </div>
-      <h1 class="page-title"><em>Technology</em></h1>
+      <h1 class="page-title"><em>Work</em></h1>
     </header>
 
     <section class="canvas-section">
@@ -234,6 +290,16 @@ const projects = [
           </div>
         </a>
       ))}
+    </div>
+
+    <div class="fashion-linkout reveal">
+      <span class="fashion-linkout-label">Fashion and textile work</span>
+      <a href="https://studio.karendettmar.com" class="fashion-linkout-card">
+        <div class="fashion-linkout-img">
+          <img src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/traveller/Traveller-moodboard" alt="Traveler collection" loading="lazy" />
+        </div>
+        <span class="fashion-linkout-title">Studio <span class="fashion-linkout-arrow">→</span></span>
+      </a>
     </div>
 
   </div>

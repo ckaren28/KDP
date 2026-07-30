@@ -20,101 +20,20 @@ collections:
       - { label: "Description", name: "description", widget: "text" }
       - label: "Track"
         name: "track"
-        widget: "select"
-        options:
-          - { label: "Creative Technology", value: "tech" }
-          - { label: "Fashion", value: "fashion" }
-          - { label: "Textile Practice", value: "textiles" }
+        widget: "hidden"
+        default: "tech"
+        hint: "Fashion and textile content lives on the separate fashion-studio site (studio.karendettmar.com), not here."
       - { label: "Tags", name: "tags", widget: "list" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Live URL", name: "live_url", widget: "string", required: false }
       - { label: "GitHub URL", name: "github_url", widget: "string", required: false }
       - { label: "Password Protected", name: "password_protected", widget: "boolean", default: false, required: false }
-      - label: "Textile Category"
-        name: "textile_category"
-        widget: "select"
-        required: false
-        hint: "Textile Practice track only. Controls which filter button this project appears under. To add a new category, also update src/content/config.ts and src/content/projects/textiles.mdx."
-        options:
-          - { label: "Dyeing", value: "dyeing" }
-          - { label: "Printing", value: "printing" }
-          - { label: "Fiber", value: "fiber" }
-      - label: "Hero Image (Textile Hub)"
+      - label: "Hero Image"
         name: "hero_image"
         widget: "string"
         required: false
-        hint: "Cloudinary URL for the grid card thumbnail on the Textile Practice hub. e.g. https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/your-folder/image-name"
+        hint: "Cloudinary URL for the case study hero image. e.g. https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/your-folder/image-name"
       - { label: "Body", name: "body", widget: "markdown" }
-
-  - name: "fashion_collections"
-    label: "Fashion Collections"
-    folder: "src/content/fashion"
-    create: true
-    extension: mdx
-    format: frontmatter
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Season", name: "season", widget: "string", required: false, hint: "e.g. Fall/Winter 2025" }
-      - { label: "Year", name: "year", widget: "number", required: false }
-      - label: "Logo"
-        name: "logo"
-        widget: "image"
-        required: false
-        hint: "Wordmark or logotype for this collection"
-      - label: "Collection Icon"
-        name: "collection_icon"
-        widget: "image"
-        required: false
-        hint: "Object image (e.g. suitcase) — animates on load, shrinks to ambient monogram"
-      - label: "Background Color"
-        name: "background_color"
-        widget: "color"
-        required: false
-        default: "#faf8f5"
-        hint: "Page background tint for this collection"
-      - label: "Color Palette"
-        name: "color_palette"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Hex", name: "hex", widget: "color" }
-          - { label: "Note", name: "note", widget: "string", required: false }
-      - label: "Moodboard"
-        name: "moodboard"
-        widget: "image"
-        required: false
-      - label: "Looks"
-        name: "looks"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Image", name: "image", widget: "image" }
-          - { label: "Caption", name: "caption", widget: "string", required: false }
-      - label: "Technical Flats"
-        name: "technical_flats"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Image", name: "image", widget: "image" }
-          - { label: "Caption", name: "caption", widget: "string", required: false }
-      - label: "Fabric Notes"
-        name: "fabric_notes"
-        widget: "text"
-        required: false
-      - label: "Material Palette"
-        name: "material_palette"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Note", name: "note", widget: "string", required: false }
-      - { label: "Tags", name: "tags", widget: "list" }
-      - { label: "Date", name: "date", widget: "datetime" }
-      - { label: "Body", name: "body", widget: "markdown", required: false }    
 
   - name: "illustrations"
     label: "Illustrations"

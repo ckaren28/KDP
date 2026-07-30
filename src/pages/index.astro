@@ -1,9 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
 import TrackSelector from '../components/TrackSelector.astro';
 import '../styles/index-page.css';
-const illustrations = await getCollection('illustrations');
-const hasIllustrations = illustrations.length > 0;
+import { hasIllustrations } from '../utils/illustrations';
 ---
 
 <!DOCTYPE html>
@@ -11,7 +9,7 @@ const hasIllustrations = illustrations.length > 0;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Karen Dettmar — Creative Technologist</title>
+  <title>Karen Dettmar — Design Engineer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -42,6 +40,11 @@ const hasIllustrations = illustrations.length > 0;
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
   </nav>
 
+  <!-- HERO -->
+  <section class="hero-line reveal">
+    <p>I design and build interactive tools and interfaces in New York. <em>Occasionally a garment, too.</em></p>
+  </section>
+
    <!-- FEATURED PROJECTS -->
   <section class="featured-section reveal">
     <div class="featured-header">
@@ -68,9 +71,9 @@ const hasIllustrations = illustrations.length > 0;
         <img class="scene-suitcase" src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/suitcase" alt="Traveler suitcase" />
       </div>
       <div class="scene-overlay scene-overlay--suitcase" id="overlaySuitcase">
-        <span class="scene-tag">Fashion</span>
+        <span class="scene-tag">Studio</span>
         <span class="scene-title">Traveler</span>
-        <span class="scene-link">View project</span>
+        <span class="scene-link">View collection ↗</span>
       </div>
 
       <!-- Museum Tag: hangs from top, z-index 1 -->
@@ -88,8 +91,8 @@ const hasIllustrations = illustrations.length > 0;
 
     <!-- Mobile fallback — shown only when canvas is hidden (< 768px) -->
     <div class="featured-mobile">
-      <a href="/projects/traveller" class="fmob-item">
-        <span class="fmob-tag">Fashion</span>
+      <a href="https://studio.karendettmar.com/projects/traveller" class="fmob-item">
+        <span class="fmob-tag">Studio</span>
         <span class="fmob-title">Traveler</span>
         <p class="fmob-desc">A travel-ready collection exploring movement, materiality, and the aesthetics of transit.</p>
         <span class="fmob-link">View project →</span>
@@ -130,7 +133,7 @@ const hasIllustrations = illustrations.length > 0;
   <!-- FOOTER -->
   <footer>
     <p>© 2026 Karen Dettmar</p>
-    <p>Creative Technologist · Fashion Designer · New York City</p>
+    <p>Design Engineer · New York City</p>
   </footer>
 
   <script>
@@ -159,7 +162,7 @@ const hasIllustrations = illustrations.length > 0;
     suitcaseWrap?.addEventListener('mouseleave', () => {
       overlaySuitcase?.classList.remove('visible');
     });
-    suitcaseWrap?.addEventListener('click', () => { window.location.href = '/projects/traveller'; });
+    suitcaseWrap?.addEventListener('click', () => { window.location.href = 'https://studio.karendettmar.com/projects/traveller'; });
 
     scarfWrap?.addEventListener('mouseenter', () => {
       vidScarf?.pause();

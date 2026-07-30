@@ -14,3 +14,69 @@
 
 [functions."textile-palette"]
   timeout = 20
+
+# Fashion/textile content moved to studio.karendettmar.com — redirect old URLs
+[[redirects]]
+  from = "/studio"
+  to = "https://studio.karendettmar.com/"
+  status = 301
+
+[[redirects]]
+  from = "/projects/traveller"
+  to = "https://studio.karendettmar.com/projects/traveller"
+  status = 301
+
+[[redirects]]
+  from = "/projects/clover-dress"
+  to = "https://studio.karendettmar.com/projects/clover-dress"
+  status = 301
+
+[[redirects]]
+  from = "/projects/lined-blazer"
+  to = "https://studio.karendettmar.com/projects/lined-blazer"
+  status = 301
+
+[[redirects]]
+  from = "/projects/canvas-jacket"
+  to = "https://studio.karendettmar.com/projects/canvas-jacket"
+  status = 301
+
+[[redirects]]
+  from = "/projects/technical-flats"
+  to = "https://studio.karendettmar.com/projects/technical-flats"
+  status = 301
+
+[[redirects]]
+  from = "/projects/textiles"
+  to = "https://studio.karendettmar.com/projects/textiles"
+  status = 301
+
+[[redirects]]
+  from = "/projects/weaving"
+  to = "https://studio.karendettmar.com/projects/weaving"
+  status = 301
+
+[[redirects]]
+  from = "/projects/batik"
+  to = "https://studio.karendettmar.com/projects/batik"
+  status = 301
+
+[[redirects]]
+  from = "/projects/felting"
+  to = "https://studio.karendettmar.com/projects/felting"
+  status = 301
+
+[[redirects]]
+  from = "/projects/blockprint"
+  to = "https://studio.karendettmar.com/projects/blockprint"
+  status = 301
+
+[[redirects]]
+  from = "/projects/shibori"
+  to = "https://studio.karendettmar.com/projects/shibori"
+  status = 301
+
+[[redirects]]
+  from = "/projects/marbling"
+  to = "https://studio.karendettmar.com/projects/marbling"
+  status = 301

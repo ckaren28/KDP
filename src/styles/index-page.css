@@ -131,6 +131,29 @@ nav {
   animation: fadeIn 0.6s ease 1.6s forwards;
 }
 
+/* ── HERO LINE ── */
+.hero-line {
+  padding: 140px 48px 0;
+}
+
+.hero-line p {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 300;
+  line-height: 1.4;
+  max-width: 720px;
+  color: var(--black);
+}
+
+.hero-line em {
+  color: var(--muted);
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .hero-line { padding: 110px 24px 0; }
+}
+
 /* ── FEATURED ── */
 .featured-section {
   padding: 80px 48px 50px;

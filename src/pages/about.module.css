@@ -40,6 +40,10 @@
   max-width: 640px;
 }
 
+.bio p + p {
+  margin-top: 20px;
+}
+
 /* ── DISCIPLINES ── */
 .disciplines {
   margin-bottom: 80px;

@@ -66,9 +66,9 @@ const {
 } = Astro.props;
 
 const slug       = slugProp ?? Astro.url.pathname.split("/").filter(Boolean).pop() ?? "";
-const backHref   = track === "tech" ? "/projects/tech" : "/projects/fashion";
-const backLabel  = track === "tech" ? "← Creative Technology" : "← Fashion";
-const trackLabel = track === "tech" ? "Creative Technology" : "Fashion";
+const backHref   = track === "tech" ? "/projects/tech" : "https://studio.karendettmar.com";
+const backLabel  = track === "tech" ? "← Work" : "← Fashion";
+const trackLabel = track === "tech" ? "Work" : "Fashion";
 
 const overviewCards = [
   { label: "The problem", body: problem_statement },
