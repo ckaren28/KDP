@@ -17,8 +17,8 @@ interface Props {
 
 const { title, description, track, tags, live_url, github_url, password_protected, slug: slugProp } = Astro.props;
 const slug = slugProp ?? Astro.url.pathname.split('/').filter(Boolean).pop() ?? '';
-const backHref  = track === 'tech' ? '/projects/tech' : track === 'textiles' ? '/projects/textiles' : '/projects/fashion';
-const backLabel = track === 'tech' ? '← Creative Technology' : track === 'textiles' ? '← Textile Practice' : '← Fashion';
+const backHref  = track === 'tech' ? '/projects/tech' : track === 'textiles' ? '/projects/textiles' : '/studio';
+const backLabel = track === 'tech' ? '← Creative Technology' : track === 'textiles' ? '← Textile Practice' : '← Studio';
 const trackLabel = track === 'tech' ? 'Creative Technology' : track === 'textiles' ? 'Textile Practice' : 'Fashion';
 ---
 

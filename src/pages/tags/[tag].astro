@@ -1,11 +1,13 @@
 ---
 import { getCollection, type Render, type RenderedContent } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
+import { hasIllustrations } from '../../utils/illustrations';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  const illustrations = await getCollection('illustrations');
-  
+  // Only touch the collection once at least one entry exists — see utils/illustrations.
+  const illustrations = hasIllustrations ? await getCollection('illustrations') : [];
+
   // Get all unique tags
   const allTags = new Set<string>();
   

@@ -2,8 +2,10 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 import IllustrationGallery from '../components/IllustrationGallery';
+import { hasIllustrations } from '../utils/illustrations';
 
-const illustrations = await getCollection('illustrations');
+// Only touch the collection once at least one entry exists — see utils/illustrations.
+const illustrations = hasIllustrations ? await getCollection('illustrations') : [];
 const sortedIllustrations = illustrations.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const illustrationsData = sortedIllustrations.map(ill => ({

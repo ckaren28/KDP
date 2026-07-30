@@ -1,7 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
-const illustrations = await getCollection('illustrations');
-const hasIllustrations = illustrations.length > 0;
+import { hasIllustrations } from '../../utils/illustrations';
 ---
 
 <header>
