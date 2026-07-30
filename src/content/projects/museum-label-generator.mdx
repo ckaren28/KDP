@@ -35,6 +35,38 @@ design_decisions:
     body: "Exposes the system prompt, user template, and call flow to anyone who wants to see them. Institutional adopters want to audit what the model is doing before they trust it with their collections. Showing the work is also a trust signal for visitors skeptical of AI tools in cultural contexts."
   - title: "API key security via Netlify Function"
     body: "All calls route through a serverless function. The key never touches the browser. Cold starts add ~300ms latency on first request — acceptable for a tool used in considered, not rapid-fire, workflows."
+
+architecture_diagram: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/museum-label-generator/prompt-architecture"
+
+sample_output: |
+  Input: "Indigo Resist Length", unknown maker, c. 1890, cotton and natural
+  indigo. A length of plain-weave cotton dyed using a stitch-resist technique.
+  Concentric ring patterns emerge where the fabric was gathered and bound
+  before dyeing. Edges show irregular wear consistent with domestic use.
+
+  Wall label: This length of plain-weave cotton was dyed with natural indigo
+  around 1890 using a stitch-resist technique. Areas of fabric were gathered
+  and bound before dyeing, creating the concentric ring patterns visible
+  across the surface. The maker is unknown.
+
+  Kids label: This piece of cloth was made around 1890. To create the pattern,
+  someone gathered parts of the fabric and tied them tightly before dipping
+  the cloth in blue dye made from a plant called indigo.
+
+  Audio guide: You are looking at a length of cotton cloth made around 1890.
+  The deep blue color comes from natural indigo, a dye made from plants.
+
+  Alt text: A rectangular length of plain-weave cotton fabric dyed deep blue
+  with natural indigo. Lighter concentric ring patterns are distributed across
+  the surface, and the edges show visible fraying and uneven fading.
+
+  Curator notes:
+    - Origin is unrecorded; avoid attributing this object to any specific
+      culture, region, or tradition without supporting documentation.
+    - Stitch-resist dyeing is practiced across many cultures and time periods;
+      no single attribution is supported by the available description.
+
+  Plus an extended label and three alternate wall labels, not shown.
 ---
 
 import MuseumLabelTool from '../../components/tools/MuseumLabelTool.astro'

@@ -98,8 +98,17 @@
 
 :global(.image-annotation) {
   position: absolute;
-  transform: translate(-50%, -50%);
-  min-width: max-content;
+  /* The marker dot — not the box — must sit on the coordinate, or a label
+     points at whatever is half its own width away. The dot is the 10px first
+     grid column, so shifting left by 5px centres it on the point; vertically
+     it is already centred by align-items. Kept as custom properties so the
+     right-edge rule can override one axis without rewriting the translate. */
+  --annotation-tx: -5px;
+  --annotation-ty: -50%;
+  transform: translate(var(--annotation-tx), var(--annotation-ty));
+  /* `min-width: max-content` used to sit here and silently defeated the cap
+     below, so long labels stayed on one line and ran off the image whichever
+     side they flipped to. Letting them wrap keeps every label in frame. */
   max-width: 150px;
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr);
@@ -131,22 +140,21 @@
   box-shadow: 0 3px 10px color-mix(in srgb, var(--black) 12%, transparent);
 }
 
-:global(.image-annotation[data-edge="right"]) {
-  transform: translate(-100%, -50%);
+/* When a label would run past the right edge, flip it to the dot's left. The
+   dot moves to the last grid column, so the box shifts a full width left minus
+   the same 5px that keeps the dot on the coordinate. */
+:global(.image-annotation[data-edge-x="right"]) {
+  --annotation-tx: calc(-100% + 5px);
   grid-template-columns: minmax(0, 1fr) 10px;
 }
 
-:global(.image-annotation[data-edge="right"])::before {
+:global(.image-annotation[data-edge-x="right"])::before {
   grid-column: 2;
 }
 
-:global(.image-annotation[data-edge="right"]) span {
+:global(.image-annotation[data-edge-x="right"]) span {
   grid-column: 1;
   grid-row: 1;
-}
-
-:global(.image-annotation[data-edge="bottom"]) {
-  transform: translate(-50%, -100%);
 }
 
 .silhouette-wrap {

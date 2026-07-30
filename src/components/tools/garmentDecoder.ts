@@ -107,13 +107,24 @@ export function init(): { validate: () => void } {
         marker.className = 'image-annotation';
         marker.style.left = `${x}%`;
         marker.style.top = `${y}%`;
-        if (x > 72) marker.dataset.edge = 'right';
-        if (y > 82) marker.dataset.edge = 'bottom';
         label.textContent = ann.label;
         if (ann.reason) marker.title = ann.reason;
         marker.appendChild(label);
         layer.appendChild(marker);
       });
+
+    // Labels are sized by their text, so whether one overflows depends on how
+    // long it is — a fixed x% threshold guesses wrong in both directions. Lay
+    // them out first, then flip only the ones that actually run past the edge.
+    requestAnimationFrame(() => {
+      const bounds = layer.getBoundingClientRect();
+      layer.querySelectorAll<HTMLElement>('.image-annotation').forEach((marker) => {
+        delete marker.dataset.edgeX;
+        if (marker.getBoundingClientRect().right > bounds.right) {
+          marker.dataset.edgeX = 'right';
+        }
+      });
+    });
   }
 
   function hasLabeledSilhouette(): boolean {

@@ -58,6 +58,10 @@ design_decisions:
     body: "The hardest prompt rule to get right: no steps that require prior steps to be undone. Early versions would sequence zipper insertion after side seams were sewn, which is physically impossible on certain styles."
   - title: "Free-text input with optional structured fields"
     body: "The user can be as precise or as vague as they want. The tradeoff: vague inputs produce vague outputs. No guardrail currently prevents a dress from generating a breakdown, which would be nearly useless."
+
+results_images:
+  - image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/garment-construction-decoder/annotated-photo"
+    caption: "Photo analysis on my own canvas zip jacket. The model locates visible construction features — stand collar, dropped shoulder seam, exposed zip, welt pocket — and pins a label to each."
 ---
 
 import GarmentDecoderTool from '../../components/tools/GarmentDecoderTool.astro'
