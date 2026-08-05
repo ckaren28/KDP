@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 /* Projects page work items in dark mode */
-html[data-theme="dark"] .work-item { background: #241810; }
-html[data-theme="dark"] .swatch-default   { background: #5A4030; }
-html[data-theme="dark"] .swatch-traveler { background: #4A3525; }
+html[data-theme="dark"] .work-item { background: var(--warm-white); }
+html[data-theme="dark"] .swatch-default  { background: #5A1520; }
+html[data-theme="dark"] .swatch-traveler { background: #4A121C; }
 
 /* ── BASE ── */
 html { scroll-behavior: smooth; }
@@ -16,7 +16,7 @@ body {
   background: var(--off-white);
   color: var(--black);
   font-family: var(--font-body);
-  font-weight: 300;
+  font-weight: 400;
   cursor: none;
   overflow-x: hidden;
   transition: background-color 0.35s ease, color 0.35s ease;
@@ -89,17 +89,32 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
 .page-title {
   font-family: var(--font-display);
   font-size: clamp(44px, 6vw, 86px);
-  font-weight: 300;
-  line-height: 0.95;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.038em;
+  font-variation-settings: 'opsz' 72;
   margin-bottom: 56px;
   padding-bottom: 28px;
   border-bottom: 1px solid var(--border);
 }
 
+/* Bricolage has no true italic — colour carries the emphasis instead */
 .page-title em {
-  font-style: italic;
+  font-style: normal;
   color: var(--sienna);
+}
+
+.page-eyebrow { font-family: var(--font-mono); }
+
+/* ── SCREEN-READER ONLY ── */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── SCROLL REVEAL ── */

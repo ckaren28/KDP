@@ -1,42 +1,57 @@
-/* ── DESIGN TOKENS ── */
+/* ── DESIGN TOKENS ──────────────────────────────────────────────
+   Darkroom palette. The landing page is the darkroom itself; the
+   rest of the site is the print seen in daylight — bone paper,
+   oxblood ink. Dark mode returns to the darkroom, where powder
+   blue takes over as the accent, exactly as it does on the LP.
+   ─────────────────────────────────────────────────────────────── */
 :root {
-  --black: #2C1A0E;
-  --off-white: #faf8f5;
-  --warm-white: #F5F0E4;
-  --sienna: #B85C38;
-  --sienna-light: #D4845C;
-  --muted: #9A8872;
-  --border: rgba(44,26,14,0.14);
-  --font-display: 'Cormorant Garamond', serif;
-  --font-body: 'Archivo', sans-serif;
+  /* core */
+  --black: #2A0E13;            /* deep warm oxblood-black — body text   */
+  --off-white: #D7E3EE;        /* pale blue ground — the print, in daylight */
+  --warm-white: #C8D8E6;       /* secondary surface                     */
+  --sienna: #6B1621;           /* oxblood — primary accent              */
+  --sienna-light: #8E2A34;
+  --muted: #515C69;            /* dark enough for 10px mono on the blue */
+  --border: rgba(42,14,19,0.17);
 
-  /* Semantic tokens */
-  --text-body: #5A4030;
-  --hover-sweep: #3D2B1A;
-  --on-sweep: var(--off-white);
-  --placeholder-bg: #DED5BE;
+  /* the print */
+  --print: #A6C8E8;            /* powder blue                           */
+  --print-lt: #C4DCF2;
+  --brass: #C9A227;            /* toning warm — use sparingly           */
 
-  --fashion-bg: #f5f0e8;
-  --fashion-bg-dark: #1a110a;
+  /* type */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+
+  /* semantic */
+  --text-body: #3F4A55;
+  --hover-sweep: #3A0810;
+  --on-sweep: #D7E3EE;
+  --placeholder-bg: #BFD1E1;
+
+  --fashion-bg: #D7E3EE;
+  --fashion-bg-dark: #3A0810;
 }
 
-/* ── DARK MODE ── */
+/* ── DARK MODE — back in the darkroom ── */
 html[data-theme="dark"] {
-  --black: #faf8f5;
-  --off-white: #18100A;
-  --warm-white: #241810;
-  --sienna: #C4683F;
-  --sienna-light: #D4845C;
-  --muted: #7A6858;
-  --border: rgba(237,229,208,0.09);
+  --black: #F2EFE9;
+  --off-white: #3A0810;
+  --warm-white: #4A121C;
+  --sienna: #A6C8E8;           /* powder blue leads in the dark         */
+  --sienna-light: #C4DCF2;
+  --muted: #9A8288;
+  --border: rgba(242,239,233,0.14);
 
-  --text-body: rgba(237,229,208,0.62);
-  --hover-sweep: #2C1F14;
-  --on-sweep: #faf8f5;
-  --placeholder-bg: #2C1F14;
+  --print: #A6C8E8;
+  --print-lt: #C4DCF2;
+  --brass: #C9A227;
 
-  --fashion-bg: #1a110a;
+  --text-body: rgba(242,239,233,0.68);
+  --hover-sweep: #6B1621;
+  --on-sweep: #F2EFE9;
+  --placeholder-bg: #4A121C;
+
+  --fashion-bg: #3A0810;
 }
-
-
-

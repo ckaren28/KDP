@@ -5,12 +5,12 @@ import styles from './about.module.css';
 const s = styles;
 ---
 
-<MainLayout title="About — Karen Dettmar">
+<MainLayout title="About — Karen Dettmar" theme="dark">
   <div class={s['about-wrapper']}>
 
     <!-- Header: name headline only -->
     <div class={`${s['about-header']} reveal`}>
-      <h1 class={s['about-title']}>Karen <em>Dettmar</em></h1>
+      <h1 class={s['about-title']} id="aboutTitle">Karen <em>Dettmar</em></h1>
     </div>
 
     <!-- Bio paragraph -->
@@ -110,8 +110,9 @@ const s = styles;
   let eggLastT  = 0;
   let eggTimer: ReturnType<typeof setTimeout> | null = null;
 
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle?.addEventListener('click', () => {
+  // The theme toggle it used to hang off is gone — triple-click the name instead.
+  const eggTarget = document.getElementById('aboutTitle');
+  eggTarget?.addEventListener('click', () => {
     const now = Date.now();
     if (now - eggLastT > 800) eggClicks = 0;
     eggClicks++;

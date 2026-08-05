@@ -1,201 +1,92 @@
 ---
-import '../styles/index-page.css';
+import '../styles/darkroom.css';
+import ThemeSwitch from '../components/global/ThemeSwitch.astro';
+import { SITE_TITLE } from '../consts';
+
+const STUDIO = 'https://studio.karendettmar.com';
+const GITHUB = 'https://github.com/ckaren28';
+const description = 'Karen Dettmar — Creative Technologist and Design Engineer in New York.';
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dk-root" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Karen Dettmar — Design Engineer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <!-- Theme: must run before body renders to prevent flash -->
+  <title>{SITE_TITLE} — Creative Technologist &amp; Design Engineer</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <!-- Theme must resolve before paint. The darkroom opens dark; a stored
+       choice from anywhere on the site wins. -->
   <script is:inline>
-    (function() {
-      const stored = localStorage.getItem('theme');
-      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', stored || preferred);
+    (function () {
+      var stored = null;
+      try { stored = localStorage.getItem('theme'); } catch (e) {}
+      document.documentElement.setAttribute('data-theme', stored || 'dark');
     })();
   </script>
-
+  <link rel="canonical" href="https://karendettmar.com/" />
+  <meta property="og:title" content={`${SITE_TITLE} — Creative Technologist & Design Engineer`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
 </head>
-<body>
 
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+<body class="dk">
+  <a href="#main" class="dk-skip">Skip to content</a>
 
-  <!-- NAV -->
-  <nav>
-    <a href="/" class="nav-logo">Karen Dettmar</a>
-    <ul class="nav-links">
+  <canvas class="dk-stage" aria-hidden="true"></canvas>
+  <div class="dk-grain" aria-hidden="true"></div>
+
+  <div class="dk-id" id="main">
+    <h1 class="dk-name" role="button" tabindex="0" aria-expanded="false" aria-controls="dkLink">
+      <span class="dk-line" data-l="0"></span>
+      <span class="dk-line" data-l="1"></span>
+      <span class="dk-cue" aria-hidden="true">
+        <span class="dk-cue-grip"></span>
+        Grab a letter and pull
+      </span>
+      <a class="dk-link" id="dkLink" href="/projects" tabindex="-1" aria-hidden="true">View projects</a>
+    </h1>
+    <div class="dk-rule" aria-hidden="true"></div>
+    <p class="dk-role">Creative Technologist · Design Engineer</p>
+    <p class="dk-loc">New York</p>
+  </div>
+
+  <nav class="dk-nav" aria-label="Primary">
+    <a href="/" class="dk-who">Karen Dettmar<i>New York</i></a>
+    <ul>
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>
       <li><a href="/cv">CV</a></li>
+      <li><a href={STUDIO}>Studio ↗</a></li>
+      <li>
+        <a href={GITHUB} class="gh" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          GitHub
+        </a>
+      </li>
+      <li class="dk-switch"><ThemeSwitch /></li>
     </ul>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero-line reveal">
-    <p>I design and build interactive tools and interfaces in New York. <em>Occasionally a garment, too.</em></p>
-  </section>
-
-   <!-- FEATURED PROJECTS -->
-  <section class="featured-section reveal">
-    <div class="featured-header">
-      <span class="featured-eyebrow">Featured Projects</span>
-    </div>
-    <!-- cinematic scene -->
-    <div class="scene-canvas" id="sceneCanvas">
-
-      <!-- Scarf: full-canvas background, z-index 1 -->
-      <div class="scene-scarf-wrap" id="scarfWrap">
-        <video class="scene-scarf" id="vidScarf" autoplay muted loop playsinline>
-          <source src="/videos/scarf.mp4" type="video/mp4" />
-        </video>
-        <div class="scene-hover-dark"></div>
-      </div>
-      <div class="scene-overlay scene-overlay--scarf" id="overlayScarf">
-        <span class="scene-tag">Technology</span>
-        <span class="scene-title">Generative Textile Pattern Tool</span>
-        <span class="scene-link">View project</span>
-      </div>
-
-      <!-- Museum Tag: hangs from top, z-index 1 -->
-      <div class="scene-tag-wrap" id="tagWrap">
-        <img class="scene-tag-img" src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/museum-tag" alt="Museum archive tag" />
-        <div class="scene-hover-dark"></div>
-      </div>
-      <div class="scene-overlay scene-overlay--tag" id="overlayTag">
-        <span class="scene-tag">Technology</span>
-        <span class="scene-title">Museum Label Generator</span>
-        <span class="scene-link">View project</span>
-      </div>
-
-    </div>
-
-    <!-- Mobile fallback — shown only when canvas is hidden (< 768px) -->
-    <div class="featured-mobile">
-      <a href="/projects/textile-pattern-generator" class="fmob-item">
-        <span class="fmob-tag">Technology</span>
-        <span class="fmob-title">Generative Textile Pattern Tool</span>
-        <p class="fmob-desc">Enter a concept — get an AI-suggested palette and an animated, exportable pattern.</p>
-        <span class="fmob-link">View project →</span>
-      </a>
-      <a href="/projects/museum-label-generator" class="fmob-item">
-        <span class="fmob-tag">Technology</span>
-        <span class="fmob-title">Museum Label Generator</span>
-        <p class="fmob-desc">AI-drafted museum labels with human editorial control built into the interface.</p>
-        <span class="fmob-link">View project →</span>
-      </a>
-    </div>
-
-  </section>
-
- 
-
-  <!-- CONTACT -->
-  <div class="contact-section reveal">
-    <span class="contact-label">Get in touch</span>
-    <a href="mailto:karen.dettmar@gmail.com" class="contact-email">
-      karen.dettmar@gmail.com
-    </a>
-    <div class="contact-sub-links">
-      <a href="https://linkedin.com/in/kdettmar" target="_blank" class="contact-sub-link">LinkedIn</a>
-      <a href="/Karen_Dettmar_CV.pdf" target="_blank" class="contact-sub-link">CV</a>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 Karen Dettmar</p>
-    <p>Design Engineer · New York City</p>
-  </footer>
+  <p class="dk-hint" aria-hidden="true">Move to develop</p>
+  <a href="/projects" class="dk-enter">See the work →</a>
+  <div class="dk-cur" aria-hidden="true"></div>
+  <p class="dk-msg" role="status" aria-live="polite"></p>
 
   <script>
-    // CINEMATIC SCENE — hover on wrapper divs, overlay centered over wrapper
-    const sceneCanvas     = document.getElementById('sceneCanvas')    as HTMLElement | null;
-    const vidScarf        = document.getElementById('vidScarf')       as HTMLVideoElement | null;
-    const scarfWrap       = document.getElementById('scarfWrap')      as HTMLElement | null;
-    const tagWrap         = document.getElementById('tagWrap')        as HTMLElement | null;
-    const overlayScarf    = document.getElementById('overlayScarf')    as HTMLElement | null;
-    const overlayTag      = document.getElementById('overlayTag')      as HTMLElement | null;
-
-    function centerOverlay(el: HTMLElement, overlay: HTMLElement) {
-      if (!sceneCanvas) return;
-      const er = el.getBoundingClientRect();
-      const cr = sceneCanvas.getBoundingClientRect();
-      overlay.style.left      = (er.left - cr.left + er.width  / 2) + 'px';
-      overlay.style.top       = (er.top  - cr.top  + er.height / 2) + 'px';
-      overlay.style.transform = 'translate(-50%, -50%)';
-    }
-
-    scarfWrap?.addEventListener('mouseenter', () => {
-      vidScarf?.pause();
-      if (overlayScarf && scarfWrap) { centerOverlay(scarfWrap, overlayScarf); overlayScarf.classList.add('visible'); }
-    });
-    scarfWrap?.addEventListener('mouseleave', () => {
-      vidScarf?.play();
-      overlayScarf?.classList.remove('visible');
-    });
-    scarfWrap?.addEventListener('click', () => { window.location.href = '/projects/textile-pattern-generator'; });
-
-    tagWrap?.addEventListener('mouseenter', () => {
-      if (overlayTag && tagWrap) { centerOverlay(tagWrap, overlayTag); overlayTag.classList.add('visible'); }
-    });
-    tagWrap?.addEventListener('mouseleave', () => {
-      overlayTag?.classList.remove('visible');
-    });
-    tagWrap?.addEventListener('click', () => { window.location.href = '/projects/museum-label-generator'; });
-
-    // CURSOR
-    const cursor = document.getElementById('cursor') as HTMLElement | null;
-    const ring = document.getElementById('cursorRing') as HTMLElement | null;
-    let ringX = 0, ringY = 0, curX = 0, curY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-      curX = e.clientX; curY = e.clientY;
-      if (cursor) { cursor.style.left = curX + 'px'; cursor.style.top = curY + 'px'; }
-    });
-
-    function animateRing() {
-      ringX += (curX - ringX) * 0.1;
-      ringY += (curY - ringY) * 0.1;
-      if (ring) { ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px'; }
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    // THEME TOGGLE
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle?.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-
-    // SYSTEM PREFERENCE AUTO-THEME
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      const theme = e.matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-    });
-
-    // SCROLL REVEAL
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 60);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.08 });
-    reveals.forEach(el => observer.observe(el));
+    import { initDarkroom } from '../scripts/darkroom';
+    import { initThemeTyping } from '../scripts/theme';
+    import { initPrintEgg } from '../scripts/print';
+    initThemeTyping();
+    initPrintEgg();
+    initDarkroom(document.body);
   </script>
-
 </body>
 </html>

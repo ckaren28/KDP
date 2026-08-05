@@ -1,0 +1,222 @@
+/* ──────────────────────────────────────────────────────────────
+   Darkroom — landing page visual system
+   Palette taken from Karen's oxblood / powder-blue references.
+   The negative variant is a designed inversion, not a filter.
+   ────────────────────────────────────────────────────────────── */
+
+.dk {
+  --ox:#6B1621;
+  --ox-deep:#3A0810;
+  --print:#A6C8E8;
+  --print-lt:#C4DCF2;
+  --tone:#C9A227;
+
+  --ink:var(--print-lt);
+  --soft:rgba(242,239,233,.74);
+  --faint:rgba(242,239,233,.42);
+  --chrome:#F2EFE9;
+}
+
+/* Light is the negative print. Its outer edge is exactly the site's light
+   ground, so the landing page and every other page share one colour. */
+.dk.neg {
+  --ox:#C5D6E6;
+  --ox-deep:#D7E3EE;
+  --print:#7A2230;
+  --print-lt:#6B1621;
+  --tone:#3B5BA8;
+
+  --ink:#6B1621;
+  --soft:rgba(38,14,18,.78);
+  --faint:rgba(38,14,18,.45);
+  --chrome:#2A1014;
+}
+
+html.dk-root, body.dk { height:100%; overflow:hidden; }
+
+body.dk {
+  margin:0;
+  background:var(--ox-deep);
+  color:var(--chrome);
+  font-family:'Instrument Sans', system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  cursor:none;
+  transition:background .45s ease, color .45s ease;
+}
+
+.dk canvas.dk-stage {
+  position:fixed; inset:0; width:100vw; height:100vh; display:block; z-index:0;
+}
+
+.dk .dk-grain {
+  position:fixed; inset:0; z-index:5; pointer-events:none; opacity:.30;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='0.5'/></svg>");
+  background-size:180px 180px;
+  mix-blend-mode:overlay;
+}
+.dk.neg .dk-grain { mix-blend-mode:multiply; opacity:.22; }
+
+/* ── identity ───────────────────────────────────────────────── */
+/* the block sits a little high so the cue has room under the name
+   without running into the rule */
+.dk .dk-id {
+  position:fixed; inset:0; z-index:3; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; pointer-events:none;
+  padding:0 18px clamp(70px,9vh,130px);
+}
+.dk .dk-name {
+  margin:0;
+  font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:600;
+  font-size:clamp(54px,13.6vw,208px); line-height:.84; letter-spacing:-.028em;
+  font-variation-settings:'opsz' 96;
+  color:var(--ink); text-align:center;
+  text-shadow:0 0 70px rgba(58,8,16,.45);
+  pointer-events:auto; position:relative;
+  touch-action:none; -webkit-user-select:none; user-select:none;
+  transition:color .45s ease;
+}
+.dk.neg .dk-name { text-shadow:0 0 70px rgba(215,227,238,.7); }
+.dk .dk-name:focus-visible { outline:2px solid var(--chrome); outline-offset:20px; border-radius:4px; }
+.dk .dk-line { display:block; }
+.dk .dk-ltr  { display:inline-block; will-change:transform; }
+
+/* The cue has to actually be findable — bigger, brighter, boxed, and it
+   breathes until the visitor grabs something. */
+.dk .dk-cue {
+  position:absolute; left:50%; top:100%; transform:translateX(-50%);
+  margin-top:30px;
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:12px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--chrome);
+  white-space:nowrap; pointer-events:none;
+  padding:9px 18px; border:1px solid var(--faint); border-radius:100px;
+  opacity:.92;
+  animation:dk-cue-breathe 2.6s ease-in-out infinite;
+  transition:opacity .45s;
+}
+.dk .dk-cue-grip {
+  width:26px; height:9px; position:relative; flex:none;
+  border-left:1px solid currentColor; border-right:1px solid currentColor;
+}
+.dk .dk-cue-grip::after {
+  content:''; position:absolute; left:0; right:0; top:50%;
+  border-top:1px dashed currentColor;
+  animation:dk-cue-stretch 2.6s ease-in-out infinite;
+}
+@keyframes dk-cue-breathe {
+  0%,100% { transform:translateX(-50%) translateY(0);   opacity:.92; }
+  50%     { transform:translateX(-50%) translateY(4px); opacity:1; }
+}
+@keyframes dk-cue-stretch {
+  0%,100% { transform:scaleX(.55); }
+  50%     { transform:scaleX(1); }
+}
+.dk .dk-name.touched .dk-cue { opacity:0; animation:none; }
+
+.dk .dk-link {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  opacity:0; pointer-events:none;
+  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
+  font-size:clamp(15px,1.75vw,23px); letter-spacing:.005em; line-height:1;
+  color:var(--chrome); text-decoration:none; white-space:nowrap;
+  padding:14px 30px; border:1px solid var(--faint); border-radius:100px;
+  backdrop-filter:blur(3px);
+  transition:opacity .5s ease, border-color .2s, color .2s;
+}
+.dk .dk-link:hover { color:var(--ink); border-color:var(--ink); }
+.dk .dk-link:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+
+/* clears the cue pill, which is absolutely positioned under the name */
+.dk .dk-rule { width:clamp(180px,26vw,360px); height:1px; background:var(--faint); margin-top:clamp(96px,11vh,150px); }
+.dk .dk-role {
+  margin:clamp(16px,2.2vw,24px) 0 0; font-family:'Space Mono', ui-monospace, monospace;
+  font-size:clamp(9.5px,1.05vw,12px); letter-spacing:.26em; text-transform:uppercase;
+  color:var(--soft); text-align:center;
+}
+.dk .dk-loc {
+  margin:9px 0 0; font-family:'Space Mono', ui-monospace, monospace;
+  font-size:clamp(9px,.95vw,10.5px); letter-spacing:.22em; text-transform:uppercase;
+  color:var(--faint); text-align:center;
+}
+
+/* ── nav ────────────────────────────────────────────────────── */
+.dk .dk-nav {
+  position:fixed; top:0; left:0; right:0; z-index:10;
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:26px clamp(20px,3.2vw,46px); gap:24px; flex-wrap:wrap; pointer-events:none;
+}
+.dk .dk-nav * { pointer-events:auto; }
+.dk .dk-who {
+  font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:700; font-size:16px;
+  letter-spacing:-.015em; text-decoration:none; color:var(--chrome);
+}
+.dk .dk-who i {
+  font-style:normal; font-weight:400; font-family:'Instrument Sans', system-ui, sans-serif;
+  font-size:13.5px; color:var(--soft); margin-left:12px;
+}
+.dk .dk-nav ul { display:flex; gap:22px; list-style:none; align-items:baseline; font-size:14px; margin:0; padding:0; }
+.dk .dk-nav a { color:var(--soft); text-decoration:none; transition:color .18s; }
+.dk .dk-nav a:hover { color:var(--ink); }
+.dk .dk-nav a:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
+.dk .dk-nav a.gh { color:var(--chrome); font-weight:600; display:inline-flex; align-items:center; gap:7px; }
+.dk .dk-nav a.gh svg { width:15px; height:15px; fill:currentColor; }
+.dk .dk-nav a.gh:hover { color:var(--tone); }
+
+.dk .dk-hint {
+  position:fixed; left:clamp(20px,3.2vw,46px); bottom:26px; z-index:10; margin:0;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--faint);
+  transition:opacity .7s ease; pointer-events:none;
+}
+.dk .dk-hint.gone { opacity:0; }
+
+.dk .dk-enter {
+  position:fixed; right:clamp(20px,3.2vw,46px); bottom:22px; z-index:10;
+  font-size:14px; font-weight:600; color:var(--chrome); text-decoration:none;
+  display:inline-flex; align-items:center; gap:9px;
+  border-bottom:1px solid var(--faint); padding-bottom:3px; transition:.18s;
+}
+.dk .dk-enter:hover { color:var(--ink); border-color:var(--ink); gap:14px; }
+.dk .dk-enter:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+
+.dk .dk-cur {
+  position:fixed; z-index:20; pointer-events:none; width:26px; height:26px;
+  border:1px solid var(--faint); border-radius:50%;
+  transform:translate(-50%,-50%);
+  transition:width .3s, height .3s, border-color .3s, opacity .2s;
+}
+.dk .dk-cur.toning   { width:15px; height:15px; border-color:var(--tone); }
+.dk .dk-cur.grabbing { width:11px; height:11px; background:var(--chrome); border-color:transparent; }
+/* over the letters, the cursor opens up so they read as pickable */
+.dk .dk-cur.overname { width:46px; height:46px; border-color:var(--chrome); border-width:1.5px; }
+
+.dk .dk-msg {
+  position:fixed; left:50%; bottom:19vh; transform:translateX(-50%); z-index:24; margin:0;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--faint); opacity:0;
+  transition:opacity .35s ease; pointer-events:none; text-align:center;
+}
+.dk .dk-msg.on { opacity:1; }
+
+.dk .dk-skip {
+  position:absolute; left:-9999px; top:0; z-index:60;
+  background:#D7E3EE; color:#3A0810; padding:12px 18px;
+  font-size:14px; font-weight:600; text-decoration:none;
+}
+.dk .dk-skip:focus { left:16px; top:16px; }
+
+@media (max-width:720px) {
+  body.dk { cursor:auto; }
+  .dk .dk-cur { display:none; }
+  .dk .dk-nav { padding:18px 20px; }
+  .dk .dk-nav ul { gap:15px; font-size:13px; }
+  .dk .dk-hint { bottom:78px; }
+  .dk .dk-enter { bottom:76px; font-size:13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dk .dk-ltr, .dk .dk-cur, .dk .dk-msg, .dk .dk-hint, .dk .dk-link { transition:none !important; }
+  .dk .dk-cue, .dk .dk-cue-grip::after { animation:none; }
+  .dk .dk-cur { display:none; }
+  body.dk { cursor:auto; }
+}

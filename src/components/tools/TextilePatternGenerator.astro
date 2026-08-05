@@ -86,7 +86,9 @@ import LoadingState from '../LoadingState.astro';
 
 <script>
   // ── STATE ──
-  let colors = ['#C4A882', '#8B6F5E', '#DED5BE', '#7D8C7C', '#5A5550'];
+  // Site palette, held to a mid-luminance band so every swatch clears 3:1
+  // against both the light (#D7E3EE) and dark (#3A0810) page grounds.
+  let colors = ['#9B5566', '#4E6FA8', '#C05A4A', '#7A6E95', '#8A7D86'];
   let patternType = 'geometric';
   let density = 5;
   let frame = 0;

@@ -37,7 +37,7 @@ const projects = [
 ];
 ---
 
-<MainLayout title="Work — Karen Dettmar">
+<MainLayout title="Work — Karen Dettmar" theme="dark">
 
   <style>
     .tech-page {
@@ -58,33 +58,21 @@ const projects = [
       margin-bottom: 12px;
     }
     .page-eyebrow {
+      font-family: var(--font-mono);
       font-size: 10px;
-      font-weight: 500;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--muted);
     }
-    .header-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .github-link {
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.25s;
-    }
-    .github-link:hover { color: var(--black); }
     .page-title {
       font-family: var(--font-display);
       font-size: clamp(44px, 6vw, 80px);
-      font-weight: 300;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
+      font-weight: 600;
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      font-variation-settings: 'opsz' 72;
     }
-    .page-title em { font-style: italic; color: var(--sienna); }
+    .page-title em { font-style: normal; color: var(--sienna); }
 
     /* grid */
     .project-grid {
@@ -93,94 +81,214 @@ const projects = [
       gap: 24px;
     }
 
+    /* Cards follow the landing page: hairline rules, display type with no
+       italic, monospace for every piece of metadata, oxblood on hover. */
     .project-card {
+      position: relative;
       display: flex;
       flex-direction: column;
-      padding: 36px;
+      padding: 34px 32px 30px;
       border: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
       cursor: none;
-      transition: border-color 0.3s ease, background 0.3s ease;
+      overflow: hidden;
+      transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2,0.8,0.3,1);
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--sienna);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.45s cubic-bezier(0.2,0.8,0.3,1);
     }
     .project-card:hover {
-      border-color: var(--black);
+      border-color: var(--sienna);
       background: var(--warm-white);
+      transform: translateY(-3px);
+    }
+    .project-card:hover::before { transform: scaleY(1); }
+    .project-card:focus-visible {
+      outline: 2px solid var(--sienna);
+      outline-offset: 4px;
+    }
+
+    /* ── FILTERS ── */
+    .filters { margin-bottom: 34px; }
+    .filter-search {
+      position: relative;
+      display: block;
+      max-width: 420px;
+      margin-bottom: 18px;
+    }
+    .filter-search input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 30px 10px 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--black);
+      cursor: none;
+      transition: border-color 0.25s ease;
+    }
+    .filter-search input::placeholder { color: var(--muted); }
+    .filter-search input:focus {
+      outline: none;
+      border-bottom-color: var(--sienna);
+    }
+    .filter-search input:focus-visible { outline: none; }
+    .filter-clear {
+      position: absolute;
+      right: 0; top: 50%; transform: translateY(-50%);
+      background: none; border: none; padding: 4px;
+      color: var(--muted); cursor: none; line-height: 1;
+      font-size: 16px; display: none;
+    }
+    .filter-clear:hover { color: var(--black); }
+    .filter-clear.on { display: block; }
+
+    .filter-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+    .project-card[hidden] { display: none; }
+    .no-results {
+      padding: 48px 0;
+      font-size: 15px;
+      color: var(--muted);
     }
 
     .card-title {
       font-family: var(--font-display);
-      font-size: clamp(24px, 2.4vw, 34px);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
+      font-size: clamp(24px, 2.5vw, 36px);
+      font-weight: 600;
+      font-style: normal;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      font-variation-settings: 'opsz' 40;
       color: var(--black);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       transition: color 0.3s;
     }
     .project-card:hover .card-title { color: var(--sienna); }
 
     .card-subtitle {
-      font-size: 12px;
+      font-size: 13.5px;
+      line-height: 1.5;
       color: var(--muted);
-      letter-spacing: 0.02em;
-      font-weight: 300;
-      margin-bottom: 20px;
+      font-weight: 400;
+      margin-bottom: 18px;
     }
 
     .card-desc {
-      font-size: 13px;
-      line-height: 1.75;
+      font-size: 14px;
+      line-height: 1.72;
       color: var(--text-body);
-      font-weight: 300;
+      font-weight: 400;
       flex: 1;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     .card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
     .card-tag {
+      font-family: var(--font-mono);
       font-size: 9px;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--muted);
       border: 1px solid var(--border);
-      padding: 4px 10px;
+      border-radius: 100px;
+      padding: 5px 11px;
     }
 
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
     }
     .card-status {
+      font-family: var(--font-mono);
       font-size: 9px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--sienna);
     }
     .card-link {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-style: italic;
-      font-weight: 300;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
       color: var(--muted);
-      transition: color 0.3s;
+      transition: color 0.3s, gap 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
     }
-    .project-card:hover .card-link { color: var(--black); }
+    .project-card:hover .card-link { color: var(--black); gap: 12px; }
 
-    /* ── CANVAS SECTION ── */
+    /* ── EXPERIMENTS ── */
+    .experiments {
+      margin-top: 96px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .exp-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .exp-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      color: var(--black);
+    }
+    .exp-note {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 46ch;
+    }
+    .exp-item { margin-top: 8px; }
+    .exp-caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
     .canvas-section {
       position: relative;
       width: 100%;
       height: 65vh;
       min-height: 400px;
-      margin-bottom: 64px;
       border: 1px solid var(--border);
       overflow: hidden;
     }
@@ -193,69 +301,12 @@ const projects = [
       display: block;
     }
 
-    /* ── FASHION LINK-OUT ── */
-    .fashion-linkout {
-      margin-top: 64px;
-      padding-top: 40px;
-      border-top: 1px solid var(--border);
-    }
-    .fashion-linkout-label {
-      display: block;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-    .fashion-linkout-card {
-      display: inline-flex;
-      align-items: center;
-      gap: 20px;
-      text-decoration: none;
-      color: inherit;
-      cursor: none;
-      max-width: 420px;
-    }
-    .fashion-linkout-img {
-      width: 88px;
-      height: 110px;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    .fashion-linkout-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.9;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-    }
-    .fashion-linkout-card:hover .fashion-linkout-img img {
-      transform: scale(1.04);
-      opacity: 1;
-    }
-    .fashion-linkout-title {
-      font-family: var(--font-display);
-      font-size: clamp(20px, 2vw, 26px);
-      font-style: italic;
-      font-weight: 300;
-      color: var(--black);
-      transition: color 0.3s;
-    }
-    .fashion-linkout-card:hover .fashion-linkout-title { color: var(--sienna); }
-    .fashion-linkout-arrow {
-      display: inline-block;
-      margin-left: 4px;
-      transition: transform 0.3s ease;
-    }
-    .fashion-linkout-card:hover .fashion-linkout-arrow { transform: translateX(4px); }
-
     @media (max-width: 900px) {
       .tech-page { padding: 100px 24px 72px; }
       .project-grid { grid-template-columns: 1fr; }
-      .project-card { padding: 28px 24px; }
-      .canvas-section { height: 50vh; min-height: 320px; margin-bottom: 40px; }
-      .fashion-linkout { margin-top: 48px; padding-top: 32px; }
+      .project-card { padding: 26px 22px; }
+      .canvas-section { height: 50vh; min-height: 320px; }
+      .experiments { margin-top: 64px; padding-top: 32px; }
     }
   </style>
 
@@ -264,20 +315,35 @@ const projects = [
     <header class="page-header reveal">
       <div class="page-header-top">
         <span class="page-eyebrow">Work</span>
-        <div class="header-links">
-          <a href="https://github.com/ckaren28" target="_blank" rel="noopener" class="github-link">github.com/ckaren28</a>
-        </div>
       </div>
       <h1 class="page-title"><em>Work</em></h1>
     </header>
 
-    <section class="canvas-section">
-      <canvas id="heroCanvas"></canvas>
-    </section>
+    <div class="filters">
+      <label class="filter-search">
+        <span class="visually-hidden">Search projects</span>
+        <input
+          type="search"
+          id="projectSearch"
+          placeholder="Search by name, tag, or tool"
+          autocomplete="off"
+          aria-describedby="filterCount"
+        />
+        <button type="button" class="filter-clear" id="filterClear" aria-label="Clear search">×</button>
+      </label>
 
-    <div class="project-grid">
+      <p class="filter-count" id="filterCount" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="project-grid" id="projectGrid">
       {projects.map((p) => (
-        <a href={p.link} class="project-card reveal">
+        <a
+          href={p.link}
+          class="project-card reveal"
+          data-title={p.title.toLowerCase()}
+          data-search={`${p.title} ${p.subtitle} ${p.desc} ${p.tags.join(' ')}`.toLowerCase()}
+          data-tags={p.tags.join('|')}
+        >
           <h2 class="card-title">{p.title}</h2>
           <p class="card-subtitle">{p.subtitle}</p>
           <p class="card-desc">{p.desc}</p>
@@ -286,23 +352,75 @@ const projects = [
           </div>
           <div class="card-footer">
             <span class="card-status">{p.status}</span>
-            <span class="card-link">View project →</span>
+            <span class="card-link">View project <span aria-hidden="true">→</span></span>
           </div>
         </a>
       ))}
     </div>
+    <p class="no-results" id="noResults" hidden>Nothing matches that. Try another word, or clear the search.</p>
 
-    <div class="fashion-linkout reveal">
-      <span class="fashion-linkout-label">Fashion and textile work</span>
-      <a href="https://studio.karendettmar.com" class="fashion-linkout-card">
-        <div class="fashion-linkout-img">
-          <img src="https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/traveller/Traveller-moodboard" alt="Traveler collection" loading="lazy" />
+    <section class="experiments reveal" id="experiments">
+      <div class="exp-head">
+        <h2 class="exp-title">Experiments</h2>
+        <p class="exp-note">
+          Prototypes and things that aren't finished. Small, occasionally pointless,
+          and where most of the interesting problems turn up first.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="canvas-section">
+          <canvas id="heroCanvas"></canvas>
         </div>
-        <span class="fashion-linkout-title">Studio <span class="fashion-linkout-arrow">→</span></span>
-      </a>
-    </div>
+        <div class="exp-caption">
+          <span>Thread drawing — pick a colour, draw on the shirt</span>
+          <span>Canvas · Path2D</span>
+        </div>
+      </div>
+    </section>
 
   </div>
+
+  <script>
+    // ── SEARCH + TAG FILTERS ──
+    (function () {
+      const input   = document.getElementById('projectSearch') as HTMLInputElement | null;
+      const clear   = document.getElementById('filterClear');
+      const count   = document.getElementById('filterCount');
+      const empty   = document.getElementById('noResults');
+      const cards   = Array.from(document.querySelectorAll<HTMLElement>('.project-card'));
+      if (!input || !count || !empty) return;
+
+      function apply() {
+        const q = input!.value.trim().toLowerCase();
+        let shown = 0;
+
+        cards.forEach(card => {
+          // data-search already includes each project's tags, so typing a tool
+          // or language name still finds it
+          const show = !q || (card.dataset.search ?? '').includes(q);
+          card.hidden = !show;
+          if (show) shown++;
+        });
+
+        clear?.classList.toggle('on', q.length > 0);
+        empty!.hidden = shown > 0;
+        count!.textContent = shown === cards.length
+          ? ''
+          : `${shown} of ${cards.length} projects`;
+      }
+
+      input.addEventListener('input', apply);
+      clear?.addEventListener('click', () => { input!.value = ''; input!.focus(); apply(); });
+
+      // Escape clears the search
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { input!.value = ''; apply(); }
+      });
+
+      apply();
+    })();
+  </script>
 
   <script>
     // T-SHIRT THREAD DRAWING
@@ -311,15 +429,19 @@ const projects = [
       if (!canvas) return;
       const ctx = canvas.getContext('2d')!;
 
-      const SHIRT_COLORS = ['#faf8f5','#e8dcc8','#c4a882','#8b6f5e','#2C1A0E','#7d8c7c','#B85C38','#5a5550'];
-      const THREAD_COLORS = ['#8b6f5e','#5a5550','#c4a882','#7d8c7c','#b8846a','#9b8fa0','#D4845C'];
+      // The shirt is off-white or black; you pick the thread. Every thread sits
+      // in a mid-luminance band so it clears 3:1 on BOTH shirts — the worst
+      // pairing is 3.18:1.
+      const SHIRT_OFFWHITE = '#F2EFE9';
+      const SHIRT_BLACK    = '#1C1418';
+      const THREAD_COLORS  = ['#9B5566','#4E6FA8','#C05A4A','#7A6E95','#8A7D86','#5F8F86','#B0574F'];
 
       // SVG path data extracted from Basic T Shirt.svg (viewBox 0 0 595.28 841.89)
       const SVG_SHIRT        = 'M176.24,594.87l247.9,.32c-1.03,-65.35,-2.07,-130.7,-3.1,-196.05l35.61,15.42,48.03,-62.22,-93.95,-75.82,-80.52,-29.08s-3.95,43.87,-31.85,45.38c-27.9,1.51,-34.43,-43.97,-34.43,-43.97l-70.76,23.49,-102.59,79.4,49.45,62.81,36.02,-17.37c.06,65.89,.12,131.78,.18,197.67Z';
       const SVG_COLLAR_FILL  = 'M265.35,247.58s31.65,10.12,63.76,-.88c.6,3.91,3.03,22.39,-9.15,36.76c-2.92,3.45,-10.21,12.04,-21.59,12.47c-11.08,.42,-18.84,-7.18,-21.61,-9.89c-14.39,-14.08,-11.85,-35.22,-11.42,-38.46Z';
 
-      let shirtColor = SHIRT_COLORS[0];
-      let threadColorIdx = 0;
+      let shirtColor  = SHIRT_OFFWHITE;
+      let threadColor = THREAD_COLORS[0];
 
       interface Pt { x: number; y: number; }
       interface Trail { pts: Pt[]; color: string; }
@@ -356,12 +478,12 @@ const projects = [
       }
 
       function buildSwatchHits() {
-        const n = SHIRT_COLORS.length;
-        const r = Math.min(12, (W * 0.75) / (n * 3.2));
+        const n = THREAD_COLORS.length;
+        const r = Math.min(13, (W * 0.75) / (n * 3.2));
         const spacing = r * 3.2;
         const startX  = W / 2 - ((n - 1) * spacing) / 2;
         const swY = shirtBottomY + (H * 0.90 - shirtBottomY) * 0.42;
-        swatchHits = SHIRT_COLORS.map((color, i) => ({
+        swatchHits = THREAD_COLORS.map((color, i) => ({
           x: startX + i * spacing, y: swY, r, color,
         }));
       }
@@ -383,7 +505,7 @@ const projects = [
 
       function drawGrid() {
         const dark = isDark();
-        ctx.strokeStyle = dark ? 'rgba(200,190,170,0.04)' : 'rgba(160,150,135,0.09)';
+        ctx.strokeStyle = dark ? 'rgba(242,239,233,0.05)' : 'rgba(42,14,19,0.09)';
         ctx.lineWidth = 0.5;
         const sp = 22;
         for (let x = 0; x < W; x += sp) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
@@ -394,7 +516,7 @@ const projects = [
         if (!shirtPath || !shirtMx) return;
         const dark = isDark();
         ctx.save();
-        ctx.shadowColor  = dark ? 'rgba(0,0,0,0.70)' : 'rgba(44,26,14,0.28)';
+        ctx.shadowColor  = dark ? 'rgba(0,0,0,0.70)' : 'rgba(42,14,19,0.28)';
         ctx.shadowBlur   = 38;
         ctx.shadowOffsetX = 6;
         ctx.shadowOffsetY = 16;
@@ -431,7 +553,7 @@ const projects = [
         if (!shirtPath || !shirtMx) return;
         const dark = isDark();
         ctx.save();
-        ctx.strokeStyle = dark ? 'rgba(200,190,170,0.38)' : 'rgba(44,26,14,0.30)';
+        ctx.strokeStyle = dark ? 'rgba(242,239,233,0.42)' : 'rgba(42,14,19,0.38)';
         ctx.lineWidth = 1.5;
         ctx.stroke(shirtPath);
         ctx.restore();
@@ -445,21 +567,28 @@ const projects = [
           ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
           ctx.fillStyle = sw.color;
           ctx.fill();
-          ctx.strokeStyle = sw.color === shirtColor
-            ? (dark ? 'rgba(250,248,245,0.9)' : 'rgba(44,26,14,0.75)')
-            : (dark ? 'rgba(200,190,170,0.18)' : 'rgba(44,26,14,0.12)');
-          ctx.lineWidth = sw.color === shirtColor ? 2 : 0.5;
+          const selected = sw.color === threadColor;
+          ctx.strokeStyle = selected
+            ? (dark ? 'rgba(242,239,233,0.95)' : 'rgba(42,14,19,0.85)')
+            : (dark ? 'rgba(242,239,233,0.45)' : 'rgba(42,14,19,0.45)');
+          ctx.lineWidth = selected ? 2.5 : 0.5;
           ctx.stroke();
+          if (selected) {           // outer ring, so the choice reads at a glance
+            ctx.beginPath();
+            ctx.arc(sw.x, sw.y, sw.r + 5, 0, Math.PI * 2);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
           ctx.restore();
         });
         const first = swatchHits[0];
         if (!first) return;
         ctx.save();
-        ctx.font = '500 8px "Archivo", sans-serif';
+        ctx.font = '500 8px "Instrument Sans", sans-serif';
         ctx.letterSpacing = '0.16em';
-        ctx.fillStyle = isDark() ? 'rgba(220,210,190,0.60)' : 'rgba(44,26,14,0.35)';
+        ctx.fillStyle = isDark() ? 'rgba(242,239,233,0.70)' : 'rgba(42,14,19,0.60)';
         ctx.textAlign = 'center';
-        ctx.fillText('SHIRT COLOR', W / 2, first.y - first.r - 8);
+        ctx.fillText('THREAD COLOR', W / 2, first.y - first.r - 12);
         ctx.textAlign = 'left'; ctx.letterSpacing = '0';
         ctx.restore();
       }
@@ -477,11 +606,11 @@ const projects = [
         if (hintOpacity <= 0 || !shirtPath) return;
         const base = shirtTextColor();
         const lines = isTouch
-          ? ['DRAG INSIDE THE SHIRT TO DRAW', 'DOUBLE-TAP TO ERASE']
-          : ['CLICK & DRAG INSIDE THE SHIRT TO DRAW', 'DOUBLE-CLICK TO ERASE'];
+          ? ['DRAG INSIDE THE SHIRT TO STITCH', 'DOUBLE-TAP TO FLIP THE SHIRT']
+          : ['CLICK & DRAG INSIDE THE SHIRT TO STITCH', 'DOUBLE-CLICK TO FLIP THE SHIRT'];
         ctx.save();
         ctx.clip(shirtPath);
-        ctx.font = '500 9px "Archivo", sans-serif';
+        ctx.font = '500 9px "Instrument Sans", sans-serif';
         ctx.letterSpacing = '0.14em';
         ctx.fillStyle = `rgba(${base},${hintOpacity * 0.52})`;
         ctx.textAlign = 'center';
@@ -514,8 +643,7 @@ const projects = [
       }
       function addPoint(x: number, y: number) {
         if (!currentTrail) {
-          currentTrail = { pts: [], color: THREAD_COLORS[threadColorIdx % THREAD_COLORS.length] };
-          threadColorIdx++;
+          currentTrail = { pts: [], color: threadColor };
           trails.push(currentTrail);
         }
         const last = currentTrail.pts[currentTrail.pts.length - 1];
@@ -530,7 +658,7 @@ const projects = [
       section.addEventListener('mousedown', (e: MouseEvent) => {
         const { x, y } = getXY(e);
         const sw = hitSwatch(x, y);
-        if (sw) { shirtColor = sw.color; return; }
+        if (sw) { threadColor = sw.color; return; }
         if (inShirt(x, y)) { isDrawing = true; currentTrail = null; addPoint(x, y); }
       });
       section.addEventListener('mousemove', (e: MouseEvent) => {
@@ -542,17 +670,21 @@ const projects = [
       section.addEventListener('mouseleave', () => { isDrawing = false; currentTrail = null; });
       section.addEventListener('dblclick', (e: MouseEvent) => {
         const { x, y } = getXY(e);
-        if (inShirt(x, y)) { trails = []; currentTrail = null; }
+        if (inShirt(x, y)) {
+          shirtColor = shirtColor === SHIRT_OFFWHITE ? SHIRT_BLACK : SHIRT_OFFWHITE;
+        }
       });
 
       let lastTap = 0;
       section.addEventListener('touchstart', (e: TouchEvent) => {
         const { x, y } = getXY(e.touches[0]);
         const sw = hitSwatch(x, y);
-        if (sw) { shirtColor = sw.color; return; }
+        if (sw) { threadColor = sw.color; return; }
         if (inShirt(x, y)) { isDrawing = true; currentTrail = null; addPoint(x, y); }
         const now = Date.now();
-        if (now - lastTap < 300 && inShirt(x, y)) { trails = []; currentTrail = null; }
+        if (now - lastTap < 300 && inShirt(x, y)) {
+          shirtColor = shirtColor === SHIRT_OFFWHITE ? SHIRT_BLACK : SHIRT_OFFWHITE;
+        }
         lastTap = now;
       }, { passive: true });
       section.addEventListener('touchmove', (e: TouchEvent) => {

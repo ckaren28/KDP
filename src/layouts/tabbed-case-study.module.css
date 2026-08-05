@@ -531,8 +531,10 @@
 
 .arch-img {
   width: 100%;
+  max-width: 620px;
   height: auto;
   display: block;
+  margin: 0 auto;
   border: 1px solid var(--border);
 }
 

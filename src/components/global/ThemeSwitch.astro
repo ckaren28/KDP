@@ -1,0 +1,83 @@
+---
+/**
+ * Aperture — the theme switch.
+ * Stopped down for dark, wide open for light. Typing "light" / "dark" still
+ * works; this just makes the control discoverable.
+ */
+---
+
+<button class="aperture-btn" id="themeSwitch" type="button" aria-pressed="false" title="Switch theme">
+  <span class="visually-hidden">Switch theme</span>
+  <svg class="aperture" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4" />
+    <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+      <line x1="16" y1="12"    x2="22" y2="12" />
+      <line x1="14" y1="15.46" x2="17" y2="20.66" />
+      <line x1="10" y1="15.46" x2="7"  y2="20.66" />
+      <line x1="8"  y1="12"    x2="2"  y2="12" />
+      <line x1="10" y1="8.54"  x2="7"  y2="3.34" />
+      <line x1="14" y1="8.54"  x2="17" y2="3.34" />
+    </g>
+    <circle class="iris" cx="12" cy="12" r="2.6" fill="currentColor" />
+  </svg>
+</button>
+
+<style>
+  .aperture-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    line-height: 0;
+    cursor: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+  }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .aperture {
+    width: 19px; height: 19px;
+    transform: rotate(0deg);
+    transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.25s ease;
+    opacity: 0.72;
+  }
+  .aperture-btn:hover .aperture { opacity: 1; }
+  .aperture .iris {
+    transition: r 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+
+  /* wide open in light, stopped down in dark */
+  :global(html[data-theme='light']) .aperture { transform: rotate(60deg); }
+  :global(html[data-theme='light']) .aperture .iris { r: 5.4; }
+
+  .aperture-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aperture, .aperture .iris { transition: none; }
+  }
+</style>
+
+<script>
+  import { applyTheme, currentTheme } from '../../scripts/theme';
+
+  const btn = document.getElementById('themeSwitch');
+
+  function sync() {
+    const t = currentTheme();
+    btn?.setAttribute('aria-pressed', t === 'light' ? 'true' : 'false');
+    btn?.setAttribute('title', t === 'light' ? 'Switch to dark' : 'Switch to light');
+  }
+
+  btn?.addEventListener('click', () => {
+    applyTheme(currentTheme() === 'light' ? 'dark' : 'light');
+  });
+  window.addEventListener('themechange', sync);
+  sync();
+</script>
