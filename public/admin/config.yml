@@ -1,8 +1,29 @@
+# Sveltia CMS — karendettmar.com (engineering site)
+#
+# Sveltia does not implement Netlify's git-gateway backend, so this talks to
+# GitHub directly. One dashboard step is required before /admin will log in:
+#
+#   Netlify → this site → Access & security → OAuth → Install provider → GitHub
+#
+# That reuses Netlify's OAuth relay at the default base_url (api.netlify.com),
+# which is why no base_url is set below. If the site ever leaves Netlify,
+# deploy sveltia-cms-auth on Cloudflare Workers and point base_url at it.
+#
+# Local editing — no proxy server, and no login:
+#   npm run dev, then open http://localhost:4321/admin/ in a Chromium browser
+#   (Chrome, Edge, Brave), click "Work with Local Repository" and pick this
+#   repo's root folder. Sveltia uses the File System Access API and writes
+#   straight to disk, so edits show up as normal working-tree changes for you
+#   to review and commit yourself.
+#
+#   Sveltia explicitly does NOT support decap-server / netlify-cms-proxy-server,
+#   and it ignores `local_backend` — which is why that option is not set here.
+#   Safari and Firefox lack the File System Access API; they need the GitHub
+#   login below instead.
 backend:
-  name: git-gateway
+  name: github
+  repo: ckaren28/KDP
   branch: main
-
-local_backend: true
 
 media_folder: "public/images"
 public_folder: "/images"
@@ -15,7 +36,13 @@ collections:
     extension: mdx
     format: frontmatter
     slug: "{{slug}}"
+    summary: "{{title}}"
+    sortable_fields: ["date", "title"]
+    # Every field in src/content/config.ts must appear here. Anything missing
+    # is dropped from the frontmatter on save — that is how the case-study
+    # payload would silently disappear the first time a project was edited.
     fields:
+      # ── Identity ──────────────────────────────────────────────
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
       - label: "Track"
@@ -24,13 +51,92 @@ collections:
         default: "tech"
         hint: "Fashion and textile content lives on the separate fashion-studio site (studio.karendettmar.com), not here."
       - { label: "Tags", name: "tags", widget: "list" }
-      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true }
+      - label: "Featured on the landing page"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "The project uncovered by pulling a letter on the home page. If more than one is ticked, the most recent wins."
       - { label: "Live URL", name: "live_url", widget: "string", required: false }
       - { label: "GitHub URL", name: "github_url", widget: "string", required: false }
-      - { label: "Password Protected", name: "password_protected", widget: "boolean", default: false, required: false }
+      - label: "Password protected"
+        name: "password_protected"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Off by default, and it should stay off for anything you want seen — a gated project is invisible to anyone who won't email you for the password. Turn it on only for NDA or not-yet-public work. Needs GATE_PASSWORD set in Netlify."
+
+      # ── Imagery ───────────────────────────────────────────────
+      - label: "Cover Image"
+        name: "coverImage"
+        widget: "string"
+        required: false
+        hint: "Cloudinary URL used on the Work index card."
       - label: "Hero Image"
         name: "hero_image"
         widget: "string"
         required: false
-        hint: "Cloudinary URL for the case study hero image. e.g. https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/your-folder/image-name"
+        hint: "Cloudinary URL for the case study hero. e.g. https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/portfolio/your-folder/image-name"
+
+      # ── Overview tab ──────────────────────────────────────────
+      - { label: "Problem statement", name: "problem_statement", widget: "text", required: false }
+      - { label: "Who it's for", name: "who_its_for", widget: "text", required: false }
+      - { label: "Why I built it", name: "why_i_built_it", widget: "text", required: false }
+      - { label: "Scope & constraints", name: "scope_constraints", widget: "text", required: false }
+
+      # ── How it works tab — any one field present renders the tab ──
+      - { label: "Architecture diagram", name: "architecture_diagram", widget: "string", required: false, hint: "Cloudinary URL." }
+      - label: "Output structure"
+        name: "output_structure"
+        widget: "list"
+        required: false
+        label_singular: "Row"
+        summary: "{{fields.field}}"
+        fields:
+          - { label: "Field", name: "field", widget: "string" }
+          - { label: "What it solves", name: "what_it_solves", widget: "text" }
+      - { label: "Sample output", name: "sample_output", widget: "string", required: false, hint: "Cloudinary URL." }
+      - label: "Design decisions"
+        name: "design_decisions"
+        widget: "list"
+        required: false
+        label_singular: "Decision"
+        summary: "{{fields.title}}"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "text" }
+
+      # ── Try it tab ────────────────────────────────────────────
+      - { label: "Live embed URL", name: "live_embed_url", widget: "string", required: false }
+      - { label: "Live embed note", name: "live_embed_note", widget: "text", required: false }
+      - label: "Put the tool at the top of the page"
+        name: "tool_on_top"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Lifts the tool out of the tabs so it sits under the title, with Overview and How it works below it. Removes the 'Try it' tab."
+
+      # ── Process tab — renders when images are present ─────────
+      - label: "Process images"
+        name: "process_images"
+        widget: "list"
+        required: false
+        label_singular: "Image"
+        summary: "{{fields.caption}}"
+        fields:
+          - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
+          - { label: "Caption", name: "caption", widget: "text", required: false }
+
+      # ── Results tab — renders when images are present ─────────
+      - label: "Results images"
+        name: "results_images"
+        widget: "list"
+        required: false
+        label_singular: "Image"
+        summary: "{{fields.caption}}"
+        fields:
+          - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
+          - { label: "Caption", name: "caption", widget: "text", required: false }
+
       - { label: "Body", name: "body", widget: "markdown" }

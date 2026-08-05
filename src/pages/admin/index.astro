@@ -1,0 +1,28 @@
+---
+// A real Astro route rather than public/admin/index.html.
+//
+// Files in public/ are served by exact path only — `astro dev` does no
+// directory-index resolution, so /admin/ 404s in development even though
+// Netlify serves it fine in production. As a page it works in both.
+//
+// config.yml stays in public/ so the CMS fetches it unprocessed.
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager</title>
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <!--
+    Sveltia CMS — drop-in replacement for Decap, reads the same config.yml.
+    No Netlify Identity widget: Sveltia has no git-gateway backend, so
+    config.yml authenticates against GitHub directly.
+    is:inline keeps Astro from trying to bundle the CDN module.
+  -->
+  <script is:inline type="module" src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+</body>
+</html>

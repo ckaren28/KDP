@@ -116,6 +116,20 @@
 }
 
 /* ── TAB BAR ── */
+/* ── TOOL STAGE ──
+   Used when a project sets tool_on_top: the working tool sits directly under
+   the header and the write-up tabs follow it, rather than the tool being
+   filed behind a "Try it" tab. The rule below it separates doing from reading. */
+.tool-stage {
+  margin-bottom: 4rem;
+  padding-bottom: 3.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-stage > .prose > :first-child {
+  margin-top: 0;
+}
+
 .tab-bar {
   display: flex;
   border-bottom: 1px solid var(--border);

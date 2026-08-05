@@ -34,6 +34,8 @@ interface Props {
   live_url?: string;
   live_embed_url?: string;
   live_embed_note?: string;
+  // Promote the tool out of the tabs to sit directly under the header
+  tool_on_top?: boolean;
   // Process tab
   process_images?: ImageItem[];
   // Results tab
@@ -61,6 +63,7 @@ const {
   live_url,
   live_embed_url,
   live_embed_note,
+  tool_on_top = false,
   process_images,
   results_images,
 } = Astro.props;
@@ -134,7 +137,12 @@ const hasHowItWorks = !!(
   sample_output ||
   design_decisions?.length
 );
-const hasTryIt   = !!(live_url || live_embed_url);
+// The tool itself is the MDX body — the default slot. `tool_on_top` lifts it
+// out of the tab strip and onto the page directly, so a visitor meets the
+// working thing first and the write-up sits underneath it. When it's on there
+// is no "Try it" tab, because there'd be nothing left to put in one.
+const toolOnTop  = !!tool_on_top && !!(live_url || live_embed_url);
+const hasTryIt   = !toolOnTop && !!(live_url || live_embed_url);
 const hasProcess = !!(process_images?.length);
 const hasResults = !!(results_images?.length);
 
@@ -192,98 +200,20 @@ const tabs = [
       )}
     </header>
 
-    {/* Tab bar + panels — optionally password-gated */}
-    {password_protected ? (
-      <>
-        <PasswordGate slug={slug} />
-        <div id="gated-content" style="display:none">
-          <div class={s["tab-bar"]} role="tablist" id="cs-tab-bar">
-            {tabs.map((tab, i) => (
-              <button
-                role="tab"
-                class={s["tab-btn"]}
-                data-tab={tab.id}
-                {...(i === 0 ? { "data-active": "" } : {})}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div id="cs-panels">
-            {/* ── OVERVIEW ── */}
-            <div role="tabpanel" class={s["tab-panel"]} data-panel="overview" data-active>
-              {hero_image && (
-                <img src={hero_image} alt="" class={s["hero-img"]} />
-              )}
-              {showGarmentToolPreview && (
-                <div class={s["tool-preview"]}>
-                  <span class={s["tool-preview-label"]}>Tool preview</span>
-                  <div class={s["tool-preview-grid"]}>
-                    <div class={s["tool-preview-panel"]}>
-                      <span class={s["tool-preview-kicker"]}>Quick examples</span>
-                      <div class={s["tool-preview-buttons"]}>
-                        <span>Shirt dress</span>
-                        <span>Structured blazer</span>
-                        <span>Bias-cut skirt</span>
-                      </div>
-                      <span class={s["tool-preview-kicker"]}>Fabric</span>
-                      <div class={s["tool-preview-input"]}>silk charmeuse</div>
-                      <span class={s["tool-preview-kicker"]}>Description</span>
-                      <div class={s["tool-preview-textarea"]}>Bias-cut slip dress, thin straps, invisible zipper at side...</div>
-                    </div>
-                    <div class={s["tool-preview-panel"]}>
-                      <span class={s["tool-preview-kicker"]}>Output</span>
-                      <dl class={s["tool-preview-output"]}>
-                        <dt>Seam types</dt>
-                        <dd>French seams (sides), bias binding (neckline)</dd>
-                        <dt>Fabric behavior</dt>
-                        <dd>High slip — use weights not pins</dd>
-                        <dt>Interfacing</dt>
-                        <dd>None. Silk organza stay at neckline</dd>
-                        <dt>Construction order</dt>
-                        <dd>Stay neckline, sew straps, French seam sides, insert zipper, rolled hem</dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {showMuseumOverviewVisual ? (
-                <div class={s["overview-feature"]}>
-                  {hasOverviewCards && (
-                    <div class={s["overview-grid"]}>
-                      {overviewCards.map((card) => (
-                        <div class={s["overview-card"]}>
-                          <span class={s["card-label"]}>{card.label}</span>
-                          <p class={s["card-body"]}>{card.body}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <MuseumHeaderVisual />
-                </div>
-              ) : (
-                hasOverviewCards && (
-                  <div class={s["overview-grid"]}>
-                    {overviewCards.map((card) => (
-                      <div class={s["overview-card"]}>
-                        <span class={s["card-label"]}>{card.label}</span>
-                        <p class={s["card-body"]}>{card.body}</p>
-                      </div>
-                    ))}
-                  </div>
-                )
-              )}
-              {!hasTryIt && (
-                <div class={s["prose-wrap"]}>
-                  <div class={s["prose"]}><slot /></div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </>
-    ) : (
-      <>
+    {/* Everything below the header is one copy, optionally curtained.
+        The previous version duplicated the whole tab block for the gated
+        case and included only the Overview panel in that copy — so turning
+        password protection on silently dropped every other tab. */}
+    {password_protected && <PasswordGate slug={slug} />}
+
+    <div id="gated-content" style={password_protected ? "display:none" : undefined}>
+
+      {toolOnTop && (
+        <section class={s["tool-stage"]} aria-label="Live tool">
+          <div class={s["prose"]}><slot /></div>
+        </section>
+      )}
+
         <div class={s["tab-bar"]} role="tablist" id="cs-tab-bar">
           {tabs.map((tab, i) => (
             <button
@@ -362,7 +292,8 @@ const tabs = [
                 </div>
               )
             )}
-            {!hasTryIt && (
+            {/* the slot renders exactly once: here, in Try it, or in the tool stage */}
+            {!hasTryIt && !toolOnTop && (
               <div class={s["prose-wrap"]}>
                 <div class={s["prose"]}><slot /></div>
               </div>
@@ -501,8 +432,7 @@ const tabs = [
           )}
 
         </div>
-      </>
-    )}
+    </div>
 
     <div class={s["footer-nav"]}>
       <a href={backHref}>{backLabel}</a>

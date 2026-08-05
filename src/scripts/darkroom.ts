@@ -43,9 +43,14 @@ export function initDarkroom(root: HTMLElement) {
   const nameEl = root.querySelector<HTMLElement>('.dk-name');
   const curEl = root.querySelector<HTMLElement>('.dk-cur');
   const hintEl = root.querySelector<HTMLElement>('.dk-hint');
-  const msgEl = root.querySelector<HTMLElement>('.dk-msg');
   const linkEl = root.querySelector<HTMLAnchorElement>('.dk-link');
-  if (!view || !nameEl || !curEl || !hintEl || !msgEl || !linkEl) return;
+  const revealBtn = root.querySelector<HTMLButtonElement>('.dk-reveal');
+  if (!view || !nameEl || !curEl || !hintEl || !linkEl || !revealBtn) return;
+
+  // Past the guard, so a replacement cursor is guaranteed to be drawn. Only
+  // now is it safe for the stylesheet to hide the real one — if this module
+  // never loads, or bailed above, the visitor keeps their pointer.
+  root.classList.add('dk-live');
 
   const ctx = view.getContext('2d')!;
   const mk = () => document.createElement('canvas');
@@ -67,19 +72,13 @@ export function initDarkroom(root: HTMLElement) {
   let toneShown = false, totalExpo = 0;
   const TONE_GATE = 0.85;
 
-  /* ── letters as spring bodies ── */
+  /* ── letters as spring bodies ──
+     The spans are rendered by index.astro, not built here, so the name is real
+     text in the served HTML. This only adopts them as physics bodies. */
   const L: Letter[] = [];
-  ['KAREN', 'DETTMAR'].forEach((word, li) => {
-    const line = nameEl.querySelector<HTMLElement>(`.dk-line[data-l="${li}"]`);
-    if (!line) return;
-    [...word].forEach((ch, i) => {
-      const el = document.createElement('span');
-      el.className = 'dk-ltr';
-      el.textContent = ch;
-      // Adjacent flat-topped letters (the TT in DETTMAR) run their crossbars
-      // together into one horizontal bar — give the pair a little air.
-      if (i > 0 && ch === 'T' && word[i - 1] === 'T') el.style.marginLeft = '0.06em';
-      line.appendChild(el);
+  nameEl.querySelectorAll<HTMLElement>('.dk-line').forEach((line) => {
+    const li = Number(line.dataset.l) || 0;
+    line.querySelectorAll<HTMLElement>('.dk-ltr').forEach((el, i) => {
       L.push({
         el, li, i, x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, ux: 0, uy: 0,
         ph: Math.random() * Math.PI * 2,
@@ -119,12 +118,13 @@ export function initDarkroom(root: HTMLElement) {
 
   function reveal(on: boolean) {
     revealed = on;
-    lineGapTarget = on ? 42 : 0;
+    // wide enough to clear the featured-project card that sits in the gap
+    lineGapTarget = on ? 58 : 0;
     linkEl!.style.opacity = on ? '1' : '0';
     linkEl!.style.pointerEvents = on ? 'auto' : 'none';
     linkEl!.tabIndex = on ? 0 : -1;
     linkEl!.setAttribute('aria-hidden', on ? 'false' : 'true');
-    nameEl!.setAttribute('aria-expanded', on ? 'true' : 'false');
+    revealBtn!.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
 
   nameEl.addEventListener('pointerdown', (e: PointerEvent) => {
@@ -174,13 +174,16 @@ export function initDarkroom(root: HTMLElement) {
   window.addEventListener('pointerup', release);
   window.addEventListener('pointercancel', release);
 
-  nameEl.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reveal(!revealed); }
+  // Keyboard path: a real button, so Enter/Space come for free and the h1
+  // keeps its heading role. Focus moves to the link once it's revealed.
+  revealBtn.addEventListener('click', () => {
+    reveal(!revealed);
+    if (revealed) linkEl.focus();
   });
   nameEl.addEventListener('mouseenter', () => { heatTarget = 1; });
   nameEl.addEventListener('mouseleave', () => { heatTarget = 0; });
-  nameEl.addEventListener('focus', () => { heatTarget = 1; });
-  nameEl.addEventListener('blur', () => { heatTarget = 0; });
+  revealBtn.addEventListener('focus', () => { heatTarget = 1; });
+  revealBtn.addEventListener('blur', () => { heatTarget = 0; });
 
   function stepLetters() {
     bob += 0.022;

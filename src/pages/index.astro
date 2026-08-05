@@ -1,11 +1,23 @@
 ---
+import { getCollection } from 'astro:content';
 import '../styles/darkroom.css';
 import ThemeSwitch from '../components/global/ThemeSwitch.astro';
 import { SITE_TITLE } from '../consts';
 
-const STUDIO = 'https://studio.karendettmar.com';
-const GITHUB = 'https://github.com/ckaren28';
-const description = 'Karen Dettmar — Creative Technologist and Design Engineer in New York.';
+// What the letter-pull uncovers. Prefer an explicitly featured project, fall
+// back to the most recent one so the slot is never empty.
+const all = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const featured = all.find((p) => p.data.featured) ?? all[0];
+
+const EMAIL = 'karen.dettmar@gmail.com';
+const description = 'Karen Dettmar — Creative Technologist in New York.';
+
+// Rendered server-side, not injected by JS: the h1 has to carry real text in
+// the served HTML for crawlers and for anyone arriving without the script.
+// darkroom.ts picks these spans up rather than creating them.
+const LINES = ['KAREN', 'DETTMAR'];
 ---
 
 <!DOCTYPE html>
@@ -13,7 +25,7 @@ const description = 'Karen Dettmar — Creative Technologist and Design Engineer
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{SITE_TITLE} — Creative Technologist &amp; Design Engineer</title>
+  <title>{SITE_TITLE} — Creative Technologist</title>
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <!-- Theme must resolve before paint. The darkroom opens dark; a stored
@@ -26,7 +38,7 @@ const description = 'Karen Dettmar — Creative Technologist and Design Engineer
     })();
   </script>
   <link rel="canonical" href="https://karendettmar.com/" />
-  <meta property="og:title" content={`${SITE_TITLE} — Creative Technologist & Design Engineer`} />
+  <meta property="og:title" content={`${SITE_TITLE} — Creative Technologist`} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,18 +55,38 @@ const description = 'Karen Dettmar — Creative Technologist and Design Engineer
   <canvas class="dk-stage" aria-hidden="true"></canvas>
   <div class="dk-grain" aria-hidden="true"></div>
 
-  <div class="dk-id" id="main">
-    <h1 class="dk-name" role="button" tabindex="0" aria-expanded="false" aria-controls="dkLink">
-      <span class="dk-line" data-l="0"></span>
-      <span class="dk-line" data-l="1"></span>
+  <div class="dk-id" id="main" tabindex="-1">
+    <h1 class="dk-name">
+      <!-- The h1 keeps its heading role. The visual letters are aria-hidden so
+           they aren't spelled out one span at a time; this carries the name. -->
+      <span class="dk-sr">Karen Dettmar</span>
+      {LINES.map((word, li) => (
+        <span class="dk-line" data-l={li} aria-hidden="true">
+          {[...word].map((ch, i) => (
+            <span
+              class="dk-ltr"
+              style={i > 0 && ch === 'T' && word[i - 1] === 'T' ? 'margin-left:0.06em' : undefined}
+            >{ch}</span>
+          ))}
+        </span>
+      ))}
       <span class="dk-cue" aria-hidden="true">
         <span class="dk-cue-grip"></span>
         Grab a letter and pull
       </span>
-      <a class="dk-link" id="dkLink" href="/projects" tabindex="-1" aria-hidden="true">View projects</a>
+      <a class="dk-link" id="dkLink" href={`/projects/${featured.slug}`} tabindex="-1" aria-hidden="true">
+        <span class="dk-link-eyebrow">Featured</span>
+        <span class="dk-link-title">{featured.data.title}</span>
+        <span class="dk-link-go" aria-hidden="true">→</span>
+      </a>
     </h1>
+    <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't
+         standing on the h1's role; visible only when focused. -->
+    <button type="button" class="dk-reveal" aria-expanded="false" aria-controls="dkLink">
+      Show featured project
+    </button>
     <div class="dk-rule" aria-hidden="true"></div>
-    <p class="dk-role">Creative Technologist · Design Engineer</p>
+    <p class="dk-role">Creative Technologist</p>
     <p class="dk-loc">New York</p>
   </div>
 
@@ -64,21 +96,13 @@ const description = 'Karen Dettmar — Creative Technologist and Design Engineer
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>
       <li><a href="/cv">CV</a></li>
-      <li><a href={STUDIO}>Studio ↗</a></li>
-      <li>
-        <a href={GITHUB} class="gh" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-          GitHub
-        </a>
-      </li>
       <li class="dk-switch"><ThemeSwitch /></li>
     </ul>
   </nav>
 
   <p class="dk-hint" aria-hidden="true">Move to develop</p>
-  <a href="/projects" class="dk-enter">See the work →</a>
+  <a href={`mailto:${EMAIL}`} class="dk-contact">{EMAIL}</a>
   <div class="dk-cur" aria-hidden="true"></div>
-  <p class="dk-msg" role="status" aria-live="polite"></p>
 
   <script>
     import { initDarkroom } from '../scripts/darkroom';

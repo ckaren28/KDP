@@ -40,9 +40,13 @@ body.dk {
   color:var(--chrome);
   font-family:'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing:antialiased;
-  cursor:none;
   transition:background .45s ease, color .45s ease;
 }
+
+/* The system cursor is only hidden once the script is up and actually drawing
+   a replacement. `dk-live` is set by initDarkroom after its element lookups
+   succeed — if the module fails to load or bails early, the real cursor stays. */
+body.dk.dk-live { cursor:none; }
 
 .dk canvas.dk-stage {
   position:fixed; inset:0; width:100vw; height:100vh; display:block; z-index:0;
@@ -76,9 +80,35 @@ body.dk {
   transition:color .45s ease;
 }
 .dk.neg .dk-name { text-shadow:0 0 70px rgba(215,227,238,.7); }
-.dk .dk-name:focus-visible { outline:2px solid var(--chrome); outline-offset:20px; border-radius:4px; }
-.dk .dk-line { display:block; }
+/* flex, not block: the letter spans are rendered by a template that leaves
+   whitespace text nodes between them, and a flex container drops those
+   outright — otherwise a stray leading space shifts the centred line. */
+.dk .dk-line { display:flex; justify-content:center; }
 .dk .dk-ltr  { display:inline-block; will-change:transform; }
+
+/* carries the name for assistive tech while the visual letters stay aria-hidden */
+.dk .dk-sr {
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap;
+}
+
+/* The keyboard equivalent of pulling a letter. Off-screen until focused,
+   then a normal, visible, readable control. */
+.dk .dk-reveal {
+  position:absolute; left:-9999px; top:auto;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase;
+  background:var(--ox-deep); color:var(--chrome);
+  border:1px solid var(--faint); border-radius:100px;
+  padding:11px 20px; cursor:pointer;
+}
+/* .dk-id sets pointer-events:none for the canvas underneath — the button has
+   to opt back in once it's on screen. */
+.dk .dk-reveal:focus-visible {
+  position:static; left:auto; pointer-events:auto;
+  margin-top:26px;
+  outline:2px solid var(--chrome); outline-offset:4px;
+}
 
 /* The cue has to actually be findable — bigger, brighter, boxed, and it
    breathes until the visitor grabs something. */
@@ -113,18 +143,41 @@ body.dk {
 }
 .dk .dk-name.touched .dk-cue { opacity:0; animation:none; }
 
+/* What the pull uncovers: the featured project, not a second route to the
+   same page the nav already links. Sits in the gap that opens between the
+   two lines of the name. */
 .dk .dk-link {
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   opacity:0; pointer-events:none;
-  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
-  font-size:clamp(15px,1.75vw,23px); letter-spacing:.005em; line-height:1;
-  color:var(--chrome); text-decoration:none; white-space:nowrap;
-  padding:14px 30px; border:1px solid var(--faint); border-radius:100px;
-  backdrop-filter:blur(3px);
-  transition:opacity .5s ease, border-color .2s, color .2s;
+  display:flex; align-items:center; gap:clamp(12px,1.6vw,22px);
+  text-decoration:none; white-space:nowrap;
+  padding:12px 26px; border:1px solid var(--faint); border-radius:100px;
+  background:color-mix(in srgb, var(--ox-deep) 62%, transparent);
+  backdrop-filter:blur(6px);
+  transition:opacity .5s ease, border-color .2s, color .2s, gap .2s;
 }
-.dk .dk-link:hover { color:var(--ink); border-color:var(--ink); }
+.dk .dk-link-eyebrow {
+  font-family:'Space Mono', ui-monospace, monospace;
+  font-size:9.5px; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--soft);
+}
+.dk .dk-link-title {
+  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
+  font-size:clamp(14px,1.5vw,20px); letter-spacing:.005em; line-height:1;
+  color:var(--chrome);
+}
+.dk .dk-link-go { color:var(--soft); font-size:15px; line-height:1; }
+.dk .dk-link:hover { border-color:var(--ink); gap:clamp(18px,2.2vw,30px); }
+.dk .dk-link:hover .dk-link-title,
+.dk .dk-link:hover .dk-link-go { color:var(--ink); }
 .dk .dk-link:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+
+/* the card is wider than a short label — on narrow screens let it wrap */
+@media (max-width:560px) {
+  .dk .dk-link { flex-direction:column; align-items:flex-start; gap:5px; white-space:normal; padding:12px 20px; }
+  .dk .dk-link:hover { gap:5px; }
+  .dk .dk-link-title { white-space:normal; }
+}
 
 /* clears the cue pill, which is absolutely positioned under the name */
 .dk .dk-rule { width:clamp(180px,26vw,360px); height:1px; background:var(--faint); margin-top:clamp(96px,11vh,150px); }
@@ -158,9 +211,6 @@ body.dk {
 .dk .dk-nav a { color:var(--soft); text-decoration:none; transition:color .18s; }
 .dk .dk-nav a:hover { color:var(--ink); }
 .dk .dk-nav a:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
-.dk .dk-nav a.gh { color:var(--chrome); font-weight:600; display:inline-flex; align-items:center; gap:7px; }
-.dk .dk-nav a.gh svg { width:15px; height:15px; fill:currentColor; }
-.dk .dk-nav a.gh:hover { color:var(--tone); }
 
 .dk .dk-hint {
   position:fixed; left:clamp(20px,3.2vw,46px); bottom:26px; z-index:10; margin:0;
@@ -170,17 +220,28 @@ body.dk {
 }
 .dk .dk-hint.gone { opacity:0; }
 
-.dk .dk-enter {
-  position:fixed; right:clamp(20px,3.2vw,46px); bottom:22px; z-index:10;
-  font-size:14px; font-weight:600; color:var(--chrome); text-decoration:none;
-  display:inline-flex; align-items:center; gap:9px;
+/* Bottom-right used to be a third route to /projects — the nav and the
+   pull-to-reveal both already go there. The slot earns more as the one place
+   on the landing page you can actually reach Karen. Mono to match dk-hint in
+   the opposite corner, so the chrome band speaks one language. */
+.dk .dk-contact {
+  position:fixed; right:clamp(20px,3.2vw,46px); bottom:24px; z-index:10;
+  font-family:'Space Mono', ui-monospace, monospace;
+  font-size:12px; letter-spacing:.06em; color:var(--chrome); text-decoration:none;
+  display:inline-flex; align-items:center;
   border-bottom:1px solid var(--faint); padding-bottom:3px; transition:.18s;
 }
-.dk .dk-enter:hover { color:var(--ink); border-color:var(--ink); gap:14px; }
-.dk .dk-enter:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+.dk .dk-contact:hover { color:var(--ink); border-color:var(--ink); }
+.dk .dk-contact:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+
+/* no replacement cursor until the script owns the real one */
+.dk:not(.dk-live) .dk-cur { display:none; }
 
 .dk .dk-cur {
-  position:fixed; z-index:20; pointer-events:none; width:26px; height:26px;
+  /* parked off-screen until the first pointer event places it, so it never
+     flashes in the top-left corner while the system cursor is already hidden */
+  position:fixed; left:-9999px; top:-9999px;
+  z-index:20; pointer-events:none; width:26px; height:26px;
   border:1px solid var(--faint); border-radius:50%;
   transform:translate(-50%,-50%);
   transition:width .3s, height .3s, border-color .3s, opacity .2s;
@@ -190,14 +251,6 @@ body.dk {
 /* over the letters, the cursor opens up so they read as pickable */
 .dk .dk-cur.overname { width:46px; height:46px; border-color:var(--chrome); border-width:1.5px; }
 
-.dk .dk-msg {
-  position:fixed; left:50%; bottom:19vh; transform:translateX(-50%); z-index:24; margin:0;
-  font-family:'Space Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--faint); opacity:0;
-  transition:opacity .35s ease; pointer-events:none; text-align:center;
-}
-.dk .dk-msg.on { opacity:1; }
-
 .dk .dk-skip {
   position:absolute; left:-9999px; top:0; z-index:60;
   background:#D7E3EE; color:#3A0810; padding:12px 18px;
@@ -206,17 +259,17 @@ body.dk {
 .dk .dk-skip:focus { left:16px; top:16px; }
 
 @media (max-width:720px) {
-  body.dk { cursor:auto; }
+  body.dk.dk-live { cursor:auto; }
   .dk .dk-cur { display:none; }
   .dk .dk-nav { padding:18px 20px; }
   .dk .dk-nav ul { gap:15px; font-size:13px; }
   .dk .dk-hint { bottom:78px; }
-  .dk .dk-enter { bottom:76px; font-size:13px; }
+  .dk .dk-contact { bottom:74px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dk .dk-ltr, .dk .dk-cur, .dk .dk-msg, .dk .dk-hint, .dk .dk-link { transition:none !important; }
+  .dk .dk-ltr, .dk .dk-cur, .dk .dk-hint, .dk .dk-link { transition:none !important; }
   .dk .dk-cue, .dk .dk-cue-grip::after { animation:none; }
   .dk .dk-cur { display:none; }
-  body.dk { cursor:auto; }
+  body.dk.dk-live { cursor:auto; }
 }

@@ -23,6 +23,9 @@ const projects = defineCollection({
     tags: z.array(z.string()),
     date: z.date(),
     coverImage: z.string().optional(),
+    // Surfaced by the landing page's letter-pull reveal. If more than one is
+    // set, the most recent wins; if none is, the most recent project is used.
+    featured: z.boolean().optional().default(false),
     live_url: z.string().optional(),
     github_url: z.string().optional(),
     password_protected: z.boolean().optional().default(false),
@@ -41,6 +44,9 @@ const projects = defineCollection({
     // Try it tab
     live_embed_url: z.string().optional(),
     live_embed_note: z.string().optional(),
+    // Lift the tool out of the tabs to sit directly under the page header.
+    // With this on there is no "Try it" tab — the tool is the page.
+    tool_on_top: z.boolean().optional().default(false),
     // Process tab (any images present → tab renders)
     process_images: z.array(imageItem).optional(),
     // Results tab (any images present → tab renders)
