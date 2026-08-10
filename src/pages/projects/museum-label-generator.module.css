@@ -186,7 +186,6 @@
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 300;
-  font-style: italic;
   color: #2C2416;
   margin-bottom: 0.2rem;
   line-height: 1.2;
@@ -233,7 +232,6 @@
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 300;
-  font-style: italic;
   margin-bottom: 0.4rem;
   color: var(--black);
 }
