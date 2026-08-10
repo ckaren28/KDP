@@ -117,15 +117,28 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
   border: 0;
 }
 
-/* ── SCROLL REVEAL ── */
-.reveal {
+/* ── SCROLL REVEAL ──
+   Only ever hidden when JS is present to un-hide it. The `js` class is set by
+   MainLayout's inline head script; without it the base state is visible, so a
+   failed or blocked script can't leave the whole page blank. */
+html.js .reveal {
   opacity: 0;
   transform: translateY(32px);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
 }
-.reveal.visible {
+html.js .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Reduced motion gets the content, not a slower entrance. */
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal,
+  html.js .reveal.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ── ANIMATIONS ── */

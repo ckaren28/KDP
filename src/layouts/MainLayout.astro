@@ -22,12 +22,19 @@ const { title, theme = 'light' } = Astro.props;
   <meta name="description" content="Karen Dettmar, Creative Technologist, New York City">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Instrument Sans and Space Mono load their real italics; without the ital
+       axis the browser synthesises a slant instead. Bricolage has no italic at
+       all (Google Fonts 400s on an ital axis for it), so display type carries
+       emphasis with colour rather than a fake oblique. -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
   <!-- Theme: must run before body renders to prevent flash. A stored choice
-       beats the page default; there is no visible toggle — type light / dark. -->
+       beats the page default; there is no visible toggle — type light / dark.
+       Also marks the document as scripted, which is what lets .reveal hide
+       itself — without this the scroll-in content stays visible rather than
+       depending on a script that might never arrive. -->
   <script is:inline define:vars={{ pageTheme: theme }}>
     (function () {
+      document.documentElement.classList.add('js');
       var stored = null;
       try { stored = localStorage.getItem('theme'); } catch (e) {}
       document.documentElement.setAttribute('data-theme', stored || pageTheme);
@@ -80,16 +87,6 @@ const { title, theme = 'light' } = Astro.props;
       });
     }, { threshold: 0.1 });
     reveals.forEach(el => observer.observe(el));
-
-    // ── NETLIFY IDENTITY ──
-    const netlify = (window as any).netlifyIdentity;
-    if (netlify) {
-      netlify.on("init", (user: any) => {
-        if (!user) {
-          netlify.on("login", () => { document.location.href = "/admin/"; });
-        }
-      });
-    }
   </script>
 </body>
 </html>
