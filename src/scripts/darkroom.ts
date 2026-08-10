@@ -118,8 +118,11 @@ export function initDarkroom(root: HTMLElement) {
 
   function reveal(on: boolean) {
     revealed = on;
-    // wide enough to clear the featured-project card that sits in the gap
-    lineGapTarget = on ? 58 : 0;
+    // Wide enough to clear the featured-project card that sits in the gap.
+    // The card stacks and gets taller on narrow screens, so measure it rather
+    // than trusting one number — 58 was tuned on a desktop width and the card
+    // overlapped both lines of the name on a phone.
+    lineGapTarget = on ? Math.max(58, linkEl!.offsetHeight / 2 + 30) : 0;
     linkEl!.style.opacity = on ? '1' : '0';
     linkEl!.style.pointerEvents = on ? 'auto' : 'none';
     linkEl!.tabIndex = on ? 0 : -1;
@@ -144,6 +147,10 @@ export function initDarkroom(root: HTMLElement) {
     const vy = (nr.top + nr.height / 2) - (lr.top + lr.height / 2 - l.y);
     const m = Math.hypot(vx, vy) || 1;
     l.ux = vx / m; l.uy = vy / m;
+
+    // Touch has no hover, so the ramp rides the drag instead: holding a letter
+    // warms it, letting go cools it. Mouse keeps the pointerenter path below.
+    if (e.pointerType !== 'mouse') heatTarget = 1;
 
     hinting = false;
     nameEl.classList.add('touched');
@@ -170,6 +177,7 @@ export function initDarkroom(root: HTMLElement) {
     grabbed.vy += grabbed.ty * 0.06;
     grabbed = null;
     curEl!.classList.remove('grabbing');
+    if (e.pointerType !== 'mouse') heatTarget = 0;
   }
   window.addEventListener('pointerup', release);
   window.addEventListener('pointercancel', release);
@@ -180,8 +188,17 @@ export function initDarkroom(root: HTMLElement) {
     reveal(!revealed);
     if (revealed) linkEl.focus();
   });
-  nameEl.addEventListener('mouseenter', () => { heatTarget = 1; });
-  nameEl.addEventListener('mouseleave', () => { heatTarget = 0; });
+  // Hover ramp — pointer events gated on pointerType, not mouseenter/mouseleave.
+  // iOS synthesises a mouseenter on tap but never a matching mouseleave, so the
+  // old mouse-event pair lit the ramp on first touch and left it stuck there
+  // until you tapped elsewhere — while the same tap was also grabbing a letter.
+  // pointerenter with pointerType 'mouse' simply doesn't fire for a touch.
+  nameEl.addEventListener('pointerenter', (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') heatTarget = 1;
+  });
+  nameEl.addEventListener('pointerleave', (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') heatTarget = 0;
+  });
   revealBtn.addEventListener('focus', () => { heatTarget = 1; });
   revealBtn.addEventListener('blur', () => { heatTarget = 0; });
 

@@ -166,17 +166,24 @@ body.dk.dk-live { cursor:none; }
   font-size:clamp(14px,1.5vw,20px); letter-spacing:.005em; line-height:1;
   color:var(--chrome);
 }
-.dk .dk-link-go { color:var(--soft); font-size:15px; line-height:1; }
 .dk .dk-link:hover { border-color:var(--ink); gap:clamp(18px,2.2vw,30px); }
-.dk .dk-link:hover .dk-link-title,
-.dk .dk-link:hover .dk-link-go { color:var(--ink); }
+.dk .dk-link:hover .dk-link-title { color:var(--ink); }
 .dk .dk-link:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
 
-/* the card is wider than a short label — on narrow screens let it wrap */
+/* A pill only reads as a pill while it is wider than it is tall. Stacked and
+   unconstrained, the title wrapped to four lines and the 100px radius turned
+   the card into a circle sitting on top of the letters. On narrow screens it
+   becomes a plain card with a bounded width, so the title wraps to two. */
 @media (max-width:560px) {
-  .dk .dk-link { flex-direction:column; align-items:flex-start; gap:5px; white-space:normal; padding:12px 20px; }
-  .dk .dk-link:hover { gap:5px; }
-  .dk .dk-link-title { white-space:normal; }
+  .dk .dk-link {
+    flex-direction:column; align-items:center; text-align:center;
+    gap:4px; white-space:normal;
+    padding:11px 16px; border-radius:5px;
+    width:max-content; max-width:min(74vw,300px);
+  }
+  .dk .dk-link:hover { gap:4px; }
+  .dk .dk-link-eyebrow { font-size:8.5px; letter-spacing:.2em; }
+  .dk .dk-link-title { white-space:normal; font-size:14px; line-height:1.25; }
 }
 
 /* clears the cue pill, which is absolutely positioned under the name */
@@ -196,7 +203,7 @@ body.dk.dk-live { cursor:none; }
 .dk .dk-nav {
   position:fixed; top:0; left:0; right:0; z-index:10;
   display:flex; justify-content:space-between; align-items:baseline;
-  padding:26px clamp(20px,3.2vw,46px); gap:24px; flex-wrap:wrap; pointer-events:none;
+  padding:26px clamp(20px,3.2vw,46px); gap:24px; flex-wrap:nowrap; pointer-events:none;
 }
 .dk .dk-nav * { pointer-events:auto; }
 .dk .dk-who {
@@ -261,10 +268,54 @@ body.dk.dk-live { cursor:none; }
 @media (max-width:720px) {
   body.dk.dk-live { cursor:auto; }
   .dk .dk-cur { display:none; }
-  .dk .dk-nav { padding:18px 20px; }
+  .dk .dk-nav { padding:18px 20px; gap:14px; }
   .dk .dk-nav ul { gap:15px; font-size:13px; }
   .dk .dk-hint { bottom:78px; }
   .dk .dk-contact { bottom:74px; }
+}
+
+/* The nav has to stay on one line — wrapping split the wordmark off from the
+   menu and ate two rows of a 667px-tall phone. The location suffix is the
+   first thing to go; it is repeated under the name anyway. */
+@media (max-width:560px) {
+  .dk .dk-nav { padding:16px 16px; gap:10px; }
+  .dk .dk-who { font-size:14px; letter-spacing:-.025em; }
+  .dk .dk-who i { display:none; }
+  .dk .dk-nav ul { gap:13px; font-size:12.5px; }
+}
+
+@media (max-width:380px) {
+  .dk .dk-nav { padding:14px 13px; gap:8px; }
+  .dk .dk-who { font-size:13px; }
+  .dk .dk-nav ul { gap:11px; font-size:11.5px; }
+}
+
+/* ── short viewports / landscape phones ──────────────────────────
+   Every breakpoint above keys off width, so a landscape phone — wide enough to
+   miss all of them, but only ~375px tall — kept desktop-scale type and the 96px
+   rule margin. That needs ~390px of stack inside 375px of viewport, and under
+   `overflow:hidden` the overflow isn't reachable: the name rode up underneath
+   the nav and the meta block fell off the bottom.
+
+   Height is the real constraint here, so these key off height. The name is
+   capped in vh (two lines at .84 line-height, so 20vh caps it near 34vh of the
+   viewport) and `.dk-id` gains a top pad to clear the fixed nav rather than
+   centring straight through it. */
+@media (max-height:560px) {
+  .dk .dk-id   { padding:clamp(52px,13vh,72px) 18px clamp(26px,7vh,44px); }
+  .dk .dk-name { font-size:min(clamp(54px,13.6vw,208px), 20vh); }
+  .dk .dk-rule { margin-top:clamp(22px,6vh,48px); }
+  .dk .dk-role { margin-top:clamp(10px,2.2vh,16px); }
+  .dk .dk-loc  { margin-top:6px; }
+  .dk .dk-nav  { padding:12px clamp(16px,3.2vw,46px); }
+  .dk .dk-hint    { bottom:14px; }
+  .dk .dk-contact { bottom:13px; }
+}
+
+@media (max-height:420px) {
+  .dk .dk-id   { padding:clamp(44px,12vh,58px) 14px clamp(18px,5vh,30px); }
+  .dk .dk-name { font-size:min(clamp(44px,11vw,208px), 19vh); }
+  .dk .dk-rule { margin-top:clamp(14px,4vh,26px); width:clamp(140px,22vw,240px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
