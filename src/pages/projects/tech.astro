@@ -352,7 +352,7 @@ const projects = [
           </div>
           <div class="card-footer">
             <span class="card-status">{p.status}</span>
-            <span class="card-link">View project <span aria-hidden="true">→</span></span>
+            <span class="card-link">View project</span>
           </div>
         </a>
       ))}
@@ -453,6 +453,7 @@ const projects = [
       let shirtPath: Path2D | null = null;
       let shirtMx: DOMMatrix | null = null;
       let shirtMidY = 0;
+      let shirtScale = 1;
       let shirtBottomY = 0;
       let hintOpacity = 1;
       let hasDrawn = false;
@@ -465,8 +466,12 @@ const projects = [
       const SVG_SHIRT_LEFT = 91, SVG_SHIRT_TOP = 247, SVG_SHIRT_W = 414, SVG_SHIRT_H = 348;
 
       function buildShirtPath() {
-        const targetW = Math.min(W * 0.58, H * 0.68);
+        // 0.58 wasted most of a phone's width and left a torso too narrow to
+        // hold the hint text. Narrow screens get a much larger share.
+        const widthShare = W < 560 ? 0.92 : W < 900 ? 0.74 : 0.58;
+        const targetW = Math.min(W * widthShare, H * 0.68);
         const scale   = targetW / SVG_SHIRT_W;
+        shirtScale = scale;
         const offsetX = W / 2 - (SVG_SHIRT_LEFT + SVG_SHIRT_W / 2) * scale;
         const offsetY = H * 0.05 + 50 - SVG_SHIRT_TOP * scale;
         shirtMx = new DOMMatrix([scale, 0, 0, scale, offsetX, offsetY]);
@@ -602,19 +607,57 @@ const projects = [
         return lum > 128 ? '44,26,14' : '240,232,220';
       }
 
+      // The torso, not the full silhouette — the sleeves flare well outside the
+      // band the hint can actually sit in, so they can't be used to size it.
+      const SVG_TORSO_LEFT = 176.24, SVG_TORSO_RIGHT = 424.14;
+
+      /* Word-wrap the hint to a given width, shrinking the face a step at a
+         time until it fits. Returns null if even the longest single word can't
+         fit, in which case drawing it would only be clipped again. */
+      function fitHintLines(phrases: string[], maxW: number) {
+        for (let size = 10; size >= 7.5; size -= 0.5) {
+          ctx.font = `500 ${size}px "Instrument Sans", sans-serif`;
+          ctx.letterSpacing = size >= 9 ? '0.14em' : '0.08em';
+          const out: string[] = [];
+          let fits = true;
+          for (const phrase of phrases) {
+            let cur = '';
+            for (const word of phrase.split(' ')) {
+              const test = cur ? `${cur} ${word}` : word;
+              if (ctx.measureText(test).width <= maxW) { cur = test; continue; }
+              if (cur) out.push(cur);
+              if (ctx.measureText(word).width > maxW) fits = false;
+              cur = word;
+            }
+            if (cur) out.push(cur);
+          }
+          if (fits) return { size, lines: out };
+        }
+        return null;
+      }
+
       function drawHint() {
         if (hintOpacity <= 0 || !shirtPath) return;
         const base = shirtTextColor();
-        const lines = isTouch
+        const phrases = isTouch
           ? ['DRAG INSIDE THE SHIRT TO STITCH', 'DOUBLE-TAP TO FLIP THE SHIRT']
           : ['CLICK & DRAG INSIDE THE SHIRT TO STITCH', 'DOUBLE-CLICK TO FLIP THE SHIRT'];
+
         ctx.save();
+        const torsoW = (SVG_TORSO_RIGHT - SVG_TORSO_LEFT) * shirtScale;
+        const fitted = fitHintLines(phrases, torsoW - 18);
+        if (!fitted) { ctx.restore(); return; }
+
+        // Still clipped to the shirt, so the text reads as printed on it — but
+        // it is now laid out to fit inside rather than being sliced by the edge.
         ctx.clip(shirtPath);
-        ctx.font = '500 9px "Instrument Sans", sans-serif';
-        ctx.letterSpacing = '0.14em';
+        ctx.font = `500 ${fitted.size}px "Instrument Sans", sans-serif`;
+        ctx.letterSpacing = fitted.size >= 9 ? '0.14em' : '0.08em';
         ctx.fillStyle = `rgba(${base},${hintOpacity * 0.52})`;
         ctx.textAlign = 'center';
-        lines.forEach((line, i) => ctx.fillText(line, W / 2, shirtMidY - 8 + i * 17));
+        const lh  = fitted.size * 1.9;
+        const top = shirtMidY - ((fitted.lines.length - 1) * lh) / 2;
+        fitted.lines.forEach((line, i) => ctx.fillText(line, W / 2, top + i * lh));
         ctx.textAlign = 'left'; ctx.letterSpacing = '0';
         ctx.restore();
       }

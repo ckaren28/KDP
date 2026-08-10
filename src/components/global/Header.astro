@@ -80,14 +80,25 @@ import ThemeSwitch from './ThemeSwitch.astro';
     border-radius: 2px;
   }
 
+  /* The wordmark is the only route back to the landing page, so it never
+     hides — it shrinks instead. Hiding it stranded mobile visitors on
+     whatever page they landed on. */
   @media (max-width: 900px) {
     header { padding: 16px 24px; gap: 14px; }
-    .nav-logo { display: none; }
+    .nav-logo { font-size: 15px; }
     .nav-links { gap: 16px; }
     .nav-links a { font-size: 13px; }
   }
   @media (max-width: 560px) {
-    .nav-links { gap: 12px; }
+    header { padding: 13px 16px; gap: 10px; }
+    .nav-logo { font-size: 14px; letter-spacing: -0.025em; }
+    .nav-links { gap: 13px; }
     .nav-links a { font-size: 12px; }
+  }
+  @media (max-width: 380px) {
+    header { padding: 12px 13px; gap: 8px; }
+    .nav-logo { font-size: 13px; }
+    .nav-links { gap: 11px; }
+    .nav-links a { font-size: 11.5px; }
   }
 </style>

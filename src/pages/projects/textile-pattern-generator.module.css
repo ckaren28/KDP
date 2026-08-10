@@ -77,7 +77,8 @@
   letter-spacing: -0.01em;
   margin-bottom: 20px;
 }
-.page-title em { font-style: italic; color: var(--sienna); }
+/* Bricolage has no true italic — colour carries the emphasis */
+.page-title em { font-style: normal; color: var(--sienna); }
 
 .page-desc {
   font-size: 14px;
@@ -217,7 +218,7 @@
 
 .mood-text {
   font-size: 12px;
-  font-style: italic;
+  font-style: normal;
   color: var(--muted);
   line-height: 1.6;
   min-height: 20px;
@@ -402,4 +403,55 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+/* ── RESPONSIVE ──
+   This file previously had no media queries at all, which is what produced
+   the sideways scroll on a phone: a fixed 320px control column beside a 1fr
+   canvas cannot fit a 375px viewport, so the page overflowed and the canvas
+   was squeezed into a vertical sliver showing one blown-up tile. */
+@media (max-width: 900px) {
+  .tool-page { padding: 100px 24px 72px; }
+
+  .tool-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    min-height: 0;
+    margin-top: 56px;
+  }
+
+  .controls-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: 36px;
+  }
+
+  /* sticky + viewport height only makes sense beside a scrolling column */
+  .canvas-panel {
+    position: static;
+    padding-left: 0;
+    height: auto;
+  }
+
+  /* a square reads as a repeat; a tall narrow box reads as a stripe */
+  .pattern-canvas {
+    flex: none;
+    aspect-ratio: 1 / 1;
+    height: auto;
+  }
+
+  .mockup-section { margin-top: 56px; padding-top: 36px; }
+  .mockup-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .mockup-svg-container { height: 190px; }
+}
+
+@media (max-width: 560px) {
+  .tool-page { padding: 92px 16px 64px; }
+  .page-header { margin-bottom: 36px; padding-bottom: 24px; }
+
+  /* three mockups across a phone gave each one about 90px */
+  .mockup-row { grid-template-columns: 1fr; gap: 10px; }
+  .mockup-svg-container { height: 210px; }
+  .mockup-frame { padding: 22px 16px 16px; }
 }

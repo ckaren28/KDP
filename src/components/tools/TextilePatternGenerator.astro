@@ -143,8 +143,16 @@ import LoadingState from '../LoadingState.astro';
   }
 
   // ── TILE SIZE ──
+  // The tile used to be a fixed pixel size, so a phone-width canvas showed a
+  // couple of blown-up fragments rather than a repeat. Scale it to the canvas,
+  // taking the desktop panel width as the reference the values were tuned at.
+  const TILE_REF_W = 560;
+
   function getTileSize() {
-    return Math.round(100 - (density - 1) * 80 / 9);
+    const base = Math.round(100 - (density - 1) * 80 / 9);
+    const w = canvas.clientWidth || TILE_REF_W;
+    const k = Math.min(1, Math.max(0.42, w / TILE_REF_W));
+    return Math.max(8, Math.round(base * k));
   }
 
   // ── PATTERN DRAWING ──

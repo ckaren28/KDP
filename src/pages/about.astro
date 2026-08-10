@@ -3,19 +3,33 @@ import MainLayout from '../layouts/MainLayout.astro';
 import TrackSelector from '../components/TrackSelector.astro';
 import styles from './about.module.css';
 const s = styles;
+
+// Label / value pairs, so the disciplines and the contact block share one
+// rhythm instead of being a grid and a list that happen to sit on one page.
+const disciplines = [
+  { name: 'Design Engineering',   desc: 'React, Astro, TypeScript, APIs' },
+  { name: 'Creative Technology',  desc: 'Interactive demos, prototypes, AI tools' },
+  { name: 'Workshop Facilitation', desc: 'Community, education, technical storytelling' },
+];
+
+const contact = [
+  { label: 'Email',    value: 'karen.dettmar@gmail.com',   href: 'mailto:karen.dettmar@gmail.com', external: false },
+  { label: 'LinkedIn', value: 'linkedin.com/in/kdettmar',  href: 'https://linkedin.com/in/kdettmar', external: true },
+  { label: 'CV',       value: 'Download PDF',              href: '/Karen_Dettmar_CV.pdf', external: true },
+];
 ---
 
 <MainLayout title="About — Karen Dettmar" theme="dark">
   <div class={s['about-wrapper']}>
 
-    <!-- Header: name headline only -->
+    <!-- Header — emphasis is colour, not italic: Bricolage has no true italic -->
     <div class={`${s['about-header']} reveal`}>
-      <h1 class={s['about-title']} id="aboutTitle">Karen <em>Dettmar</em></h1>
+      <span class="page-eyebrow">About</span>
+      <h1 class="page-title" id="aboutTitle">Karen <em>Dettmar</em></h1>
     </div>
 
-    <!-- Bio paragraph -->
     <div class={`${s['bio']} reveal`}>
-      <p>
+      <p class={s['bio-lead']}>
         I'm a design engineer in New York. I spent a few years building developer tools, SDK experiences, and conference demos at Wix and Intuit, then went deep on fashion at Parsons and FIT. These days I build interactive tools that tend to land where software meets something made by hand: textiles, garments, archives.
       </p>
       <p>
@@ -23,73 +37,35 @@ const s = styles;
       </p>
     </div>
 
-    <!-- Disciplines -->
-    <div class={`${s['disciplines']} reveal`}>
-      <span class={s['section-label']}>What I do</span>
-      <div class={s['disc-grid']}>
-        <div class={s['disc-cell']}>
-          <span class={s['disc-num']}>01</span>
-          <h3 class={s['disc-name']}>Design Engineering</h3>
-          <p class={s['disc-desc']}>React, Astro, TypeScript, APIs</p>
-        </div>
-        <div class={s['disc-cell']}>
-          <span class={s['disc-num']}>02</span>
-          <h3 class={s['disc-name']}>Creative Technology</h3>
-          <p class={s['disc-desc']}>Interactive demos, prototypes, AI tools</p>
-        </div>
-        <div class={s['disc-cell']}>
-          <span class={s['disc-num']}>03</span>
-          <h3 class={s['disc-name']}>Workshop Facilitation</h3>
-          <p class={s['disc-desc']}>Community, education, technical storytelling</p>
-        </div>
-      </div>
-    </div>
+    <section class={`${s['section']} reveal`} aria-labelledby="disciplinesLabel">
+      <span class="page-eyebrow" id="disciplinesLabel">What I do</span>
+      <ul class={s['row-list']}>
+        {disciplines.map((d) => (
+          <li class={s['row']}>
+            <h2 class={s['row-key']}>{d.name}</h2>
+            <p class={s['row-val']}>{d.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
 
-    <!-- Off the clock -->
-    <!-- <div class="otc-section reveal">
-      <span class="section-label">Off the clock</span>
-      <div class="otc-grid">
-
-        Tile 1: NYC subway map SVG
-        <div class="otc-tile" data-anim>
-          <div class="otc-reveal">
-            <svg class="tile-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line class="sv-line" x1="5" y1="52" x2="95" y2="52" stroke="#C4504A" stroke-width="2.5" pathLength="1"/>
-              <line class="sv-line" x1="15" y1="88" x2="78" y2="18" stroke="#C8A848" stroke-width="2.5" pathLength="1" style="animation-delay:0.18s"/>
-              <line class="sv-line" x1="63" y1="8" x2="55" y2="93" stroke="#7A9470" stroke-width="2.5" pathLength="1" style="animation-delay:0.34s"/>
-              <line class="sv-line" x1="8" y1="28" x2="90" y2="70" stroke="#6E8EAA" stroke-width="2.5" pathLength="1" style="animation-delay:0.50s"/>
-              <circle class="sv-dot" cx="57" cy="52" r="4.5" fill="#C4504A" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.70s"/>
-              <circle class="sv-dot" cx="64" cy="44" r="4.5" fill="#C8A848" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.80s"/>
-              <circle class="sv-dot" cx="35" cy="62" r="4.5" fill="#6E8EAA" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:0.90s"/>
-              <circle class="sv-dot" cx="62" cy="52" r="4.5" fill="#7A9470" stroke="#faf8f5" stroke-width="1.5" style="animation-delay:1.0s"/>
-            </svg>
-          </div>
-          <span class="otc-caption">NYC</span>
-        </div>
-
-        ... (remaining OTC tiles commented out) ...
-
-      </div>
-    </div> -->
-
-    <!-- Contact -->
-    <div class={`${s['contact']} reveal`}>
-      <span class={s['section-label']}>Get in touch</span>
-      <div class={s['contact-list']}>
-        <a href="mailto:karen.dettmar@gmail.com" class={s['contact-row']}>
-          <span class={s['contact-label']}>Email</span>
-          <span class={s['contact-value']}>karen.dettmar@gmail.com</span>
-        </a>
-        <a href="https://linkedin.com/in/kdettmar" target="_blank" class={s['contact-row']}>
-          <span class={s['contact-label']}>LinkedIn</span>
-          <span class={s['contact-value']}>linkedin.com/in/kdettmar</span>
-        </a>
-        <a href="/Karen_Dettmar_CV.pdf" target="_blank" class={s['contact-row']}>
-          <span class={s['contact-label']}>CV</span>
-          <span class={s['contact-value']}>Download PDF</span>
-        </a>
-      </div>
-    </div>
+    <section class={`${s['section']} reveal`} aria-labelledby="contactLabel">
+      <span class="page-eyebrow" id="contactLabel">Get in touch</span>
+      <ul class={s['row-list']}>
+        {contact.map((c) => (
+          <li>
+            <a
+              href={c.href}
+              class={`${s['row']} ${s['row--link']}`}
+              {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              <span class={s['row-key']}>{c.label}</span>
+              <span class={s['row-val']}>{c.value}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
   </div><!-- /about-wrapper -->
 
