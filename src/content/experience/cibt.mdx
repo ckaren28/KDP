@@ -1,0 +1,101 @@
+---
+company: "CIBT"
+role: "Front End Developer & Designer"
+location: "Washington, D.C."
+start_date: 2017-01-01
+end_date: 2017-11-01
+headline: "Changed the survey, not the sample"
+result: "One week outdrew five weeks of the original"
+summary: "CIBT processes visas and passports for corporate clients and individual travellers. People were reaching the requirements page and the application funnel and leaving, and nobody could say why. I ran on-site polls across both pages to find out — and when the first round returned thin, low-quality answers, I rebuilt the instrument rather than the sample."
+also:
+  - "Designed and built responsive landing pages for corporate clients including Microsoft, Apple and IBM"
+  - "Maintained and redesigned components across multilingual company sites"
+order: 5
+---
+
+## What I was trying to find out
+
+Two pages were losing people: the **requirements** page, where travellers check what a
+visa needs, and the **application funnel** itself. Analytics could say they left. It
+couldn't say why.
+
+## Round one
+
+I put open-ended polls on both pages and let them run for six weeks. They returned
+**420 responses** — 291 on requirements, 129 in the funnel.
+
+The volume was workable but the answers were vague. Opening with an open question asks
+someone to compose a thought before they've agreed to participate at all, and most
+people simply don't.
+
+## Changing the instrument, not the sample
+
+For round two I inverted the structure: lead with a **binary yes/no**, then ask the open
+question as a follow-up to whoever answered.
+
+The effect was immediate. **One week of round two drew more than double what five weeks
+of round one had.** Roughly half of the people who answered the first question went on
+to answer the second, which meant the qualitative pool grew alongside the quantitative
+one instead of competing with it.
+
+The answers also changed character. Round one produced procedural questions — people
+asking how to use the service. Round two produced declarative ones from people who had
+already found what they needed and hit a specific wall. More useful, and more specific.
+
+## What it found
+
+Coding the free-text into themes put the blockers in order:
+
+<svg class="dv-chart" viewBox="0 0 620 232" role="img" aria-label="Response themes coded from the requirements-page free text, by number of mentions. Requirements not clear, 69. Visa processing time, 36. Price, 30. Cannot find documents, 28. Address or license change, 11. Cannot find order number, 11. Email or print application, 8. Live chat, 6.">
+  <line class="dv-axis" x1="180" y1="14" x2="180" y2="220" />
+
+  <path class="dv-bar" d="M180,18 H556 A4,4 0 0 1 560,22 V30 A4,4 0 0 1 556,34 H180 Z" />
+  <text class="dv-lbl" x="170" y="30" text-anchor="end">Requirements not clear</text>
+  <text class="dv-val" x="568" y="30">69</text>
+
+  <path class="dv-bar" d="M180,44 H374 A4,4 0 0 1 378,48 V56 A4,4 0 0 1 374,60 H180 Z" />
+  <text class="dv-lbl" x="170" y="56" text-anchor="end">Visa processing time</text>
+  <text class="dv-val" x="386" y="56">36</text>
+
+  <path class="dv-bar" d="M180,70 H341 A4,4 0 0 1 345,74 V82 A4,4 0 0 1 341,86 H180 Z" />
+  <text class="dv-lbl" x="170" y="82" text-anchor="end">Price</text>
+  <text class="dv-val" x="353" y="82">30</text>
+
+  <path class="dv-bar" d="M180,96 H330 A4,4 0 0 1 334,100 V108 A4,4 0 0 1 330,112 H180 Z" />
+  <text class="dv-lbl" x="170" y="108" text-anchor="end">Cannot find documents</text>
+  <text class="dv-val" x="342" y="108">28</text>
+
+  <path class="dv-bar" d="M180,122 H237 A4,4 0 0 1 241,126 V134 A4,4 0 0 1 237,138 H180 Z" />
+  <text class="dv-lbl" x="170" y="134" text-anchor="end">Address / license change</text>
+  <text class="dv-val" x="249" y="134">11</text>
+
+  <path class="dv-bar" d="M180,148 H237 A4,4 0 0 1 241,152 V160 A4,4 0 0 1 237,164 H180 Z" />
+  <text class="dv-lbl" x="170" y="160" text-anchor="end">Cannot find order number</text>
+  <text class="dv-val" x="249" y="160">11</text>
+
+  <path class="dv-bar" d="M180,174 H220 A4,4 0 0 1 224,178 V186 A4,4 0 0 1 220,190 H180 Z" />
+  <text class="dv-lbl" x="170" y="186" text-anchor="end">Email or print application</text>
+  <text class="dv-val" x="232" y="186">8</text>
+
+  <path class="dv-bar" d="M180,200 H209 A4,4 0 0 1 213,204 V212 A4,4 0 0 1 209,216 H180 Z" />
+  <text class="dv-lbl" x="170" y="212" text-anchor="end">Live chat</text>
+  <text class="dv-val" x="221" y="212">6</text>
+</svg>
+
+<p class="dv-cap">Mentions, coded from open-text responses on the requirements page</p>
+
+- **Requirements not clear** — the largest single category
+- **Cost not clear** — people couldn't tell what the total would be, service fees included
+- **Processing time not clear**
+- **Can't find the documents** — letters of invitation and business cover letters especially
+- **Too time-consuming** — the theme both rounds agreed on
+
+Underneath those sat a repeated request the site had no answer for: *let me save this and
+come back*. People were gathering passports, photos and employer letters over days, and
+the funnel assumed a single sitting.
+
+## What I'd do differently
+
+The round-one design was the mistake, and it cost five weeks to find out. I'd now treat
+the first question as a participation decision rather than a research question — earn the
+response first, ask for the thinking second.
