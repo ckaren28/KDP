@@ -1,0 +1,270 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  // Compact roles render as a line on the work page and get no page of their own.
+  const experience = (await getCollection('experience')).filter((e) => !e.data.compact);
+  return experience.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const d = entry.data;
+
+---
+
+<MainLayout title={`${d.company} — Karen Dettmar`} theme="light">
+
+  <style>
+    .xpp {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 120px 48px 100px;
+    }
+
+    .xpp-back {
+      display: inline-block;
+      margin-bottom: 40px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .xpp-back:hover { color: var(--black); }
+    .xpp-back:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+
+    .xpp-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 18px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .xpp-company { color: var(--black); font-weight: 700; }
+    .xpp-meta span:not(.xpp-company)::before { content: '·'; margin-right: 10px; }
+
+    .xpp-headline {
+      margin: 0 0 22px;
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+
+    .xpp-result {
+      margin: 0 0 26px;
+      padding-left: 18px;
+      border-left: 2px solid var(--sienna);
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--sienna);
+    }
+
+    .xpp-summary {
+      margin: 0 0 40px;
+      padding-bottom: 34px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+
+    .xpp-also-wrap { margin: 0 0 40px; }
+    .xpp-also-label {
+      margin: 0 0 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .xpp-also { margin: 0; padding: 0; list-style: none; }
+    .xpp-also li {
+      position: relative;
+      margin-bottom: 8px;
+      padding-left: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+    .xpp-also li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.66em;
+      width: 6px; height: 1px;
+      background: var(--muted);
+    }
+
+    .xpp-artifacts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 0 0 40px;
+    }
+    .xpp-artifacts figure { margin: 0; }
+    .xpp-artifacts img {
+      width: 100%; height: auto; display: block;
+      border: 1px solid var(--border);
+    }
+    .xpp-artifacts figcaption {
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .xpp-unshipped {
+      margin: 0 0 34px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* An absence stated on purpose. Without this the page just looks like it is
+       missing its images. */
+    .xpp-nda {
+      margin: 0 0 40px;
+      padding: 20px 22px;
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--muted);
+    }
+    .xpp-nda-label {
+      margin: 0 0 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .xpp-nda-body {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* Charts inside a case body. One hue for a single series — length carries
+       rank, not color — and it rides var(--sienna) so it re-steps with the
+       theme rather than being flipped automatically. Values are direct-labeled
+       so the reading never depends on color alone. */
+    .xpp-body :global(.dv-chart) {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 6px 0 10px;
+      overflow: visible;
+    }
+    .xpp-body :global(.dv-bar) { fill: var(--sienna); }
+    .xpp-body :global(.dv-axis) { stroke: var(--border); stroke-width: 1; }
+    .xpp-body :global(.dv-lbl) {
+      fill: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .xpp-body :global(.dv-val) {
+      fill: var(--black);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .xpp-body :global(p.dv-cap) {
+      margin: 0 0 26px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .xpp-body { font-size: 15px; line-height: 1.8; color: var(--text-body); }
+    .xpp-body :global(h2) {
+      margin: 44px 0 14px;
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--black);
+    }
+    .xpp-body :global(h2:first-child) { margin-top: 0; }
+    .xpp-body :global(p) { margin: 0 0 16px; }
+    .xpp-body :global(ul) { margin: 0 0 16px; padding-left: 20px; }
+    .xpp-body :global(li) { margin-bottom: 8px; }
+    .xpp-body :global(strong) { color: var(--black); font-weight: 600; }
+    .xpp-body :global(em) { color: var(--sienna); font-style: normal; }
+
+    @media (max-width: 900px) {
+      .xpp { padding: 100px 24px 72px; }
+      .xpp-artifacts { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <article class="xpp">
+    <a href="/projects/tech#experience" class="xpp-back">← Back to work</a>
+
+    <p class="xpp-meta">
+      <span class="xpp-company">{d.company}</span>
+      <span>{d.role}</span>
+      <span>{d.location}</span>
+    </p>
+
+    <h1 class="xpp-headline">{d.headline}</h1>
+    <p class="xpp-result">{d.result}</p>
+    <p class="xpp-summary">{d.summary}</p>
+
+    {d.also && d.also.length > 0 && (
+      <section class="xpp-also-wrap" aria-labelledby="alsoLabel">
+        <h2 class="xpp-also-label" id="alsoLabel">Also in this role</h2>
+        <ul class="xpp-also">
+          {d.also.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+    )}
+
+    {d.unshipped && (
+      <p class="xpp-unshipped">Proposed — this design was never shipped</p>
+    )}
+
+    {d.nda && (!d.artifacts || d.artifacts.length === 0) && (
+      <aside class="xpp-nda">
+        <p class="xpp-nda-label">Internal work</p>
+        <p class="xpp-nda-body">
+          This was built for internal use and isn't mine to publish, so there are no
+          screenshots here. The process and the outcome are described in full below,
+          and I'm happy to walk through the rest in conversation.
+        </p>
+      </aside>
+    )}
+
+    {d.artifacts && d.artifacts.length > 0 && (
+      <div class="xpp-artifacts">
+        {d.artifacts.map((a) => (
+          <figure>
+            <img src={a.image} alt={a.caption ?? `${d.company} — work sample`} loading="lazy" />
+            {a.caption && <figcaption>{a.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    )}
+
+    <div class="xpp-body"><Content /></div>
+  </article>
+
+</MainLayout>

@@ -1,40 +1,33 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
 
-const projects = [
-  {
-    title: 'Museum Label Generator',
-    subtitle: 'AI-powered interpretive text for cultural institutions',
-    desc: 'Generates accessible, engaging museum label copy from structured object data — built for fashion archives, textile collections, and cultural institutions.',
-    tags: ['Claude API', 'TypeScript', 'Prompt Engineering'],
-    status: 'Live',
-    link: '/projects/museum-label-generator',
-  },
-  {
-    title: 'DevCon',
-    subtitle: 'First developer conference at Wix — organized, built, and delivered',
-    desc: 'Planned and produced the inaugural Wix developer conference. Delivered the keynote and live-coded the demo launching new platform coding capabilities. Also designed the DevCon announcement landing page for the Wix Discord developer community.',
-    tags: ['TypeScript', 'JavaScript', 'Speaking', 'Web Design'],
-    status: '2022',
-    link: '/projects/wix-devcon',
-  },
-  {
-    title: 'Generative Textile Pattern Tool',
-    subtitle: 'Living patterns generated from collection concepts',
-    desc: 'Enter a collection concept and generate a living textile pattern. Palette and structure are AI-suggested, then fully adjustable. Export as SVG.',
-    tags: ['Claude API', 'Canvas', 'Generative Art', 'Textile Design'],
-    status: 'Live',
-    link: '/projects/textile-pattern-generator',
-  },
-  {
-    title: 'Garment Construction Decoder',
-    subtitle: 'Structured technical breakdown for garment construction',
-    desc: 'Describe a garment and get a technical breakdown — seam types, fabric behavior, lining, interfacing, closure options, and construction order. Includes Traveler Mode for packability constraints.',
-    tags: ['Claude API', 'Netlify Functions', 'Construction'],
-    status: 'Live',
-    link: '/projects/garment-construction-decoder',
-  },
-];
+// Employment history. `order` drives the sequence rather than the dates, so it
+// can be adjusted without rewriting frontmatter.
+const allExperience = (await getCollection('experience'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+// Two tiers on purpose. Roles with something to show get a card and a case page;
+// roles with a real result but nothing showable get a single line, so the
+// section isn't padded out to an even five.
+const experience = allExperience.filter((e) => !e.data.compact);
+const compactExperience = allExperience.filter((e) => e.data.compact);
+
+// The grid reads the content collection. It used to be a hardcoded array here,
+// which meant two sources of truth for the same four projects — edit the MDX and
+// the grid went stale. `listed: false` is how a project keeps its page without
+// appearing here.
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.listed !== false)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .map((p) => ({
+    title: p.data.title,
+    subtitle: p.data.subtitle ?? '',
+    desc: p.data.description,
+    tags: p.data.tags,
+    status: p.data.live_url ? 'Live' : String(p.data.date.getUTCFullYear()),
+    link: `/projects/${p.id.replace(/\.mdx?$/, '')}`,
+  }));
 ---
 
 <MainLayout title="Work — Karen Dettmar" theme="dark">
@@ -284,6 +277,137 @@ const projects = [
       color: var(--muted);
     }
 
+    /* ── WORK EXPERIENCE ──
+       Cards lead on the work, not the job title. The title sits in the small
+       mono metadata line beside the dates, so the section doesn't open with two
+       "Developer Advocate" headings. The result is the visual anchor because a
+       quantified outcome carries further than a screenshot. */
+    .xp { margin-top: 96px; padding-top: 40px; border-top: 1px solid var(--border); }
+
+    /* Same grid and card treatment as the projects above. The employment history
+       is secondary to the work, so it must not out-weigh it visually — which a
+       full-width stack of long rows did. Everything past the hook lives on the
+       card's own page. */
+    .xp-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .xp-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 32px 26px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      cursor: none;
+      overflow: hidden;
+      transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2,0.8,0.3,1);
+    }
+    .xp-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--sienna);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.45s cubic-bezier(0.2,0.8,0.3,1);
+    }
+    .xp-card:hover {
+      border-color: var(--sienna);
+      background: var(--warm-white);
+      transform: translateY(-3px);
+    }
+    .xp-card:hover::before { transform: scaleY(1); }
+    .xp-card:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+
+    .xp-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .xp-company { color: var(--black); font-weight: 700; }
+    .xp-meta span:not(.xp-company)::before { content: '·'; margin-right: 10px; }
+
+    .xp-headline {
+      margin: 0 0 14px;
+      font-family: var(--font-display);
+      font-size: clamp(18px, 1.9vw, 23px);
+      font-weight: 600;
+      line-height: 1.24;
+      letter-spacing: -0.022em;
+      color: var(--black);
+    }
+
+    .xp-result {
+      margin: 0 0 auto;
+      padding-left: 14px;
+      border-left: 2px solid var(--sienna);
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--sienna);
+    }
+
+    .xp-foot {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .xp-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.25s ease;
+    }
+    .xp-card:hover .xp-link { color: var(--sienna); }
+
+    /* States the work is internal rather than leaving a card that looks like it
+       forgot its images. */
+    .xp-nda {
+      flex-shrink: 0;
+      padding: 3px 7px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Roles with a real result but nothing showable. A line, not a card. */
+    .xp-compact {
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--border);
+    }
+    .xp-compact li { padding: 20px 0 0; }
+    .xp-compact .xp-meta { margin-bottom: 8px; }
+    .xp-compact-line {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-body);
+      max-width: 74ch;
+    }
+    .xp-compact-sep { margin: 0 8px; color: var(--muted); }
+    .xp-card:hover .xp-headline { color: var(--sienna); }
+    .xp-headline { transition: color 0.25s ease; }
+
     .canvas-section {
       position: relative;
       width: 100%;
@@ -307,6 +431,9 @@ const projects = [
       .project-card { padding: 26px 22px; }
       .canvas-section { height: 50vh; min-height: 320px; }
       .experiments { margin-top: 64px; padding-top: 32px; }
+      .xp { margin-top: 64px; padding-top: 32px; }
+      .xp-grid { grid-template-columns: 1fr; }
+      .xp-card { padding: 26px 22px; }
     }
   </style>
 
@@ -373,11 +500,59 @@ const projects = [
           <canvas id="heroCanvas"></canvas>
         </div>
         <div class="exp-caption">
-          <span>Thread drawing — pick a colour, draw on the shirt</span>
+          <span>Thread drawing — pick a color, draw on the shirt</span>
           <span>Canvas · Path2D</span>
         </div>
       </div>
     </section>
+
+    {experience.length > 0 && (
+      <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
+        <div class="exp-head">
+          <h2 class="exp-title" id="experienceLabel">Work Experience</h2>
+          <p class="exp-note">
+            Design and front-end work, and the four years of developer advocacy
+            in the middle of it. Where the evidence survives, it's here.
+          </p>
+        </div>
+
+        <div class="xp-grid">
+          {experience.map(({ data, slug }) => (
+            <a class="xp-card" href={`/experience/${slug}`}>
+              <p class="xp-meta">
+                <span class="xp-company">{data.company}</span>
+                <span>{data.role}</span>
+              </p>
+
+              <h3 class="xp-headline">{data.headline}</h3>
+              <p class="xp-result">{data.result}</p>
+
+              <span class="xp-foot">
+                <span class="xp-link">Read the full case</span>
+                {data.nda && <span class="xp-nda">Internal</span>}
+              </span>
+            </a>
+          ))}
+        </div>
+
+        {compactExperience.length > 0 && (
+          <ul class="xp-compact">
+            {compactExperience.map(({ data }) => (
+              <li>
+                <p class="xp-meta">
+                  <span class="xp-company">{data.company}</span>
+                  <span>{data.role}</span>
+                  {data.nda && <span class="xp-nda">Internal</span>}
+                </p>
+                <p class="xp-compact-line">
+                  {data.headline}<span class="xp-compact-sep">—</span>{data.result}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    )}
 
   </div>
 
