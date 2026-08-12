@@ -45,6 +45,17 @@ collections:
       # ── Identity ──────────────────────────────────────────────
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
+      - label: "Subtitle"
+        name: "subtitle"
+        widget: "string"
+        required: false
+        hint: "One line under the title on the work grid."
+      - label: "Listed on the work grid"
+        name: "listed"
+        widget: "boolean"
+        default: true
+        required: false
+        hint: "Turn off to keep the project's page live at /projects/<slug> while removing it from the grid. DevCon uses this — it is a talk rather than a made thing."
       - label: "Track"
         name: "track"
         widget: "hidden"
@@ -138,5 +149,91 @@ collections:
         fields:
           - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
           - { label: "Caption", name: "caption", widget: "text", required: false }
+
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "experience"
+    label: "Work Experience"
+    folder: "src/content/experience"
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{company}} — {{headline}}"
+    sortable_fields: ["order", "start_date", "company"]
+    # Same rule as above: every field in src/content/config.ts must appear here
+    # or it is dropped from the frontmatter on save.
+    fields:
+      # ── The company ───────────────────────────────────────────
+      - { label: "Company", name: "company", widget: "string" }
+      - label: "Role"
+        name: "role"
+        widget: "string"
+        hint: "Your actual job title. Shown small, beside the dates — the card leads on the work instead, so a title like Developer Advocate does not set the tone."
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Start date", name: "start_date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true }
+      - label: "End date"
+        name: "end_date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+        picker_utc: true
+        required: false
+        hint: "Leave empty for your current role — it renders as Present."
+
+      # ── What the card leads with ──────────────────────────────
+      - label: "Headline"
+        name: "headline"
+        widget: "string"
+        hint: "The work, not the title. This is the first thing read, so lead with what you designed or built."
+      - label: "Result"
+        name: "result"
+        widget: "string"
+        hint: "The quantified outcome — the number is the headline of the card. You have one for every job, and it does more work than a screenshot."
+      - { label: "Summary", name: "summary", widget: "text" }
+      - label: "Also did"
+        name: "also"
+        widget: "list"
+        required: false
+        label_singular: "Item"
+        hint: "Keep this to two, chosen. An exhaustive list reads as a CV bleeding into a portfolio; two picked ones read as judgement."
+
+      # ── Evidence ──────────────────────────────────────────────
+      - label: "Artifacts"
+        name: "artifacts"
+        widget: "list"
+        required: false
+        label_singular: "Artifact"
+        summary: "{{fields.caption}}"
+        hint: "Optional on purpose. Internal or NDA'd work has nothing to show, and saying so beats padding the card."
+        fields:
+          - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
+          - { label: "Caption", name: "caption", widget: "text", required: false }
+      - label: "Never shipped"
+        name: "unshipped"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Tick when the work shown was a proposal that did not go live. The card then says so outright — unshipped work is fine, implying it shipped is not."
+      - label: "Internal / under NDA"
+        name: "nda"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Tick when the work can't be shown. The page says so plainly instead of looking like it is missing its images — 'internal, happy to discuss' reads as discretion to a hiring manager."
+      - label: "Compact — one line, no case page"
+        name: "compact"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Drops this role to a single line beneath the cards and builds no case page. Use where there is a real result but nothing to show, so a full card would be padding."
+      - { label: "Live URL", name: "live_url", widget: "string", required: false }
+
+      - label: "Order"
+        name: "order"
+        widget: "number"
+        value_type: "int"
+        hint: "Ascending. Controls the order of cards independently of dates."
 
       - { label: "Body", name: "body", widget: "markdown" }
