@@ -367,6 +367,7 @@ export function initDarkroom(root: HTMLElement) {
     // so the reach is capped against W on `h`, not on `w` as it was upright.
     const laceTilt = 0.20;            // radians past horizontal; 0 is dead flat
     const laceDrop = 0.19;            // how far down the pair sits, as a share of H
+    const laceIn = 0.065;             // how far in from each edge the middles sit
 
     let tlh = H * 0.36, tlw = tlh * LACE_RATIO;
     if (tlh > W * 0.34) { tlh = W * 0.34; tlw = tlh * LACE_RATIO; }
@@ -374,7 +375,7 @@ export function initDarkroom(root: HTMLElement) {
     // off by the tilt lifts the head. Centered just inside the edge, so half the
     // length is already off-screen.
     stamp(
-      c, lace, color, W * 0.03 - tlw / 2, H * laceDrop - tlh / 2,
+      c, lace, color, W * laceIn - tlw / 2, H * laceDrop - tlh / 2,
       tlw, tlh, 0.26, false, Math.PI / 2 - laceTilt,
     );
 
@@ -385,7 +386,7 @@ export function initDarkroom(root: HTMLElement) {
     // is negated, not flipped: `flip` mirrors across the stem, which varies the
     // silhouette but would leave this one's head pointing right as well.
     stamp(
-      c, lace, color, W * 0.97 - trw / 2, H * (laceDrop + 0.07) - trh / 2,
+      c, lace, color, W * (1 - laceIn) - trw / 2, H * (laceDrop + 0.07) - trh / 2,
       trw, trh, 0.23, true, -(Math.PI / 2 - laceTilt),
     );
 

@@ -77,8 +77,10 @@ const { title, theme = 'light' } = Astro.props;
   <script>
     import { initThemeTyping } from '../scripts/theme';
     import { initPrintEgg } from '../scripts/print';
+    import { initCopyEmail } from '../scripts/copyEmail';
     initThemeTyping();
     initPrintEgg();
+    initCopyEmail();
 
     // ── CUSTOM CURSOR ──
     const cursor = document.getElementById('cursor') as HTMLElement | null;
