@@ -48,9 +48,9 @@ export function initDarkroom(root: HTMLElement) {
   const curEl = root.querySelector<HTMLElement>('.dk-cur');
   const hintEl = root.querySelector<HTMLElement>('.dk-hint');
   const cardEl = root.querySelector<HTMLElement>('.dk-card');
-  const cardLink = root.querySelector<HTMLAnchorElement>('.dk-card-link');
+  const shutter = root.querySelector<HTMLAnchorElement>('.dk-shutter');
   const revealBtn = root.querySelector<HTMLButtonElement>('.dk-reveal');
-  if (!view || !nameEl || !curEl || !hintEl || !cardEl || !cardLink || !revealBtn) return;
+  if (!view || !nameEl || !curEl || !hintEl || !cardEl || !shutter || !revealBtn) return;
 
   // Past the guard, so a replacement cursor is guaranteed to be drawn. Only
   // now is it safe for the stylesheet to hide the real one — if this module
@@ -135,9 +135,9 @@ export function initDarkroom(root: HTMLElement) {
     cardEl!.style.opacity = on ? '1' : '0';
     cardEl!.style.pointerEvents = on ? 'auto' : 'none';
     cardEl!.setAttribute('aria-hidden', on ? 'false' : 'true');
-    // The card is a container now, so the tab stop belongs to the link inside
-    // it rather than to the card itself.
-    cardLink!.tabIndex = on ? 0 : -1;
+    // The card is a container now, so the tab stop belongs to the shutter
+    // inside it rather than to the card itself.
+    shutter!.tabIndex = on ? 0 : -1;
     revealBtn!.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
 
@@ -194,10 +194,25 @@ export function initDarkroom(root: HTMLElement) {
   window.addEventListener('pointercancel', release);
 
   // Keyboard path: a real button, so Enter/Space come for free and the h1
-  // keeps its heading role. Focus moves to the link once it's revealed.
+  // keeps its heading role. Focus moves to the shutter once it's revealed.
   revealBtn.addEventListener('click', () => {
     reveal(!revealed);
-    if (revealed) cardLink.focus();
+    if (revealed) shutter.focus();
+  });
+
+  // "Press enter to enter" has to be true for the visitor who pulled a letter
+  // with the mouse and never focused anything. Enter already means something to
+  // whatever does have focus, though — a nav link, the theme switch, the reveal
+  // button, the shutter itself — so this only claims the key when nothing
+  // interactive holds it. Otherwise tabbing to About and pressing Enter would
+  // land on the work page instead.
+  window.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key !== 'Enter' || !revealed || e.defaultPrevented) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    const held = document.activeElement as HTMLElement | null;
+    if (held?.closest('a[href], button, input, select, textarea, [contenteditable]')) return;
+    e.preventDefault();
+    shutter.click();
   });
   // Hover ramp — pointer events gated on pointerType, not mouseenter/mouseleave.
   // iOS synthesises a mouseenter on tap but never a matching mouseleave, so the

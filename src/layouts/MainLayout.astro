@@ -40,6 +40,28 @@ const { title, theme = 'light' } = Astro.props;
       document.documentElement.setAttribute('data-theme', stored || pageTheme);
     })();
   </script>
+  <!-- Arriving through the shutter. Module scripts are deferred, so by the time
+       the iris could be drawn the page has already painted — this puts the
+       ground up beforehand and hands off to the iris in one frame. A no-op on
+       every other visit, since only the shutter sets the flag. The timeout is
+       here rather than in the module on purpose: the cover has to lift even if
+       the module never loads. -->
+  <script is:inline>
+    (function () {
+      var on = false;
+      // Read and spent in the same breath, so a flag can never survive onto a
+      // page with no arrival to play and leave it sitting under the cover.
+      try {
+        on = sessionStorage.getItem('dk:shutter') === '1';
+        if (on) sessionStorage.removeItem('dk:shutter');
+      } catch (e) {}
+      if (!on) return;
+      window.__dkArrive = true;
+      var r = document.documentElement;
+      r.classList.add('dk-arriving');
+      setTimeout(function () { r.classList.remove('dk-arriving'); }, 1500);
+    })();
+  </script>
 </head>
 <body>
   <!-- CURSOR -->

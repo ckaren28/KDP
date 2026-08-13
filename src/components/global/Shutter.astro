@@ -1,0 +1,137 @@
+---
+/**
+ * The shutter — the reveal's way in.
+ *
+ * The same six-blade aperture the theme switch draws, scaled up and made
+ * pressable: the iris stops down under the press and opens on release, which
+ * is what a shutter release does. It replaces the card's text link rather than
+ * sitting beside it — a second discoverable object on this page means a visitor
+ * may find neither.
+ *
+ * An anchor, not a button: this is navigation, so Enter, middle-click and
+ * open-in-new-tab all come free and still work if the script never arrives.
+ */
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<!--
+  The visible label is inside the accessible name, so the name a screen reader
+  announces still contains what a speech-control user would say (WCAG 2.5.3).
+  The tab stop is off until the introduction is open; darkroom.ts turns it on.
+-->
+<a
+  class="dk-shutter"
+  href={href}
+  tabindex="-1"
+  aria-label="Press enter to enter — see the work"
+>
+  <svg class="dk-shutter-eye" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.1" />
+    <g stroke="currentColor" stroke-width="0.85" stroke-linecap="round">
+      <line x1="16" y1="12"    x2="22" y2="12" />
+      <line x1="14" y1="15.46" x2="17" y2="20.66" />
+      <line x1="10" y1="15.46" x2="7"  y2="20.66" />
+      <line x1="8"  y1="12"    x2="2"  y2="12" />
+      <line x1="10" y1="8.54"  x2="7"  y2="3.34" />
+      <line x1="14" y1="8.54"  x2="17" y2="3.34" />
+    </g>
+    <circle class="dk-shutter-iris" cx="12" cy="12" r="4.2" fill="currentColor" />
+  </svg>
+  <span class="dk-shutter-label">Press enter to enter</span>
+</a>
+
+<style>
+  .dk-shutter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: var(--ink);
+    /* Inherited, not `none`: if the darkroom script bailed, the real pointer is
+       still there and this must not hide it. */
+    cursor: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .dk-shutter-eye {
+    width: clamp(48px, 5.4vw, 62px);
+    height: clamp(48px, 5.4vw, 62px);
+    opacity: 0.82;
+    transition:
+      transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1),
+      opacity 0.25s ease;
+  }
+  .dk-shutter-iris {
+    transition: r 0.42s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+
+  /* Hover winds it open a stop; the press shuts it. */
+  .dk-shutter:hover .dk-shutter-eye,
+  .dk-shutter:focus-visible .dk-shutter-eye {
+    opacity: 1;
+    transform: rotate(-11deg);
+  }
+  .dk-shutter:hover .dk-shutter-iris,
+  .dk-shutter:focus-visible .dk-shutter-iris { r: 6.1; }
+
+  .dk-shutter:active .dk-shutter-eye {
+    transform: rotate(-30deg) scale(0.95);
+    transition-duration: 0.14s;
+  }
+  .dk-shutter:active .dk-shutter-iris {
+    r: 0.9;
+    transition-duration: 0.14s;
+  }
+
+  .dk-shutter-label {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(12px, 1.15vw, 14.5px);
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    opacity: 0.86;
+    transition: opacity 0.2s ease;
+  }
+  .dk-shutter:hover .dk-shutter-label { opacity: 1; }
+
+  .dk-shutter:focus-visible {
+    outline: 2px solid var(--chrome);
+    outline-offset: 8px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 560px) {
+    .dk-shutter { gap: 7px; }
+    .dk-shutter-eye { width: 44px; height: 44px; }
+  }
+
+  /* The blades are the whole idea, so they keep their shape — what stops is the
+     travel. Pressing still reads, it just doesn't animate. */
+  @media (prefers-reduced-motion: reduce) {
+    .dk-shutter-eye,
+    .dk-shutter-iris { transition: none; }
+    .dk-shutter:hover .dk-shutter-eye,
+    .dk-shutter:focus-visible .dk-shutter-eye,
+    .dk-shutter:active .dk-shutter-eye { transform: none; }
+  }
+</style>
+
+<script>
+  import { closeAndGo } from '../../scripts/shutter';
+
+  const el = document.querySelector<HTMLAnchorElement>('.dk-shutter');
+
+  el?.addEventListener('click', (e) => {
+    // The browser owns the modified clicks — new tab, new window, download.
+    // Only the plain one belongs to the shutter.
+    if (e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    closeAndGo(el.getAttribute('href') || '/projects/tech');
+  });
+</script>

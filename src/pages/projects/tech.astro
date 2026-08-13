@@ -653,6 +653,15 @@ const projects = (await getCollection('projects'))
   </div>
 
   <script>
+    // ── SHUTTER ARRIVAL ──
+    // The opening half of the transition the landing page started. Runs on
+    // every load and no-ops unless the shutter set its flag — but it always
+    // lifts the pre-paint cover, so this page can't be left behind one.
+    import { playArrival } from '../../scripts/shutter';
+    playArrival();
+  </script>
+
+  <script>
     // ── STICKY SECTION NAV ──
     (function () {
       const nav = document.getElementById('sectionNav');

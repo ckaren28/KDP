@@ -161,33 +161,19 @@ body.dk.dk-live { cursor:none; }
   backdrop-filter:blur(7px);
   transition:opacity .5s ease, border-color .2s;
 }
-.dk .dk-card-greeting {
-  margin:0;
-  font-family:'Space Mono', ui-monospace, monospace;
-  font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--soft);
-}
 .dk .dk-card-line {
   margin:0; max-width:34ch;
   font-family:'Instrument Sans', system-ui, sans-serif; font-weight:400;
   font-size:clamp(13px,1.35vw,17px); line-height:1.55; letter-spacing:.005em;
   text-wrap:balance; color:var(--chrome);
 }
-.dk .dk-card-link {
-  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
-  font-size:clamp(12px,1.15vw,14.5px); letter-spacing:.01em;
-  color:var(--ink); text-decoration:none;
-  padding-bottom:2px; border-bottom:1px solid var(--faint);
-  transition:border-color .2s, color .2s;
-}
-.dk .dk-card-link:hover { border-bottom-color:var(--ink); }
-.dk .dk-card-link:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
+/* The route to the work is the shutter, which carries its own styles — see
+   components/global/Shutter.astro. */
 
 /* Narrow screens give the gap far less room, so the card tightens rather than
    pushing the two lines of the name apart any further than it has to. */
 @media (max-width:560px) {
   .dk .dk-card { gap:8px; padding:16px 18px 15px; max-width:min(84vw,340px); }
-  .dk .dk-card-greeting { font-size:8.5px; letter-spacing:.16em; }
   .dk .dk-card-line { font-size:13px; line-height:1.5; max-width:30ch; }
 }
 

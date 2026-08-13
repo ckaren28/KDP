@@ -1,6 +1,7 @@
 ---
 import '../styles/darkroom.css';
 import ThemeSwitch from '../components/global/ThemeSwitch.astro';
+import Shutter from '../components/global/Shutter.astro';
 import { SITE_TITLE } from '../consts';
 
 const EMAIL = 'karen.dettmar@gmail.com';
@@ -67,12 +68,13 @@ const LINES = ['KAREN', 'DETTMAR'];
         Grab a letter and pull
       </span>
       <div class="dk-card" id="dkLink" aria-hidden="true">
-        <p class="dk-card-greeting">Hi — welcome</p>
         <p class="dk-card-line">
-          I design for the moment just before someone understands. Empathy is
-          the method; feeling is the proof.
+          I design for the moment just before someone understands.
         </p>
-        <a class="dk-card-link" href="/projects" tabindex="-1">See what I'm up to</a>
+        <!-- Straight to /projects/tech, not /projects: that route is a 301 and
+             the redirect hop would land between the closing blades and the
+             opening ones. The nav keeps the tidy /projects URL. -->
+        <Shutter href="/projects/tech" />
       </div>
     </h1>
     <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't

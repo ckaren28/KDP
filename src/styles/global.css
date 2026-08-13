@@ -22,6 +22,19 @@ body {
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
+/* Pre-paint ground for a visitor arriving through the shutter, so the work page
+   doesn't flash before the iris opens over it. Sits under the custom cursor
+   and above everything else; lifted by playArrival(), or by the timeout in the
+   inline guard that raised it. */
+html.dk-arriving body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9995;
+  background: var(--off-white);
+  pointer-events: none;
+}
+
 /* ── CUSTOM CURSOR ── */
 .cursor {
   position: fixed;
