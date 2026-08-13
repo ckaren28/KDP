@@ -147,19 +147,36 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-name.touched .dk-cue { opacity:0; animation:none; }
 
-/* What the pull uncovers: the introduction — a greeting, the one line that
-   says how she works, and the route to the work. Sits in the gap that opens
-   between the two lines of the name, so it stays bounded and centred. */
+/* What the pull uncovers: the introduction — the one line that says how she
+   works, and the route to the work. Sits in the gap that opens between the two
+   lines of the name, so it stays bounded and centered.
+
+   No box. It had a border and a flat panel behind it, which read as a dialog
+   dropped on the print rather than as something the print uncovered. What's
+   left is a scrim with no edge — densest behind the text, gone by the rim — so
+   the line still clears its background where the develop pass prints pale, and
+   nothing draws a rectangle around it. `--card-veil` is the one knob: raise it
+   for more cover, drop it to nothing to take the scrim away entirely. */
 .dk .dk-card {
+  --card-veil:62%;
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   opacity:0; pointer-events:none;
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  gap:11px;
+  gap:13px;
   width:max-content; max-width:min(80vw,520px);
-  padding:22px 30px 20px; border:1px solid var(--faint); border-radius:6px;
-  background:color-mix(in srgb, var(--ox-deep) 78%, transparent);
-  backdrop-filter:blur(7px);
-  transition:opacity .5s ease, border-color .2s;
+  padding:30px 44px 28px;
+  background:radial-gradient(
+    ellipse 78% 74% at 50% 50%,
+    color-mix(in srgb, var(--ox-deep) var(--card-veil), transparent) 0%,
+    color-mix(in srgb, var(--ox-deep) var(--card-veil), transparent) 42%,
+    transparent 78%
+  );
+  backdrop-filter:blur(5px);
+  /* The blur needs the same soft edge, or it cuts a hard rectangle of its own
+     out of the print — the one thing removing the border was meant to fix. */
+  -webkit-mask-image:radial-gradient(ellipse 78% 74% at 50% 50%, #000 0%, #000 42%, transparent 78%);
+  mask-image:radial-gradient(ellipse 78% 74% at 50% 50%, #000 0%, #000 42%, transparent 78%);
+  transition:opacity .5s ease;
 }
 .dk .dk-card-line {
   margin:0; max-width:34ch;
@@ -173,7 +190,7 @@ body.dk.dk-live { cursor:none; }
 /* Narrow screens give the gap far less room, so the card tightens rather than
    pushing the two lines of the name apart any further than it has to. */
 @media (max-width:560px) {
-  .dk .dk-card { gap:8px; padding:16px 18px 15px; max-width:min(84vw,340px); }
+  .dk .dk-card { gap:10px; padding:22px 26px 20px; max-width:min(84vw,340px); }
   .dk .dk-card-line { font-size:13px; line-height:1.5; max-width:30ch; }
 }
 

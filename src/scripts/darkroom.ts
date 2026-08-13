@@ -301,9 +301,13 @@ export function initDarkroom(root: HTMLElement) {
   /* One silhouette: rasterize the scan into the scratch canvas at device
      resolution, flood it with the palette color through `source-in` so only
      the drawn pixels take the ink, then stamp that onto the layer. */
+  /* `x`/`y`/`w`/`h` describe the upright box, as they always did; `rot` turns
+     the stamp about that box's middle, so a rotated scan is positioned by where
+     you want its center rather than by solving for a corner. */
   function stamp(
     c: CanvasRenderingContext2D, im: HTMLImageElement, color: string,
-    x: number, y: number, w: number, h: number, alpha: number, flip = false,
+    x: number, y: number, w: number, h: number, alpha: number,
+    flip = false, rot = 0,
   ) {
     if (!im.complete || !im.naturalWidth) return;
     const pw = Math.max(1, Math.round(w * DPR)), ph = Math.max(1, Math.round(h * DPR));
@@ -318,8 +322,10 @@ export function initDarkroom(root: HTMLElement) {
 
     c.save();
     c.globalAlpha = alpha;
-    if (flip) { c.translate(x + w, y); c.scale(-1, 1); c.drawImage(pad, 0, 0, w, h); }
-    else c.drawImage(pad, x, y, w, h);
+    c.translate(x + w / 2, y + h / 2);
+    if (rot) c.rotate(rot);
+    if (flip) c.scale(-1, 1);
+    c.drawImage(pad, -w / 2, -h / 2, w, h);
     c.restore();
   }
 
@@ -352,17 +358,36 @@ export function initDarkroom(root: HTMLElement) {
     if (rw > W * 0.36) { rw = W * 0.36; rh = rw / FERN_RATIO; }
     stamp(c, fern, color, W * 0.95 - rw * 0.68, base - rh, rw, rh, 0.30, true);
 
-    // Lace across the top, mirroring the ferns below it — upright, with the
-    // heads running off the top edge the way the ferns run off the bottom.
-    // Fainter than the ferns, since the nav sits in this band.
-    const crown = -H * 0.04;
-    let tlh = H * 0.34, tlw = tlh * LACE_RATIO;
-    if (tlw > W * 0.30) { tlw = W * 0.30; tlh = tlw / LACE_RATIO; }
-    stamp(c, lace, color, W * 0.14 - tlw * 0.5, crown, tlw, tlh, 0.26);
+    // Lace laid in from the sides rather than hung from the top: turned about a
+    // quarter turn so the stems run off the left and right edges and the heads
+    // reach in toward the name, tilted a little past horizontal so they lift
+    // instead of lying flat. Sat below the nav band, and fainter than the ferns.
+    //
+    // Once rotated, it's the scan's HEIGHT that spans the screen horizontally,
+    // so the reach is capped against W on `h`, not on `w` as it was upright.
+    const laceTilt = 0.20;            // radians past horizontal; 0 is dead flat
+    const laceDrop = 0.19;            // how far down the pair sits, as a share of H
 
-    let trh = H * 0.28, trw = trh * LACE_RATIO;
-    if (trw > W * 0.26) { trw = W * 0.26; trh = trw / LACE_RATIO; }
-    stamp(c, lace, color, W * 0.87 - trw * 0.5, crown, trw, trh, 0.23, true);
+    let tlh = H * 0.36, tlw = tlh * LACE_RATIO;
+    if (tlh > W * 0.34) { tlh = W * 0.34; tlw = tlh * LACE_RATIO; }
+    // +90° swings the head to the right and the stem off the left edge; backing
+    // off by the tilt lifts the head. Centered just inside the edge, so half the
+    // length is already off-screen.
+    stamp(
+      c, lace, color, W * 0.03 - tlw / 2, H * laceDrop - tlh / 2,
+      tlw, tlh, 0.26, false, Math.PI / 2 - laceTilt,
+    );
+
+    let trh = H * 0.30, trw = trh * LACE_RATIO;
+    if (trh > W * 0.29) { trh = W * 0.29; trw = trh * LACE_RATIO; }
+    // The mirror of it, a little smaller and a little lower so the two don't
+    // read as a pair — the same reason the ferns are at two scales. The rotation
+    // is negated, not flipped: `flip` mirrors across the stem, which varies the
+    // silhouette but would leave this one's head pointing right as well.
+    stamp(
+      c, lace, color, W * 0.97 - trw / 2, H * (laceDrop + 0.07) - trh / 2,
+      trw, trh, 0.23, true, -(Math.PI / 2 - laceTilt),
+    );
 
     c.globalAlpha = 1;
   }
@@ -421,7 +446,7 @@ export function initDarkroom(root: HTMLElement) {
       me.setTransform(DPR, 0, 0, DPR, 0, 0);
       expo.fill(4);
     } else {
-      // Placed over the scans — the meadow, both ferns, both hung stems — so
+      // Placed over the scans — the meadow, both ferns, both laid-in stems — so
       // the opening state hints at something there rather than at bare ground.
       ([[0.50, 0.34], [0.47, 0.68], [0.09, 0.74], [0.16, 0.92],
         [0.90, 0.78], [0.84, 0.94], [0.14, 0.14], [0.87, 0.11]] as const)
