@@ -39,23 +39,30 @@ const projects = (await getCollection('projects'))
       padding: 120px 48px 100px;
     }
 
+    /* No bottom rule here — the sticky section nav sits directly beneath and
+       carries one of its own, and two hairlines that close together read as a
+       mistake. */
     .page-header {
-      margin-bottom: 48px;
-      padding-bottom: 32px;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+      padding-bottom: 26px;
     }
+    /* Title and search on one line, sharing a baseline. They stack, search
+       first-under, once there isn't room for both. */
     .page-header-top {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin-bottom: 12px;
+      gap: clamp(24px, 4vw, 56px);
+      flex-wrap: wrap;
     }
-    .page-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--muted);
+    /* The shared .page-title carries its own rule and 56px of margin, which
+       works when it's a full-width block. As a flex item it shrinks to the
+       word, leaving a stub of a rule under "Work" — and the section nav below
+       already draws the real one. */
+    .page-header-top .page-title {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
     .page-title {
       font-family: var(--font-display);
@@ -109,13 +116,18 @@ const projects = (await getCollection('projects'))
       outline-offset: 4px;
     }
 
-    /* ── FILTERS ── */
-    .filters { margin-bottom: 34px; }
+    /* ── FILTERS ──
+       Sits on the title's line. Allowed to shrink well below its 420px ideal
+       before the row gives up and wraps. */
+    .filters {
+      margin: 0;
+      flex: 0 1 420px;
+      min-width: 230px;
+    }
     .filter-search {
       position: relative;
       display: block;
-      max-width: 420px;
-      margin-bottom: 18px;
+      width: 100%;
     }
     .filter-search input {
       width: 100%;
@@ -151,14 +163,77 @@ const projects = (await getCollection('projects'))
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-top: 16px;
+      margin-top: 14px;
     }
-    .project-card[hidden] { display: none; }
+    /* It's a live region, so it stays in the DOM to be announced — but with
+       nothing to say it shouldn't hold space open under the field. */
+    .filter-count:empty { display: none; }
+    /* Anything the search can filter has to collapse when hidden — several of
+       these set their own display, which would otherwise beat [hidden]. */
+    .project-card[hidden],
+    .xp-card[hidden],
+    .exp-item[hidden],
+    .xp-compact li[hidden],
+    .work-section[hidden],
+    .experiments[hidden],
+    .xp[hidden] { display: none; }
+
     .no-results {
       padding: 48px 0;
       font-size: 15px;
       color: var(--muted);
     }
+
+    /* ── SECTION NAV ──
+       Sticks directly beneath the site header, which is fixed and opaque, so
+       it has to know that header's height; --header-h is measured at runtime
+       and the fallback matches the header's resting size. One line of type and
+       a hairline is the whole budget. */
+    .section-nav {
+      position: sticky;
+      top: var(--header-h, 68px);
+      z-index: 60;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 44px;
+      padding: 11px 0;
+      background: var(--off-white);
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.35s ease;
+    }
+    .section-nav a {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--muted);
+      padding-bottom: 3px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+    .section-nav a:hover { color: var(--black); }
+    .section-nav a[aria-current='true'] {
+      color: var(--sienna);
+      border-bottom-color: var(--sienna);
+    }
+    .section-nav a[hidden] { display: none; }
+    .section-nav a:focus-visible {
+      outline: 2px solid var(--sienna);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    /* Anchor jumps have to clear both the fixed header and the sticky nav, or
+       the section title lands underneath them. Both heights are measured at
+       runtime; the active-link check reads the same two numbers, so a jumped-to
+       section is always the one the nav marks. */
+    .work-section,
+    .experiments,
+    .xp { scroll-margin-top: calc(var(--header-h, 68px) + var(--section-nav-h, 44px) + 8px); }
+
+    .work-section { margin-top: 0; }
 
     .card-title {
       font-family: var(--font-display);
@@ -440,29 +515,43 @@ const projects = (await getCollection('projects'))
   <div class="tech-page">
 
     <header class="page-header reveal">
+      {/* Title and search share one baseline. The search reaches every section
+          on the page — projects, experiments and roles all carry data-search. */}
       <div class="page-header-top">
-        <span class="page-eyebrow">Work</span>
+        <h1 class="page-title"><em>Work</em></h1>
+
+        <div class="filters">
+          <label class="filter-search">
+            <span class="visually-hidden">Search this page</span>
+            <input
+              type="search"
+              id="projectSearch"
+              placeholder="Search projects, experiments, and roles"
+              autocomplete="off"
+              aria-describedby="filterCount"
+            />
+            <button type="button" class="filter-clear" id="filterClear" aria-label="Clear search">×</button>
+          </label>
+
+          <p class="filter-count" id="filterCount" role="status" aria-live="polite"></p>
+        </div>
       </div>
-      <h1 class="page-title"><em>Work</em></h1>
     </header>
 
-    <div class="filters">
-      <label class="filter-search">
-        <span class="visually-hidden">Search projects</span>
-        <input
-          type="search"
-          id="projectSearch"
-          placeholder="Search by name, tag, or tool"
-          autocomplete="off"
-          aria-describedby="filterCount"
-        />
-        <button type="button" class="filter-clear" id="filterClear" aria-label="Clear search">×</button>
-      </label>
+    <nav class="section-nav" id="sectionNav" aria-label="Sections on this page">
+      <a href="#projects" data-nav="projects">Projects</a>
+      <a href="#experiments" data-nav="experiments">Experiments</a>
+      <a href="#experience" data-nav="experience">Experience</a>
+    </nav>
 
-      <p class="filter-count" id="filterCount" role="status" aria-live="polite"></p>
-    </div>
+    <p class="no-results" id="noResults" hidden>Nothing matches that. Try another word, or clear the search.</p>
 
-    <div class="project-grid" id="projectGrid">
+    <section class="work-section reveal" id="projects" aria-labelledby="projectsLabel">
+      <div class="exp-head">
+        <h2 class="exp-title" id="projectsLabel">Projects</h2>
+      </div>
+
+      <div class="project-grid" id="projectGrid">
       {projects.map((p) => (
         <a
           href={p.link}
@@ -483,8 +572,8 @@ const projects = (await getCollection('projects'))
           </div>
         </a>
       ))}
-    </div>
-    <p class="no-results" id="noResults" hidden>Nothing matches that. Try another word, or clear the search.</p>
+      </div>
+    </section>
 
     <section class="experiments reveal" id="experiments">
       <div class="exp-head">
@@ -495,7 +584,10 @@ const projects = (await getCollection('projects'))
         </p>
       </div>
 
-      <div class="exp-item">
+      <div
+        class="exp-item"
+        data-search="thread drawing pick a color draw on the shirt canvas path2d embroidery experiment prototype"
+      >
         <div class="canvas-section">
           <canvas id="heroCanvas"></canvas>
         </div>
@@ -509,7 +601,7 @@ const projects = (await getCollection('projects'))
     {experience.length > 0 && (
       <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
         <div class="exp-head">
-          <h2 class="exp-title" id="experienceLabel">Work Experience</h2>
+          <h2 class="exp-title" id="experienceLabel">Experience</h2>
           <p class="exp-note">
             Design and front-end work, and the four years of developer advocacy
             in the middle of it. Where the evidence survives, it's here.
@@ -518,7 +610,11 @@ const projects = (await getCollection('projects'))
 
         <div class="xp-grid">
           {experience.map(({ data, slug }) => (
-            <a class="xp-card" href={`/experience/${slug}`}>
+            <a
+              class="xp-card"
+              href={`/experience/${slug}`}
+              data-search={`${data.company} ${data.role} ${data.headline} ${data.result}`.toLowerCase()}
+            >
               <p class="xp-meta">
                 <span class="xp-company">{data.company}</span>
                 <span>{data.role}</span>
@@ -538,7 +634,7 @@ const projects = (await getCollection('projects'))
         {compactExperience.length > 0 && (
           <ul class="xp-compact">
             {compactExperience.map(({ data }) => (
-              <li>
+              <li data-search={`${data.company} ${data.role} ${data.headline} ${data.result}`.toLowerCase()}>
                 <p class="xp-meta">
                   <span class="xp-company">{data.company}</span>
                   <span>{data.role}</span>
@@ -557,32 +653,97 @@ const projects = (await getCollection('projects'))
   </div>
 
   <script>
-    // ── SEARCH + TAG FILTERS ──
+    // ── STICKY SECTION NAV ──
     (function () {
-      const input   = document.getElementById('projectSearch') as HTMLInputElement | null;
-      const clear   = document.getElementById('filterClear');
-      const count   = document.getElementById('filterCount');
-      const empty   = document.getElementById('noResults');
-      const cards   = Array.from(document.querySelectorAll<HTMLElement>('.project-card'));
-      if (!input || !count || !empty) return;
+      const nav = document.getElementById('sectionNav');
+      // The site header is fixed and opaque, so the nav has to stick below it.
+      // Its height changes with the breakpoints and once the display font
+      // loads, so it's measured rather than guessed.
+      const siteHeader = document.querySelector<HTMLElement>('header:not(.page-header)');
+      if (!nav || !siteHeader) return;
+
+      const root = document.documentElement;
+      const setOffset = () => {
+        root.style.setProperty('--header-h', `${siteHeader.offsetHeight}px`);
+        root.style.setProperty('--section-nav-h', `${nav.offsetHeight}px`);
+      };
+      setOffset();
+      new ResizeObserver(setOffset).observe(siteHeader);
+      new ResizeObserver(setOffset).observe(nav);
+      document.fonts?.ready.then(setOffset);
+
+      const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-nav]'));
+      const sections = links
+        .map((link) => ({ link, el: document.getElementById(link.dataset.nav!) }))
+        .filter((s): s is { link: HTMLAnchorElement; el: HTMLElement } => !!s.el);
+
+      // Whichever section has crossed just under the nav is the current one.
+      let queued = false;
+      function mark() {
+        queued = false;
+        // Matches the sections' scroll-margin (+ a few px of slack), so the
+        // section an anchor jumps to is the one that reads as current.
+        const line = siteHeader!.offsetHeight + nav!.offsetHeight + 12;
+        let current: HTMLAnchorElement | null = null;
+        for (const s of sections) {
+          if (!s.el.hidden && s.el.getBoundingClientRect().top <= line) current = s.link;
+        }
+        for (const { link } of sections) {
+          if (link === current) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      }
+      addEventListener('scroll', () => {
+        if (!queued) { queued = true; requestAnimationFrame(mark); }
+      }, { passive: true });
+      addEventListener('resize', mark, { passive: true });
+      mark();
+    })();
+  </script>
+
+  <script>
+    // ── SEARCH ──
+    (function () {
+      const input  = document.getElementById('projectSearch') as HTMLInputElement | null;
+      const clear  = document.getElementById('filterClear');
+      const status = document.getElementById('filterCount');
+      const empty  = document.getElementById('noResults');
+      const nav    = document.getElementById('sectionNav');
+      if (!input || !status || !empty) return;
+
+      // Every section takes part, so "wix" finds the role and "canvas" finds
+      // the experiment — not just the project grid.
+      const groups = ['projects', 'experiments', 'experience']
+        .map((id) => ({
+          section: document.getElementById(id),
+          items: Array.from(document.querySelectorAll<HTMLElement>(`#${id} [data-search]`)),
+          link: nav?.querySelector<HTMLElement>(`[data-nav="${id}"]`) ?? null,
+        }))
+        .filter((g): g is { section: HTMLElement; items: HTMLElement[]; link: HTMLElement | null } =>
+          !!g.section);
 
       function apply() {
         const q = input!.value.trim().toLowerCase();
-        let shown = 0;
+        let total = 0;
 
-        cards.forEach(card => {
-          // data-search already includes each project's tags, so typing a tool
-          // or language name still finds it
-          const show = !q || (card.dataset.search ?? '').includes(q);
-          card.hidden = !show;
-          if (show) shown++;
-        });
+        for (const g of groups) {
+          let shown = 0;
+          for (const item of g.items) {
+            const show = !q || (item.dataset.search ?? '').includes(q);
+            item.hidden = !show;
+            if (show) shown++;
+          }
+          // An emptied section goes, and its anchor goes with it — a sticky
+          // link to nothing is a dead end.
+          g.section.hidden = shown === 0;
+          if (g.link) g.link.hidden = shown === 0;
+          total += shown;
+        }
 
         clear?.classList.toggle('on', q.length > 0);
-        empty!.hidden = shown > 0;
-        count!.textContent = shown === cards.length
-          ? ''
-          : `${shown} of ${cards.length} projects`;
+        empty!.hidden = total > 0;
+        // Announces that filtering happened without printing a tally.
+        status!.textContent = q && total > 0 ? `Filtered by “${q}”` : '';
       }
 
       input.addEventListener('input', apply);

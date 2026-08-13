@@ -1,15 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
 import '../styles/darkroom.css';
 import ThemeSwitch from '../components/global/ThemeSwitch.astro';
 import { SITE_TITLE } from '../consts';
-
-// What the letter-pull uncovers. Prefer an explicitly featured project, fall
-// back to the most recent one so the slot is never empty.
-const all = (await getCollection('projects')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-const featured = all.find((p) => p.data.featured) ?? all[0];
 
 const EMAIL = 'karen.dettmar@gmail.com';
 const description = 'Karen Dettmar — Creative Technologist in New York.';
@@ -74,15 +66,19 @@ const LINES = ['KAREN', 'DETTMAR'];
         <span class="dk-cue-grip"></span>
         Grab a letter and pull
       </span>
-      <a class="dk-link" id="dkLink" href={`/projects/${featured.slug}`} tabindex="-1" aria-hidden="true">
-        <span class="dk-link-eyebrow">Featured</span>
-        <span class="dk-link-title">{featured.data.title}</span>
-      </a>
+      <div class="dk-card" id="dkLink" aria-hidden="true">
+        <p class="dk-card-greeting">Hi — welcome</p>
+        <p class="dk-card-line">
+          I design for the moment just before someone understands. Empathy is
+          the method; feeling is the proof.
+        </p>
+        <a class="dk-card-link" href="/projects" tabindex="-1">See what I'm up to</a>
+      </div>
     </h1>
     <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't
          standing on the h1's role; visible only when focused. -->
     <button type="button" class="dk-reveal" aria-expanded="false" aria-controls="dkLink">
-      Show featured project
+      Show introduction
     </button>
     <div class="dk-rule" aria-hidden="true"></div>
     <p class="dk-role">Creative Technologist</p>
@@ -90,7 +86,7 @@ const LINES = ['KAREN', 'DETTMAR'];
   </div>
 
   <nav class="dk-nav" aria-label="Primary">
-    <a href="/" class="dk-who">Karen Dettmar<i>New York</i></a>
+    <a href="/" class="dk-who" aria-label="Karen Dettmar — home">KD</a>
     <ul>
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>

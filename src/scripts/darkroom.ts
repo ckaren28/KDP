@@ -13,7 +13,11 @@
 type Palette = { ox: string; oxDeep: string; print: string; tone: string };
 
 const PAL: Record<'pos' | 'neg', Palette> = {
-  pos: { ox: '#6B1621', oxDeep: '#3A0810', print: '#A6C8E8', tone: '#C9A227' },
+  // `ox` is the middle of the ground's vignette and `oxDeep` its outer edge —
+  // both kept in step with --ox / --ox-deep in darkroom.css. The edge is
+  // already the site's dark ground exactly; the middle now sits just above it
+  // rather than at the full oxblood accent.
+  pos: { ox: '#4A121C', oxDeep: '#3A0810', print: '#A6C8E8', tone: '#C9A227' },
   // the negative's outer edge matches --off-white site-wide
   neg: { ox: '#C5D6E6', oxDeep: '#D7E3EE', print: '#7A2230', tone: '#3B5BA8' },
 };
@@ -43,9 +47,10 @@ export function initDarkroom(root: HTMLElement) {
   const nameEl = root.querySelector<HTMLElement>('.dk-name');
   const curEl = root.querySelector<HTMLElement>('.dk-cur');
   const hintEl = root.querySelector<HTMLElement>('.dk-hint');
-  const linkEl = root.querySelector<HTMLAnchorElement>('.dk-link');
+  const cardEl = root.querySelector<HTMLElement>('.dk-card');
+  const cardLink = root.querySelector<HTMLAnchorElement>('.dk-card-link');
   const revealBtn = root.querySelector<HTMLButtonElement>('.dk-reveal');
-  if (!view || !nameEl || !curEl || !hintEl || !linkEl || !revealBtn) return;
+  if (!view || !nameEl || !curEl || !hintEl || !cardEl || !cardLink || !revealBtn) return;
 
   // Past the guard, so a replacement cursor is guaranteed to be drawn. Only
   // now is it safe for the stylesheet to hide the real one — if this module
@@ -118,20 +123,26 @@ export function initDarkroom(root: HTMLElement) {
 
   function reveal(on: boolean) {
     revealed = on;
-    // Wide enough to clear the featured-project card that sits in the gap.
-    // The card stacks and gets taller on narrow screens, so measure it rather
-    // than trusting one number — 58 was tuned on a desktop width and the card
-    // overlapped both lines of the name on a phone.
-    lineGapTarget = on ? Math.max(58, linkEl!.offsetHeight / 2 + 30) : 0;
-    linkEl!.style.opacity = on ? '1' : '0';
-    linkEl!.style.pointerEvents = on ? 'auto' : 'none';
-    linkEl!.tabIndex = on ? 0 : -1;
-    linkEl!.setAttribute('aria-hidden', on ? 'false' : 'true');
+    // Wide enough to clear the card that sits in the gap. It stacks and gets
+    // taller on narrow screens, so measure it rather than trusting one number
+    // — 58 was tuned on a desktop width and the card overlapped both lines of
+    // the name on a phone.
+    lineGapTarget = on ? Math.max(58, cardEl!.offsetHeight / 2 + 30) : 0;
+    // The cue sits under the name and the card pushes the lines apart around
+    // it, so once the introduction is open the cue has both been answered and
+    // been landed on. Same class the first pull uses.
+    if (on) nameEl!.classList.add('touched');
+    cardEl!.style.opacity = on ? '1' : '0';
+    cardEl!.style.pointerEvents = on ? 'auto' : 'none';
+    cardEl!.setAttribute('aria-hidden', on ? 'false' : 'true');
+    // The card is a container now, so the tab stop belongs to the link inside
+    // it rather than to the card itself.
+    cardLink!.tabIndex = on ? 0 : -1;
     revealBtn!.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
 
   nameEl.addEventListener('pointerdown', (e: PointerEvent) => {
-    if ((e.target as HTMLElement).closest('.dk-link')) return;
+    if ((e.target as HTMLElement).closest('.dk-card')) return;
     const l = pickLetter(e.clientX, e.clientY);
     if (!l) return;
     e.preventDefault();
@@ -186,7 +197,7 @@ export function initDarkroom(root: HTMLElement) {
   // keeps its heading role. Focus moves to the link once it's revealed.
   revealBtn.addEventListener('click', () => {
     reveal(!revealed);
-    if (revealed) linkEl.focus();
+    if (revealed) cardLink.focus();
   });
   // Hover ramp — pointer events gated on pointerType, not mouseenter/mouseleave.
   // iOS synthesises a mouseenter on tap but never a matching mouseleave, so the
@@ -250,47 +261,94 @@ export function initDarkroom(root: HTMLElement) {
   }
 
   /* ── what develops underneath ──
-     Placeholder botanicals. These are meant to be replaced with photograms of
-     Karen's own objects — swap this for a drawImage of an SVG/PNG when they exist. */
+     Karen's botanical scans: the meadow rises behind the name, ferns bank up
+     in both bottom corners. They're printed as flat silhouettes in the palette
+     color rather than in their own — the develop pass prints in `print` and a
+     second pass tones it gold, and that two-layer mechanism needs a
+     single-color source to work against. */
+  const meadow = new Image(), fern = new Image(), lace = new Image();
+  for (const [im, file] of [
+    [meadow, 'meadow-grasses.svg'], [fern, 'ferns.svg'], [lace, 'queen-annes-lace.svg'],
+  ] as const) {
+    // Same-origin out of /public, so the composite canvas stays untainted and
+    // the print egg can still read it back.
+    im.addEventListener('load', () => repaintUnder(), { once: true });
+    im.src = `/images/botanicals/${file}`;
+  }
+
+  // Heights lead and widths follow the artwork's own ratio, so nothing is
+  // stretched; the caller clamps against W for narrow screens.
+  const MEADOW_RATIO = 1014.43 / 1355.04;
+  const FERN_RATIO = 755.04 / 1091.71;
+  const LACE_RATIO = 594.24 / 1025.61;
+  const pad = mk(), pc = pad.getContext('2d')!;
+
+  /* One silhouette: rasterize the scan into the scratch canvas at device
+     resolution, flood it with the palette color through `source-in` so only
+     the drawn pixels take the ink, then stamp that onto the layer. */
+  function stamp(
+    c: CanvasRenderingContext2D, im: HTMLImageElement, color: string,
+    x: number, y: number, w: number, h: number, alpha: number, flip = false,
+  ) {
+    if (!im.complete || !im.naturalWidth) return;
+    const pw = Math.max(1, Math.round(w * DPR)), ph = Math.max(1, Math.round(h * DPR));
+    // Resizing the canvas clears it; sizing it the same twice running does not.
+    if (pad.width !== pw || pad.height !== ph) { pad.width = pw; pad.height = ph; }
+    else pc.clearRect(0, 0, pw, ph);
+    pc.globalCompositeOperation = 'source-over';
+    pc.drawImage(im, 0, 0, pw, ph);
+    pc.globalCompositeOperation = 'source-in';
+    pc.fillStyle = color;
+    pc.fillRect(0, 0, pw, ph);
+
+    c.save();
+    c.globalAlpha = alpha;
+    if (flip) { c.translate(x + w, y); c.scale(-1, 1); c.drawImage(pad, 0, 0, w, h); }
+    else c.drawImage(pad, x, y, w, h);
+    c.restore();
+  }
+
   function drawUnderTo(c: CanvasRenderingContext2D, color: string) {
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.clearRect(0, 0, W * DPR, H * DPR);
     c.scale(DPR, DPR);
-    c.lineCap = 'round';
-    const stems = [
-      { x: W * 0.110, h: 0.50, lean: 22, n: 6, r: 26 },
-      { x: W * 0.200, h: 0.36, lean: -14, n: 5, r: 19 },
-      { x: W * 0.055, h: 0.28, lean: 10, n: 5, r: 16 },
-      { x: W * 0.880, h: 0.54, lean: -20, n: 6, r: 28 },
-      { x: W * 0.945, h: 0.38, lean: 15, n: 5, r: 20 },
-      { x: W * 0.795, h: 0.26, lean: -8, n: 5, r: 15 },
-    ];
-    for (const s of stems) {
-      const y0 = H * 1.03, y1 = H * (1 - s.h);
-      c.strokeStyle = color; c.fillStyle = color;
-      c.globalAlpha = .40; c.lineWidth = 2.4;
-      c.beginPath();
-      c.moveTo(s.x, y0);
-      c.quadraticCurveTo(s.x + s.lean * 2.2, (y0 + y1) / 2, s.x + s.lean, y1);
-      c.stroke();
-      c.globalAlpha = .30;
-      [0.34, 0.58].forEach((t, li) => {
-        const lxp = s.x + s.lean * t, lyp = y0 + (y1 - y0) * t, dir = li % 2 ? 1 : -1;
-        c.beginPath();
-        c.ellipse(lxp + dir * 17, lyp, 21, 7, dir * 0.5, 0, Math.PI * 2);
-        c.fill();
-      });
-      const bx = s.x + s.lean, by = y1;
-      c.globalAlpha = .34;
-      for (let p = 0; p < s.n; p++) {
-        const a = (p / s.n) * Math.PI * 2 + s.lean;
-        c.beginPath();
-        c.ellipse(bx + Math.cos(a) * s.r * .62, by + Math.sin(a) * s.r * .62, s.r * .56, s.r * .30, a, 0, Math.PI * 2);
-        c.fill();
-      }
-      c.globalAlpha = .46;
-      c.beginPath(); c.arc(bx, by, s.r * .28, 0, Math.PI * 2); c.fill();
-    }
+
+    // All three are rooted just past the bottom edge, so the stems run off the
+    // page rather than ending in mid-air.
+    const base = H * 1.04;
+
+    // Meadow, centered and topping out above the name. Deliberately fainter
+    // than the ferns: the h1 sits directly over it. On a narrow screen it may
+    // take most of the width — the ferns shrink into the corners there, so
+    // there's nothing beside it to crowd, and the tighter cap would otherwise
+    // strand it in the bottom third.
+    let mh = H * 0.94, mw = mh * MEADOW_RATIO;
+    const mwMax = W * (W < 720 ? 0.80 : 0.54);
+    if (mw > mwMax) { mw = mwMax; mh = mw / MEADOW_RATIO; }
+    stamp(c, meadow, color, (W - mw) / 2, base - mh, mw, mh, 0.20);
+
+    // Ferns at two scales and one flipped, so the corners don't read as a
+    // mirrored pair. Each runs off its own edge.
+    let lh = H * 0.50, lw = lh * FERN_RATIO;
+    if (lw > W * 0.40) { lw = W * 0.40; lh = lw / FERN_RATIO; }
+    stamp(c, fern, color, W * 0.05 - lw * 0.32, base - lh, lw, lh, 0.34);
+
+    let rh = H * 0.42, rw = rh * FERN_RATIO;
+    if (rw > W * 0.36) { rw = W * 0.36; rh = rw / FERN_RATIO; }
+    stamp(c, fern, color, W * 0.95 - rw * 0.68, base - rh, rw, rh, 0.30, true);
+
+    // Lace across the top, mirroring the ferns below it — upright, with the
+    // heads running off the top edge the way the ferns run off the bottom.
+    // Fainter than the ferns, since the nav sits in this band.
+    const crown = -H * 0.04;
+    let tlh = H * 0.34, tlw = tlh * LACE_RATIO;
+    if (tlw > W * 0.30) { tlw = W * 0.30; tlh = tlw / LACE_RATIO; }
+    stamp(c, lace, color, W * 0.14 - tlw * 0.5, crown, tlw, tlh, 0.26);
+
+    let trh = H * 0.28, trw = trh * LACE_RATIO;
+    if (trw > W * 0.26) { trw = W * 0.26; trh = trw / LACE_RATIO; }
+    stamp(c, lace, color, W * 0.87 - trw * 0.5, crown, trw, trh, 0.23, true);
+
     c.globalAlpha = 1;
   }
   const repaintUnder = () => { drawUnderTo(up, pal.print); drawUnderTo(ut, pal.tone); };
@@ -348,7 +406,10 @@ export function initDarkroom(root: HTMLElement) {
       me.setTransform(DPR, 0, 0, DPR, 0, 0);
       expo.fill(4);
     } else {
-      ([[0.13, 0.62], [0.09, 0.80], [0.19, 0.72], [0.88, 0.60], [0.93, 0.78], [0.81, 0.84]] as const)
+      // Placed over the scans — the meadow, both ferns, both hung stems — so
+      // the opening state hints at something there rather than at bare ground.
+      ([[0.50, 0.34], [0.47, 0.68], [0.09, 0.74], [0.16, 0.92],
+        [0.90, 0.78], [0.84, 0.94], [0.14, 0.14], [0.87, 0.11]] as const)
         .forEach(([fx, fy]) => develop(W * fx, H * fy, 0.85));
     }
   }

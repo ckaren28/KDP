@@ -5,7 +5,11 @@
    ────────────────────────────────────────────────────────────── */
 
 .dk {
-  --ox:#6B1621;
+  /* The centre of the vignette used to be the full oxblood accent, which read
+     far brighter than any other page. Pulled down close to the ground so the
+     landing page sits at the site's darkness; the accent still carries the
+     name's hover ramp and the negative print. */
+  --ox:#4A121C;
   --ox-deep:#3A0810;
   --print:#A6C8E8;
   --print-lt:#C4DCF2;
@@ -143,47 +147,48 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-name.touched .dk-cue { opacity:0; animation:none; }
 
-/* What the pull uncovers: the featured project, not a second route to the
-   same page the nav already links. Sits in the gap that opens between the
-   two lines of the name. */
-.dk .dk-link {
+/* What the pull uncovers: the introduction — a greeting, the one line that
+   says how she works, and the route to the work. Sits in the gap that opens
+   between the two lines of the name, so it stays bounded and centred. */
+.dk .dk-card {
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   opacity:0; pointer-events:none;
-  display:flex; align-items:center; gap:clamp(12px,1.6vw,22px);
-  text-decoration:none; white-space:nowrap;
-  padding:12px 26px; border:1px solid var(--faint); border-radius:100px;
-  background:color-mix(in srgb, var(--ox-deep) 62%, transparent);
-  backdrop-filter:blur(6px);
-  transition:opacity .5s ease, border-color .2s, color .2s, gap .2s;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap:11px;
+  width:max-content; max-width:min(80vw,520px);
+  padding:22px 30px 20px; border:1px solid var(--faint); border-radius:6px;
+  background:color-mix(in srgb, var(--ox-deep) 78%, transparent);
+  backdrop-filter:blur(7px);
+  transition:opacity .5s ease, border-color .2s;
 }
-.dk .dk-link-eyebrow {
+.dk .dk-card-greeting {
+  margin:0;
   font-family:'Space Mono', ui-monospace, monospace;
-  font-size:9.5px; letter-spacing:.24em; text-transform:uppercase;
+  font-size:9.5px; letter-spacing:.2em; text-transform:uppercase;
   color:var(--soft);
 }
-.dk .dk-link-title {
-  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
-  font-size:clamp(14px,1.5vw,20px); letter-spacing:.005em; line-height:1;
-  color:var(--chrome);
+.dk .dk-card-line {
+  margin:0; max-width:34ch;
+  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:400;
+  font-size:clamp(13px,1.35vw,17px); line-height:1.55; letter-spacing:.005em;
+  text-wrap:balance; color:var(--chrome);
 }
-.dk .dk-link:hover { border-color:var(--ink); gap:clamp(18px,2.2vw,30px); }
-.dk .dk-link:hover .dk-link-title { color:var(--ink); }
-.dk .dk-link:focus-visible { outline:2px solid var(--chrome); outline-offset:6px; }
+.dk .dk-card-link {
+  font-family:'Instrument Sans', system-ui, sans-serif; font-weight:600;
+  font-size:clamp(12px,1.15vw,14.5px); letter-spacing:.01em;
+  color:var(--ink); text-decoration:none;
+  padding-bottom:2px; border-bottom:1px solid var(--faint);
+  transition:border-color .2s, color .2s;
+}
+.dk .dk-card-link:hover { border-bottom-color:var(--ink); }
+.dk .dk-card-link:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
 
-/* A pill only reads as a pill while it is wider than it is tall. Stacked and
-   unconstrained, the title wrapped to four lines and the 100px radius turned
-   the card into a circle sitting on top of the letters. On narrow screens it
-   becomes a plain card with a bounded width, so the title wraps to two. */
+/* Narrow screens give the gap far less room, so the card tightens rather than
+   pushing the two lines of the name apart any further than it has to. */
 @media (max-width:560px) {
-  .dk .dk-link {
-    flex-direction:column; align-items:center; text-align:center;
-    gap:4px; white-space:normal;
-    padding:11px 16px; border-radius:5px;
-    width:max-content; max-width:min(74vw,300px);
-  }
-  .dk .dk-link:hover { gap:4px; }
-  .dk .dk-link-eyebrow { font-size:8.5px; letter-spacing:.2em; }
-  .dk .dk-link-title { white-space:normal; font-size:14px; line-height:1.25; }
+  .dk .dk-card { gap:8px; padding:16px 18px 15px; max-width:min(84vw,340px); }
+  .dk .dk-card-greeting { font-size:8.5px; letter-spacing:.16em; }
+  .dk .dk-card-line { font-size:13px; line-height:1.5; max-width:30ch; }
 }
 
 /* clears the cue pill, which is absolutely positioned under the name */
@@ -206,13 +211,12 @@ body.dk.dk-live { cursor:none; }
   padding:26px clamp(20px,3.2vw,46px); gap:24px; flex-wrap:nowrap; pointer-events:none;
 }
 .dk .dk-nav * { pointer-events:auto; }
+/* Initials in the name's own face and weight — the same mark, set small. The
+   location isn't repeated here; it's already under the name. */
 .dk .dk-who {
-  font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:700; font-size:16px;
-  letter-spacing:-.015em; text-decoration:none; color:var(--chrome);
-}
-.dk .dk-who i {
-  font-style:normal; font-weight:400; font-family:'Instrument Sans', system-ui, sans-serif;
-  font-size:13.5px; color:var(--soft); margin-left:12px;
+  font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:600; font-size:19px;
+  font-variation-settings:'opsz' 96;
+  letter-spacing:-.028em; text-decoration:none; color:var(--chrome);
 }
 .dk .dk-nav ul { display:flex; gap:22px; list-style:none; align-items:baseline; font-size:14px; margin:0; padding:0; }
 .dk .dk-nav a { color:var(--soft); text-decoration:none; transition:color .18s; }
@@ -274,19 +278,17 @@ body.dk.dk-live { cursor:none; }
   .dk .dk-contact { bottom:74px; }
 }
 
-/* The nav has to stay on one line — wrapping split the wordmark off from the
-   menu and ate two rows of a 667px-tall phone. The location suffix is the
-   first thing to go; it is repeated under the name anyway. */
+/* The nav has to stay on one line — wrapping split the mark off from the menu
+   and ate two rows of a 667px-tall phone. Initials leave room to spare. */
 @media (max-width:560px) {
   .dk .dk-nav { padding:16px 16px; gap:10px; }
-  .dk .dk-who { font-size:14px; letter-spacing:-.025em; }
-  .dk .dk-who i { display:none; }
+  .dk .dk-who { font-size:17px; }
   .dk .dk-nav ul { gap:13px; font-size:12.5px; }
 }
 
 @media (max-width:380px) {
   .dk .dk-nav { padding:14px 13px; gap:8px; }
-  .dk .dk-who { font-size:13px; }
+  .dk .dk-who { font-size:16px; }
   .dk .dk-nav ul { gap:11px; font-size:11.5px; }
 }
 
@@ -319,7 +321,7 @@ body.dk.dk-live { cursor:none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dk .dk-ltr, .dk .dk-cur, .dk .dk-hint, .dk .dk-link { transition:none !important; }
+  .dk .dk-ltr, .dk .dk-cur, .dk .dk-hint, .dk .dk-card { transition:none !important; }
   .dk .dk-cue, .dk .dk-cue-grip::after { animation:none; }
   .dk .dk-cur { display:none; }
   body.dk.dk-live { cursor:auto; }

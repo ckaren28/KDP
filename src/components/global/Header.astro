@@ -6,7 +6,9 @@ import ThemeSwitch from './ThemeSwitch.astro';
      footer. Neither belongs in the primary menu — this nav is the site's own
      pages only. -->
 <header>
-  <a href="/" class="nav-logo">Karen Dettmar</a>
+  <!-- Initials, not the full name. It's the only route home, so it carries an
+       accessible name that isn't just two letters read aloud. -->
+  <a href="/" class="nav-logo" aria-label="Karen Dettmar — home">KD</a>
   <nav aria-label="Primary">
     <ul class="nav-links">
       <li><a href="/projects">Work</a></li>
@@ -32,11 +34,14 @@ import ThemeSwitch from './ThemeSwitch.astro';
     transition: background-color 0.35s ease, border-color 0.35s ease;
   }
 
+  /* Set to match the landing page's name exactly — Bricolage Grotesque 600 at
+     opsz 96 — so the initials read as the same mark, just smaller. */
   .nav-logo {
     font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.015em;
+    font-size: 19px;
+    font-weight: 600;
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.028em;
     color: var(--black);
     text-decoration: none;
   }
@@ -85,19 +90,19 @@ import ThemeSwitch from './ThemeSwitch.astro';
      whatever page they landed on. */
   @media (max-width: 900px) {
     header { padding: 16px 24px; gap: 14px; }
-    .nav-logo { font-size: 15px; }
+    .nav-logo { font-size: 18px; }
     .nav-links { gap: 16px; }
     .nav-links a { font-size: 13px; }
   }
   @media (max-width: 560px) {
     header { padding: 13px 16px; gap: 10px; }
-    .nav-logo { font-size: 14px; letter-spacing: -0.025em; }
+    .nav-logo { font-size: 17px; }
     .nav-links { gap: 13px; }
     .nav-links a { font-size: 12px; }
   }
   @media (max-width: 380px) {
     header { padding: 12px 13px; gap: 8px; }
-    .nav-logo { font-size: 13px; }
+    .nav-logo { font-size: 16px; }
     .nav-links { gap: 11px; }
     .nav-links a { font-size: 11.5px; }
   }
