@@ -1,8 +1,8 @@
 /**
  * Theme, switched by typing.
  *
- * There is no visible toggle — type "light" or "dark" anywhere on the site.
- * The choice persists in localStorage and wins over a page's own default,
+ * Type "light" or "dark" anywhere on the site, or press the safelight in the
+ * nav. The choice persists in localStorage and wins over a page's own default,
  * so once you've picked, every page follows.
  */
 
