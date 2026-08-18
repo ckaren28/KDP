@@ -11,7 +11,7 @@
 .back-nav {
   padding: 2.5rem 0 4rem;
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -26,7 +26,7 @@
 
 .page-label {
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
@@ -34,18 +34,10 @@
   display: block;
 }
 
-.page-title {
-  font-size: clamp(3rem, 7vw, 5.5rem);
-  font-weight: 300;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  font-style: italic;
-  margin-bottom: 2rem;
-}
 
 .page-desc {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--fs-350);
   line-height: 1.75;
   color: var(--text-body);
   max-width: 52ch;
@@ -71,7 +63,7 @@
 
 .panel-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: var(--fs-550);
   font-weight: 300;
   margin-bottom: 0.4rem;
   color: var(--black);
@@ -79,7 +71,7 @@
 
 .panel-subtitle {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   margin-bottom: 2rem;
   font-weight: 300;
@@ -95,7 +87,7 @@
 
 .form-field label {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -105,7 +97,7 @@
 .form-field textarea,
 .form-field select {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
   color: var(--black);
   background: transparent;
   border: 1px solid var(--border);
@@ -125,7 +117,7 @@
 
 .form-hint {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   color: var(--muted);
 }
 
@@ -144,7 +136,7 @@
 
 .traveler-row label {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   color: var(--text-body);
   cursor: pointer;
   flex: 1;
@@ -152,7 +144,7 @@
 
 .traveler-row .traveler-badge {
   font-family: var(--font-body);
-  font-size: 0.6rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--sienna);
@@ -163,7 +155,7 @@
 /* ── BUTTONS ── */
 .btn-generate {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--off-white);
@@ -181,7 +173,7 @@
 /* ── PRESETS ── */
 .presets-label {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -190,7 +182,7 @@
 .presets-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
 .preset-btn {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.08em;
   color: var(--muted);
   border: 1px solid var(--border);
@@ -204,7 +196,7 @@
 /* ── ERROR ── */
 .error-box {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   color: #a0291a;
   border: 1px solid #e8c4be;
   background: #fdf5f4;
@@ -215,7 +207,7 @@
 /* ── OUTPUT STATES ── */
 .output-empty {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: var(--fs-300);
   color: var(--muted);
   padding: 3rem 0;
   text-align: center;
@@ -236,7 +228,7 @@
 
 .output-section-title {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -246,7 +238,7 @@
 
 .output-text {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
   line-height: 1.75;
   color: var(--text-body);
 }
@@ -260,7 +252,7 @@
 }
 :global(.card-name) {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--black);
@@ -268,13 +260,13 @@
 }
 :global(.card-detail) {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   line-height: 1.65;
   color: var(--text-body);
 }
 :global(.card-meta) {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-200);
   color: var(--muted);
   margin-top: 0.25rem;
 }
@@ -282,7 +274,7 @@
 /* numbered steps */
 .steps-list {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
   line-height: 1.75;
   color: var(--text-body);
   padding-left: 1.25rem;
@@ -294,7 +286,7 @@
 /* bullet notes */
 .notes-list {
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
   line-height: 1.75;
   color: var(--text-body);
   padding-left: 1.25rem;
@@ -318,7 +310,7 @@
 /* Badge base + states — JS sets these via className assignment */
 :global(.badge) {
   font-family: var(--font-body);
-  font-size: 0.6rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 2px 8px;
@@ -337,7 +329,7 @@
 }
 .project-nav-link {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -353,7 +345,7 @@
 }
 .next-all {
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);

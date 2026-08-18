@@ -17,10 +17,27 @@ body {
   color: var(--black);
   font-family: var(--font-body);
   font-weight: 400;
-  cursor: none;
   overflow-x: hidden;
   transition: background-color 0.35s ease, color 0.35s ease;
 }
+
+/* The system cursor is only given up once the script is up and actually drawing
+   a replacement. `cursor-live` is set by MainLayout's module script after both
+   cursor elements resolve — if that module fails to load, the real cursor stays.
+   Same guard the landing page uses via `dk-live` (see darkroom.css). */
+html.cursor-live body,
+html.cursor-live a,
+html.cursor-live button,
+html.cursor-live label,
+html.cursor-live select,
+html.cursor-live input,
+html.cursor-live textarea,
+html.cursor-live [role='button'],
+html.cursor-live input[type='range']::-webkit-slider-thumb { cursor: none; }
+html.cursor-live input[type='range']::-moz-range-thumb { cursor: none; }
+
+html:not(.cursor-live) .cursor,
+html:not(.cursor-live) .cursor-ring { display: none; }
 
 /* Pre-paint ground for a visitor arriving through the shutter, so the work page
    doesn't flash before the iris opens over it. Sits under the custom cursor
@@ -72,9 +89,8 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
 .theme-toggle {
   background: none;
   border: none;
-  font-size: 15px;
+  font-size: var(--fs-400);
   color: var(--muted);
-  cursor: none;
   padding: 0;
   line-height: 1;
   transition: color 0.3s ease;
@@ -86,29 +102,29 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 140px 48px 100px;
+  padding: var(--space-11) var(--space-7) var(--space-10);
 }
 
 .page-eyebrow {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--track-meta-wide);
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .page-title {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6vw, 86px);
+  font-size: var(--fs-page);
   font-weight: 600;
   line-height: 0.92;
-  letter-spacing: -0.038em;
+  letter-spacing: var(--track-display);
   font-variation-settings: 'opsz' 72;
-  margin-bottom: 56px;
+  margin-bottom: var(--space-8);
   padding-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: var(--hairline);
 }
 
 /* Bricolage has no true italic — colour carries the emphasis instead */
@@ -152,6 +168,18 @@ html.js .reveal.visible {
     transform: none;
     transition: none;
   }
+
+  /* The ring chases the pointer on a rAF lerp — that's motion, and it had no
+     escape here the way darkroom.css gives the landing page one. */
+  .cursor, .cursor-ring { display: none; }
+  html.cursor-live body,
+  html.cursor-live a,
+  html.cursor-live button,
+  html.cursor-live label,
+  html.cursor-live select,
+  html.cursor-live input,
+  html.cursor-live textarea,
+  html.cursor-live [role='button'] { cursor: auto; }
 }
 
 /* ── ANIMATIONS ── */
@@ -176,12 +204,19 @@ img {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .page-container { padding: 100px 24px 72px; }
+  .page-container { padding: var(--space-10) var(--space-5) var(--space-9); }
 }
 
 /* ── TOUCH DEVICES — hide custom cursor ── */
 @media (pointer: coarse) {
-  body { cursor: auto; }
+  html.cursor-live body,
+  html.cursor-live a,
+  html.cursor-live button,
+  html.cursor-live label,
+  html.cursor-live select,
+  html.cursor-live input,
+  html.cursor-live textarea,
+  html.cursor-live [role='button'] { cursor: auto; }
   .cursor, .cursor-ring { display: none; }
 }
 

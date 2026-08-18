@@ -21,7 +21,7 @@
 }
 
 .bio p {
-  font-size: 16px;
+  font-size: var(--fs-450);
   line-height: 1.78;
   color: var(--text-body);
   font-weight: 400;
@@ -29,7 +29,7 @@
 }
 
 .bio .bio-lead {
-  font-size: 18px;
+  font-size: var(--fs-550);
   line-height: 1.7;
   color: var(--black);
 }
@@ -77,7 +77,7 @@
 
 .row-val {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-350);
   line-height: 1.65;
   color: var(--muted);
   letter-spacing: 0.01em;
@@ -94,7 +94,7 @@
    treatment while the value carries the display face. */
 .row--link .row-key {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -138,7 +138,7 @@
   top: 80px;
   right: 48px;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--fs-300);
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--muted);
@@ -173,7 +173,7 @@
 @media (max-width: 900px) {
   .about-wrapper { padding: 100px 24px 72px; }
   .section { margin-top: 64px; }
-  .bio .bio-lead { font-size: 17px; }
+  .bio .bio-lead { font-size: var(--fs-500); }
 
   /* stack key over value rather than squeezing two columns */
   .row {
@@ -181,7 +181,7 @@
     gap: 6px;
     padding: 22px 0;
   }
-  .row--link .row-val { font-size: 20px; }
+  .row--link .row-val { font-size: var(--fs-600); }
   .egg-note { right: 24px; }
 }
 

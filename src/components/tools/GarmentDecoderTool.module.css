@@ -57,7 +57,7 @@
 
 .silhouette-placeholder {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: var(--fs-300);
   color: var(--muted);
   font-style: italic;
   text-align: center;
@@ -115,7 +115,7 @@
   align-items: center;
   gap: 0.45rem;
   font-family: var(--font-body);
-  font-size: 0.62rem;
+  font-size: var(--fs-150);
   line-height: 1.25;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -179,7 +179,7 @@
 
 .scope-disclaimer {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   font-style: italic;
   margin: 0 0 1rem;
@@ -190,7 +190,7 @@
 
 .upload-hint {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   margin: 0 0 0.5rem;
   line-height: 1.5;
@@ -231,13 +231,13 @@
   pointer-events: none;
 }
 .upload-icon {
-  font-size: 1.4rem;
+  font-size: var(--fs-700);
   color: var(--muted);
   opacity: 0.35;
 }
 .upload-label {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   letter-spacing: 0.06em;
   margin: 0;
@@ -260,7 +260,7 @@
   background: var(--black);
   color: var(--off-white);
   border: none;
-  font-size: 1rem;
+  font-size: var(--fs-450);
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -275,7 +275,7 @@
 /* image-only response note */
 .output-note {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   border: 1px dashed var(--border);
   padding: 8px 12px;
@@ -286,7 +286,7 @@
 .silhouette-label {
   margin-top: 0.5rem;
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);

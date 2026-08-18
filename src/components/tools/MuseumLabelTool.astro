@@ -57,7 +57,7 @@ import LoadingState from '../LoadingState.astro';
 
     <div class={s['form-options']}>
       <div class={s['form-field']} style="margin:0">
-        <label for="mlg-tone" style="text-transform:uppercase;letter-spacing:0.1em;font-size:0.68rem">Tone</label>
+        <label for="mlg-tone" style="text-transform:uppercase;letter-spacing:0.1em;font-size: var(--fs-200)">Tone</label>
         <select id="mlg-tone">
           <option value="neutral" selected>Neutral</option>
           <option value="warm">Warm</option>
@@ -65,7 +65,7 @@ import LoadingState from '../LoadingState.astro';
           <option value="academic">Academic</option>
         </select>
       </div>
-      <label style="font-family:var(--font-body);font-size:0.75rem;color:var(--text-body);display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+      <label style="font-family:var(--font-body);font-size: var(--fs-250);color:var(--text-body);display:flex;align-items:center;gap:0.5rem;cursor:pointer">
         <input id="mlg-stayclose" type="checkbox" checked />
         Stay close to source text
       </label>

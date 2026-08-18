@@ -44,7 +44,6 @@
   background: none;
   border: none;
   padding: 0.5rem;
-  cursor: none;
   color: var(--muted);
   transition: color 0.4s ease;
 }
@@ -113,13 +112,13 @@
   pointer-events: none;
 }
 .gallery-upload-icon {
-  font-size: 1.4rem;
+  font-size: var(--fs-700);
   color: var(--muted);
   opacity: 0.35;
 }
 .gallery-upload-label {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   letter-spacing: 0.06em;
   margin: 0;

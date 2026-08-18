@@ -64,15 +64,13 @@ const projects = (await getCollection('projects'))
       padding-bottom: 0;
       border-bottom: none;
     }
+    /* Everything else — family, weight, line-height, opsz, the `em` color —
+       comes from the canonical .page-title in global.css. This page differs
+       only in the title's ceiling and how tight it sets. */
     .page-title {
-      font-family: var(--font-display);
       font-size: clamp(44px, 6vw, 80px);
-      font-weight: 600;
-      line-height: 0.92;
       letter-spacing: -0.04em;
-      font-variation-settings: 'opsz' 72;
     }
-    .page-title em { font-style: normal; color: var(--sienna); }
 
     /* grid */
     .project-grid {
@@ -91,7 +89,6 @@ const projects = (await getCollection('projects'))
       border: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
-      cursor: none;
       overflow: hidden;
       transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2,0.8,0.3,1);
     }
@@ -136,9 +133,8 @@ const projects = (await getCollection('projects'))
       border-bottom: 1px solid var(--border);
       padding: 10px 30px 10px 0;
       font-family: var(--font-body);
-      font-size: 15px;
+      font-size: var(--fs-400);
       color: var(--black);
-      cursor: none;
       transition: border-color 0.25s ease;
     }
     .filter-search input::placeholder { color: var(--muted); }
@@ -151,16 +147,16 @@ const projects = (await getCollection('projects'))
       position: absolute;
       right: 0; top: 50%; transform: translateY(-50%);
       background: none; border: none; padding: 4px;
-      color: var(--muted); cursor: none; line-height: 1;
-      font-size: 16px; display: none;
+      color: var(--muted); line-height: 1;
+      font-size: var(--fs-450); display: none;
     }
     .filter-clear:hover { color: var(--black); }
     .filter-clear.on { display: block; }
 
     .filter-count {
       font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
+      font-size: var(--fs-150);
+      letter-spacing: var(--track-meta);
       text-transform: uppercase;
       color: var(--muted);
       margin-top: 14px;
@@ -179,8 +175,8 @@ const projects = (await getCollection('projects'))
     .xp[hidden] { display: none; }
 
     .no-results {
-      padding: 48px 0;
-      font-size: 15px;
+      padding: var(--space-7) 0;
+      font-size: var(--fs-400);
       color: var(--muted);
     }
 
@@ -204,7 +200,7 @@ const projects = (await getCollection('projects'))
     }
     .section-nav a {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: var(--fs-150);
       letter-spacing: 0.18em;
       text-transform: uppercase;
       text-decoration: none;
@@ -237,7 +233,7 @@ const projects = (await getCollection('projects'))
 
     .card-title {
       font-family: var(--font-display);
-      font-size: clamp(24px, 2.5vw, 36px);
+      font-size: var(--fs-title-md);
       font-weight: 600;
       font-style: normal;
       line-height: 1.02;
@@ -250,7 +246,7 @@ const projects = (await getCollection('projects'))
     .project-card:hover .card-title { color: var(--sienna); }
 
     .card-subtitle {
-      font-size: 13.5px;
+      font-size: var(--fs-300);
       line-height: 1.5;
       color: var(--muted);
       font-weight: 400;
@@ -258,7 +254,7 @@ const projects = (await getCollection('projects'))
     }
 
     .card-desc {
-      font-size: 14px;
+      font-size: var(--fs-350);
       line-height: 1.72;
       color: var(--text-body);
       font-weight: 400;
@@ -274,12 +270,12 @@ const projects = (await getCollection('projects'))
     }
     .card-tag {
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: var(--fs-100);
       letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 100px;
+      border: var(--hairline);
+      border-radius: var(--radius-pill);
       padding: 5px 11px;
     }
 
@@ -292,14 +288,14 @@ const projects = (await getCollection('projects'))
     }
     .card-status {
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: var(--fs-100);
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--sienna);
     }
     .card-link {
       font-family: var(--font-body);
-      font-size: 14px;
+      font-size: var(--fs-350);
       font-style: normal;
       font-weight: 600;
       color: var(--muted);
@@ -326,13 +322,13 @@ const projects = (await getCollection('projects'))
     }
     .exp-title {
       font-family: var(--font-display);
-      font-size: clamp(26px, 3vw, 40px);
+      font-size: var(--fs-title-lg);
       font-weight: 600;
       letter-spacing: -0.035em;
       color: var(--black);
     }
     .exp-note {
-      font-size: 14px;
+      font-size: var(--fs-350);
       line-height: 1.65;
       color: var(--muted);
       max-width: 46ch;
@@ -346,7 +342,7 @@ const projects = (await getCollection('projects'))
       flex-wrap: wrap;
       margin-top: 14px;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: var(--fs-150);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
@@ -376,7 +372,6 @@ const projects = (await getCollection('projects'))
       border: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
-      cursor: none;
       overflow: hidden;
       transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2,0.8,0.3,1);
     }
@@ -405,7 +400,7 @@ const projects = (await getCollection('projects'))
       flex-wrap: wrap;
       margin: 0 0 14px;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: var(--fs-150);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
@@ -427,7 +422,7 @@ const projects = (await getCollection('projects'))
       margin: 0 0 auto;
       padding-left: 14px;
       border-left: 2px solid var(--sienna);
-      font-size: 13.5px;
+      font-size: var(--fs-300);
       line-height: 1.6;
       color: var(--sienna);
     }
@@ -441,7 +436,7 @@ const projects = (await getCollection('projects'))
     }
     .xp-link {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: var(--fs-150);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
@@ -457,7 +452,7 @@ const projects = (await getCollection('projects'))
       border: 1px solid var(--border);
       border-radius: 2px;
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: var(--fs-100);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
@@ -474,7 +469,7 @@ const projects = (await getCollection('projects'))
     .xp-compact .xp-meta { margin-bottom: 8px; }
     .xp-compact-line {
       margin: 0;
-      font-size: 14px;
+      font-size: var(--fs-350);
       line-height: 1.65;
       color: var(--text-body);
       max-width: 74ch;

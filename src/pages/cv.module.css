@@ -13,7 +13,7 @@
 
 .cv-dl-btn {
   font-family: var(--font-body);
-  font-size: 9px;
+  font-size: var(--fs-100);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -22,7 +22,6 @@
   border: 1px solid var(--border);
   padding: 11px 24px;
   transition: border-color 0.3s ease, color 0.3s ease;
-  cursor: none;
 }
 .cv-dl-btn:hover {
   border-color: var(--black);
@@ -47,7 +46,7 @@
 }
 
 .cv-subtitle {
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -56,7 +55,7 @@
 }
 
 .cv-contact {
-  font-size: 12px;
+  font-size: var(--fs-250);
   letter-spacing: 0.04em;
   color: var(--muted);
   display: flex;
@@ -76,7 +75,7 @@
 
 /* ── SUMMARY ── */
 .cv-summary {
-  font-size: 14px;
+  font-size: var(--fs-350);
   line-height: 1.9;
   color: var(--text-body);
   font-weight: 300;
@@ -95,7 +94,7 @@
 
 .cv-section-heading {
   font-family: var(--font-body);
-  font-size: 9px;
+  font-size: var(--fs-100);
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -115,14 +114,14 @@
   grid-template-columns: 148px 1fr;
   gap: 16px;
   align-items: baseline;
-  font-size: 13px;
+  font-size: var(--fs-300);
   line-height: 1.75;
 }
 
 .cv-skill-cat {
   font-weight: 400;
   color: var(--black);
-  font-size: 12px;
+  font-size: var(--fs-250);
   letter-spacing: 0.02em;
 }
 
@@ -147,13 +146,13 @@
 
 .cv-role-title {
   font-family: var(--font-display);
-  font-size: 19px;
+  font-size: var(--fs-550);
   font-weight: 300;
   color: var(--black);
 }
 
 .cv-role-company {
-  font-size: 11px;
+  font-size: var(--fs-200);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -164,7 +163,7 @@
 /* push date to the right */
 .cv-role-date {
   margin-left: auto;
-  font-size: 11px;
+  font-size: var(--fs-200);
   letter-spacing: 0.06em;
   color: var(--muted);
   white-space: nowrap;
@@ -181,7 +180,7 @@
 }
 
 .cv-bullets li {
-  font-size: 13px;
+  font-size: var(--fs-300);
   line-height: 1.78;
   color: var(--text-body);
   font-weight: 300;
@@ -198,7 +197,7 @@
 
 /* ── SPEAKING ── */
 .cv-speaking {
-  font-size: 13px;
+  font-size: var(--fs-300);
   line-height: 1.8;
   color: var(--text-body);
   font-weight: 300;
@@ -223,14 +222,14 @@
 
 .cv-edu-degree {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: var(--fs-500);
   font-weight: 300;
   color: var(--black);
   line-height: 1.2;
 }
 
 .cv-edu-school {
-  font-size: 11px;
+  font-size: var(--fs-200);
   letter-spacing: 0.06em;
   color: var(--muted);
   font-weight: 300;

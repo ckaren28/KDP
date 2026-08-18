@@ -7,7 +7,7 @@
 
 .tracks-prompt {
   padding: 32px 48px;
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -27,7 +27,6 @@
   align-items: flex-end;
   overflow: hidden;
   text-decoration: none;
-  cursor: none;
   transition: flex 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -58,7 +57,7 @@
   position: absolute;
   top: 48px; right: 48px;
   font-family: var(--font-body);
-  font-size: 22px;
+  font-size: var(--fs-700);
   font-weight: 300;
   color: var(--sienna);
   opacity: 0;
@@ -90,7 +89,7 @@
 .track:hover .track-title { transform: translateY(-4px); }
 
 .track-desc {
-  font-size: 13px;
+  font-size: var(--fs-300);
   font-weight: 300;
   line-height: 1.7;
   letter-spacing: 0.02em;
@@ -107,7 +106,7 @@
 .track-cta {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: var(--fs-450);
   font-weight: 300;
   opacity: 0;
   transform: translateX(-6px);

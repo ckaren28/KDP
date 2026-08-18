@@ -10,7 +10,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--fs-200);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -30,7 +30,7 @@
 }
 .project-nav-link {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -46,7 +46,7 @@
 }
 .next-all {
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -62,26 +62,18 @@
 }
 .page-eyebrow {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 12px;
 }
-.page-title {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 72px);
-  font-weight: 300;
-  line-height: 0.95;
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
-}
 /* Bricolage has no true italic — colour carries the emphasis */
 .page-title em { font-style: normal; color: var(--sienna); }
 
 .page-desc {
-  font-size: 14px;
+  font-size: var(--fs-350);
   line-height: 1.75;
   color: var(--text-body);
   font-weight: 300;
@@ -118,7 +110,7 @@
 
 .ctrl-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -135,7 +127,7 @@
   background: var(--off-white);
   color: var(--black);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--fs-300);
   font-weight: 300;
   line-height: 1.6;
   padding: 10px 12px;
@@ -154,12 +146,11 @@
   color: var(--off-white);
   border: none;
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 13px 20px;
-  cursor: none;
   transition: background 0.3s, opacity 0.3s;
 }
 .btn-generate:hover:not(:disabled) { background: var(--hover-sweep, #3D2B1A); }
@@ -200,14 +191,14 @@
 }
 :global(.swatch-hex) {
   font-family: 'Courier New', monospace;
-  font-size: 10.5px;
+  font-size: var(--fs-150);
   color: var(--muted);
   flex: 1;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 :global(.swatch-edit) {
-  font-size: 9px;
+  font-size: var(--fs-100);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -217,7 +208,7 @@
 :global(.swatch-item:hover .swatch-edit) { opacity: 1; }
 
 .mood-text {
-  font-size: 12px;
+  font-size: var(--fs-250);
   font-style: normal;
   color: var(--muted);
   line-height: 1.6;
@@ -225,7 +216,7 @@
 }
 
 .error-msg {
-  font-size: 11px;
+  font-size: var(--fs-200);
   color: var(--sienna);
   margin-top: 8px;
   min-height: 16px;
@@ -244,12 +235,11 @@
   background: transparent;
   color: var(--black);
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 9px 12px;
-  cursor: none;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 .btn-pattern:hover:not([data-active]) {
@@ -270,7 +260,6 @@
   background: var(--border);
   outline: none;
   margin-bottom: 8px;
-  cursor: none;
 }
 .density-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -279,7 +268,6 @@
   height: 14px;
   background: var(--black);
   border-radius: 50%;
-  cursor: none;
 }
 .density-slider::-moz-range-thumb {
   width: 14px;
@@ -287,14 +275,13 @@
   background: var(--black);
   border-radius: 50%;
   border: none;
-  cursor: none;
 }
 .density-labels {
   display: flex;
   justify-content: space-between;
 }
 .density-label {
-  font-size: 9px;
+  font-size: var(--fs-100);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -307,12 +294,11 @@
   color: var(--black);
   border: 1px solid var(--border);
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 13px 20px;
-  cursor: none;
   transition: border-color 0.3s, color 0.3s;
 }
 .btn-download:hover {
@@ -348,7 +334,7 @@
 }
 
 .canvas-hint {
-  font-size: 10px;
+  font-size: var(--fs-150);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -364,7 +350,7 @@
 }
 .mockup-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-150);
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -399,7 +385,7 @@
 }
 .mockup-name {
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: var(--fs-150);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);

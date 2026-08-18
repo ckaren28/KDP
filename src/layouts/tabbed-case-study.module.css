@@ -10,7 +10,7 @@
 .back-nav {
   padding: 2.5rem 0 4rem;
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -50,7 +50,7 @@
 
 .page-label {
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
@@ -58,6 +58,14 @@
   display: block;
 }
 
+/* Deliberately NOT the .page-title in global.css. A case study opens on a
+   lighter, larger, looser title than a section index does — 300 against 600,
+   and allowed past the global ceiling. Kept as its own rule rather than folded
+   into the shared one, because the difference is the point.
+   Sizes here stay in rem, so the title and the space under it both still
+   answer to the reader's own font size. (Avoid bare utility words like the
+   one meaning "expand" in these comments — Tailwind scans this file as
+   content and will emit the matching utility.) */
 .page-title {
   font-family: var(--font-display);
   font-size: clamp(3rem, 7vw, 5.5rem);
@@ -70,7 +78,7 @@
 
 .page-desc {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--fs-350);
   line-height: 1.75;
   color: var(--text-body);
   max-width: 52ch;
@@ -88,7 +96,7 @@
 
 .tag {
   font-family: var(--font-body);
-  font-size: 0.62rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -99,7 +107,7 @@
 /* ── GITHUB LINK ── */
 .gh-link {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -141,7 +149,7 @@
 
 .tab-btn {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
@@ -192,7 +200,7 @@
 
 .card-label {
   font-family: var(--font-body);
-  font-size: 0.58rem;
+  font-size: var(--fs-100);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
@@ -202,7 +210,7 @@
 
 .card-body {
   font-family: var(--font-body);
-  font-size: 0.84rem;
+  font-size: var(--fs-300);
   line-height: 1.75;
   color: var(--text-body);
   font-weight: 300;
@@ -249,7 +257,7 @@
 .tool-preview-kicker {
   display: block;
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
@@ -282,7 +290,7 @@
 .tool-preview-input,
 .tool-preview-textarea {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: var(--fs-300);
   color: var(--text-body);
   border: 1px solid var(--border);
   background: var(--warm-white, var(--off-white));
@@ -310,7 +318,7 @@
   gap: 0.8rem 1.1rem;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 0.84rem;
+  font-size: var(--fs-300);
   line-height: 1.5;
 }
 
@@ -327,7 +335,7 @@
 /* Section label — used by How it works sections */
 .section-label {
   font-family: var(--font-body);
-  font-size: 0.6rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
@@ -338,7 +346,7 @@
 /* ── PROSE: MDX slot content ── */
 .prose {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--fs-350);
   line-height: 1.75;
   color: var(--text-body);
   font-weight: 300;
@@ -373,7 +381,7 @@
 
 .prose :global(h3) {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--fs-600);
   font-weight: 300;
   color: var(--black);
   margin: 2.5rem 0 1rem;
@@ -423,7 +431,7 @@
 
 .prose :global(pre) {
   font-family: 'Courier New', monospace;
-  font-size: 0.8rem;
+  font-size: var(--fs-300);
   background: rgba(44, 26, 14, 0.04);
   border: 1px solid var(--border);
   padding: 1.25rem;
@@ -454,7 +462,7 @@
 /* italic-only em as a caption (markdown *text* after an image) */
 .prose :global(p em:only-child) {
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   display: block;
   margin-top: -1.25rem;
@@ -468,7 +476,7 @@
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
-  font-size: 0.875rem;
+  font-size: var(--fs-350);
 }
 .prose :global(thead tr) { border-bottom: 2px solid var(--border); }
 .prose :global(th) {
@@ -478,7 +486,7 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: var(--fs-250);
 }
 .prose :global(td) {
   padding: 0.875rem 1rem;
@@ -533,7 +541,7 @@
 
 .hw-intro {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--fs-450);
   line-height: 1.6;
   color: var(--text-body);
   max-width: 78ch;
@@ -559,7 +567,7 @@
 .arch-label {
   display: block;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
@@ -596,13 +604,13 @@
 }
 
 .arch-node strong {
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   font-weight: 500;
   color: var(--black);
 }
 
 .arch-node span {
-  font-size: 0.72rem;
+  font-size: var(--fs-250);
   color: var(--muted);
 }
 
@@ -634,7 +642,7 @@
 }
 
 .arch-info-row span {
-  font-size: 0.62rem;
+  font-size: var(--fs-150);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
@@ -642,7 +650,7 @@
 
 .arch-info-row p {
   margin: 0;
-  font-size: 0.84rem;
+  font-size: var(--fs-300);
   line-height: 1.65;
   color: var(--text-body);
   font-weight: 300;
@@ -653,7 +661,7 @@
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: var(--fs-350);
   margin-top: 1rem;
 }
 .output-table__label {
@@ -679,7 +687,7 @@
 /* ── HOW IT WORKS: Sample output code block ── */
 .sample-code {
   font-family: 'Courier New', monospace;
-  font-size: 0.78rem;
+  font-size: var(--fs-250);
   background: rgba(44, 26, 14, 0.04);
   border: 1px solid var(--border);
   padding: 1.5rem;
@@ -719,14 +727,14 @@
 }
 
 .decision-title {
-  font-size: 0.88rem;
+  font-size: var(--fs-350);
   font-weight: 500;
   color: var(--black);
   line-height: 1.5;
 }
 
 .decision-body {
-  font-size: 0.85rem;
+  font-size: var(--fs-350);
   color: var(--text-body);
   line-height: 1.7;
 }
@@ -741,7 +749,7 @@
 }
 .embed-note {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: var(--fs-250);
   color: var(--muted);
   margin-top: 1rem;
   line-height: 1.6;
@@ -763,7 +771,7 @@
 }
 .grid-figure figcaption {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: var(--fs-200);
   color: var(--muted);
   margin-top: 0.5rem;
   letter-spacing: 0.02em;
@@ -778,7 +786,7 @@
 }
 .footer-nav a {
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--fs-200);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);

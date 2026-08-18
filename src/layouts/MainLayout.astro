@@ -83,22 +83,35 @@ const { title, theme = 'light' } = Astro.props;
     initCopyEmail();
 
     // ── CUSTOM CURSOR ──
+    // Nothing here gives up the system cursor until both elements resolve and
+    // the reduced-motion check passes. `cursor-live` is what unlocks
+    // `cursor: none` in global.css, so a module that never loads — or a visitor
+    // who asked for less motion — simply keeps the real pointer.
     const cursor = document.getElementById('cursor') as HTMLElement | null;
     const ring = document.getElementById('cursorRing') as HTMLElement | null;
-    let ringX = 0, ringY = 0, curX = 0, curY = 0;
+    const stillPointer = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || window.matchMedia('(pointer: coarse)').matches;
 
-    document.addEventListener('mousemove', (e) => {
-      curX = e.clientX; curY = e.clientY;
-      if (cursor) { cursor.style.left = curX + 'px'; cursor.style.top = curY + 'px'; }
-    });
+    if (cursor && ring && !stillPointer) {
+      document.documentElement.classList.add('cursor-live');
 
-    function animateRing() {
-      ringX += (curX - ringX) * 0.12;
-      ringY += (curY - ringY) * 0.12;
-      if (ring) { ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px'; }
-      requestAnimationFrame(animateRing);
+      let ringX = 0, ringY = 0, curX = 0, curY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        curX = e.clientX; curY = e.clientY;
+        cursor.style.left = curX + 'px';
+        cursor.style.top = curY + 'px';
+      });
+
+      const animateRing = () => {
+        ringX += (curX - ringX) * 0.12;
+        ringY += (curY - ringY) * 0.12;
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+        requestAnimationFrame(animateRing);
+      };
+      animateRing();
     }
-    animateRing();
 
     // ── SCROLL REVEAL ──
     const reveals = document.querySelectorAll('.reveal');

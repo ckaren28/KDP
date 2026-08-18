@@ -17,7 +17,6 @@
   /* the print */
   --print: #A6C8E8;            /* powder blue                           */
   --print-lt: #C4DCF2;
-  --brass: #C9A227;            /* toning warm — use sparingly           */
 
   /* type */
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
@@ -46,7 +45,6 @@ html[data-theme="dark"] {
 
   --print: #A6C8E8;
   --print-lt: #C4DCF2;
-  --brass: #C9A227;
 
   --text-body: rgba(242,239,233,0.68);
   --hover-sweep: #6B1621;
@@ -54,4 +52,63 @@ html[data-theme="dark"] {
   --placeholder-bg: #4A121C;
 
   --fashion-bg: #3A0810;
+}
+
+/* ── TYPE SCALE ─────────────────────────────────────────────────
+   rem, not px: a reader who has raised their browser font size gets
+   larger type here too. The comment on each rung is its size at a
+   default 16px root, which is what these were before the scale
+   existed — so nothing moved for a reader on defaults.
+
+   Numbered rather than named after a role, because the same rung is
+   used by mono metadata and body copy alike; a --fs-mono-* / --fs-body-*
+   split would need two names for one value.
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  --fs-100: 0.5625rem;   /*  9px — card tags                  */
+  --fs-150: 0.625rem;    /* 10px — eyebrows, section nav      */
+  --fs-200: 0.6875rem;   /* 11px                              */
+  --fs-250: 0.75rem;     /* 12px — cue pill, contact          */
+  --fs-300: 0.8125rem;   /* 13px                              */
+  --fs-350: 0.875rem;    /* 14px — card copy, links           */
+  --fs-400: 0.9375rem;   /* 15px — body                       */
+  --fs-450: 1rem;        /* 16px                              */
+  --fs-500: 1.0625rem;   /* 17px                              */
+  --fs-550: 1.125rem;    /* 18px                              */
+  --fs-600: 1.25rem;     /* 20px                              */
+  --fs-700: 1.375rem;    /* 22px                              */
+
+  /* Display sizes stay role-named — they fluid-scale, and each one
+     belongs to a specific piece of the page rather than to a rung. */
+  --fs-title-sm: clamp(1.25rem, 2.4vw, 1.75rem);
+  --fs-title-md: clamp(1.5rem, 2.5vw, 2.25rem);
+  --fs-title-lg: clamp(1.625rem, 3vw, 2.5rem);
+  --fs-page:     clamp(2.75rem, 6vw, 5.375rem);
+  --fs-hero:     clamp(3.375rem, 13.6vw, 13rem);
+
+  /* ── TRACKING ──
+     Three registers: display type pulls tight, mono metadata opens up. */
+  --track-display:   -0.038em;
+  --track-tight:     -0.028em;
+  --track-meta:       0.14em;
+  --track-meta-wide:  0.24em;
+
+  /* ── SPACE ──
+     4px base. These are the values the layouts already land on. */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  56px;
+  --space-9:  72px;
+  --space-10: 100px;
+  --space-11: 140px;
+
+  /* ── BORDER ──
+     The whole site draws exactly two: a hairline and a pill. */
+  --hairline: 1px solid var(--border);
+  --radius-pill: 100px;
 }

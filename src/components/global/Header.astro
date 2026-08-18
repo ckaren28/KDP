@@ -35,7 +35,10 @@ import ThemeSwitch from './ThemeSwitch.astro';
   }
 
   /* Set to match the landing page's name exactly — Bricolage Grotesque 600 at
-     opsz 96 — so the initials read as the same mark, just smaller. */
+     opsz 96 — so the initials read as the same mark, just smaller.
+     19px is deliberately off the type ladder: it is pinned to .dk-who in
+     darkroom.css, the landing page's own closed system, which does not load
+     these tokens. Change one and change the other. */
   .nav-logo {
     font-family: var(--font-display);
     font-size: 19px;
@@ -57,7 +60,7 @@ import ThemeSwitch from './ThemeSwitch.astro';
 
   .nav-links a {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: var(--fs-350);
     font-weight: 400;
     color: var(--text-body);
     text-decoration: none;
@@ -90,20 +93,20 @@ import ThemeSwitch from './ThemeSwitch.astro';
      whatever page they landed on. */
   @media (max-width: 900px) {
     header { padding: 16px 24px; gap: 14px; }
-    .nav-logo { font-size: 18px; }
+    .nav-logo { font-size: var(--fs-550); }
     .nav-links { gap: 16px; }
-    .nav-links a { font-size: 13px; }
+    .nav-links a { font-size: var(--fs-300); }
   }
   @media (max-width: 560px) {
     header { padding: 13px 16px; gap: 10px; }
-    .nav-logo { font-size: 17px; }
+    .nav-logo { font-size: var(--fs-500); }
     .nav-links { gap: 13px; }
-    .nav-links a { font-size: 12px; }
+    .nav-links a { font-size: var(--fs-250); }
   }
   @media (max-width: 380px) {
     header { padding: 12px 13px; gap: 8px; }
-    .nav-logo { font-size: 16px; }
+    .nav-logo { font-size: var(--fs-450); }
     .nav-links { gap: 11px; }
-    .nav-links a { font-size: 11.5px; }
+    .nav-links a { font-size: var(--fs-200); }
   }
 </style>
