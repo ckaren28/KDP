@@ -495,6 +495,75 @@ const projects = (await getCollection('projects'))
       display: block;
     }
 
+    /* ── FACE CLOUD ──
+       The cloud is additive glow, so its stage stays dark in both themes —
+       the box reads as a screen rather than as part of the page surface.
+       Every color in here is therefore fixed against that dark ground, not
+       themed: the lightest text sits at 13.6:1 on it, the button border at
+       4.9:1. */
+    .face-stage { background: #0B0507; }
+    #faceCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .face-video {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .face-controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 0 var(--space-5);
+      text-align: center;
+    }
+    .face-btn {
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: var(--track-meta);
+      text-transform: uppercase;
+      color: #F2EFE9;
+      background: rgba(11, 5, 7, 0.55);
+      border: 1px solid rgba(242, 239, 233, 0.55);
+      border-radius: 999px;
+      padding: 10px var(--space-5);
+      cursor: pointer;
+      backdrop-filter: blur(3px);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .face-btn:hover,
+    .face-btn:focus-visible {
+      background: rgba(242, 239, 233, 0.16);
+      border-color: #F2EFE9;
+    }
+    .face-btn[disabled] { opacity: 0.55; cursor: default; }
+    .face-btn[hidden] { display: none; }
+    .face-status {
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: var(--track-meta);
+      text-transform: uppercase;
+      color: rgba(242, 239, 233, 0.86);
+    }
+    .face-status:empty { display: none; }
+    .face-src {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .face-src:hover { color: var(--sienna); }
+
     @media (max-width: 900px) {
       .tech-page { padding: 100px 24px 72px; }
       .project-grid { grid-template-columns: 1fr; }
@@ -589,6 +658,37 @@ const projects = (await getCollection('projects'))
         <div class="exp-caption">
           <span>Thread drawing — pick a color, draw on the shirt</span>
           <span>Canvas · Path2D</span>
+        </div>
+      </div>
+
+      <div
+        class="exp-item"
+        data-search="face cloud point cloud webgl three.js mediapipe face landmarks computer vision camera webcam portrait light experiment prototype"
+      >
+        <div class="canvas-section face-stage">
+          <canvas id="faceCanvas"></canvas>
+          <!-- Off-screen rather than display:none — a hidden video element
+               stops decoding frames in some browsers, and the detector reads
+               from it every frame. -->
+          <video id="faceVideo" class="face-video" playsinline muted autoplay></video>
+          <div class="face-controls">
+            <button id="faceCameraBtn" type="button" class="face-btn">
+              Turn on the camera
+            </button>
+            <p id="faceStatus" class="face-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="exp-caption">
+          <span>
+            Face cloud — 478 landmarks, tracked live and drawn as points of light.
+            <a
+              class="face-src"
+              href="https://github.com/ckaren28/face-cloud"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Source</a>
+          </span>
+          <span>Three.js · MediaPipe · WebGL</span>
         </div>
       </div>
     </section>
@@ -1082,6 +1182,11 @@ const projects = (await getCollection('projects'))
       resize();
       drawFrame();
     })();
+  </script>
+
+  <script>
+    import { initFaceCloud } from '../../scripts/face-cloud';
+    initFaceCloud();
   </script>
 
 </MainLayout>

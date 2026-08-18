@@ -22,16 +22,22 @@ const { title, theme = 'light' } = Astro.props;
   <meta name="description" content="Karen Dettmar, Creative Technologist, New York City">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Instrument Sans and Space Mono load their real italics; without the ital
-       axis the browser synthesises a slant instead. Bricolage has no italic at
-       all (Google Fonts 400s on an ital axis for it), so display type carries
-       emphasis with colour rather than a fake oblique. -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <!-- Only Bricolage comes from Google now: its opsz axis has to stay live,
+       and a variable font is what delivers that. Instrument Sans and Space
+       Mono are self-hosted static instances (see styles/fonts.css) — both
+       ship real italics, so the browser never synthesises a slant. Bricolage
+       has no italic at all, so display type carries emphasis with colour
+       rather than a fake oblique. -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
   <!-- Theme: must run before body renders to prevent flash. A stored choice
        beats the page default; there is no visible toggle — type light / dark.
        Also marks the document as scripted, which is what lets .reveal hide
        itself — without this the scroll-in content stays visible rather than
        depending on a script that might never arrive. -->
+  <!-- Pages that need something of their own in the head — a preload, a
+       page-specific meta — put it here. -->
+  <slot name="head" />
+
   <script is:inline define:vars={{ pageTheme: theme }}>
     (function () {
       document.documentElement.classList.add('js');

@@ -160,6 +160,13 @@
   font-family: var(--font-body);
 }
 
+.cv-role-loc {
+  font-family: var(--font-mono);
+  font-size: var(--fs-200);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
 /* push date to the right */
 .cv-role-date {
   margin-left: auto;
@@ -195,16 +202,21 @@
   color: var(--muted);
 }
 
-/* ── SPEAKING ── */
-.cv-speaking {
-  font-size: var(--fs-300);
-  line-height: 1.8;
-  color: var(--text-body);
-  font-weight: 300;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
+/* the CV sets its own key phrases in bold; weight and ink carry it here */
+.cv-em {
+  font-weight: 500;
+  color: var(--black);
+}
+
+.cv-link {
+  color: var(--black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+.cv-link:hover {
+  color: var(--sienna);
+  border-bottom-color: var(--sienna);
 }
 
 /* ── EDUCATION ── */
@@ -239,9 +251,134 @@
 @media (max-width: 900px) {
   .cv-wrapper { padding: 110px 28px 100px; }
   .cv-skill-row { grid-template-columns: 120px 1fr; }
-  .cv-role-date { margin-left: 0; width: 100%; }
+  .cv-role-date { margin-left: 0; }
 }
 
 @media (max-width: 600px) {
   .cv-skill-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* ── ON PAPER ────────────────────────────────────────────────────
+   Printing this page is how the downloadable PDF is made, so the file
+   and the site share one type system rather than drifting apart in
+   Word. Screen leading is generous by design; paper wants it tighter,
+   and sizes are set in pt here because that is the unit the sheet is
+   actually measured in.
+
+   The chrome that has to disappear — header, footer, cursor, sheet
+   size, palette — lives in src/styles/cv-print.css.
+   ─────────────────────────────────────────────────────────────── */
+@media print {
+
+  .cv-wrapper {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* the download button is the screen's affordance, not the paper's */
+  .cv-actions { display: none; }
+
+  /* ── HEADER ── */
+  .cv-header {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+  }
+
+  .cv-name {
+    font-size: 27pt;
+    line-height: 1;
+    margin-bottom: 7px;
+  }
+
+  .cv-subtitle { margin-bottom: 6px; }
+
+  .cv-contact { gap: 6px; }
+
+  /* Print flattens a link to plain text, so the address has to read as
+     an address on its own. */
+  .cv-contact a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  /* ── SUMMARY ── */
+  .cv-summary {
+    font-size: 9.5pt;
+    line-height: 1.5;
+    padding-bottom: 12px;
+  }
+
+  /* ── SECTIONS ── */
+  .cv-section { padding: 12px 0; }
+
+  /* a heading stranded at the foot of a sheet is the classic tell */
+  .cv-section-heading {
+    margin-bottom: 9px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* ── SKILLS ── */
+  .cv-skills { gap: 5px; }
+
+  .cv-skill-row {
+    font-size: 9pt;
+    line-height: 1.45;
+    grid-template-columns: 96px 1fr;
+    gap: 12px;
+    break-inside: avoid;
+  }
+
+  .cv-skill-cat { font-size: 9pt; }
+
+  /* ── EXPERIENCE ── */
+  .cv-role {
+    margin-bottom: 14px;
+    /* Intuit and the independent block both run long; forbidding a break
+       outright would shunt a nearly full role onto its own sheet and
+       leave a half-empty one behind it. Widows and orphans do the
+       softer job — the break lands mid-role, never on a stray line. */
+    orphans: 2;
+    widows: 2;
+  }
+
+  /* the meta line must never be the last thing on a sheet */
+  .cv-role-meta {
+    margin-bottom: 5px;
+    gap: 0 8px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv-role-title { font-size: 12pt; }
+
+  .cv-role-company,
+  .cv-role-loc,
+  .cv-role-date { font-size: 8pt; }
+
+  .cv-bullets { gap: 3px; }
+
+  .cv-bullets li {
+    font-size: 9.5pt;
+    line-height: 1.45;
+    padding-left: 13px;
+    orphans: 2;
+    widows: 2;
+  }
+
+  .cv-link {
+    color: var(--black);
+    border-bottom: none;
+    text-decoration: none;
+  }
+
+  /* ── EDUCATION ── */
+  .cv-edu-list { gap: 9px; }
+
+  .cv-edu-item { break-inside: avoid; }
+
+  .cv-edu-degree { font-size: 10.5pt; }
+
+  .cv-edu-school { font-size: 8pt; }
 }

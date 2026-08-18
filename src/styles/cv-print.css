@@ -1,0 +1,91 @@
+/* ── PRINTING THE CV: THE PARTS THAT AREN'T THE CV ───────────────
+   Imported by src/pages/cv.astro alone, so nothing here reaches
+   another page. This file owns the page furniture — sheet size,
+   palette, and the chrome that has to disappear. The document's own
+   type sits in cv.module.css, where the hashed class names resolve.
+
+   To regenerate public/Karen_Dettmar_CV.pdf:
+     open /cv → Cmd+P → Destination "Save as PDF"
+     → Margins "Default", Headers and footers OFF,
+       Background graphics ON
+
+   Chrome embeds the loaded webfonts into the PDF and keeps a real
+   text layer, so the file stays selectable and ATS-readable.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Bricolage keeps its optical-size axis on screen, which means it stays a
+   variable font — and Chrome cannot embed one of those into a PDF, falling
+   back to Type3 glyph procedures. So print alone swaps in a static instance
+   pinned at opsz 30 / wght 300, the only weight the printed CV uses. Same
+   drawing, an embeddable file. */
+@font-face {
+  font-family: 'Bricolage Grotesque Print';
+  src: url('/fonts/BricolageGrotesque-print-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+.cv-print-only { display: none; }
+
+@media print {
+
+  @page {
+    size: letter;
+    margin: 14mm 15mm;
+  }
+
+  /* Paper is white; the ink stays oxblood. The screen ground — powder
+     blue in daylight, oxblood-black at night — is a lighting condition,
+     not part of the document. Dark mode is overridden too: whoever
+     prints at night should still get a page that reads. */
+  :root,
+  html[data-theme="dark"] {
+    --black: #2A0E13;
+    --off-white: #FFFFFF;
+    --warm-white: #FFFFFF;
+    --sienna: #6B1621;
+    --sienna-light: #8E2A34;
+    --muted: #55606D;
+    --border: rgba(42, 14, 19, 0.28);
+    --text-body: #33404C;
+    /* the static instance, so the PDF gets a real embedded font */
+    --font-display: 'Bricolage Grotesque Print', 'Bricolage Grotesque', system-ui, sans-serif;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #2A0E13;
+    /* the accent is meaning here, not decoration — carry it into the file */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Chrome repeats the fixed header on every sheet, and the two cursor
+     elements land as dots in a corner. None of it is the document.
+
+     Direct children of body, deliberately: the CV's own name-and-contact
+     block is itself a <header>, and a bare `header` selector took the
+     printed resume's name and contact details off the page with it. */
+  body > header,
+  body > footer,
+  .cursor,
+  .cursor-ring,
+  [data-no-print="true"] {
+    display: none !important;
+  }
+
+  /* Scroll-reveal starts at opacity 0 and only lifts once the observer
+     fires. Print can capture before that, or with JS off entirely. */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  main { padding: 0 !important; }
+
+  /* `contents`, not `inline`: .cv-contact is a flex row, so the wrapper would
+     otherwise be a single flex item and the gap would not fall between the
+     separator and the address. This promotes its children to flex items. */
+  .cv-print-only { display: contents; }
+}

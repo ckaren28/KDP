@@ -1,0 +1,99 @@
+/* ── SELF-HOSTED TYPE ────────────────────────────────────────────
+   Instrument Sans and Space Mono are served from /fonts rather than
+   Google. Two reasons, in order of weight:
+
+   1. Chrome cannot embed a *variable* font into a PDF — it falls back
+      to Type3 glyph procedures, which bloat the file and read poorly
+      in older text extractors. Printing /cv is how the downloadable
+      CV is made, so the body face has to be static or the resume
+      pays for it. Instrument Sans has no optical-size axis, only
+      wght and wdth, so a pinned instance is visually identical to
+      what the variable font was already rendering.
+   2. No third-party round-trip on first paint.
+
+   Bricolage Grotesque is deliberately NOT here. Its opsz axis is
+   applied automatically across the size range — a static instance
+   would visibly change display type from the hero down to a card
+   heading. It keeps loading from Google for the screen; print alone
+   swaps in a pinned instance, in cv-print.css.
+
+   Regenerate: instance the upstream variable TTFs from
+   github.com/google/fonts with fontTools varLib.instancer
+   (wdth=100, wght pinned per face), subset to latin + latin-ext +
+   U+2190–21FF, save as woff2.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Instrument Sans ships a 400–700 wght axis; there is no 300 to pin.
+   A `font-weight: 300` declaration therefore resolves to 400 here,
+   exactly as it did when the variable font clamped it. */
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-400i.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-500i.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/InstrumentSans-600i.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/SpaceMono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/SpaceMono-400i.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/SpaceMono-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/SpaceMono-700i.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
