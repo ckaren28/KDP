@@ -1,6 +1,6 @@
 /* ── PRINTING THE CV: THE PARTS THAT AREN'T THE CV ───────────────
    Imported by src/pages/cv.astro alone, so nothing here reaches
-   another page. This file owns the page furniture — sheet size,
+   another page. This file owns the page furniture, meaning sheet size,
    palette, and the chrome that has to disappear. The document's own
    type sits in cv.module.css, where the hashed class names resolve.
 
@@ -14,7 +14,7 @@
    ─────────────────────────────────────────────────────────────── */
 
 /* Bricolage keeps its optical-size axis on screen, which means it stays a
-   variable font — and Chrome cannot embed one of those into a PDF, falling
+   variable font, and Chrome cannot embed one of those into a PDF, falling
    back to Type3 glyph procedures. So print alone swaps in a static instance
    pinned at opsz 30 / wght 300, the only weight the printed CV uses. Same
    drawing, an embeddable file. */
@@ -35,8 +35,8 @@
     margin: 14mm 15mm;
   }
 
-  /* Paper is white; the ink stays oxblood. The screen ground — powder
-     blue in daylight, oxblood-black at night — is a lighting condition,
+  /* Paper is white; the ink stays oxblood. The screen ground (powder
+     blue in daylight, oxblood-black at night) is a lighting condition,
      not part of the document. Dark mode is overridden too: whoever
      prints at night should still get a page that reads. */
   :root,
@@ -56,7 +56,7 @@
   html, body {
     background: #FFFFFF !important;
     color: #2A0E13;
-    /* the accent is meaning here, not decoration — carry it into the file */
+    /* the accent is meaning here, not decoration, so carry it into the file */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

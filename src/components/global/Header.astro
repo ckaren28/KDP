@@ -3,12 +3,12 @@ import ThemeSwitch from './ThemeSwitch.astro';
 ---
 
 <!-- Studio lives on the about page (via TrackSelector) and GitHub lives in the
-     footer. Neither belongs in the primary menu — this nav is the site's own
+     footer. Neither belongs in the primary menu. This nav is the site's own
      pages only. -->
 <header>
   <!-- Initials, not the full name. It's the only route home, so it carries an
        accessible name that isn't just two letters read aloud. -->
-  <a href="/" class="nav-logo" aria-label="Karen Dettmar — home">KD</a>
+  <a href="/" class="nav-logo" aria-label="Karen Dettmar, home">KD</a>
   <nav aria-label="Primary">
     <ul class="nav-links">
       <li><a href="/projects">Work</a></li>
@@ -34,8 +34,8 @@ import ThemeSwitch from './ThemeSwitch.astro';
     transition: background-color 0.35s ease, border-color 0.35s ease;
   }
 
-  /* Set to match the landing page's name exactly — Bricolage Grotesque 600 at
-     opsz 96 — so the initials read as the same mark, just smaller.
+  /* Set to match the landing page's name exactly (Bricolage Grotesque 600 at
+     opsz 96) so the initials read as the same mark, just smaller.
      19px is deliberately off the type ladder: it is pinned to .dk-who in
      darkroom.css, the landing page's own closed system, which does not load
      these tokens. Change one and change the other. */
@@ -89,7 +89,7 @@ import ThemeSwitch from './ThemeSwitch.astro';
   }
 
   /* The wordmark is the only route back to the landing page, so it never
-     hides — it shrinks instead. Hiding it stranded mobile visitors on
+     hides. It shrinks instead. Hiding it stranded mobile visitors on
      whatever page they landed on. */
   @media (max-width: 900px) {
     header { padding: 16px 24px; gap: 14px; }

@@ -9,7 +9,7 @@
    1. Nothing downloads until the section is scrolled to. Three.js is a big
       dependency to hand someone who came to read case studies, so it arrives
       through a dynamic import fired by an IntersectionObserver. MediaPipe and
-      its model wait longer still — until the camera is actually asked for.
+      its model wait longer still, until the camera is actually asked for.
    2. There is no camera until it is asked for. The cloud opens in its idle
       state, which is the piece's own resting behavior when no face is in
       frame, so the section has something alive in it without anyone being
@@ -32,7 +32,7 @@ const CONFIG = {
   // The idle ring was sized for a full-window canvas, where it had the whole
   // viewport to sit in. In a boxed stage on a page it read as a small mark
   // adrift in a lot of black, so it is scaled up to hold the frame. The face
-  // is unaffected — that has its own faceScale.
+  // is unaffected, since that has its own faceScale.
   idleScale: 2.6,
 };
 
@@ -54,7 +54,7 @@ const LIPS = new Set([
   292,
 ]);
 
-// Cheap, throwaway probe — a real context on a real canvas, since a browser can
+// Cheap, throwaway probe using a real context on a real canvas, since a browser can
 // advertise the constructor and still refuse to hand one over.
 function hasWebGL(): boolean {
   try {
@@ -93,7 +93,7 @@ export function initFaceCloud() {
             // never arrived both read as "this one needs WebGL". Ask the
             // question directly instead of inferring it from the symptom.
             status.textContent = hasWebGL()
-              ? "couldn't load this one — a refresh usually fixes it"
+              ? "couldn't load this one, a refresh usually fixes it"
               : 'this one needs WebGL';
             button.hidden = true;
           });
@@ -112,13 +112,13 @@ export function initFaceCloud() {
 
     const scene = new THREE.Scene();
     // The cloud is additive glow, so it needs a dark ground to bloom against
-    // in both themes — this box reads as a screen, not as a page surface.
+    // in both themes, so this box reads as a screen, not as a page surface.
     scene.background = new THREE.Color(0x0b0507);
 
     const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
     camera.position.z = CONFIG.cameraZ;
 
-    // Sizes to the stage, not the window — it's a box on a page now.
+    // Sizes to the stage, not the window, since it's a box on a page now.
     function resize() {
       const { width, height } = stage!.getBoundingClientRect();
       if (!width || !height) return;
@@ -226,7 +226,7 @@ export function initFaceCloud() {
       for (let i = 0; i < landmarks.length; i++) {
         const lm = landmarks[i];
 
-        // Mirror X for the selfie cam, flip Y — MediaPipe's Y grows down.
+        // Mirror X for the selfie cam, flip Y because MediaPipe's Y grows down.
         targetPos[i * 3] = -((lm.x - cx) / range) * CONFIG.faceScale;
         targetPos[i * 3 + 1] = -((lm.y - cy) / range) * CONFIG.faceScale;
         targetPos[i * 3 + 2] = (lm.z / range) * CONFIG.zScale * CONFIG.faceScale;
@@ -269,7 +269,7 @@ export function initFaceCloud() {
       requestAnimationFrame(runDetection);
     }
 
-    // One pass of the idle ring — also used to paint the single static frame
+    // One pass of the idle ring, also used to paint the single static frame
     // under reduced motion, so that reading stays a still image of the piece.
     function stepIdle() {
       const breathe = 1 + Math.sin(time * 0.6) * 0.025;
@@ -318,7 +318,7 @@ export function initFaceCloud() {
       // Settle the ring, paint once, and leave it there.
       stepIdle();
       for (let i = 0; i < 60; i++) draw();
-      status.textContent = 'motion paused — turn on the camera to run it';
+      status.textContent = 'motion paused, turn on the camera to run it';
     } else {
       running = true;
       animate();
@@ -382,7 +382,7 @@ export function initFaceCloud() {
         });
       } catch (err) {
         console.error('face cloud camera:', err);
-        status.textContent = 'no camera — the idle cloud is still running';
+        status.textContent = 'no camera, the idle cloud is still running';
         button!.disabled = false;
         button!.textContent = 'try the camera again';
       }

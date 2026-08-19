@@ -33,7 +33,7 @@ export function init(): void {
 
   function captionText(a: Artwork): string {
     const meta = [a.artist, a.date].filter(Boolean).join(', ');
-    return [a.title, meta].filter(Boolean).join(' — ');
+    return [a.title, meta].filter(Boolean).join(' · ');
   }
 
   function updateHeaderCard(a: Artwork) {

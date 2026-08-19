@@ -1,4 +1,4 @@
-# Sveltia CMS — karendettmar.com (engineering site)
+# Sveltia CMS for karendettmar.com (engineering site)
 #
 # Sveltia does not implement Netlify's git-gateway backend, so this talks to
 # GitHub directly. One dashboard step is required before /admin will log in:
@@ -9,7 +9,7 @@
 # which is why no base_url is set below. If the site ever leaves Netlify,
 # deploy sveltia-cms-auth on Cloudflare Workers and point base_url at it.
 #
-# Local editing — no proxy server, and no login:
+# Local editing, with no proxy server and no login:
 #   npm run dev, then open http://localhost:4321/admin/ in a Chromium browser
 #   (Chrome, Edge, Brave), click "Work with Local Repository" and pick this
 #   repo's root folder. Sveltia uses the File System Access API and writes
@@ -17,7 +17,7 @@
 #   to review and commit yourself.
 #
 #   Sveltia explicitly does NOT support decap-server / netlify-cms-proxy-server,
-#   and it ignores `local_backend` — which is why that option is not set here.
+#   and it ignores `local_backend`, which is why that option is not set here.
 #   Safari and Firefox lack the File System Access API; they need the GitHub
 #   login below instead.
 backend:
@@ -39,7 +39,7 @@ collections:
     summary: "{{title}}"
     sortable_fields: ["date", "title"]
     # Every field in src/content/config.ts must appear here. Anything missing
-    # is dropped from the frontmatter on save — that is how the case-study
+    # is dropped from the frontmatter on save. That is how the case-study
     # payload would silently disappear the first time a project was edited.
     fields:
       # ── Identity ──────────────────────────────────────────────
@@ -55,7 +55,7 @@ collections:
         widget: "boolean"
         default: true
         required: false
-        hint: "Turn off to keep the project's page live at /projects/<slug> while removing it from the grid. DevCon uses this — it is a talk rather than a made thing."
+        hint: "Turn off to keep the project's page live at /projects/<slug> while removing it from the grid. DevCon uses this, since it is a talk rather than a made thing."
       - label: "Track"
         name: "track"
         widget: "hidden"
@@ -76,7 +76,7 @@ collections:
         widget: "boolean"
         default: false
         required: false
-        hint: "Off by default, and it should stay off for anything you want seen — a gated project is invisible to anyone who won't email you for the password. Turn it on only for NDA or not-yet-public work. Needs GATE_PASSWORD set in Netlify."
+        hint: "Off by default, and it should stay off for anything you want seen, because a gated project is invisible to anyone who won't email you for the password. Turn it on only for NDA or not-yet-public work. Needs GATE_PASSWORD set in Netlify."
 
       # ── Imagery ───────────────────────────────────────────────
       - label: "Cover Image"
@@ -96,7 +96,7 @@ collections:
       - { label: "Why I built it", name: "why_i_built_it", widget: "text", required: false }
       - { label: "Scope & constraints", name: "scope_constraints", widget: "text", required: false }
 
-      # ── How it works tab — any one field present renders the tab ──
+      # ── How it works tab, any one field present renders the tab ──
       - { label: "Architecture diagram", name: "architecture_diagram", widget: "string", required: false, hint: "Cloudinary URL." }
       - label: "Output structure"
         name: "output_structure"
@@ -128,7 +128,7 @@ collections:
         required: false
         hint: "Lifts the tool out of the tabs so it sits under the title, with Overview and How it works below it. Removes the 'Try it' tab."
 
-      # ── Process tab — renders when images are present ─────────
+      # ── Process tab, renders when images are present ─────────
       - label: "Process images"
         name: "process_images"
         widget: "list"
@@ -139,7 +139,7 @@ collections:
           - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
           - { label: "Caption", name: "caption", widget: "text", required: false }
 
-      # ── Results tab — renders when images are present ─────────
+      # ── Results tab, renders when images are present ─────────
       - label: "Results images"
         name: "results_images"
         widget: "list"
@@ -159,7 +159,7 @@ collections:
     extension: mdx
     format: frontmatter
     slug: "{{slug}}"
-    summary: "{{company}} — {{headline}}"
+    summary: "{{company}} · {{headline}}"
     sortable_fields: ["order", "start_date", "company"]
     # Same rule as above: every field in src/content/config.ts must appear here
     # or it is dropped from the frontmatter on save.
@@ -169,7 +169,7 @@ collections:
       - label: "Role"
         name: "role"
         widget: "string"
-        hint: "Your actual job title. Shown small, beside the dates — the card leads on the work instead, so a title like Developer Advocate does not set the tone."
+        hint: "Your actual job title. Shown small, beside the dates. The card leads on the work instead, so a title like Developer Advocate does not set the tone."
       - { label: "Location", name: "location", widget: "string" }
       - { label: "Start date", name: "start_date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true }
       - label: "End date"
@@ -180,7 +180,7 @@ collections:
         format: "YYYY-MM-DD"
         picker_utc: true
         required: false
-        hint: "Leave empty for your current role — it renders as Present."
+        hint: "Leave empty for your current role, and it renders as Present."
 
       # ── What the card leads with ──────────────────────────────
       - label: "Headline"
@@ -190,7 +190,7 @@ collections:
       - label: "Result"
         name: "result"
         widget: "string"
-        hint: "The quantified outcome — the number is the headline of the card. You have one for every job, and it does more work than a screenshot."
+        hint: "The quantified outcome. The number is the headline of the card. You have one for every job, and it does more work than a screenshot."
       - { label: "Summary", name: "summary", widget: "text" }
       - label: "Also did"
         name: "also"
@@ -215,14 +215,14 @@ collections:
         widget: "boolean"
         default: false
         required: false
-        hint: "Tick when the work shown was a proposal that did not go live. The card then says so outright — unshipped work is fine, implying it shipped is not."
+        hint: "Tick when the work shown was a proposal that did not go live. The card then says so outright. Unshipped work is fine, implying it shipped is not."
       - label: "Internal / under NDA"
         name: "nda"
         widget: "boolean"
         default: false
         required: false
-        hint: "Tick when the work can't be shown. The page says so plainly instead of looking like it is missing its images — 'internal, happy to discuss' reads as discretion to a hiring manager."
-      - label: "Compact — one line, no case page"
+        hint: "Tick when the work can't be shown. The page says so plainly instead of looking like it is missing its images. 'Internal, happy to discuss' reads as discretion to a hiring manager."
+      - label: "Compact, one line and no case page"
         name: "compact"
         widget: "boolean"
         default: false

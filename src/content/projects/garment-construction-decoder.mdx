@@ -15,11 +15,11 @@ who_its_for: "Students learning garment construction, home sewists, hobbyist mak
 
 why_i_built_it: "I wanted a tool I could use myself. Something that would recommend the right finishes and construction notes for a given garment, which I could then check against my own background in sewing and pattern-making. It started as a personal experiment."
 
-scope_constraints: "Currently covers womenswear in silk, wool, cotton, and linen. Knitwear, menswear tailoring, and technical outerwear are excluded — the domain knowledge required to validate those outputs isn't something I can verify yet. Photo analysis can identify visible hems, closures, darts, and seam placements, but it cannot verify hidden interior construction, exact measurements, or details obscured by lighting, pose, or fabric."
+scope_constraints: "Currently covers womenswear in silk, wool, cotton, and linen. Knitwear, menswear tailoring, and technical outerwear are excluded, because the domain knowledge required to validate those outputs isn't something I can verify yet. Photo analysis can identify visible hems, closures, darts, and seam placements, but it cannot verify hidden interior construction, exact measurements, or details obscured by lighting, pose, or fabric."
 
 output_structure:
   - field: "Seam types"
-    what_it_solves: "The most common source of sampling errors. Fabric and construction style determine which finish is correct — prevents the just-sew-it-together default."
+    what_it_solves: "The most common source of sampling errors. Fabric and construction style determine which finish is correct, which prevents the just-sew-it-together default."
   - field: "Fabric behavior"
     what_it_solves: "Informs handling before cutting. A sample maker who doesn't know silk charmeuse slips will cut inaccurate pieces."
   - field: "Interfacing"
@@ -27,20 +27,20 @@ output_structure:
   - field: "Closure options"
     what_it_solves: "When placement is ambiguous, returns two options with tradeoffs rather than guessing."
   - field: "Construction order"
-    what_it_solves: "Order matters — certain seams must be sewn before others become accessible. Outputs a numbered sequence, not a flat list."
+    what_it_solves: "Order matters, since certain seams must be sewn before others become accessible. Outputs a numbered sequence, not a flat list."
 
 sample_output: |
   Input: bias-cut silk charmeuse slip dress
 
   Seam types: French seams (side seams), bias binding (neckline), narrow rolled hem (hem)
 
-  Fabric behavior: High slip — use weights not pins. Frays immediately, minimize raw edges. Stretches on bias, allow ease.
+  Fabric behavior: High slip, use weights not pins. Frays immediately, minimize raw edges. Stretches on bias, allow ease.
 
   Interfacing: None (structure via bias cut). Lightweight silk organza stay at neckline.
 
   Closure options:
-    A. Invisible zipper — interface seam allowance first
-    B. Exposed seam zipper — intentional detail
+    A. Invisible zipper, interface seam allowance first
+    B. Exposed seam zipper, intentional detail
 
   Construction order:
     1. Stay neckline
@@ -62,10 +62,10 @@ design_decisions:
 
 # TODO: re-enable once the annotation labels are anchored correctly. The labels
 # in this image land in the wrong spots, so the Results tab is hidden for now.
-# Uncommenting these two lines brings the tab back — no code change needed.
+# Uncommenting these two lines brings the tab back, no code change needed.
 # results_images:
 #   - image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/garment-construction-decoder/annotated-photo"
-#     caption: "Photo analysis on my own canvas zip jacket. The model locates visible construction features — stand collar, dropped shoulder seam, exposed zip, welt pocket — and pins a label to each."
+#     caption: "Photo analysis on my own canvas zip jacket. The model locates visible construction features (stand collar, dropped shoulder seam, exposed zip, welt pocket) and pins a label to each."
 ---
 
 import GarmentDecoderTool from '../../components/tools/GarmentDecoderTool.astro'

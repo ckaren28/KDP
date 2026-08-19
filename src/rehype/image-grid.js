@@ -45,7 +45,7 @@ function processChildren(children) {
             runNodes.push(children[i]); // absorb the whitespace into the run
             i++;
           } else {
-            break; // whitespace leads to a non-img node — end the run
+            break; // whitespace leads to a non-img node, end the run
           }
         } else {
           break;

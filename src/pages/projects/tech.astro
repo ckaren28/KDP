@@ -14,7 +14,7 @@ const experience = allExperience.filter((e) => !e.data.compact);
 const compactExperience = allExperience.filter((e) => e.data.compact);
 
 // The grid reads the content collection. It used to be a hardcoded array here,
-// which meant two sources of truth for the same four projects — edit the MDX and
+// which meant two sources of truth for the same four projects. Edit the MDX and
 // the grid went stale. `listed: false` is how a project keeps its page without
 // appearing here.
 const projects = (await getCollection('projects'))
@@ -30,7 +30,7 @@ const projects = (await getCollection('projects'))
   }));
 ---
 
-<MainLayout title="Work — Karen Dettmar" theme="dark">
+<MainLayout title="Work · Karen Dettmar" theme="dark">
 
   <style>
     .tech-page {
@@ -39,7 +39,7 @@ const projects = (await getCollection('projects'))
       padding: 120px 48px 100px;
     }
 
-    /* No bottom rule here — the sticky section nav sits directly beneath and
+    /* No bottom rule here, since the sticky section nav sits directly beneath and
        carries one of its own, and two hairlines that close together read as a
        mistake. */
     .page-header {
@@ -57,14 +57,14 @@ const projects = (await getCollection('projects'))
     }
     /* The shared .page-title carries its own rule and 56px of margin, which
        works when it's a full-width block. As a flex item it shrinks to the
-       word, leaving a stub of a rule under "Work" — and the section nav below
+       word, leaving a stub of a rule under "Work", and the section nav below
        already draws the real one. */
     .page-header-top .page-title {
       margin-bottom: 0;
       padding-bottom: 0;
       border-bottom: none;
     }
-    /* Everything else — family, weight, line-height, opsz, the `em` color —
+    /* Everything else (family, weight, line-height, opsz, the `em` color)
        comes from the canonical .page-title in global.css. This page differs
        only in the title's ceiling and how tight it sets. */
     .page-title {
@@ -161,10 +161,10 @@ const projects = (await getCollection('projects'))
       color: var(--muted);
       margin-top: 14px;
     }
-    /* It's a live region, so it stays in the DOM to be announced — but with
+    /* It's a live region, so it stays in the DOM to be announced, but with
        nothing to say it shouldn't hold space open under the field. */
     .filter-count:empty { display: none; }
-    /* Anything the search can filter has to collapse when hidden — several of
+    /* Anything the search can filter has to collapse when hidden, and several of
        these set their own display, which would otherwise beat [hidden]. */
     .project-card[hidden],
     .xp-card[hidden],
@@ -361,7 +361,7 @@ const projects = (await getCollection('projects'))
     .xp { margin-top: 96px; padding-top: 40px; border-top: 1px solid var(--border); }
 
     /* Same grid and card treatment as the projects above. The employment history
-       is secondary to the work, so it must not out-weigh it visually — which a
+       is secondary to the work, so it must not out-weigh it visually, which a
        full-width stack of long rows did. Everything past the hook lives on the
        card's own page. */
     .xp-grid {
@@ -501,8 +501,8 @@ const projects = (await getCollection('projects'))
     }
 
     /* ── FACE CLOUD ──
-       The cloud is additive glow, so its stage stays dark in both themes —
-       the box reads as a screen rather than as part of the page surface.
+       The cloud is additive glow, so its stage stays dark in both themes.
+       The box reads as a screen rather than as part of the page surface.
        Every color in here is therefore fixed against that dark ground, not
        themed: the button's text sits at 17.6:1 on it, the status line at
        12.9:1 and the button border at 5.6:1. */
@@ -585,7 +585,7 @@ const projects = (await getCollection('projects'))
 
     <header class="page-header reveal">
       {/* Title and search share one baseline. The search reaches every section
-          on the page — projects, experiments and roles all carry data-search. */}
+          on the page, since projects, experiments and roles all carry data-search. */}
       <div class="page-header-top">
         <h1 class="page-title"><em>Work</em></h1>
 
@@ -661,7 +661,7 @@ const projects = (await getCollection('projects'))
           <canvas id="heroCanvas"></canvas>
         </div>
         <div class="exp-caption">
-          <span>Thread drawing — pick a color, draw on the shirt</span>
+          <span>Thread drawing, pick a color and draw on the shirt</span>
           <span>Canvas · Path2D</span>
         </div>
       </div>
@@ -672,7 +672,7 @@ const projects = (await getCollection('projects'))
       >
         <div class="canvas-section face-stage">
           <canvas id="faceCanvas"></canvas>
-          <!-- Off-screen rather than display:none — a hidden video element
+          <!-- Off-screen rather than display:none, because a hidden video element
                stops decoding frames in some browsers, and the detector reads
                from it every frame. -->
           <video id="faceVideo" class="face-video" playsinline muted autoplay></video>
@@ -685,7 +685,7 @@ const projects = (await getCollection('projects'))
         </div>
         <div class="exp-caption">
           <span>
-            Face cloud — 478 landmarks, tracked live and drawn as points of light.
+            Face cloud. 478 landmarks, tracked live and drawn as points of light.
             <a
               class="face-src"
               href="https://github.com/ckaren28/face-cloud"
@@ -741,7 +741,7 @@ const projects = (await getCollection('projects'))
                   {data.nda && <span class="xp-nda">Internal</span>}
                 </p>
                 <p class="xp-compact-line">
-                  {data.headline}<span class="xp-compact-sep">—</span>{data.result}
+                  {data.headline}<span class="xp-compact-sep">·</span>{data.result}
                 </p>
               </li>
             ))}
@@ -755,7 +755,7 @@ const projects = (await getCollection('projects'))
   <script>
     // ── SHUTTER ARRIVAL ──
     // The opening half of the transition the landing page started. Runs on
-    // every load and no-ops unless the shutter set its flag — but it always
+    // every load and no-ops unless the shutter set its flag, but it always
     // lifts the pre-paint cover, so this page can't be left behind one.
     import { playArrival } from '../../scripts/shutter';
     playArrival();
@@ -774,7 +774,7 @@ const projects = (await getCollection('projects'))
       const root = document.documentElement;
       // getBoundingClientRect, not offsetHeight: offsetHeight rounds to whole
       // pixels, so a header that actually measures 67.5px reports 68 and the
-      // nav parks half a pixel too low — which is a hairline of the page
+      // nav parks half a pixel too low, which is a hairline of the page
       // scrolling past in the gap. The rect keeps the fraction.
       const setOffset = () => {
         root.style.setProperty('--header-h', `${siteHeader.getBoundingClientRect().height}px`);
@@ -825,7 +825,7 @@ const projects = (await getCollection('projects'))
       if (!input || !status || !empty) return;
 
       // Every section takes part, so "wix" finds the role and "canvas" finds
-      // the experiment — not just the project grid.
+      // the experiment, not just the project grid.
       const groups = ['projects', 'experiments', 'experience']
         .map((id) => ({
           section: document.getElementById(id),
@@ -846,7 +846,7 @@ const projects = (await getCollection('projects'))
             item.hidden = !show;
             if (show) shown++;
           }
-          // An emptied section goes, and its anchor goes with it — a sticky
+          // An emptied section goes, and its anchor goes with it, since a sticky
           // link to nothing is a dead end.
           g.section.hidden = shown === 0;
           if (g.link) g.link.hidden = shown === 0;
@@ -879,7 +879,7 @@ const projects = (await getCollection('projects'))
       const ctx = canvas.getContext('2d')!;
 
       // The shirt is off-white or black; you pick the thread. Every thread sits
-      // in a mid-luminance band so it clears 3:1 on BOTH shirts — the worst
+      // in a mid-luminance band so it clears 3:1 on BOTH shirts. The worst
       // pairing is 3.18:1.
       const SHIRT_OFFWHITE = '#F2EFE9';
       const SHIRT_BLACK    = '#1C1418';
@@ -1056,7 +1056,7 @@ const projects = (await getCollection('projects'))
         return lum > 128 ? '44,26,14' : '240,232,220';
       }
 
-      // The torso, not the full silhouette — the sleeves flare well outside the
+      // The torso, not the full silhouette, because the sleeves flare well outside the
       // band the hint can actually sit in, so they can't be used to size it.
       const SVG_TORSO_LEFT = 176.24, SVG_TORSO_RIGHT = 424.14;
 
@@ -1097,7 +1097,7 @@ const projects = (await getCollection('projects'))
         const fitted = fitHintLines(phrases, torsoW - 18);
         if (!fitted) { ctx.restore(); return; }
 
-        // Still clipped to the shirt, so the text reads as printed on it — but
+        // Still clipped to the shirt, so the text reads as printed on it, but
         // it is now laid out to fit inside rather than being sliced by the edge.
         ctx.clip(shirtPath);
         ctx.font = `500 ${fitted.size}px "Instrument Sans", sans-serif`;

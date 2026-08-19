@@ -1,13 +1,13 @@
 ---
 /**
- * Safelight — the theme switch.
+ * Safelight, the theme switch.
  *
  * Lit for dark, out for light: you work under the red lamp in the darkroom, and
  * turning the room lights on gives you the print in daylight. That's literally
  * what the two themes are, so the control says what it does.
  *
  * It used to be an aperture, which collided with the shutter on the landing
- * page — one shape can't mean "switch the light" in the nav and "go to the
+ * page. One shape can't mean "switch the light" in the nav and "go to the
  * work" in the reveal. The aperture went to the shutter, the bigger object.
  * Typing "light" / "dark" still works; this just makes it discoverable.
  */
@@ -61,7 +61,7 @@
     transition: opacity 0.4s ease, r 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
   }
 
-  /* Dark is the darkroom, so the lamp is burning — that's the default state in
+  /* Dark is the darkroom, so the lamp is burning, which is the default state in
      the markup. Light turns it out: rays gone, bulb down to a cold filament. */
   :global(html[data-theme='light']) .safelight-rays { opacity: 0; }
   :global(html[data-theme='light']) .safelight-bulb { r: 0.9; }

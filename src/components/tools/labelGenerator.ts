@@ -71,7 +71,7 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
     },
     textile: {
       title: "Coat", artist: "Cristóbal Balenciaga", year: "c. 1967", medium: "Wool gazar, fully lined silk",
-      description: "A sculptural cocoon coat in double-faced wool gazar, cut away from the body with a single-seam construction at the back. The silhouette is architectural — volume held entirely by the fabric's weight and structure rather than darts or boning. The collar rises stiffly from the shoulders. Interior construction is immaculate: French seams, hand-stitched hem. Acquired from a private Paris collection; no alterations noted."
+      description: "A sculptural cocoon coat in double-faced wool gazar, cut away from the body with a single-seam construction at the back. The silhouette is architectural, with volume held entirely by the fabric's weight and structure rather than darts or boning. The collar rises stiffly from the shoulders. Interior construction is immaculate: French seams, hand-stitched hem. Acquired from a private Paris collection; no alterations noted."
     }
   };
 
@@ -145,7 +145,7 @@ wall_label, extended_label, kids_label, audio_guide_script, alt_text, curator_no
 
       const ct = resp.headers.get("content-type") ?? "";
       if (!ct.includes("application/json")) {
-        throw new Error("Service temporarily unavailable — please try again in a moment.");
+        throw new Error("Service temporarily unavailable. Please try again in a moment.");
       }
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || "Request failed.");

@@ -1,11 +1,11 @@
 /* ──────────────────────────────────────────────────────────────
-   Darkroom — landing page visual system
+   Darkroom, landing page visual system
    Palette taken from Karen's oxblood / powder-blue references.
    The negative variant is a designed inversion, not a filter.
    ────────────────────────────────────────────────────────────── */
 
 .dk {
-  /* The centre of the vignette used to be the full oxblood accent, which read
+  /* The center of the vignette used to be the full oxblood accent, which read
      far brighter than any other page. Pulled down close to the ground so the
      landing page sits at the site's darkness; the accent still carries the
      name's hover ramp and the negative print. */
@@ -22,7 +22,7 @@
 }
 
 /* Light is the negative print. Its outer edge is exactly the site's light
-   ground, so the landing page and every other page share one colour. */
+   ground, so the landing page and every other page share one color. */
 .dk.neg {
   --ox:#C5D6E6;
   --ox-deep:#D7E3EE;
@@ -49,11 +49,19 @@ body.dk {
 
 /* The system cursor is only hidden once the script is up and actually drawing
    a replacement. `dk-live` is set by initDarkroom after its element lookups
-   succeed — if the module fails to load or bails early, the real cursor stays. */
+   succeed. If the module fails to load or bails early, the real cursor stays. */
 body.dk.dk-live { cursor:none; }
 
 .dk canvas.dk-stage {
   position:fixed; inset:0; width:100vw; height:100vh; display:block; z-index:0;
+  /* A one-finger drag belongs to the develop pass. Without this iOS reads it
+     as a pan and the stage never develops, which left the hint in the corner
+     naming a gesture that did nothing. `.dk-id` above is pointer-events:none,
+     so the canvas is what a background touch actually hits.
+
+     pinch-zoom, not none: two-finger zoom has to survive, or the page fails
+     WCAG 1.4.4. */
+  touch-action:pinch-zoom;
 }
 
 .dk .dk-grain {
@@ -86,11 +94,11 @@ body.dk.dk-live { cursor:none; }
 .dk.neg .dk-name { text-shadow:0 0 70px rgba(215,227,238,.7); }
 /* flex, not block: the letter spans are rendered by a template that leaves
    whitespace text nodes between them, and a flex container drops those
-   outright — otherwise a stray leading space shifts the centred line. */
+   outright, otherwise a stray leading space shifts the centered line. */
 /* Scaled, not resized: the card is positioned against .dk-name's box, so
    changing font-size would slide the introduction around mid-transition. The
    scale sits on the two word spans rather than on .dk-name itself for the same
-   reason — .dk-card is a child of the name and must not shrink with it.
+   reason, since .dk-card is a child of the name and must not shrink with it.
 
    The letters' own per-frame transforms live on .dk-ltr inside, so this
    transition never fights the drag. */
@@ -118,7 +126,7 @@ body.dk.dk-live { cursor:none; }
   border:1px solid var(--faint); border-radius:100px;
   padding:11px 20px; cursor:pointer;
 }
-/* .dk-id sets pointer-events:none for the canvas underneath — the button has
+/* .dk-id sets pointer-events:none for the canvas underneath, so the button has
    to opt back in once it's on screen. */
 .dk .dk-reveal:focus-visible {
   position:static; left:auto; pointer-events:auto;
@@ -126,7 +134,7 @@ body.dk.dk-live { cursor:none; }
   outline:2px solid var(--chrome); outline-offset:4px;
 }
 
-/* The cue has to actually be findable — bigger, brighter, boxed, and it
+/* The cue has to actually be findable, so it is bigger, brighter, boxed, and it
    breathes until the visitor grabs something. */
 .dk .dk-cue {
   position:absolute; left:50%; top:100%; transform:translateX(-50%);
@@ -159,13 +167,13 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-name.touched .dk-cue { opacity:0; animation:none; }
 
-/* What the pull uncovers: the introduction — the one line that says how she
+/* What the pull uncovers: the introduction, the one line that says how she
    works, and the route to the work. Sits in the gap that opens between the two
    lines of the name, so it stays bounded and centered.
 
    No box. It had a border and a flat panel behind it, which read as a dialog
    dropped on the print rather than as something the print uncovered. What's
-   left is a scrim with no edge — densest behind the text, gone by the rim — so
+   left is a scrim with no edge, densest behind the text and gone by the rim, so
    the line still clears its background where the develop pass prints pale, and
    nothing draws a rectangle around it. `--card-veil` is the one knob: raise it
    for more cover, drop it to nothing to take the scrim away entirely. */
@@ -179,7 +187,7 @@ body.dk.dk-live { cursor:none; }
   /* A breath of cover, no more. This began as a blurred panel, which the
      engraving no longer needs: the type is on the barrel now, not floating over
      the print, so it carries its own contrast. The backdrop-filter is gone
-     outright — it was the thing reading as a smudged disc behind the reveal,
+     outright. It was the thing reading as a smudged disc behind the reveal,
      and blurring the develop pass hid the very thing the pull uncovers.
 
      What's left is a faint radial wash to keep the ring legible where the print
@@ -195,7 +203,7 @@ body.dk.dk-live { cursor:none; }
   transition:opacity .5s ease;
 }
 
-/* The route to the work is the shutter, which carries its own styles — see
+/* The route to the work is the shutter, which carries its own styles. See
    components/global/Shutter.astro. */
 
 /* Narrow screens give the gap far less room, so the card tightens rather than
@@ -208,8 +216,8 @@ body.dk.dk-live { cursor:none; }
    back together while the introduction is open.
 
    This is what fixes the collision Karen hit. The bottom line of the name is
-   translated *down* by the line gap — which is measured from the card, so it is
-   tall — while the rule is positioned from the name's untransformed flow box.
+   translated *down* by the line gap (which is measured from the card, so it is
+   tall) while the rule is positioned from the name's untransformed flow box.
    On desktop that gap runs to roughly 125px against a 96px margin, and the
    short-viewport rules below cut the margin to as little as 14px while the card
    stays every bit as tall, which is why landscape was the worst of it.
@@ -217,7 +225,7 @@ body.dk.dk-live { cursor:none; }
    Pushing the rule down by the gap instead was the obvious fix and the wrong
    one: on a 400px-tall landscape viewport it drives the role and location off
    the bottom of the screen. Fading is unconditional, needs no arithmetic, and
-   says the right thing — once the introduction is open, its own line is the
+   says the right thing. Once the introduction is open, its own line is the
    thing to read. It all comes back on close. */
 .dk .dk-supporting {
   display:flex; flex-direction:column; align-items:center;
@@ -228,8 +236,8 @@ body.dk.dk-live { cursor:none; }
 }
 /* Out of flow, not merely faded, and not animated out either.
 
-   Fading alone left the block holding its full height — some 45px of nothing on
-   a short screen, plus its standoff above — and the name is centered against
+   Fading alone left the block holding its full height, some 45px of nothing on
+   a short screen plus its standoff above, and the name is centered against
    that, so there was no room left to open a gap wide enough for the barrel
    without driving the upper line off the top. Collapsing it with max-height was
    the first attempt and it is not reliable: the height only comes back as the
@@ -265,7 +273,7 @@ body.dk.dk-live { cursor:none; }
   padding:26px clamp(20px,3.2vw,46px); gap:24px; flex-wrap:nowrap; pointer-events:none;
 }
 .dk .dk-nav * { pointer-events:auto; }
-/* Initials in the name's own face and weight — the same mark, set small. The
+/* Initials in the name's own face and weight, the same mark set small. The
    location isn't repeated here; it's already under the name. */
 .dk .dk-who {
   font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:600; font-size:19px;
@@ -285,7 +293,7 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-hint.gone { opacity:0; }
 
-/* Bottom-right used to be a third route to /projects — the nav and the
+/* Bottom-right used to be a third route to /projects, since the nav and the
    pull-to-reveal both already go there. The slot earns more as the one place
    on the landing page you can actually reach Karen. Mono to match dk-hint in
    the opposite corner, so the chrome band speaks one language. */
@@ -332,7 +340,7 @@ body.dk.dk-live { cursor:none; }
   .dk .dk-contact { bottom:74px; }
 }
 
-/* The nav has to stay on one line — wrapping split the mark off from the menu
+/* The nav has to stay on one line. Wrapping split the mark off from the menu
    and ate two rows of a 667px-tall phone. Initials leave room to spare. */
 @media (max-width:560px) {
   .dk .dk-nav { padding:16px 16px; gap:10px; }
@@ -347,8 +355,8 @@ body.dk.dk-live { cursor:none; }
 }
 
 /* ── short viewports / landscape phones ──────────────────────────
-   Every breakpoint above keys off width, so a landscape phone — wide enough to
-   miss all of them, but only ~375px tall — kept desktop-scale type and the 96px
+   Every breakpoint above keys off width, so a landscape phone (wide enough to
+   miss all of them, but only ~375px tall) kept desktop-scale type and the 96px
    rule margin. That needs ~390px of stack inside 375px of viewport, and under
    `overflow:hidden` the overflow isn't reachable: the name rode up underneath
    the nav and the meta block fell off the bottom.
@@ -356,7 +364,7 @@ body.dk.dk-live { cursor:none; }
    Height is the real constraint here, so these key off height. The name is
    capped in vh (two lines at .84 line-height, so 20vh caps it near 34vh of the
    viewport) and `.dk-id` gains a top pad to clear the fixed nav rather than
-   centring straight through it. */
+   centering straight through it. */
 @media (max-height:560px) {
   .dk .dk-id   { padding:clamp(52px,13vh,72px) 18px clamp(26px,7vh,44px); }
   .dk .dk-name { font-size:min(clamp(54px,13.6vw,208px), 20vh); }

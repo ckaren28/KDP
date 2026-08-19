@@ -22,14 +22,14 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
       return { statusCode: 400, body: JSON.stringify({ error: "Please include a concept (3+ chars)." }) };
     }
 
-    const system = `You are a textile designer and color expert. Given a fashion concept or mood, return a JSON object with a curated color palette and pattern recommendation. Return valid JSON only — no markdown, no commentary.`;
+    const system = `You are a textile designer and color expert. Given a fashion concept or mood, return a JSON object with a curated color palette and pattern recommendation. Return valid JSON only, with no markdown and no commentary.`;
 
     const user = `Fashion concept: "${concept.trim()}"
 
 Return JSON with exactly these keys:
-colors: [string] — exactly 5 hex color codes that create a harmonious textile palette for this concept
-patternStyle: string — one of: geometric, organic, stripe, grid — whichever best suits the concept
-mood: string — one sentence describing the feel of this palette (max 12 words)`;
+colors: [string], exactly 5 hex color codes that create a harmonious textile palette for this concept
+patternStyle: string, one of geometric, organic, stripe or grid, whichever best suits the concept
+mood: string, one sentence describing the feel of this palette (max 12 words)`;
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {

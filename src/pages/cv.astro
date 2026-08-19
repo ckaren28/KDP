@@ -4,11 +4,11 @@ import styles from './cv.module.css';
 import '../styles/cv-print.css';
 ---
 
-<MainLayout title="CV — Karen Dettmar">
+<MainLayout title="CV · Karen Dettmar">
 
   <!-- The print instance of Bricolage is only referenced inside @media print,
        so the browser would not begin fetching it until the print dialog is
-       already open — too late, and the PDF falls back to the variable font it
+       already open. Too late, and the PDF falls back to the variable font it
        cannot embed. Preloading it means it is in cache when Cmd+P fires. -->
   <link
     slot="head"

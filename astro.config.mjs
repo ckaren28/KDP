@@ -16,7 +16,7 @@ export default defineConfig({
   vite: {
     // html-to-image is only ever pulled in by a dynamic import (the "print"
     // easter egg). Without pre-bundling it, Vite discovers it late in dev,
-    // re-optimises, and the already-resolved chunk URL 404s — which is the
+    // re-optimizes, and the already-resolved chunk URL 404s, which is the
     // "Failed to fetch dynamically imported module" error.
     optimizeDeps: { include: ['html-to-image'] }
   }

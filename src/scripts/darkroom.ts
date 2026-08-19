@@ -1,11 +1,11 @@
 /**
- * Darkroom — the landing page interaction.
+ * Darkroom, the landing page interaction.
  *
  * A cursor-driven photographic reveal: moving over the field develops the
  * image beneath in powder blue, and going back over already-developed ground
  * tones it warm, the way a second pass in the bath would.
  *
- * The name is real DOM text — never drawn into the canvas — so it stays
+ * The name is real DOM text, never drawn into the canvas, so it stays
  * legible, selectable, crawlable and reachable by a screen reader. The canvas
  * is decorative and marked aria-hidden.
  */
@@ -13,7 +13,7 @@
 type Palette = { ox: string; oxDeep: string; print: string; tone: string };
 
 const PAL: Record<'pos' | 'neg', Palette> = {
-  // `ox` is the middle of the ground's vignette and `oxDeep` its outer edge —
+  // `ox` is the middle of the ground's vignette and `oxDeep` its outer edge,
   // both kept in step with --ox / --ox-deep in darkroom.css. The edge is
   // already the site's dark ground exactly; the middle now sits just above it
   // rather than at the full oxblood accent.
@@ -22,13 +22,13 @@ const PAL: Record<'pos' | 'neg', Palette> = {
   neg: { ox: '#C5D6E6', oxDeep: '#D7E3EE', print: '#7A2230', tone: '#3B5BA8' },
 };
 
-/* Name hover ramp — the print developing under the hand.
+/* Name hover ramp, the print developing under the hand.
    Powder blue through warm gold to bronze, which is the direction a real print
    actually goes as it comes up in the tray. The middle stop used to be a
    chartreuse; it sat outside the darkroom's blue-and-oxblood world and read as
    a highlighter rather than as anything developing.
 
-   The negative set inverts the positive one channel for channel — except the
+   The negative set inverts the positive one channel for channel, except the
    first, where powder blue's counterpart is the site's oxblood rather than the
    brown a literal inversion gives. */
 const HEAT: Record<'pos' | 'neg', [string, string, string]> = {
@@ -61,9 +61,17 @@ export function initDarkroom(root: HTMLElement) {
   if (!view || !nameEl || !curEl || !hintEl || !cardEl || !shutter || !revealBtn) return;
 
   // Past the guard, so a replacement cursor is guaranteed to be drawn. Only
-  // now is it safe for the stylesheet to hide the real one — if this module
+  // now is it safe for the stylesheet to hide the real one. If this module
   // never loads, or bailed above, the visitor keeps their pointer.
   root.classList.add('dk-live');
+
+  // Touch has no hover, so the served wording is wrong the moment the primary
+  // input is a finger. The HTML keeps the pointer phrasing for everyone else;
+  // this only rewrites it where it would otherwise be an instruction nobody
+  // can follow.
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    hintEl.textContent = 'Drag to develop';
+  }
 
   // How far the name draws back once the introduction is open. Declared here
   // and handed to CSS rather than written in both places, because the line gap
@@ -72,7 +80,7 @@ export function initDarkroom(root: HTMLElement) {
   root.style.setProperty('--dk-name-scale', String(NAME_SCALE));
 
   /* Clear air kept above the upper line of the name once the introduction
-     pushes it up — enough that it reads as a margin rather than as type that
+     pushes it up, enough that it reads as a margin rather than as type that
      ran out of screen. */
   const TOP_INSET = 44;
 
@@ -142,15 +150,15 @@ export function initDarkroom(root: HTMLElement) {
 
   function reveal(on: boolean) {
     revealed = on;
-    // The name steps back while the introduction is open — it has already been
+    // The name steps back while the introduction is open. It has already been
     // read by the time anyone pulls it, and shrinking it is half of what keeps
     // the lower line off the rule. The other half is .dk-supporting fading;
     // see the note in darkroom.css.
     nameEl!.classList.toggle('revealed', on);
     root.classList.toggle('dk-open', on);
     // Wide enough to clear the card that sits in the gap. It stacks and gets
-    // taller on narrow screens, so measure it rather than trusting one number
-    // — 58 was tuned on a desktop width and the card overlapped both lines of
+    // taller on narrow screens, so measure it rather than trusting one number.
+    // 58 was tuned on a desktop width and the card overlapped both lines of
     // the name on a phone.
     //
     // Scaled by the same factor as the name: the gap is applied to the letters,
@@ -162,7 +170,7 @@ export function initDarkroom(root: HTMLElement) {
     const wanted = Math.max(48, cardEl!.offsetHeight / 2 + 16);
     // …but never far enough to push the upper line into the top of the screen.
     // The gap is a transform, and no amount of padding on .dk-id can contain a
-    // transform — the line simply rides up out of it. So the room has to be
+    // transform. The line simply rides up out of it, so the room has to be
     // measured and the gap capped against it.
     //
     // nameEl's own rect is the right thing to measure: a transform on a
@@ -192,7 +200,7 @@ export function initDarkroom(root: HTMLElement) {
     originX = e.clientX; originY = e.clientY;
     startX = l.x; startY = l.y;
 
-    // unit vector toward the centre of the name, so an inward pull is
+    // unit vector toward the center of the name, so an inward pull is
     // distinguishable from an outward one
     const nr = nameEl.getBoundingClientRect();
     const lr = l.el.getBoundingClientRect();
@@ -244,12 +252,12 @@ export function initDarkroom(root: HTMLElement) {
 
   // Enter still opens the work for the visitor who pulled a letter with the
   // mouse and never focused anything. The label above the shutter used to say
-  // so — it now says where it goes instead, because there is no Enter key on a
+  // so. It now says where it goes instead, because there is no Enter key on a
   // phone and the pun never named a destination. The shortcut is worth keeping
   // regardless: it costs nothing and rewards the hand already on the keyboard.
   //
-  // Enter already means something to whatever does have focus, though — a nav
-  // link, the theme switch, the reveal button, the shutter itself — so this
+  // Enter already means something to whatever does have focus, though (a nav
+  // link, the theme switch, the reveal button, the shutter itself), so this
   // only claims the key when nothing interactive holds it. Otherwise tabbing to
   // About and pressing Enter would land on the work page instead.
   window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -260,10 +268,10 @@ export function initDarkroom(root: HTMLElement) {
     e.preventDefault();
     shutter.click();
   });
-  // Hover ramp — pointer events gated on pointerType, not mouseenter/mouseleave.
-  // iOS synthesises a mouseenter on tap but never a matching mouseleave, so the
+  // Hover ramp, gated on pointerType rather than mouseenter/mouseleave.
+  // iOS synthesizes a mouseenter on tap but never a matching mouseleave, so the
   // old mouse-event pair lit the ramp on first touch and left it stuck there
-  // until you tapped elsewhere — while the same tap was also grabbing a letter.
+  // until you tapped elsewhere, while the same tap was also grabbing a letter.
   // pointerenter with pointerType 'mouse' simply doesn't fire for a touch.
   nameEl.addEventListener('pointerenter', (e: PointerEvent) => {
     if (e.pointerType === 'mouse') heatTarget = 1;
@@ -279,7 +287,7 @@ export function initDarkroom(root: HTMLElement) {
     lineGap += (lineGapTarget - lineGap) * 0.12;
     for (const l of L) {
       if (l === grabbed) {
-        l.x += (l.tx - l.x) * 0.30;   // sticky follow — lags the pointer
+        l.x += (l.tx - l.x) * 0.30;   // sticky follow, lags the pointer
         l.y += (l.ty - l.y) * 0.30;
         l.vx = l.vy = 0;
       } else {
@@ -293,7 +301,7 @@ export function initDarkroom(root: HTMLElement) {
         l.vx += (tx - l.x) * K; l.vx *= D; l.x += l.vx;
         l.vy += (ty - l.y) * K; l.vy *= D; l.y += l.vy;
       }
-      // independent phase, speed and amplitude per letter — drift, not a wave.
+      // independent phase, speed and amplitude per letter, so drift rather than a wave.
       // Amplitude is small and the x component tiny, so tight pairs like the
       // double T in DETTMAR never overlap.
       const idleY = hinting ? Math.sin(bob * l.sp + l.ph) * l.am : 0;
@@ -324,7 +332,7 @@ export function initDarkroom(root: HTMLElement) {
   /* ── what develops underneath ──
      Karen's botanical scans: the meadow rises behind the name, ferns bank up
      in both bottom corners. They're printed as flat silhouettes in the palette
-     color rather than in their own — the develop pass prints in `print` and a
+     color rather than in their own. The develop pass prints in `print` and a
      second pass tones it gold, and that two-layer mechanism needs a
      single-color source to work against. */
   const meadow = new Image(), fern = new Image(), lace = new Image();
@@ -386,7 +394,7 @@ export function initDarkroom(root: HTMLElement) {
 
     // Meadow, centered and topping out above the name. Deliberately fainter
     // than the ferns: the h1 sits directly over it. On a narrow screen it may
-    // take most of the width — the ferns shrink into the corners there, so
+    // take most of the width. The ferns shrink into the corners there, so
     // there's nothing beside it to crowd, and the tighter cap would otherwise
     // strand it in the bottom third.
     let mh = H * 0.94, mw = mh * MEADOW_RATIO;
@@ -428,7 +436,7 @@ export function initDarkroom(root: HTMLElement) {
     let trh = H * 0.30, trw = trh * LACE_RATIO;
     if (trh > W * 0.29) { trh = W * 0.29; trw = trh * LACE_RATIO; }
     // The mirror of it, a little smaller and a little lower so the two don't
-    // read as a pair — the same reason the ferns are at two scales. The rotation
+    // read as a pair, the same reason the ferns are at two scales. The rotation
     // is negated, not flipped: `flip` mirrors across the stem, which varies the
     // silhouette but would leave this one's head pointing right as well.
     stamp(
@@ -493,7 +501,7 @@ export function initDarkroom(root: HTMLElement) {
       me.setTransform(DPR, 0, 0, DPR, 0, 0);
       expo.fill(4);
     } else {
-      // Placed over the scans — the meadow, both ferns, both laid-in stems — so
+      // Placed over the scans (the meadow, both ferns, both laid-in stems) so
       // the opening state hints at something there rather than at bare ground.
       ([[0.50, 0.34], [0.47, 0.68], [0.09, 0.74], [0.16, 0.92],
         [0.90, 0.78], [0.84, 0.94], [0.14, 0.14], [0.87, 0.11]] as const)
@@ -517,7 +525,7 @@ export function initDarkroom(root: HTMLElement) {
 
   /* ── theme ──
      Same typed commands as the rest of the site. Here "light" is the negative
-     print — pale mint ground, oxblood image — and "dark" is the darkroom. */
+     print (pale mint ground, oxblood image) and "dark" is the darkroom. */
   function setNegative(on: boolean) {
     if (on === negative) return;
     negative = on;
@@ -590,6 +598,13 @@ export function initDarkroom(root: HTMLElement) {
     curEl!.style.left = x + 'px'; curEl!.style.top = y + 'px';
   }
   window.addEventListener('mousemove', e => pointer(e.clientX, e.clientY));
+  // Seeding on contact matters: `touchmove` alone means nothing develops until
+  // the finger is already traveling, so the first stroke of every drag was
+  // being thrown away.
+  window.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    if (t) pointer(t.clientX, t.clientY);
+  }, { passive: true });
   window.addEventListener('touchmove', e => {
     const t = e.touches[0];
     if (t) pointer(t.clientX, t.clientY);

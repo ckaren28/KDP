@@ -1,15 +1,15 @@
 /* ── DESIGN TOKENS ──────────────────────────────────────────────
    Darkroom palette. The landing page is the darkroom itself; the
-   rest of the site is the print seen in daylight — bone paper,
+   rest of the site is the print seen in daylight, on bone paper in
    oxblood ink. Dark mode returns to the darkroom, where powder
    blue takes over as the accent, exactly as it does on the LP.
    ─────────────────────────────────────────────────────────────── */
 :root {
   /* core */
-  --black: #2A0E13;            /* deep warm oxblood-black — body text   */
-  --off-white: #D7E3EE;        /* pale blue ground — the print, in daylight */
+  --black: #2A0E13;            /* deep warm oxblood-black, body text   */
+  --off-white: #D7E3EE;        /* pale blue ground, the print, in daylight */
   --warm-white: #C8D8E6;       /* secondary surface                     */
-  --sienna: #6B1621;           /* oxblood — primary accent              */
+  --sienna: #6B1621;           /* oxblood, primary accent              */
   --sienna-light: #8E2A34;
   --muted: #515C69;            /* dark enough for 10px mono on the blue */
   --border: rgba(42,14,19,0.17);
@@ -33,7 +33,7 @@
   --fashion-bg-dark: #3A0810;
 }
 
-/* ── DARK MODE — back in the darkroom ── */
+/* ── DARK MODE, back in the darkroom ── */
 html[data-theme="dark"] {
   --black: #F2EFE9;
   --off-white: #3A0810;
@@ -58,27 +58,27 @@ html[data-theme="dark"] {
    rem, not px: a reader who has raised their browser font size gets
    larger type here too. The comment on each rung is its size at a
    default 16px root, which is what these were before the scale
-   existed — so nothing moved for a reader on defaults.
+   existed, so nothing moved for a reader on defaults.
 
    Numbered rather than named after a role, because the same rung is
    used by mono metadata and body copy alike; a --fs-mono-* / --fs-body-*
    split would need two names for one value.
    ─────────────────────────────────────────────────────────────── */
 :root {
-  --fs-100: 0.5625rem;   /*  9px — card tags                  */
-  --fs-150: 0.625rem;    /* 10px — eyebrows, section nav      */
+  --fs-100: 0.5625rem;   /*  9px, card tags                  */
+  --fs-150: 0.625rem;    /* 10px, eyebrows, section nav      */
   --fs-200: 0.6875rem;   /* 11px                              */
-  --fs-250: 0.75rem;     /* 12px — cue pill, contact          */
+  --fs-250: 0.75rem;     /* 12px, cue pill, contact          */
   --fs-300: 0.8125rem;   /* 13px                              */
-  --fs-350: 0.875rem;    /* 14px — card copy, links           */
-  --fs-400: 0.9375rem;   /* 15px — body                       */
+  --fs-350: 0.875rem;    /* 14px, card copy, links           */
+  --fs-400: 0.9375rem;   /* 15px, body                       */
   --fs-450: 1rem;        /* 16px                              */
   --fs-500: 1.0625rem;   /* 17px                              */
   --fs-550: 1.125rem;    /* 18px                              */
   --fs-600: 1.25rem;     /* 20px                              */
   --fs-700: 1.375rem;    /* 22px                              */
 
-  /* Display sizes stay role-named — they fluid-scale, and each one
+  /* Display sizes stay role-named, since they fluid-scale, and each one
      belongs to a specific piece of the page rather than to a rung. */
   --fs-title-sm: clamp(1.25rem, 2.4vw, 1.75rem);
   --fs-title-md: clamp(1.5rem, 2.5vw, 2.25rem);

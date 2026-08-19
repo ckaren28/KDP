@@ -19,7 +19,7 @@ interface Props {
   coverImage?: string;
   password_protected?: boolean;
   slug?: string;
-  // Overview tab — structured sections (all optional)
+  // Overview tab, structured sections (all optional)
   hero_image?: string;
   problem_statement?: string;
   who_its_for?: string;
@@ -129,7 +129,7 @@ const showArchitecture = !!architecture_diagram || !!architecture;
 const showMuseumOverviewVisual = slug === "museum-label-generator";
 const showGarmentToolPreview = slug === "garment-construction-decoder";
 
-// Tab visibility — a tab only renders if it has content to show
+// Tab visibility, so a tab only renders if it has content to show
 const hasHowItWorks = !!(
   architecture_diagram ||
   architecture ||
@@ -137,7 +137,7 @@ const hasHowItWorks = !!(
   sample_output ||
   design_decisions?.length
 );
-// The tool itself is the MDX body — the default slot. `tool_on_top` lifts it
+// The tool itself is the MDX body, the default slot. `tool_on_top` lifts it
 // out of the tab strip and onto the page directly, so a visitor meets the
 // working thing first and the write-up sits underneath it. When it's on there
 // is no "Try it" tab, because there'd be nothing left to put in one.
@@ -157,7 +157,7 @@ const tabs = [
 
 ---
 
-<MainLayout title={`${title} — Karen Dettmar`}>
+<MainLayout title={`${title} · Karen Dettmar`}>
   <div class={s["page"]}>
 
     <nav class={s["back-nav"]}>
@@ -202,7 +202,7 @@ const tabs = [
 
     {/* Everything below the header is one copy, optionally curtained.
         The previous version duplicated the whole tab block for the gated
-        case and included only the Overview panel in that copy — so turning
+        case and included only the Overview panel in that copy, so turning
         password protection on silently dropped every other tab. */}
     {password_protected && <PasswordGate slug={slug} />}
 
@@ -256,7 +256,7 @@ const tabs = [
                       <dt>Seam types</dt>
                       <dd>French seams (sides), bias binding (neckline)</dd>
                       <dt>Fabric behavior</dt>
-                      <dd>High slip — use weights not pins</dd>
+                      <dd>High slip, use weights not pins</dd>
                       <dt>Interfacing</dt>
                       <dd>None. Silk organza stay at neckline</dd>
                       <dt>Construction order</dt>
@@ -388,7 +388,7 @@ const tabs = [
                   <iframe
                     src={live_embed_url}
                     class={s["embed-frame"]}
-                    title={`${title} — live tool`}
+                    title={`${title} · live tool`}
                     loading="lazy"
                   />
                   {live_embed_note && (

@@ -101,7 +101,7 @@ export function renderAnnotations(annotations: Annotation[]): void {
     line.setAttribute('style', 'stroke: var(--muted); opacity: 0.5');
     overlay.appendChild(line);
 
-    // Label text — right-aligned
+    // Label text, right-aligned
     const labelText = ann.label.length > maxLChars
       ? ann.label.slice(0, maxLChars - 1) + '…'
       : ann.label;
@@ -114,7 +114,7 @@ export function renderAnnotations(annotations: Annotation[]): void {
     lEl.textContent = labelText;
     overlay.appendChild(lEl);
 
-    // Reason text — right-aligned, smaller and more muted
+    // Reason text, right-aligned, smaller and more muted
     const reasonText = ann.reason.length > maxRChars
       ? ann.reason.slice(0, maxRChars - 1) + '…'
       : ann.reason;

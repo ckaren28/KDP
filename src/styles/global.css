@@ -24,7 +24,7 @@ body {
 
 /* The system cursor is only given up once the script is up and actually drawing
    a replacement. `cursor-live` is set by MainLayout's module script after both
-   cursor elements resolve — if that module fails to load, the real cursor stays.
+   cursor elements resolve. If that module fails to load, the real cursor stays.
    Same guard the landing page uses via `dk-live` (see darkroom.css). */
 html.cursor-live body,
 html.cursor-live a,
@@ -128,7 +128,7 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
   border-bottom: var(--hairline);
 }
 
-/* Bricolage has no true italic — colour carries the emphasis instead */
+/* Bricolage has no true italic, so color carries the emphasis instead */
 .page-title em {
   font-style: normal;
   color: var(--sienna);
@@ -170,7 +170,7 @@ html.js .reveal.visible {
     transition: none;
   }
 
-  /* The ring chases the pointer on a rAF lerp — that's motion, and it had no
+  /* The ring chases the pointer on a rAF lerp, which is motion, and it had no
      escape here the way darkroom.css gives the landing page one. */
   .cursor, .cursor-ring { display: none; }
   html.cursor-live body,
@@ -208,7 +208,7 @@ img {
   .page-container { padding: var(--space-10) var(--space-5) var(--space-9); }
 }
 
-/* ── TOUCH DEVICES — hide custom cursor ── */
+/* ── TOUCH DEVICES, hide custom cursor ── */
 @media (pointer: coarse) {
   html.cursor-live body,
   html.cursor-live a,

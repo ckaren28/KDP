@@ -24,18 +24,18 @@ const { title, theme = 'light' } = Astro.props;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- Only Bricolage comes from Google now: its opsz axis has to stay live,
        and a variable font is what delivers that. Instrument Sans and Space
-       Mono are self-hosted static instances (see styles/fonts.css) — both
+       Mono are self-hosted static instances (see styles/fonts.css), and both
        ship real italics, so the browser never synthesizes a slant. Bricolage
        has no italic at all, so display type carries emphasis with color
        rather than a fake oblique. -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
   <!-- Theme: must run before body renders to prevent flash. A stored choice
-       beats the page default; there is no visible toggle — type light / dark.
+       beats the page default; there is no visible toggle, so type light / dark.
        Also marks the document as scripted, which is what lets .reveal hide
-       itself — without this the scroll-in content stays visible rather than
+       itself. Without this the scroll-in content stays visible rather than
        depending on a script that might never arrive. -->
-  <!-- Pages that need something of their own in the head — a preload, a
-       page-specific meta — put it here. -->
+  <!-- Pages that need something of their own in the head (a preload, a
+       page-specific meta) put it here. -->
   <slot name="head" />
 
   <script is:inline define:vars={{ pageTheme: theme }}>
@@ -47,7 +47,7 @@ const { title, theme = 'light' } = Astro.props;
     })();
   </script>
   <!-- Arriving through the shutter. Module scripts are deferred, so by the time
-       the iris could be drawn the page has already painted — this puts the
+       the iris could be drawn the page has already painted. This puts the
        ground up beforehand and hands off to the iris in one frame. A no-op on
        every other visit, since only the shutter sets the flag. The timeout is
        here rather than in the module on purpose: the cover has to lift even if
@@ -91,8 +91,8 @@ const { title, theme = 'light' } = Astro.props;
     // ── CUSTOM CURSOR ──
     // Nothing here gives up the system cursor until both elements resolve and
     // the reduced-motion check passes. `cursor-live` is what unlocks
-    // `cursor: none` in global.css, so a module that never loads — or a visitor
-    // who asked for less motion — simply keeps the real pointer.
+    // `cursor: none` in global.css, so a module that never loads, or a visitor
+    // who asked for less motion, simply keeps the real pointer.
     const cursor = document.getElementById('cursor') as HTMLElement | null;
     const ring = document.getElementById('cursorRing') as HTMLElement | null;
     const stillPointer = window.matchMedia('(prefers-reduced-motion: reduce)').matches

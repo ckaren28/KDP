@@ -29,7 +29,7 @@ const presets: Record<string, { garmentType: string; fabric: string; description
   trousers: {
     garmentType: 'Trousers',
     fabric: 'Lightweight wool crepe',
-    description: 'Tailored wide-leg trousers with a flat front, side pockets, and a concealed zip fly with a hook-and-bar closure. Mid-rise with a clean, pressed centre crease.',
+    description: 'Tailored wide-leg trousers with a flat front, side pockets, and a concealed zip fly with a hook-and-bar closure. Mid-rise with a clean, pressed center crease.',
   },
 };
 
@@ -114,7 +114,7 @@ export function init(): { validate: () => void } {
       });
 
     // Labels are sized by their text, so whether one overflows depends on how
-    // long it is — a fixed x% threshold guesses wrong in both directions. Lay
+    // long it is, since a fixed x% threshold guesses wrong in both directions. Lay
     // them out first, then flip only the ones that actually run past the edge.
     requestAnimationFrame(() => {
       const bounds = layer.getBoundingClientRect();
@@ -186,7 +186,7 @@ export function init(): { validate: () => void } {
         data = JSON.parse(rawText);
       } catch {
         if (resp.status === 404) throw new Error("Function not found (404). Make sure you're running `netlify dev` not `astro dev`.");
-        if (resp.status === 502 || resp.status === 504) throw new Error('Request timed out — try a shorter description.');
+        if (resp.status === 502 || resp.status === 504) throw new Error('Request timed out. Try a shorter description.');
         throw new Error(`Server error ${resp.status}: ${rawText.slice(0, 120)}`);
       }
       if (!resp.ok) throw new Error(data?.error || 'Request failed.');
@@ -229,7 +229,7 @@ export function init(): { validate: () => void } {
           const div = document.createElement('div');
           div.className = 'card';
           div.innerHTML = `<div class="card-name">${i.location}</div>
-            <div class="card-detail">${i.weight} — ${i.type}</div>
+            <div class="card-detail">${i.weight} · ${i.type}</div>
             <div class="card-meta">${i.reason}</div>`;
           interfEl.appendChild(div);
         });

@@ -90,7 +90,7 @@
   opacity: 0;
   transition: opacity 1s ease;
 }
-/* JS crossfade uses inline styles — data-active kept for future use */
+/* JS crossfade uses inline styles, data-active kept for future use */
 .artwork-slide[data-active] { opacity: 1; }
 
 .frame-img {

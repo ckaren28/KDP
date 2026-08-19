@@ -1,6 +1,6 @@
 ---
-// This page does not go through MainLayout, so it does not inherit global.css
-// — and that is where the self-hosted @font-face rules are reached from. Space
+// This page does not go through MainLayout, so it does not inherit global.css,
+// and that is where the self-hosted @font-face rules are reached from. Space
 // Mono carries every small label on this page (the cue, the role, the location,
 // the shutter's label, the hint, the email); without this import the only face
 // the page declares is the Bricolage that comes from Google in the head, and
@@ -14,7 +14,7 @@ import Shutter from '../components/global/Shutter.astro';
 import { SITE_TITLE } from '../consts';
 
 const EMAIL = 'karen.dettmar@gmail.com';
-const description = 'Karen Dettmar — Creative Technologist in New York.';
+const description = 'Karen Dettmar, Creative Technologist in New York.';
 
 // Rendered server-side, not injected by JS: the h1 has to carry real text in
 // the served HTML for crawlers and for anyone arriving without the script.
@@ -27,7 +27,7 @@ const LINES = ['KAREN', 'DETTMAR'];
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{SITE_TITLE} — Creative Technologist</title>
+  <title>{SITE_TITLE} · Creative Technologist</title>
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <!-- Theme must resolve before paint. The darkroom opens dark; a stored
@@ -40,7 +40,7 @@ const LINES = ['KAREN', 'DETTMAR'];
     })();
   </script>
   <link rel="canonical" href="https://karendettmar.com/" />
-  <meta property="og:title" content={`${SITE_TITLE} — Creative Technologist`} />
+  <meta property="og:title" content={`${SITE_TITLE} · Creative Technologist`} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -92,7 +92,7 @@ const LINES = ['KAREN', 'DETTMAR'];
       Show introduction
     </button>
     <!-- One block, so it can step back as a unit while the introduction is
-         open — see .dk-supporting in darkroom.css. -->
+         open. See .dk-supporting in darkroom.css. -->
     <div class="dk-supporting">
       <div class="dk-rule" aria-hidden="true"></div>
       <p class="dk-role">Creative Technologist</p>
@@ -101,7 +101,7 @@ const LINES = ['KAREN', 'DETTMAR'];
   </div>
 
   <nav class="dk-nav" aria-label="Primary">
-    <a href="/" class="dk-who" aria-label="Karen Dettmar — home">KD</a>
+    <a href="/" class="dk-who" aria-label="Karen Dettmar, home">KD</a>
     <ul>
       <li><a href="/projects">Work</a></li>
       <li><a href="/about">About</a></li>

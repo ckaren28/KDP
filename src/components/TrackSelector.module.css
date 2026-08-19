@@ -30,7 +30,7 @@
   transition: flex 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hover flex expansion — these use compound class selectors which are fine in modules */
+/* Hover flex expansion, these use compound class selectors which are fine in modules */
 .tracks-split:has(.track--fashion:hover) .track--fashion { flex: 1.7; }
 .tracks-split:has(.track--fashion:hover) .track--tech    { flex: 0.3; }
 .tracks-split:has(.track--tech:hover)    .track--tech    { flex: 1.7; }

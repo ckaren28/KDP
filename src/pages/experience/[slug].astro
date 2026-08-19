@@ -17,7 +17,7 @@ const d = entry.data;
 
 ---
 
-<MainLayout title={`${d.company} — Karen Dettmar`} theme="light">
+<MainLayout title={`${d.company} · Karen Dettmar`} theme="light">
 
   <style>
     .xpp {
@@ -161,8 +161,8 @@ const d = entry.data;
       color: var(--text-body);
     }
 
-    /* Charts inside a case body. One hue for a single series — length carries
-       rank, not color — and it rides var(--sienna) so it re-steps with the
+    /* Charts inside a case body. One hue for a single series, since length carries
+       rank rather than color, and it rides var(--sienna) so it re-steps with the
        theme rather than being flipped automatically. Values are direct-labeled
        so the reading never depends on color alone. */
     .xpp-body :global(.dv-chart) {
@@ -239,7 +239,7 @@ const d = entry.data;
     )}
 
     {d.unshipped && (
-      <p class="xpp-unshipped">Proposed — this design was never shipped</p>
+      <p class="xpp-unshipped">Proposed. This design was never shipped</p>
     )}
 
     {d.nda && (!d.artifacts || d.artifacts.length === 0) && (
@@ -257,7 +257,7 @@ const d = entry.data;
       <div class="xpp-artifacts">
         {d.artifacts.map((a) => (
           <figure>
-            <img src={a.image} alt={a.caption ?? `${d.company} — work sample`} loading="lazy" />
+            <img src={a.image} alt={a.caption ?? `${d.company} work sample`} loading="lazy" />
             {a.caption && <figcaption>{a.caption}</figcaption>}
           </figure>
         ))}

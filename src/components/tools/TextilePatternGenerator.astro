@@ -527,7 +527,7 @@ import LoadingState from '../LoadingState.astro';
       pat.appendChild(imgNode);
       defs.appendChild(pat);
 
-      // Apply pattern fill to fabric elements; normalise stroke color everywhere
+      // Apply pattern fill to fabric elements; normalize stroke color everywhere
       const allEls = svgEl.querySelectorAll('[id],[style],[fill]');
       allEls.forEach(el => {
         const id = (el.getAttribute('id') || '').toLowerCase();

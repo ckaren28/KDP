@@ -51,7 +51,7 @@ const projects = defineCollection({
     live_embed_url: z.string().optional(),
     live_embed_note: z.string().optional(),
     // Lift the tool out of the tabs to sit directly under the page header.
-    // With this on there is no "Try it" tab — the tool is the page.
+    // With this on there is no "Try it" tab, since the tool is the page.
     tool_on_top: z.boolean().optional().default(false),
     // Process tab (any images present → tab renders)
     process_images: z.array(imageItem).optional(),
@@ -65,14 +65,14 @@ const projects = defineCollection({
 //
 // The shape is deliberate. Karen is leaving developer advocacy for design
 // engineering, and plain reverse chronology would open this section with two
-// "Developer Advocate" headings — reinforcing the role she is moving away from.
+// "Developer Advocate" headings, reinforcing the role she is moving away from.
 // So `headline` leads each card with the work itself and `role` is demoted to
 // metadata beside the dates. Her first three jobs were design and front-end, so
 // read this way the section tells a return story rather than a pivot.
 //
 // `result` is the quantified outcome, which she has for every job. That is
 // rarer than screenshots and does more work here, so it is required while
-// artifacts are optional — several roles are internal or NDA'd and have none.
+// artifacts are optional, since several roles are internal or NDA'd and have none.
 const experience = defineCollection({
   schema: z.object({
     company: z.string(),
@@ -87,7 +87,7 @@ const experience = defineCollection({
     result: z.string(),
     summary: z.string(),
     // Secondary things worth listing under the headline work. Keep it to two,
-    // chosen — an exhaustive list reads as a CV bleeding into a portfolio.
+    // chosen, since an exhaustive list reads as a CV bleeding into a portfolio.
     also: z.array(z.string()).optional(),
     // Optional by design: internal or NDA'd work legitimately has nothing to
     // show, and saying so is better than padding the card.
@@ -96,7 +96,7 @@ const experience = defineCollection({
     // outright rather than implying it went live.
     unshipped: z.boolean().optional().default(false),
     // The work is internal and can't be shown. This states that outright rather
-    // than leaving a card that looks like it forgot its images — to a hiring
+    // than leaving a card that looks like it forgot its images. To a hiring
     // manager "internal, happy to discuss" reads as discretion, not a gap.
     nda: z.boolean().optional().default(false),
     // Drops the entry to a single line beneath the cards and builds no detail

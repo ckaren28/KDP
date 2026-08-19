@@ -69,7 +69,7 @@
   color: var(--muted);
   margin-bottom: 12px;
 }
-/* Bricolage has no true italic — colour carries the emphasis */
+/* Bricolage has no true italic, so color carries the emphasis */
 .page-title em { font-style: normal; color: var(--sienna); }
 
 .page-desc {
@@ -156,7 +156,7 @@
 .btn-generate:hover:not(:disabled) { background: var(--hover-sweep, #3D2B1A); }
 .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Swatches — children are JS-created so use :global */
+/* Swatches, children are JS-created so use :global */
 .swatch-row {
   margin-bottom: 12px;
 }

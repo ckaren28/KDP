@@ -7,8 +7,9 @@ const s = styles;
 // Label / value pairs, so the disciplines and the contact block share one
 // rhythm instead of being a grid and a list that happen to sit on one page.
 const disciplines = [
-  { name: 'Design Engineering',   desc: 'React, Astro, TypeScript, APIs' },
-  { name: 'Creative Technology',  desc: 'Interactive demos, prototypes, AI tools' },
+  { name: 'Design Engineering',    desc: 'React, Astro, TypeScript, APIs' },
+  { name: 'Creative Technology',   desc: 'Interactive demos, prototypes, AI tools' },
+  { name: 'Product Design',        desc: 'Interaction, motion, and design systems, including this one' },
   { name: 'Workshop Facilitation', desc: 'Community, education, technical storytelling' },
 ];
 
@@ -19,21 +20,21 @@ const contact = [
 ];
 ---
 
-<MainLayout title="About — Karen Dettmar" theme="dark">
+<MainLayout title="About · Karen Dettmar" theme="dark">
   <div class={s['about-wrapper']}>
 
-    <!-- Header — emphasis is colour, not italic: Bricolage has no true italic -->
+    <!-- Header: emphasis is color, not italic, since Bricolage has no true italic -->
     <div class={`${s['about-header']} reveal`}>
       <span class="page-eyebrow">About</span>
-      <h1 class="page-title" id="aboutTitle">Karen <em>Dettmar</em></h1>
+      <h1 class="page-title" id="aboutTitle">Hi, I'm <em>Karen</em></h1>
     </div>
 
     <div class={`${s['bio']} reveal`}>
       <p class={s['bio-lead']}>
-        I'm a design engineer in New York. I spent a few years building developer tools, SDK experiences, and conference demos at Wix and Intuit, then went deep on fashion at Parsons and FIT. These days I build interactive tools that tend to land where software meets something made by hand: textiles, garments, archives.
+        A design engineer in New York. I spent a few years building developer tools, SDK experiences, and conference demos at Wix and Intuit, then went deep on fashion at Parsons and FIT. These days I build interactive tools that land where software meets something made by hand. How a thing opens, how it responds, and when it holds still are decisions, not defaults.
       </p>
       <p>
-        I like problems where the interface has to carry real craft, not just work. I build with React, Astro, TypeScript, and the Claude API, and I still keep an industrial sewing machine in the corner of the room.
+        I build with React, Astro, TypeScript, and the Claude API, and I still keep an industrial sewing machine in the corner of the room.
       </p>
     </div>
 
@@ -69,8 +70,8 @@ const contact = [
 
   </div><!-- /about-wrapper -->
 
-  <!-- WORK SPLIT — Fashion (studio subdomain) / Technology -->
-  <TrackSelector bordered={true} prompt="Explore the work" />
+  <!-- WORK SPLIT: Fashion (studio subdomain) / Technology -->
+  <TrackSelector bordered={true} prompt="Interests" />
 
   <!-- Easter egg: floating note (fixed, top-right) -->
   <div class={s['egg-note']} id="eggNote" aria-hidden="true">
@@ -86,7 +87,7 @@ const contact = [
   let eggLastT  = 0;
   let eggTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // The theme toggle it used to hang off is gone — triple-click the name instead.
+  // The theme toggle it used to hang off is gone, so triple-click the name instead.
   const eggTarget = document.getElementById('aboutTitle');
   eggTarget?.addEventListener('click', () => {
     const now = Date.now();

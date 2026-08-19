@@ -98,10 +98,10 @@
 
 :global(.image-annotation) {
   position: absolute;
-  /* The marker dot — not the box — must sit on the coordinate, or a label
+  /* The marker dot, not the box, must sit on the coordinate, or a label
      points at whatever is half its own width away. The dot is the 10px first
-     grid column, so shifting left by 5px centres it on the point; vertically
-     it is already centred by align-items. Kept as custom properties so the
+     grid column, so shifting left by 5px centers it on the point; vertically
+     it is already centered by align-items. Kept as custom properties so the
      right-edge rule can override one axis without rewriting the translate. */
   --annotation-tx: -5px;
   --annotation-ty: -50%;
@@ -169,7 +169,7 @@
   display: block;
 }
 
-/* viewBox is 430×500 (300 garment + 130 label margin) — enforce ratio to match garment height */
+/* viewBox is 430×500 (300 garment + 130 label margin), so enforce ratio to match garment height */
 :global(.gd-annotation-overlay) {
   aspect-ratio: 43 / 50;
   height: auto !important;

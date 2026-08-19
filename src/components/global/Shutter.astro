@@ -1,6 +1,6 @@
 ---
 /**
- * The shutter — the reveal's way in.
+ * The shutter, the reveal's way in.
  *
  * The same six-blade aperture the theme switch draws, scaled up and made
  * pressable: the iris stops down under the press and opens on release, which
@@ -8,7 +8,7 @@
  *
  * The introduction and the label are engraved around the barrel rather than
  * stacked above and below it, the way a real lens carries its markings. That
- * makes the sentence and the way in one object — the statement *is* the door,
+ * makes the sentence and the way in one object. The statement *is* the door,
  * and hovering anywhere on it winds the iris open.
  *
  * Everything lives in one 200-unit viewBox so the type and the blades scale
@@ -31,8 +31,8 @@ const { href, line, label = 'See the work' } = Astro.props;
 <!--
   The SVG is hidden from assistive tech and the anchor carries the same words as
   a plain label. Curved text is a sequence of positioned glyphs, and leaving a
-  screen reader to reassemble two arcs into a sentence is not worth the risk —
-  the accessible name still contains the visible text, so a speech-control user
+  screen reader to reassemble two arcs into a sentence is not worth the risk.
+  The accessible name still contains the visible text, so a speech-control user
   can say what they see (WCAG 2.5.3).
   The tab stop is off until the introduction is open; darkroom.ts turns it on.
 -->
@@ -49,41 +49,62 @@ const { href, line, label = 'See the work' } = Astro.props;
     focusable="false"
   >
     <defs>
-      <!-- Traveling left to right over the top, so the glyphs sit upright
-           outside the circle. Each arc is an exact semicircle — the chord
-           between the endpoints is the diameter — so the type is centered on
-           the barrel rather than drifting off one side.
+      <!-- The two arcs are the eye. Nothing is drawn to make the shape.
+           Flattening these is the whole idea. A semicircle draws a ring, but a
+           shallower arc of a larger radius tapers toward the horizontal, and
+           two of them facing each other close into an almond. The shape is the
+           space between the sentence and the label.
 
-           The ring is wider than the sentence needs, deliberately. The arc
-           ends on the barrel's center line, which is exactly where the blades
-           are widest — so a ring sized to fit the text put the first and last
-           words straight through them. At r=82 the sentence uses about four
-           fifths of the arc and its ends stop some 24 units above that line,
-           clear of the aperture entirely. -->
-      <path id="dk-arc-top" d="M 18,100 A 82,82 0 0 1 182,100" fill="none" />
+           Both are halves of a vesica. For half-width a and half-height b the
+           radius is R = (a*a + b*b) / 2b:
+
+             top     a=81, b=53  ->  R=88.4
+             bottom  a=85, b=57  ->  R=91.88
+
+           Traveling left to right over the top, so the glyphs sit upright
+           outside the curve, and centered on the barrel rather than drifting
+           off one side.
+
+           The sentence uses 99.9% of this arc (measured, not estimated) so
+           its first and last glyphs land on the corners themselves, which is
+           what makes the almond close rather than merely bend. It also means
+           there is no room left. About 30 characters at 13.5px is the ceiling;
+           a longer `line` will run past the corners, and Bricolage loads from
+           Google with an automatic opsz axis, so its metrics are not fixed
+           forever either. Re-measure before changing the copy. -->
+      <path id="dk-arc-top" d="M 19,100 A 88.4,88.4 0 0 1 181,100" fill="none" />
       <!-- Drawn the other way round (sweep 0) so the label sits upright too;
            kept clockwise it would hang upside down under the barrel.
 
-           r=88, not 82, and the difference is what makes the two gaps match.
-           These arcs are baselines, and the two run in opposite directions:
-           the sentence grows outward from its baseline, while the label — on a
-           downward-bulging arc — grows inward from its own. Equal radii would
-           therefore read as a wide gap above and a tight one below. Pushing the
-           lower baseline out by roughly one cap height (87 - 7.6 ≈ 79) lands
-           the label's nearest ink on the same ring as the sentence's. -->
-      <path id="dk-arc-bottom" d="M 13,100 A 87,87 0 0 0 187,100" fill="none" />
+           Still pushed out past the top arc, 4 units now rather than 5, and
+           for the same reason as before. These arcs are baselines, and the two
+           run in opposite directions: the sentence grows outward from its
+           baseline, while the label, on a downward-bulging arc, grows inward
+           from its own. Equal radii would therefore read as a wide gap above
+           and a tight one below.
+
+           The label only reaches 70% of this arc against the sentence's 99.9%,
+           so the almond closes crisply along the top and stays open at the
+           bottom. That asymmetry is how eyes are actually built, but it is the
+           first thing to revisit if the shape reads as two curves rather than
+           one. Wider tracking on .dk-engrave-label is the lever. -->
+      <path id="dk-arc-bottom" d="M 15,100 A 91.88,91.88 0 0 0 185,100" fill="none" />
     </defs>
 
-    <!-- The barrel is large on purpose. The engraving rings are fixed by the
-         sentence — it needs r=82 to fit without curling past the horizontal —
-         so the only way to close the gap between the type and the blades is to
-         grow the blades out to meet it. At r=62 both rings clear the aperture
-         by about 17 units, which is the tight spacing the label already had.
+    <!-- The barrel is small on purpose: it is the iris inside the eye, not the
+         lens itself. At scale 3.4 the blade ring lands at r=34, which leaves 19
+         units between the top of the ring and the sentence's baseline, and
+         keeps the aperture well clear of the corners where the two arcs meet.
+
+         Strokes are pulled back to 0.75 of their previous weight. Scaling alone
+         would have kept them proportional to the ring, but proportional is too
+         heavy at this size. A small aperture wants a finer line, or it reads
+         as a bolt head rather than an iris.
 
          Two groups, and they have to stay two.
 
          The `transform` presentation attribute is not a separate thing from the
-         CSS `transform` property — it *is* that property. So placing the barrel
+         CSS `transform` property. It *is* that property. So placing the barrel
          (translate + scale) and the hover (rotate) on one element means the
          hover rule replaces the placement outright: the blades snap back to
          scale 1 at the viewBox origin and fly to the top-left corner. Putting
@@ -93,10 +114,10 @@ const { href, line, label = 'See the work' } = Astro.props;
 
          The outer group places the barrel and is never touched by CSS. The
          inner one carries only the turn. -->
-    <g transform="translate(25.6 25.6) scale(6.2)">
+    <g transform="translate(59.2 59.2) scale(3.4)">
       <g class="dk-shutter-blades">
-        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.1" />
-        <g stroke="currentColor" stroke-width="0.85" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="0.825" />
+        <g stroke="currentColor" stroke-width="0.637" stroke-linecap="round">
           <line x1="16" y1="12"    x2="22" y2="12" />
           <line x1="14" y1="15.46" x2="17" y2="20.66" />
           <line x1="10" y1="15.46" x2="7"  y2="20.66" />
@@ -111,8 +132,20 @@ const { href, line, label = 'See the work' } = Astro.props;
     <text class="dk-engrave-line" text-anchor="middle">
       <textPath href="#dk-arc-top" startOffset="50%">{line}</textPath>
     </text>
+    <!-- The interpuncts are decoration and deliberately not in `aria-label`:
+         the accessible name stays the plain label, since a screen reader
+         announcing "middle dot" twice is worse than no flourish at all. WCAG
+         2.5.3 only asks that the visible words appear in the name, and they do.
+
+         The non-breaking space is load-bearing. Centering the phrase is not the
+         same as centering it on the iris. "WORK" is a letter longer than
+         "SEE", so a symmetrically padded string puts THE 6.25 units left of the
+         axis, which is visible against the aperture. Padding the left by one
+         extra space makes "h" the literal middle character of the string, so
+         THE and the two interpuncts all land symmetric about the center. A
+         plain double space would collapse; U+00A0 does not. -->
     <text class="dk-engrave-label" text-anchor="middle">
-      <textPath href="#dk-arc-bottom" startOffset="50%">{label}</textPath>
+      <textPath href="#dk-arc-bottom" startOffset="50%">{`·\u00A0 ${label} ·`}</textPath>
     </text>
   </svg>
 </a>
@@ -159,16 +192,23 @@ const { href, line, label = 'See the work' } = Astro.props;
   .dk-shutter:hover .dk-shutter-iris,
   .dk-shutter:focus-visible .dk-shutter-iris { r: 6.1; }
 
-  .dk-shutter:active .dk-shutter-blades {
+  /* `.is-pressing` is not a duplicate of `:active`. iOS Safari only applies
+     `:active` to an element with a touch listener bound, so on a phone the
+     shutter went straight to the page transition with no press at all. The
+     class is set from pointer events, which cover mouse, touch and pen on one
+     path; `:active` stays for the no-JS case. */
+  .dk-shutter:active .dk-shutter-blades,
+  .dk-shutter.is-pressing .dk-shutter-blades {
     transform: rotate(-30deg) scale(0.95);
     transition-duration: 0.14s;
   }
-  .dk-shutter:active .dk-shutter-iris {
+  .dk-shutter:active .dk-shutter-iris,
+  .dk-shutter.is-pressing .dk-shutter-iris {
     r: 0.9;
     transition-duration: 0.14s;
   }
 
-  /* The introduction, in the name's own face — the same voice continuing
+  /* The introduction, in the name's own face, the same voice continuing
      rather than a caption from somewhere else. */
   .dk-engrave-line {
     font-family: 'Bricolage Grotesque', system-ui, sans-serif;
@@ -187,11 +227,19 @@ const { href, line, label = 'See the work' } = Astro.props;
      obvious once the first has been obeyed.
 
      It no longer says "press enter to enter": there is no Enter key on a phone,
-     and the pun never said where it went. */
+     and the pun never said where it went.
+
+     The tracking is structural now, not only stylistic. The label has to span
+     nearly as far as the sentence for the lower lid to reach the corners, and
+     with the interpuncts at 0.52em it covers 93% of its arc against the
+     sentence's 99.9%, which closes the corner gap to under 4 units, from 16
+     before the interpuncts. Tightening this shortens the lower lid and opens
+     the almond back up; loosening it oversets, and 0.6em already reaches
+     99.7%. */
   .dk-engrave-label {
     font-family: 'Space Mono', ui-monospace, monospace;
     font-size: 10.5px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.52em;
     text-transform: uppercase;
     fill: var(--ink);
     opacity: 0.86;
@@ -211,8 +259,8 @@ const { href, line, label = 'See the work' } = Astro.props;
   }
 
   /* A landscape phone is the tight case. The barrel sits in the gap the name
-     opens around it, so its height is spent twice — once above the middle and
-     once below — and at full size it drove the upper line off the top of the
+     opens around it, so its height is spent twice, once above the middle and
+     once below, and at full size it drove the upper line off the top of the
      screen. These track the same short-viewport breakpoints the name uses in
      darkroom.css, and are in vh so the barrel is always a fixed share of the
      room it actually has.
@@ -233,14 +281,15 @@ const { href, line, label = 'See the work' } = Astro.props;
     }
   }
 
-  /* The blades are the whole idea, so they keep their shape — what stops is the
+  /* The blades are the whole idea, so they keep their shape. What stops is the
      travel. Pressing still reads, it just doesn't animate. */
   @media (prefers-reduced-motion: reduce) {
     .dk-shutter-blades,
     .dk-shutter-iris { transition: none; }
     .dk-shutter:hover .dk-shutter-blades,
     .dk-shutter:focus-visible .dk-shutter-blades,
-    .dk-shutter:active .dk-shutter-blades { transform: none; }
+    .dk-shutter:active .dk-shutter-blades,
+    .dk-shutter.is-pressing .dk-shutter-blades { transform: none; }
   }
 </style>
 
@@ -249,8 +298,18 @@ const { href, line, label = 'See the work' } = Astro.props;
 
   const el = document.querySelector<HTMLAnchorElement>('.dk-shutter');
 
+  // See the `.is-pressing` note in the stylesheet: this is what makes the
+  // shutter answer a tap. `pointerup` alone is not enough. A finger that
+  // slides off, or a gesture the browser takes over, ends in cancel, and
+  // without this the blades would stay shut.
+  const press = (on: boolean) => el?.classList.toggle('is-pressing', on);
+  el?.addEventListener('pointerdown', () => press(true));
+  el?.addEventListener('pointerup', () => press(false));
+  el?.addEventListener('pointercancel', () => press(false));
+  el?.addEventListener('pointerleave', () => press(false));
+
   el?.addEventListener('click', (e) => {
-    // The browser owns the modified clicks — new tab, new window, download.
+    // The browser owns the modified clicks: new tab, new window and download.
     // Only the plain one belongs to the shutter.
     if (e.defaultPrevented || e.button !== 0) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

@@ -59,12 +59,12 @@
 }
 
 /* Deliberately NOT the .page-title in global.css. A case study opens on a
-   lighter, larger, looser title than a section index does — 300 against 600,
+   lighter, larger, looser title than a section index does, 300 against 600,
    and allowed past the global ceiling. Kept as its own rule rather than folded
    into the shared one, because the difference is the point.
    Sizes here stay in rem, so the title and the space under it both still
    answer to the reader's own font size. (Avoid bare utility words like the
-   one meaning "expand" in these comments — Tailwind scans this file as
+   one meaning "expand" in these comments, since Tailwind scans this file as
    content and will emit the matching utility.) */
 .page-title {
   font-family: var(--font-display);
@@ -332,7 +332,7 @@
   color: var(--text-body);
 }
 
-/* Section label — used by How it works sections */
+/* Section label, used by How it works sections */
 .section-label {
   font-family: var(--font-body);
   font-size: var(--fs-150);

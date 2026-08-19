@@ -265,8 +265,8 @@
    and sizes are set in pt here because that is the unit the sheet is
    actually measured in.
 
-   The chrome that has to disappear — header, footer, cursor, sheet
-   size, palette — lives in src/styles/cv-print.css.
+   The chrome that has to disappear (header, footer, cursor, sheet
+   size, palette) lives in src/styles/cv-print.css.
    ─────────────────────────────────────────────────────────────── */
 @media print {
 
@@ -338,7 +338,7 @@
     /* Intuit and the independent block both run long; forbidding a break
        outright would shunt a nearly full role onto its own sheet and
        leave a half-empty one behind it. Widows and orphans do the
-       softer job — the break lands mid-role, never on a stray line. */
+       softer job, so the break lands mid-role and never on a stray line. */
     orphans: 2;
     widows: 2;
   }

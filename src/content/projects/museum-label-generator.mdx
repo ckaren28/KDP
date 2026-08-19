@@ -9,21 +9,21 @@ live_url: https://karendettmar.com/projects/museum-label-generator
 github_url: https://github.com/karendettmar/museum-label-generator
 password_protected: false
 
-problem_statement: "Museum wall labels are written for visitors who already speak the language of art history. For everyone else — a child, a casual visitor, a designer who thinks visually — the infrastructure meant to help them often doesn't. Labels are a bottleneck: curators are overworked, the writing process is slow, and scaling across formats (audio, kids, alt text) is rarely prioritized. The tool takes a single artwork description and generates six interpretive formats simultaneously. The AI acts as a starting point. Human editorial control is built in at every step."
+problem_statement: "Museum wall labels are written for visitors who already speak the language of art history. For everyone else (a child, a casual visitor, a designer who thinks visually), the infrastructure meant to help them often doesn't. Labels are a bottleneck: curators are overworked, the writing process is slow, and scaling across formats (audio, kids, alt text) is rarely prioritized. The tool takes a single artwork description and generates six interpretive formats simultaneously. The AI acts as a starting point. Human editorial control is built in at every step."
 
 output_structure:
   - field: "Wall label"
-    what_it_solves: "Standing visitor, 15 seconds — ~80 words, no jargon."
+    what_it_solves: "Standing visitor, 15 seconds. ~80 words, no jargon."
   - field: "Extended label"
-    what_it_solves: "Visitor who pauses — ~200 words, permits depth."
+    what_it_solves: "Visitor who pauses. ~200 words, permits depth."
   - field: "Kids label"
-    what_it_solves: "Age 6–10 — not simplified, differently framed. Questions, wonder, sensory detail."
+    what_it_solves: "Age 6–10, not simplified but differently framed. Questions, wonder, sensory detail."
   - field: "Audio guide script"
-    what_it_solves: "Listener, not reader — written for the ear. Conversational rhythm, present tense, ~45 seconds spoken."
+    what_it_solves: "Listener, not reader. Written for the ear, with conversational rhythm, present tense, ~45 seconds spoken."
   - field: "Alt text"
-    what_it_solves: "Screen reader user — functional replacement for a visual. Objective, WCAG-compliant, no interpretation."
+    what_it_solves: "Screen reader user. A functional replacement for a visual. Objective, WCAG-compliant, no interpretation."
   - field: "Curator notes"
-    what_it_solves: "Internal — flags ambiguities, suggests research directions, notes what the source description didn't specify."
+    what_it_solves: "Internal. Flags ambiguities, suggests research directions, notes what the source description didn't specify."
 
 design_decisions:
   - title: "Structured JSON over streaming text"
@@ -35,7 +35,7 @@ design_decisions:
   - title: "The 'Show Prompt & Architecture' toggle"
     body: "Exposes the system prompt, user template, and call flow to anyone who wants to see them. Institutional adopters want to audit what the model is doing before they trust it with their collections. Showing the work is also a trust signal for visitors skeptical of AI tools in cultural contexts."
   - title: "API key security via Netlify Function"
-    body: "All calls route through a serverless function. The key never touches the browser. Cold starts add ~300ms latency on first request — acceptable for a tool used in considered, not rapid-fire, workflows."
+    body: "All calls route through a serverless function. The key never touches the browser. Cold starts add ~300ms latency on first request, which is acceptable for a tool used in considered, not rapid-fire, workflows."
 
 architecture_diagram: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_900/portfolio/museum-label-generator/prompt-architecture"
 

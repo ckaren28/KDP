@@ -33,7 +33,7 @@
   <!-- Screen top edge (depth strip) -->
   <polygon points="214,48 374,68 374,62 214,42" fill="#b8ac9e"/>
 
-  <!-- Lid back face — main visible surface, stickers live here -->
+  <!-- Lid back face, main visible surface, stickers live here -->
   <polygon points="22,44 214,48 218,264 26,260"
            fill="#e8e2da" stroke="#c4b8aa" stroke-width="1.5"/>
 
@@ -162,7 +162,7 @@
 
 
   <!-- ══ HAND ═══════════════════════════════════════════════════════════════
-       id="hand" — targeted by CSS for hover animation                       -->
+       id="hand", targeted by CSS for hover animation                       -->
   <g id="hand">
 
     <!-- Subtle warm base fill so grid has something to sit on -->
@@ -186,7 +186,7 @@
       <rect x="328" y="105" width="150" height="160" fill="url(#hand-grid)"/>
     </g>
 
-    <!-- Hand outline — the definitive contour -->
+    <!-- Hand outline, the definitive contour -->
     <path d="
       M 346,212 L 340,185
       C 336,167 340,150 347,139
@@ -229,7 +229,7 @@
     <ellipse cx="420" cy="148" rx="6.5" ry="3"
              fill="#c8a460" stroke="#c4a882" stroke-width="1.3" opacity="0.88"/>
 
-    <!-- Ring: statement ring — oval setting + stone suggestion -->
+    <!-- Ring: statement ring, oval setting + stone suggestion -->
     <ellipse cx="418" cy="161" rx="7.5" ry="3.8"
              fill="#c8a44e" stroke="#c4a882" stroke-width="1.8" opacity="0.92"/>
     <ellipse cx="418" cy="157" rx="4.5" ry="3.5"

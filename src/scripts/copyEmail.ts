@@ -3,7 +3,7 @@
  *
  * The address is easier to paste than to retype, and a mail client opening
  * unasked is rarely what someone wants from a portfolio. So a plain click
- * copies and says so, while the href stays `mailto:` — which means the link
+ * copies and says so, while the href stays `mailto:`, which means the link
  * still works with no JavaScript, still opens in a mail client from the context
  * menu, and still reads as an email address to a screen reader.
  *
@@ -80,7 +80,7 @@ function show(link: HTMLAnchorElement, label: string, address: string) {
   tip.hidden = false;
   link.setAttribute('aria-describedby', 'copyEmailTip');
 
-  // Measure after it's in flow, then place it above the link — or below, when
+  // Measure after it's in flow, then place it above the link, or below when
   // the link is close enough to the top of the window that above would clip.
   const r = link.getBoundingClientRect();
   const t = tip.getBoundingClientRect();
@@ -113,7 +113,7 @@ export function initCopyEmail() {
     document.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"]'),
   );
   if (!links.length) return;
-  // No clipboard, no enhancement — the mailto is left to do its job.
+  // No clipboard, no enhancement, so the mailto is left to do its job.
   if (!navigator.clipboard?.writeText) return;
 
   build();
@@ -150,7 +150,7 @@ export function initCopyEmail() {
           hideTimer = window.setTimeout(hide, HOLD_MS);
         },
         () => {
-          // Denied or unavailable at the last moment — fall back to what the
+          // Denied or unavailable at the last moment, so fall back to what the
           // link said it would do rather than silently doing nothing.
           window.location.href = link.href;
         },

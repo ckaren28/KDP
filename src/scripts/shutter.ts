@@ -3,13 +3,13 @@
  *
  * A round iris: the ground, masked by a hole whose radius is the one number the
  * animation drives. (It was six rotating half-planes first, which made a
- * hexagonal opening — true to the blades in the icon, but Karen wanted the
+ * hexagonal opening, true to the blades in the icon, but Karen wanted the
  * circle, so the shape of the opening and the shape of the button now say
  * different things on purpose.)
  *
  * Deliberately not Astro's View Transitions. Every page here bootstraps with a
- * plain module script that runs once on load — the theme typing, the print egg,
- * the darkroom itself — and turning on client-side navigation would silently
+ * plain module script that runs once on load (the theme typing, the print egg,
+ * the darkroom itself) and turning on client-side navigation would silently
  * stop all of them on the second page. So the iris closes over the landing
  * page, the browser navigates the way it always has, and the work page plays
  * the opening half off a sessionStorage flag.
@@ -74,7 +74,7 @@ function makeIris(): Iris {
   // on the way a second copy of the palette would.
   const ground = getComputedStyle(document.body).backgroundColor;
 
-  // Unique per overlay — two could briefly coexist if a press landed during an
+  // Unique per overlay, since two could briefly coexist if a press landed during an
   // arrival, and a duplicate id would have them masking each other.
   const maskId = `dk-iris-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -156,7 +156,7 @@ function run(
 
 /**
  * Shut the iris over the current page, then navigate. Reduced motion gets a
- * plain cut — the same rule the develop effect follows — not a slower version
+ * plain cut, the same rule the develop effect follows, not a slower version
  * of the same animation.
  */
 export function closeAndGo(href: string) {
@@ -177,7 +177,7 @@ export function closeAndGo(href: string) {
     // half, which is a lesser failure than not going anywhere.
     try { sessionStorage.setItem(ARRIVE_KEY, '1'); } catch { /* no storage */ }
     window.location.href = href;
-    // And if the navigation doesn't take — offline, blocked — the visitor is
+    // And if the navigation doesn't take, whether offline or blocked, the visitor is
     // not left staring at a closed shutter.
     window.setTimeout(() => iris.destroy(), 4000);
   }
@@ -190,12 +190,12 @@ export function closeAndGo(href: string) {
 /**
  * The other half, on the page being entered: open from shut, but only for a
  * visitor who actually pressed the shutter. Also lifts the pre-paint cover that
- * MainLayout's inline guard put up — including when there's nothing to play, so
+ * MainLayout's inline guard put up, including when there's nothing to play, so
  * the cover can never strand a page.
  */
 export function playArrival() {
-  // MainLayout's inline guard already spent the flag — it has to, to raise the
-  // cover before paint — and left this behind for us.
+  // MainLayout's inline guard already spent the flag (it has to, to raise the
+  // cover before paint) and left this behind for us.
   const flagged = window.__dkArrive === true;
   delete window.__dkArrive;
 

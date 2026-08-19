@@ -15,7 +15,7 @@
 [functions."textile-palette"]
   timeout = 20
 
-# Fashion/textile content moved to studio.karendettmar.com — redirect old URLs
+# Fashion/textile content moved to studio.karendettmar.com, so redirect old URLs
 [[redirects]]
   from = "/studio"
   to = "https://studio.karendettmar.com/"

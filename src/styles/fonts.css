@@ -2,7 +2,7 @@
    Instrument Sans and Space Mono are served from /fonts rather than
    Google. Two reasons, in order of weight:
 
-   1. Chrome cannot embed a *variable* font into a PDF — it falls back
+   1. Chrome cannot embed a *variable* font into a PDF. It falls back
       to Type3 glyph procedures, which bloat the file and read poorly
       in older text extractors. Printing /cv is how the downloadable
       CV is made, so the body face has to be static or the resume
@@ -12,7 +12,7 @@
    2. No third-party round-trip on first paint.
 
    Bricolage Grotesque is deliberately NOT here. Its opsz axis is
-   applied automatically across the size range — a static instance
+   applied automatically across the size range, and a static instance
    would visibly change display type from the hero down to a card
    heading. It keeps loading from Google for the screen; print alone
    swaps in a pinned instance, in cv-print.css.

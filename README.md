@@ -1,17 +1,17 @@
 # karendettmar.com
 
 Portfolio site for Karen Dettmar, Creative Technologist and Fashion Designer
-based in New York City — [karendettmar.com](https://karendettmar.com)
+based in New York City. [karendettmar.com](https://karendettmar.com)
 
 Built with Astro, TypeScript, and MDX. Deployed to Netlify.
 
 ## Stack
 
-- **Astro** — static site generator with MDX content collections
-- **TypeScript** — all client-side scripts
-- **CSS Modules** — scoped per-component styles with design tokens
-- **Netlify** — hosting and serverless functions
-- **Netlify CMS** (legacy config present) — content authoring
+- **Astro**: static site generator with MDX content collections
+- **TypeScript**: all client-side scripts
+- **CSS Modules**: scoped per-component styles with design tokens
+- **Netlify**: hosting and serverless functions
+- **Netlify CMS** (legacy config present): content authoring
 
 ## Structure
 
@@ -34,12 +34,12 @@ public/              # Static assets (images, fonts)
 
 Each tool in `src/components/tools/` pairs an `.astro` file with extracted `.ts` modules:
 
-- **GarmentDecoderTool** — garment construction analysis via Claude API
-  - `garmentDecoder.ts` — form logic, API call, DOM rendering
-  - `garmentAnnotations.ts` — SVG silhouette selection and annotation overlay
-  - `garmentImageUpload.ts` — image upload state and drag-and-drop
-- **MuseumLabelTool** — generates museum-style artwork labels
-- **TextilePatternGenerator** — generative canvas-based textile patterns
+- **GarmentDecoderTool**: garment construction analysis via Claude API
+  - `garmentDecoder.ts`: form logic, API call, DOM rendering
+  - `garmentAnnotations.ts`: SVG silhouette selection and annotation overlay
+  - `garmentImageUpload.ts`: image upload state and drag-and-drop
+- **MuseumLabelTool**: generates museum-style artwork labels
+- **TextilePatternGenerator**: generative canvas-based textile patterns
 
 ## SVG silhouettes
 

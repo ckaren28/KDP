@@ -2,7 +2,7 @@
  * Make a print.
  *
  * Type "print" anywhere and the visible page is captured to a PNG and
- * downloaded — the darkroom equivalent of pulling a sheet. Nothing announces
+ * downloaded, the darkroom equivalent of pulling a sheet. Nothing announces
  * it; it's the site's easter egg.
  *
  * The capture library loads on demand, so visitors who never type it pay
@@ -10,7 +10,7 @@
  *
  * Note on fonts: html-to-image inlines webfonts by walking
  * document.styleSheets and reading cssRules, which throws a SecurityError on
- * a cross-origin sheet — and ours come from fonts.googleapis.com. So we embed
+ * a cross-origin sheet, and ours come from fonts.googleapis.com. So we embed
  * the font CSS ourselves when we can, and fall back to a font-less capture
  * rather than failing outright.
  */
@@ -107,7 +107,7 @@ async function makePrint() {
   } catch (err) {
     console.error('[print] capture failed', err);
     const msg = err instanceof Error ? err.message : String(err);
-    note.textContent = `print failed — ${msg.slice(0, 90)}`;
+    note.textContent = `print failed. ${msg.slice(0, 90)}`;
     fade(note, 6000);
   }
 }

@@ -243,7 +243,7 @@
   color: var(--text-body);
 }
 
-/* seam / interfacing / closure cards — JS creates these elements */
+/* seam / interfacing / closure cards, JS creates these elements */
 .card-list { display: flex; flex-direction: column; gap: 8px; }
 
 :global(.card) {
@@ -299,7 +299,7 @@
 }
 .traveler-output .output-section-title { color: var(--sienna); }
 
-/* lining badge — JS sets className directly */
+/* lining badge, JS sets className directly */
 .lining-row {
   display: flex;
   align-items: baseline;
@@ -307,7 +307,7 @@
   margin-bottom: 0.4rem;
 }
 
-/* Badge base + states — JS sets these via className assignment */
+/* Badge base + states, JS sets these via className assignment */
 :global(.badge) {
   font-family: var(--font-body);
   font-size: var(--fs-150);

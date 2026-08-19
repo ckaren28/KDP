@@ -50,7 +50,7 @@
   margin-bottom: 24px;
 }
 
-/* ── HAIRLINE ROWS — disciplines and contact share this ── */
+/* ── HAIRLINE ROWS, disciplines and contact share this ── */
 .row-list {
   list-style: none;
   margin: 0;
@@ -83,7 +83,7 @@
   letter-spacing: 0.01em;
 }
 
-/* ── CONTACT ROWS — the same row, made interactive ── */
+/* ── CONTACT ROWS, the same row made interactive ── */
 .row--link {
   text-decoration: none;
   color: inherit;
@@ -103,7 +103,7 @@
 }
 
 .row--link .row-val {
-  /* Bricolage has no true italic — the old slant here was synthesised */
+  /* Bricolage has no true italic, so the old slant here was synthesized */
   font-family: var(--font-display);
   font-style: normal;
   font-size: clamp(18px, 2.2vw, 24px);
