@@ -65,11 +65,19 @@ export function initDarkroom(root: HTMLElement) {
   // never loads, or bailed above, the visitor keeps their pointer.
   root.classList.add('dk-live');
 
-  // Touch has no hover, so the served wording is wrong the moment the primary
-  // input is a finger. The HTML keeps the pointer phrasing for everyone else;
-  // this only rewrites it where it would otherwise be an instruction nobody
-  // can follow.
-  if (window.matchMedia('(pointer: coarse)').matches) {
+  // The hint is only honest if the develop pass is going to run, and under
+  // reduced motion it never does: the frame loop gates both the idle drift and
+  // develop() on `reduced`, and resize() pre-fills the exposure so the scans
+  // are already up. Left in place it names a gesture that does nothing, which
+  // is worse than saying nothing. Nothing else on the page is affected, since
+  // pulling a letter is not gated on `reduced` and remains the way in.
+  //
+  // Otherwise touch has no hover, so the served wording is wrong the moment the
+  // primary input is a finger. The HTML keeps the pointer phrasing for everyone
+  // else; this only rewrites it where nobody could follow it.
+  if (reduced) {
+    hintEl.remove();
+  } else if (window.matchMedia('(pointer: coarse)').matches) {
     hintEl.textContent = 'Drag to develop';
   }
 

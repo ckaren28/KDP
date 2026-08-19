@@ -1,4 +1,4 @@
-# Sveltia CMS for karendettmar.com (engineering site)
+# Sveltia CMS — karendettmar.com (engineering site)
 #
 # Sveltia does not implement Netlify's git-gateway backend, so this talks to
 # GitHub directly. One dashboard step is required before /admin will log in:
@@ -9,7 +9,7 @@
 # which is why no base_url is set below. If the site ever leaves Netlify,
 # deploy sveltia-cms-auth on Cloudflare Workers and point base_url at it.
 #
-# Local editing, with no proxy server and no login:
+# Local editing — no proxy server, and no login:
 #   npm run dev, then open http://localhost:4321/admin/ in a Chromium browser
 #   (Chrome, Edge, Brave), click "Work with Local Repository" and pick this
 #   repo's root folder. Sveltia uses the File System Access API and writes
@@ -96,7 +96,7 @@ collections:
       - { label: "Why I built it", name: "why_i_built_it", widget: "text", required: false }
       - { label: "Scope & constraints", name: "scope_constraints", widget: "text", required: false }
 
-      # ── How it works tab, any one field present renders the tab ──
+      # ── How it works tab — any one field present renders the tab ──
       - { label: "Architecture diagram", name: "architecture_diagram", widget: "string", required: false, hint: "Cloudinary URL." }
       - label: "Output structure"
         name: "output_structure"
@@ -128,7 +128,7 @@ collections:
         required: false
         hint: "Lifts the tool out of the tabs so it sits under the title, with Overview and How it works below it. Removes the 'Try it' tab."
 
-      # ── Process tab, renders when images are present ─────────
+      # ── Process tab — renders when images are present ─────────
       - label: "Process images"
         name: "process_images"
         widget: "list"
@@ -139,7 +139,7 @@ collections:
           - { label: "Image", name: "image", widget: "string", hint: "Cloudinary URL." }
           - { label: "Caption", name: "caption", widget: "text", required: false }
 
-      # ── Results tab, renders when images are present ─────────
+      # ── Results tab — renders when images are present ─────────
       - label: "Results images"
         name: "results_images"
         widget: "list"
@@ -159,7 +159,7 @@ collections:
     extension: mdx
     format: frontmatter
     slug: "{{slug}}"
-    summary: "{{company}} · {{headline}}"
+    summary: "{{company}} — {{headline}}"
     sortable_fields: ["order", "start_date", "company"]
     # Same rule as above: every field in src/content/config.ts must appear here
     # or it is dropped from the frontmatter on save.
@@ -222,7 +222,7 @@ collections:
         default: false
         required: false
         hint: "Tick when the work can't be shown. The page says so plainly instead of looking like it is missing its images. 'Internal, happy to discuss' reads as discretion to a hiring manager."
-      - label: "Compact, one line and no case page"
+      - label: "Compact — one line, no case page"
         name: "compact"
         widget: "boolean"
         default: false
