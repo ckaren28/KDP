@@ -117,13 +117,19 @@ const { href, line, label = 'See the work' } = Astro.props;
     <g transform="translate(59.2 59.2) scale(3.4)">
       <g class="dk-shutter-blades">
         <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="0.825" />
+        <!-- The blades stop short of the pupil rather than running into it.
+             Meeting it cut the circle into six equal pie slices, which reads as
+             a wagon wheel, and shrinking the barrel made that worse: at the old
+             size the sheer scale carried the "aperture" reading on its own. The
+             inner ends sit at r=6 against a pupil of 4.2, so the pupil floats
+             free and the whole thing reads as an iris. -->
         <g stroke="currentColor" stroke-width="0.637" stroke-linecap="round">
-          <line x1="16" y1="12"    x2="22" y2="12" />
-          <line x1="14" y1="15.46" x2="17" y2="20.66" />
-          <line x1="10" y1="15.46" x2="7"  y2="20.66" />
-          <line x1="8"  y1="12"    x2="2"  y2="12" />
-          <line x1="10" y1="8.54"  x2="7"  y2="3.34" />
-          <line x1="14" y1="8.54"  x2="17" y2="3.34" />
+          <line x1="18" y1="12" x2="22" y2="12" />
+          <line x1="15" y1="17.2" x2="17" y2="20.66" />
+          <line x1="9" y1="17.2" x2="7" y2="20.66" />
+          <line x1="6" y1="12" x2="2" y2="12" />
+          <line x1="9" y1="6.8" x2="7" y2="3.34" />
+          <line x1="15" y1="6.8" x2="17" y2="3.34" />
         </g>
         <circle class="dk-shutter-iris" cx="12" cy="12" r="4.2" fill="currentColor" />
       </g>

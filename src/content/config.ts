@@ -31,7 +31,6 @@ const projects = defineCollection({
     listed: z.boolean().optional().default(true),
     // Surfaced by the landing page's letter-pull reveal. If more than one is
     // set, the most recent wins; if none is, the most recent project is used.
-    featured: z.boolean().optional().default(false),
     live_url: z.string().optional(),
     github_url: z.string().optional(),
     password_protected: z.boolean().optional().default(false),
