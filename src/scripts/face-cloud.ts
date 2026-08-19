@@ -54,6 +54,17 @@ const LIPS = new Set([
   292,
 ]);
 
+// Cheap, throwaway probe — a real context on a real canvas, since a browser can
+// advertise the constructor and still refuse to hand one over.
+function hasWebGL(): boolean {
+  try {
+    const probe = document.createElement('canvas');
+    return !!(probe.getContext('webgl2') || probe.getContext('webgl'));
+  } catch {
+    return false;
+  }
+}
+
 export function initFaceCloud() {
   const canvas = document.getElementById('faceCanvas') as HTMLCanvasElement | null;
   if (!canvas) return;
@@ -77,7 +88,13 @@ export function initFaceCloud() {
           io.disconnect();
           boot().catch(err => {
             console.error('face cloud failed to start:', err);
-            status.textContent = 'this one needs WebGL';
+            // Two very different failures used to share one message, and it
+            // blamed the wrong thing: a browser with no WebGL and a chunk that
+            // never arrived both read as "this one needs WebGL". Ask the
+            // question directly instead of inferring it from the symptom.
+            status.textContent = hasWebGL()
+              ? "couldn't load this one — a refresh usually fixes it"
+              : 'this one needs WebGL';
             button.hidden = true;
           });
         }
