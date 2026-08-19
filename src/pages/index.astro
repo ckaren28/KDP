@@ -1,4 +1,13 @@
 ---
+// This page does not go through MainLayout, so it does not inherit global.css
+// — and that is where the self-hosted @font-face rules are reached from. Space
+// Mono carries every small label on this page (the cue, the role, the location,
+// the shutter's label, the hint, the email); without this import the only face
+// the page declares is the Bricolage that comes from Google in the head, and
+// all of that type silently falls back to whatever ui-monospace resolves to.
+// It looks correct on a machine with the fonts installed locally, which is
+// exactly why it has to be an import and not an assumption.
+import '../styles/fonts.css';
 import '../styles/darkroom.css';
 import ThemeSwitch from '../components/global/ThemeSwitch.astro';
 import Shutter from '../components/global/Shutter.astro';
@@ -68,13 +77,13 @@ const LINES = ['KAREN', 'DETTMAR'];
         Grab a letter and pull
       </span>
       <div class="dk-card" id="dkLink" aria-hidden="true">
-        <p class="dk-card-line">
-          Everything here was decided by hand.
-        </p>
         <!-- Straight to /projects/tech, not /projects: that route is a 301 and
              the redirect hop would land between the closing blades and the
-             opening ones. The nav keeps the tidy /projects URL. -->
-        <Shutter href="/projects/tech" />
+             opening ones. The nav keeps the tidy /projects URL.
+
+             The line lives inside the shutter, so the sentence and the way in
+             are one target rather than a statement with a door beside it. -->
+        <Shutter href="/projects/tech" line="Easier to show you than explain." />
       </div>
     </h1>
     <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't
@@ -82,9 +91,13 @@ const LINES = ['KAREN', 'DETTMAR'];
     <button type="button" class="dk-reveal" aria-expanded="false" aria-controls="dkLink">
       Show introduction
     </button>
-    <div class="dk-rule" aria-hidden="true"></div>
-    <p class="dk-role">Creative Technologist</p>
-    <p class="dk-loc">New York</p>
+    <!-- One block, so it can step back as a unit while the introduction is
+         open — see .dk-supporting in darkroom.css. -->
+    <div class="dk-supporting">
+      <div class="dk-rule" aria-hidden="true"></div>
+      <p class="dk-role">Creative Technologist</p>
+      <p class="dk-loc">New York</p>
+    </div>
   </div>
 
   <nav class="dk-nav" aria-label="Primary">

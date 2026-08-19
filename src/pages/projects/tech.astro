@@ -187,7 +187,12 @@ const projects = (await getCollection('projects'))
        a hairline is the whole budget. */
     .section-nav {
       position: sticky;
-      top: var(--header-h, 68px);
+      /* A pixel of overlap rather than an exact meeting. Even with a fractional
+         measurement, the browser rounds the sticky position and the header's
+         painted edge independently, and any disagreement shows as a hairline of
+         moving page between them. The header is fixed at z-index 100 and opaque,
+         so it simply paints over this pixel. */
+      top: calc(var(--header-h, 68px) - 1px);
       z-index: 60;
       display: flex;
       flex-wrap: wrap;
@@ -767,9 +772,13 @@ const projects = (await getCollection('projects'))
       if (!nav || !siteHeader) return;
 
       const root = document.documentElement;
+      // getBoundingClientRect, not offsetHeight: offsetHeight rounds to whole
+      // pixels, so a header that actually measures 67.5px reports 68 and the
+      // nav parks half a pixel too low — which is a hairline of the page
+      // scrolling past in the gap. The rect keeps the fraction.
       const setOffset = () => {
-        root.style.setProperty('--header-h', `${siteHeader.offsetHeight}px`);
-        root.style.setProperty('--section-nav-h', `${nav.offsetHeight}px`);
+        root.style.setProperty('--header-h', `${siteHeader.getBoundingClientRect().height}px`);
+        root.style.setProperty('--section-nav-h', `${nav.getBoundingClientRect().height}px`);
       };
       setOffset();
       new ResizeObserver(setOffset).observe(siteHeader);

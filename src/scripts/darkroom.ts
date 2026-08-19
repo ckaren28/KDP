@@ -22,10 +22,18 @@ const PAL: Record<'pos' | 'neg', Palette> = {
   neg: { ox: '#C5D6E6', oxDeep: '#D7E3EE', print: '#7A2230', tone: '#3B5BA8' },
 };
 
-/* name hover ramp — the negative set is a true inversion of the positive one */
+/* Name hover ramp — the print developing under the hand.
+   Powder blue through warm gold to bronze, which is the direction a real print
+   actually goes as it comes up in the tray. The middle stop used to be a
+   chartreuse; it sat outside the darkroom's blue-and-oxblood world and read as
+   a highlighter rather than as anything developing.
+
+   The negative set inverts the positive one channel for channel — except the
+   first, where powder blue's counterpart is the site's oxblood rather than the
+   brown a literal inversion gives. */
 const HEAT: Record<'pos' | 'neg', [string, string, string]> = {
-  pos: ['#C4DCF2', '#C9E85F', '#F6A85C'],
-  neg: ['#6B1621', '#36179F', '#0957A3'],
+  pos: ['#C4DCF2', '#E0B978', '#C98134'],
+  neg: ['#6B1621', '#1F4687', '#367ECB'],
 };
 
 interface Letter {
@@ -56,6 +64,17 @@ export function initDarkroom(root: HTMLElement) {
   // now is it safe for the stylesheet to hide the real one — if this module
   // never loads, or bailed above, the visitor keeps their pointer.
   root.classList.add('dk-live');
+
+  // How far the name draws back once the introduction is open. Declared here
+  // and handed to CSS rather than written in both places, because the line gap
+  // is computed against it below and the two must not drift apart.
+  const NAME_SCALE = 0.84;
+  root.style.setProperty('--dk-name-scale', String(NAME_SCALE));
+
+  /* Clear air kept above the upper line of the name once the introduction
+     pushes it up — enough that it reads as a margin rather than as type that
+     ran out of screen. */
+  const TOP_INSET = 44;
 
   const ctx = view.getContext('2d')!;
   const mk = () => document.createElement('canvas');
@@ -123,11 +142,34 @@ export function initDarkroom(root: HTMLElement) {
 
   function reveal(on: boolean) {
     revealed = on;
+    // The name steps back while the introduction is open — it has already been
+    // read by the time anyone pulls it, and shrinking it is half of what keeps
+    // the lower line off the rule. The other half is .dk-supporting fading;
+    // see the note in darkroom.css.
+    nameEl!.classList.toggle('revealed', on);
+    root.classList.toggle('dk-open', on);
     // Wide enough to clear the card that sits in the gap. It stacks and gets
     // taller on narrow screens, so measure it rather than trusting one number
     // — 58 was tuned on a desktop width and the card overlapped both lines of
     // the name on a phone.
-    lineGapTarget = on ? Math.max(58, cardEl!.offsetHeight / 2 + 30) : 0;
+    //
+    // Scaled by the same factor as the name: the gap is applied to the letters,
+    // which are inside the element being scaled, so an unscaled figure here
+    // would open a hole wider than the card that has to sit in it.
+    // The 30 was breathing room around a card the full-size name had to clear.
+    // Now that the name draws back to 0.84 the same figure reads as a hole, and
+    // in landscape it pushed the upper line into the nav, so it is tighter.
+    const wanted = Math.max(48, cardEl!.offsetHeight / 2 + 16);
+    // …but never far enough to push the upper line into the top of the screen.
+    // The gap is a transform, and no amount of padding on .dk-id can contain a
+    // transform — the line simply rides up out of it. So the room has to be
+    // measured and the gap capped against it.
+    //
+    // nameEl's own rect is the right thing to measure: a transform on a
+    // descendant does not move its ancestor's border box, so this reads where
+    // the block sits in flow no matter what the letters are doing.
+    const room = nameEl!.getBoundingClientRect().top - TOP_INSET;
+    lineGapTarget = on ? Math.min(wanted, Math.max(0, room)) / NAME_SCALE : 0;
     // The cue sits under the name and the card pushes the lines apart around
     // it, so once the introduction is open the cue has both been answered and
     // been landed on. Same class the first pull uses.
@@ -200,12 +242,16 @@ export function initDarkroom(root: HTMLElement) {
     if (revealed) shutter.focus();
   });
 
-  // "Press enter to enter" has to be true for the visitor who pulled a letter
-  // with the mouse and never focused anything. Enter already means something to
-  // whatever does have focus, though — a nav link, the theme switch, the reveal
-  // button, the shutter itself — so this only claims the key when nothing
-  // interactive holds it. Otherwise tabbing to About and pressing Enter would
-  // land on the work page instead.
+  // Enter still opens the work for the visitor who pulled a letter with the
+  // mouse and never focused anything. The label above the shutter used to say
+  // so — it now says where it goes instead, because there is no Enter key on a
+  // phone and the pun never named a destination. The shortcut is worth keeping
+  // regardless: it costs nothing and rewards the hand already on the keyboard.
+  //
+  // Enter already means something to whatever does have focus, though — a nav
+  // link, the theme switch, the reveal button, the shutter itself — so this
+  // only claims the key when nothing interactive holds it. Otherwise tabbing to
+  // About and pressing Enter would land on the work page instead.
   window.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key !== 'Enter' || !revealed || e.defaultPrevented) return;
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
