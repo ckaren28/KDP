@@ -43,6 +43,19 @@ const LINES = ['KAREN', 'DETTMAR'];
   <meta property="og:title" content={`${SITE_TITLE} · Creative Technologist`} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://karendettmar.com/" />
+  <meta property="og:site_name" content="Karen Dettmar" />
+  <!-- This page writes its own head rather than going through MainLayout, so
+       the card image has to be repeated here or the landing page is the one
+       page that still shares blank. -->
+  <meta property="og:image" content="https://karendettmar.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Karen Dettmar, Creative Technologist and Design Engineer, with cyanotype botanicals" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${SITE_TITLE} · Creative Technologist`} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content="https://karendettmar.com/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link

@@ -20,6 +20,25 @@ const { title, theme = 'light' } = Astro.props;
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="description" content="Karen Dettmar, Creative Technologist, New York City">
+
+  <!-- Link previews. Without og:image every share of this site, in Slack, in
+       LinkedIn, in an email, renders as a blank card, which for a portfolio is
+       the whole pitch thrown away. Absolute URLs, since crawlers do not resolve
+       relative ones. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Karen Dettmar" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content="Karen Dettmar, Creative Technologist and Design Engineer in New York City." />
+  <meta property="og:url" content={new URL(Astro.url.pathname, 'https://karendettmar.com').href} />
+  <meta property="og:image" content="https://karendettmar.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Karen Dettmar, Creative Technologist and Design Engineer, with cyanotype botanicals" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content="Karen Dettmar, Creative Technologist and Design Engineer in New York City." />
+  <meta name="twitter:image" content="https://karendettmar.com/og-image.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- Only Bricolage comes from Google now: its opsz axis has to stay live,
