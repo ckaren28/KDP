@@ -46,8 +46,9 @@ const projects = (await getCollection('projects'))
       margin-bottom: 0;
       padding-bottom: 26px;
     }
-    /* Title and search on one line, sharing a baseline. They stack, search
-       first-under, once there isn't room for both. */
+    /* Kept as a flex row even though the title is now its only child: the
+       .page-title override below depends on being a flex item, and turning this
+       back into a block resurrects the stub rule under "Work". */
     .page-header-top {
       display: flex;
       align-items: baseline;
@@ -116,70 +117,6 @@ const projects = (await getCollection('projects'))
     /* ── FILTERS ──
        Sits on the title's line. Allowed to shrink well below its 420px ideal
        before the row gives up and wraps. */
-    .filters {
-      margin: 0;
-      flex: 0 1 420px;
-      min-width: 230px;
-    }
-    .filter-search {
-      position: relative;
-      display: block;
-      width: 100%;
-    }
-    .filter-search input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 30px 10px 0;
-      font-family: var(--font-body);
-      font-size: var(--fs-400);
-      color: var(--black);
-      transition: border-color 0.25s ease;
-    }
-    .filter-search input::placeholder { color: var(--muted); }
-    .filter-search input:focus {
-      outline: none;
-      border-bottom-color: var(--sienna);
-    }
-    .filter-search input:focus-visible { outline: none; }
-    .filter-clear {
-      position: absolute;
-      right: 0; top: 50%; transform: translateY(-50%);
-      background: none; border: none; padding: 4px;
-      color: var(--muted); line-height: 1;
-      font-size: var(--fs-450); display: none;
-    }
-    .filter-clear:hover { color: var(--black); }
-    .filter-clear.on { display: block; }
-
-    .filter-count {
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: var(--track-meta);
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 14px;
-    }
-    /* It's a live region, so it stays in the DOM to be announced, but with
-       nothing to say it shouldn't hold space open under the field. */
-    .filter-count:empty { display: none; }
-    /* Anything the search can filter has to collapse when hidden, and several of
-       these set their own display, which would otherwise beat [hidden]. */
-    .project-card[hidden],
-    .xp-card[hidden],
-    .exp-item[hidden],
-    .xp-compact li[hidden],
-    .work-section[hidden],
-    .experiments[hidden],
-    .xp[hidden] { display: none; }
-
-    .no-results {
-      padding: var(--space-7) 0;
-      font-size: var(--fs-400);
-      color: var(--muted);
-    }
-
     /* ── SECTION NAV ──
        Sticks directly beneath the site header, which is fixed and opaque, so
        it has to know that header's height; --header-h is measured at runtime
@@ -219,7 +156,6 @@ const projects = (await getCollection('projects'))
       color: var(--sienna);
       border-bottom-color: var(--sienna);
     }
-    .section-nav a[hidden] { display: none; }
     .section-nav a:focus-visible {
       outline: 2px solid var(--sienna);
       outline-offset: 4px;
@@ -584,26 +520,8 @@ const projects = (await getCollection('projects'))
   <div class="tech-page">
 
     <header class="page-header reveal">
-      {/* Title and search share one baseline. The search reaches every section
-          on the page, since projects, experiments and roles all carry data-search. */}
       <div class="page-header-top">
         <h1 class="page-title"><em>Work</em></h1>
-
-        <div class="filters">
-          <label class="filter-search">
-            <span class="visually-hidden">Search this page</span>
-            <input
-              type="search"
-              id="projectSearch"
-              placeholder="Search projects, experiments, and roles"
-              autocomplete="off"
-              aria-describedby="filterCount"
-            />
-            <button type="button" class="filter-clear" id="filterClear" aria-label="Clear search">×</button>
-          </label>
-
-          <p class="filter-count" id="filterCount" role="status" aria-live="polite"></p>
-        </div>
       </div>
     </header>
 
@@ -612,8 +530,6 @@ const projects = (await getCollection('projects'))
       <a href="#experiments" data-nav="experiments">Experiments</a>
       <a href="#experience" data-nav="experience">Experience</a>
     </nav>
-
-    <p class="no-results" id="noResults" hidden>Nothing matches that. Try another word, or clear the search.</p>
 
     <section class="work-section reveal" id="projects" aria-labelledby="projectsLabel">
       <div class="exp-head">
@@ -626,7 +542,6 @@ const projects = (await getCollection('projects'))
           href={p.link}
           class="project-card reveal"
           data-title={p.title.toLowerCase()}
-          data-search={`${p.title} ${p.subtitle} ${p.desc} ${p.tags.join(' ')}`.toLowerCase()}
           data-tags={p.tags.join('|')}
         >
           <h2 class="card-title">{p.title}</h2>
@@ -655,7 +570,6 @@ const projects = (await getCollection('projects'))
 
       <div
         class="exp-item"
-        data-search="thread drawing pick a color draw on the shirt canvas path2d embroidery experiment prototype"
       >
         <div class="canvas-section">
           <canvas id="heroCanvas"></canvas>
@@ -668,7 +582,6 @@ const projects = (await getCollection('projects'))
 
       <div
         class="exp-item"
-        data-search="face cloud point cloud webgl three.js mediapipe face landmarks computer vision camera webcam portrait light experiment prototype"
       >
         <div class="canvas-section face-stage">
           <canvas id="faceCanvas"></canvas>
@@ -713,7 +626,6 @@ const projects = (await getCollection('projects'))
             <a
               class="xp-card"
               href={`/experience/${slug}`}
-              data-search={`${data.company} ${data.role} ${data.headline} ${data.result}`.toLowerCase()}
             >
               <p class="xp-meta">
                 <span class="xp-company">{data.company}</span>
@@ -734,7 +646,7 @@ const projects = (await getCollection('projects'))
         {compactExperience.length > 0 && (
           <ul class="xp-compact">
             {compactExperience.map(({ data }) => (
-              <li data-search={`${data.company} ${data.role} ${data.headline} ${data.result}`.toLowerCase()}>
+              <li>
                 <p class="xp-meta">
                   <span class="xp-company">{data.company}</span>
                   <span>{data.role}</span>
@@ -811,63 +723,6 @@ const projects = (await getCollection('projects'))
       }, { passive: true });
       addEventListener('resize', mark, { passive: true });
       mark();
-    })();
-  </script>
-
-  <script>
-    // ── SEARCH ──
-    (function () {
-      const input  = document.getElementById('projectSearch') as HTMLInputElement | null;
-      const clear  = document.getElementById('filterClear');
-      const status = document.getElementById('filterCount');
-      const empty  = document.getElementById('noResults');
-      const nav    = document.getElementById('sectionNav');
-      if (!input || !status || !empty) return;
-
-      // Every section takes part, so "wix" finds the role and "canvas" finds
-      // the experiment, not just the project grid.
-      const groups = ['projects', 'experiments', 'experience']
-        .map((id) => ({
-          section: document.getElementById(id),
-          items: Array.from(document.querySelectorAll<HTMLElement>(`#${id} [data-search]`)),
-          link: nav?.querySelector<HTMLElement>(`[data-nav="${id}"]`) ?? null,
-        }))
-        .filter((g): g is { section: HTMLElement; items: HTMLElement[]; link: HTMLElement | null } =>
-          !!g.section);
-
-      function apply() {
-        const q = input!.value.trim().toLowerCase();
-        let total = 0;
-
-        for (const g of groups) {
-          let shown = 0;
-          for (const item of g.items) {
-            const show = !q || (item.dataset.search ?? '').includes(q);
-            item.hidden = !show;
-            if (show) shown++;
-          }
-          // An emptied section goes, and its anchor goes with it, since a sticky
-          // link to nothing is a dead end.
-          g.section.hidden = shown === 0;
-          if (g.link) g.link.hidden = shown === 0;
-          total += shown;
-        }
-
-        clear?.classList.toggle('on', q.length > 0);
-        empty!.hidden = total > 0;
-        // Announces that filtering happened without printing a tally.
-        status!.textContent = q && total > 0 ? `Filtered by “${q}”` : '';
-      }
-
-      input.addEventListener('input', apply);
-      clear?.addEventListener('click', () => { input!.value = ''; input!.focus(); apply(); });
-
-      // Escape clears the search
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { input!.value = ''; apply(); }
-      });
-
-      apply();
     })();
   </script>
 
