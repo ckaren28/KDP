@@ -50,6 +50,28 @@
   margin-bottom: 24px;
 }
 
+/* Availability sits between the eyebrow and the contact rows, so it reads as a
+   status on the section rather than as another row competing with the links.
+   Pulled up into the eyebrow's 24px so the two read as one block. */
+.availability {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -14px 0 26px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-150);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.availability::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sienna);
+  flex: none;
+}
+
 /* ── HAIRLINE ROWS, disciplines and contact share this ── */
 .row-list {
   list-style: none;

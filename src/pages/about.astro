@@ -10,7 +10,6 @@ const disciplines = [
   { name: 'Design Engineering',    desc: 'React, Astro, TypeScript, APIs' },
   { name: 'Creative Technology',   desc: 'Interactive demos, prototypes, AI tools' },
   { name: 'Design Systems',        desc: 'Interaction, motion, and the one behind this site' },
-  { name: 'Workshop Facilitation', desc: 'Community, education, technical storytelling' },
 ];
 
 const contact = [
@@ -52,6 +51,7 @@ const contact = [
 
     <section class={`${s['section']} reveal`} aria-labelledby="contactLabel">
       <span class="page-eyebrow" id="contactLabel">Get in touch</span>
+      <p class={s['availability']}>Available for work.</p>
       <ul class={s['row-list']}>
         {contact.map((c) => (
           <li>
