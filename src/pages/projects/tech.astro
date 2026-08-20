@@ -275,6 +275,9 @@ const projects = (await getCollection('projects'))
       max-width: 46ch;
     }
     .exp-item { margin-top: 8px; }
+    /* Each item now carries a paragraph under its caption, and 8px let two of
+       them run together. Only the gap between items changes. */
+    .exp-item + .exp-item { margin-top: 64px; }
     .exp-caption {
       display: flex;
       align-items: baseline;
@@ -287,6 +290,16 @@ const projects = (await getCollection('projects'))
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
+    }
+    /* The caption row above is uppercase mono metadata and has to stay one line.
+       Anything longer than a label goes here instead, in body type, so the
+       technical note can be read rather than scanned. */
+    .exp-detail {
+      margin-top: 12px;
+      font-size: var(--fs-300);
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 64ch;
     }
 
     /* ── WORK EXPERIENCE ──
@@ -563,8 +576,9 @@ const projects = (await getCollection('projects'))
       <div class="exp-head">
         <h2 class="exp-title">Experiments</h2>
         <p class="exp-note">
-          Prototypes and things that aren't finished. Small, occasionally pointless,
-          and where most of the interesting problems turn up first.
+          Unfinished on purpose. Each one exists to work out a single technique in
+          isolation, which is usually where the interesting problems turn up first.
+          They run in the browser, here on the page.
         </p>
       </div>
 
@@ -578,6 +592,14 @@ const projects = (await getCollection('projects'))
           <span>Thread drawing, pick a color and draw on the shirt</span>
           <span>Canvas · Path2D</span>
         </div>
+        <p class="exp-detail">
+          One canvas, no DOM elements. The shirt is a Path2D, so isPointInPath decides
+          whether a stroke lands on the garment and clip keeps the thread inside the
+          silhouette. The drawable area is the shape itself, not a rectangle standing in
+          for it. Points are only recorded past a minimum distance, so a slow drag
+          doesn't pile up hundreds of coordinates in one spot, and the whole layout,
+          swatches included, is recomputed from the canvas size on resize.
+        </p>
       </div>
 
       <div
@@ -608,6 +630,15 @@ const projects = (await getCollection('projects'))
           </span>
           <span>Three.js · MediaPipe · WebGL</span>
         </div>
+        <p class="exp-detail">
+          One buffer holds both states. With no face it's a slow ring, and when tracking
+          starts each point is handed a new target and interpolates toward it, so the
+          idle animation becomes a face instead of being replaced by one. Detection and
+          rendering are separate loops, so the render keeps interpolating at full frame
+          rate while the detector only runs on new video frames. The camera stays off
+          until you press the button, and if it's refused, WebGL is missing, or reduced
+          motion is on, it falls back to the idle cloud rather than breaking.
+        </p>
       </div>
     </section>
 
