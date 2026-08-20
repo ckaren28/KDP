@@ -280,8 +280,19 @@ body.dk.dk-live { cursor:none; }
   font-variation-settings:'opsz' 96;
   letter-spacing:-.028em; text-decoration:none; color:var(--chrome);
 }
-.dk .dk-nav ul { display:flex; gap:22px; list-style:none; align-items:baseline; font-size:14px; margin:0; padding:0; }
-.dk .dk-nav a { color:var(--soft); text-decoration:none; transition:color .18s; }
+/* Mono, uppercase and tracked, which is the same treatment .dk-hint carries in
+   the corner below and every page eyebrow carries elsewhere. The page ran three
+   families until this changed; now the whole chrome band speaks one language.
+   Family and size sit on the ul so the baseline that aligns the theme switch is
+   still computed from the list's own metrics. */
+.dk .dk-nav ul {
+  display:flex; gap:22px; list-style:none; align-items:baseline; margin:0; padding:0;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:11px;
+}
+.dk .dk-nav a {
+  color:var(--soft); text-decoration:none; transition:color .18s;
+  letter-spacing:.14em; text-transform:uppercase;
+}
 .dk .dk-nav a:hover { color:var(--ink); }
 .dk .dk-nav a:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
 
@@ -335,7 +346,7 @@ body.dk.dk-live { cursor:none; }
   body.dk.dk-live { cursor:auto; }
   .dk .dk-cur { display:none; }
   .dk .dk-nav { padding:18px 20px; gap:14px; }
-  .dk .dk-nav ul { gap:15px; font-size:13px; }
+  .dk .dk-nav ul { gap:13px; font-size:10px; }
   .dk .dk-hint { bottom:78px; }
   .dk .dk-contact { bottom:74px; }
 }
@@ -345,13 +356,15 @@ body.dk.dk-live { cursor:none; }
 @media (max-width:560px) {
   .dk .dk-nav { padding:16px 16px; gap:10px; }
   .dk .dk-who { font-size:17px; }
-  .dk .dk-nav ul { gap:13px; font-size:12.5px; }
+  .dk .dk-nav ul { gap:13px; font-size:9.5px; }
+  .dk .dk-nav a { letter-spacing:.1em; }
 }
 
 @media (max-width:380px) {
   .dk .dk-nav { padding:14px 13px; gap:8px; }
   .dk .dk-who { font-size:16px; }
-  .dk .dk-nav ul { gap:11px; font-size:11.5px; }
+  .dk .dk-nav ul { gap:11px; font-size:9px; }
+  .dk .dk-nav a { letter-spacing:.08em; }
 }
 
 /* ── short viewports / landscape phones ──────────────────────────
