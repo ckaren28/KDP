@@ -6,10 +6,12 @@ track: tech
 tags: [Claude API, Next.js, TypeScript, Netlify Functions, JSON structured output]
 date: 2026-01-01
 live_url: https://karendettmar.com/projects/museum-label-generator
-github_url: https://github.com/karendettmar/museum-label-generator
+github_url: https://github.com/ckaren28/Museum-Label-Generator
 password_protected: false
 
 problem_statement: "Museum wall labels are written for visitors who already speak the language of art history. For everyone else (a child, a casual visitor, a designer who thinks visually), the infrastructure meant to help them often doesn't. Labels are a bottleneck: curators are overworked, the writing process is slow, and scaling across formats (audio, kids, alt text) is rarely prioritized. The tool takes a single artwork description and generates six interpretive formats simultaneously. The AI acts as a starting point. Human editorial control is built in at every step."
+
+what_changed: "No institution has run this on a live collection. What came out of it instead is a rule I now build in by default: the curator notes field exists to flag what the source description did not say, after early versions filled those gaps by inventing cultural attributions. A tool that produces confident text for a museum wall has to be able to say what it does not know."
 
 output_structure:
   - field: "Wall label"

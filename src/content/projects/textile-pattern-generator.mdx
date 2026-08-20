@@ -7,6 +7,7 @@ tags: ["Creative Technology", "Generative Art", "AI", "Canvas API", "Pattern Des
 date: 2026-01-01
 password_protected: false
 live_url: "https://karendettmar.com/projects/textile-pattern-generator"
+github_url: "https://github.com/ckaren28/KDP/blob/main/src/components/tools/TextilePatternGenerator.astro"
 tool_on_top: true
 
 problem_statement: "Starting a textile pattern from a blank canvas can be slow, especially when palette, scale, repeat structure, and product context all need to be considered at once. This tool turns a short collection concept into a live pattern direction: the AI suggests a palette and pattern style, then the designer keeps control through editable colors, density, pattern type, mockup previews, and SVG export."
@@ -16,6 +17,8 @@ who_its_for: "Fashion and textile designers exploring collection concepts, stude
 why_i_built_it: "I wanted a generative tool that felt like a studio assistant rather than an automatic design replacement. The AI handles the first suggestion, but the final pattern still comes from human choices: color edits, pattern selection, density, and how the repeat sits on an object."
 
 scope_constraints: "The tool currently supports five hand-coded pattern systems: geometric, floral, organic Truchet, stripe, and grid. The AI only suggests palette and style metadata; it does not generate image pixels. The live pattern is rendered in the browser with Canvas and exported as SVG."
+
+what_changed: "The mockups were the finding. A repeat judged flat on screen is misleading about scale, so the chair, coat, and tote previews reuse the live canvas as a fill, and that projection is now the check I run before committing to a scale in my own work."
 
 output_structure:
   - field: "Palette"

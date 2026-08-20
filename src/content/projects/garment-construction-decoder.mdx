@@ -6,7 +6,7 @@ track: tech
 tags: [Claude API, Next.js, TypeScript, Netlify Functions, JSON structured output, Parsons, FIT]
 date: 2026-01-01
 live_url: https://karendettmar.com/projects/garment-construction-decoder
-github_url: https://github.com/karendettmar/garment-construction-decoder
+github_url: https://github.com/ckaren28/Garment-Construction-Decoder
 password_protected: false
 
 problem_statement: "Technical garment construction knowledge is largely tacit. It lives in people's hands, in specialized books most designers don't own, and in the institutional memory of experienced sample makers. A designer who can sketch a beautiful bias-cut silk blouse may not know it needs French seams, that the lining should be cut on grain, or that a centered invisible zipper in silk charmeuse will pucker unless you interface the seam allowance first. These gaps create errors in sampling, wasted fabric, and back-and-forth with production teams that could have been avoided before anything was cut."
@@ -15,6 +15,7 @@ who_its_for: "Students learning garment construction, home sewists, hobbyist mak
 
 why_i_built_it: "I wanted a tool I could use myself. Something that would recommend the right finishes and construction notes for a given garment, which I could then check against my own background in sewing and pattern-making. It started as a personal experiment."
 
+what_changed: "Testing it against my own pattern-making changed the build twice. It was confidently recommending closures that were wrong for the fabric, so ambiguous placements now return two options with their tradeoffs instead of a guess. It was also sequencing steps that cannot physically be done in that order, so construction order became a hard constraint in the prompt rather than a list the model filled in. I still check its output against garments I have actually sewn, and that is the only test it has passed."
 scope_constraints: "Currently covers womenswear in silk, wool, cotton, and linen. Knitwear, menswear tailoring, and technical outerwear are excluded, because the domain knowledge required to validate those outputs isn't something I can verify yet. Photo analysis can identify visible hems, closures, darts, and seam placements, but it cannot verify hidden interior construction, exact measurements, or details obscured by lighting, pose, or fabric."
 
 output_structure:
