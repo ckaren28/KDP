@@ -25,6 +25,7 @@ interface Props {
   who_its_for?: string;
   why_i_built_it?: string;
   scope_constraints?: string;
+  what_changed?: string;
   // How it works tab (any one enables the tab)
   architecture_diagram?: string;
   output_structure?: OutputRow[];
@@ -56,6 +57,7 @@ const {
   who_its_for,
   why_i_built_it,
   scope_constraints,
+  what_changed,
   architecture_diagram,
   output_structure,
   sample_output,
@@ -78,6 +80,7 @@ const overviewCards = [
   { label: "Who it's for", body: who_its_for },
   { label: "Why I built it", body: why_i_built_it },
   { label: "Scope", body: scope_constraints },
+  { label: "What came of it", body: what_changed },
 ].filter((card) => card.body);
 
 const hasOverviewCards = overviewCards.length > 0;
@@ -92,7 +95,7 @@ const architectureBySlug: Record<string, {
     nodes: [
       { title: "Browser", meta: "Next.js / React" },
       { title: "Netlify Function", meta: "TypeScript serverless" },
-      { title: "Claude API", meta: "claude-sonnet" },
+      { title: "Claude API", meta: "claude-haiku-4-5" },
       { title: "JSON parser", meta: "typed schema" },
       { title: "UI render", meta: "structured output" },
     ],

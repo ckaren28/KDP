@@ -41,6 +41,10 @@ const projects = defineCollection({
     who_its_for: z.string().optional(),
     why_i_built_it: z.string().optional(),
     scope_constraints: z.string().optional(),
+    // What the build actually produced. These are personal tools without
+    // analytics behind them, so this records what testing changed rather than
+    // usage numbers there is no honest way to report.
+    what_changed: z.string().optional(),
     // How it works tab (any one present → tab renders)
     architecture_diagram: z.string().optional(),
     output_structure: z.array(outputRow).optional(),
