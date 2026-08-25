@@ -98,6 +98,13 @@ import LoadingState from '../LoadingState.astro';
   let organicRafId:  number | null = null;
   let organic2RafId: number | null = null;
 
+  // Every pattern here animates on a rAF loop, and the reduced-motion blocks in
+  // global.css can't reach a canvas, so the preference has to be honored here.
+  // Read live rather than once, so changing the system setting takes effect on
+  // the next frame. Each loop still draws its frame and only then stops: a
+  // reduced-motion visitor gets the pattern, just not a moving one.
+  const stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
   // ── ELEMENTS ──
   const canvas = document.getElementById('patternCanvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -123,7 +130,19 @@ import LoadingState from '../LoadingState.astro';
       else if (patternType === 'stripe') drawStripe(ctx, canvas.width, canvas.height, colors, tileSize, frame);
       else if (patternType === 'grid') drawGrid(ctx, canvas.width, canvas.height, colors, tileSize, frame);
     }
+    // The organic types are normally left to their own loops, which redraw on
+    // resize by simply running. With motion off there is no loop to do it.
+    if (stillMotion.matches && (patternType === 'organic' || patternType === 'organic2')) redrawOnce();
     updateMockupPatterns();
+  }
+
+  // With motion off nothing is looping to pick up a control change, so each
+  // control has to ask for the one frame the loop would have drawn. Guarded by
+  // the caller: with motion on, this would race a second loop against the live one.
+  function redrawOnce() {
+    if (patternType === 'organic')  { startOrganicLoop();  return; }
+    if (patternType === 'organic2') { startOrganic2Loop(); return; }
+    requestAnimationFrame(draw);
   }
 
   function setLoading(message: string) {
@@ -343,6 +362,7 @@ import LoadingState from '../LoadingState.astro';
     if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
 
     organicT += 0.008;
+    if (stillMotion.matches) { organicRafId = null; return; }
     organicRafId = requestAnimationFrame(drawOrganicFrame);
   }
 
@@ -403,6 +423,7 @@ import LoadingState from '../LoadingState.astro';
     if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
 
     organic2T += 1;
+    if (stillMotion.matches) { organic2RafId = null; return; }
     organic2RafId = requestAnimationFrame(drawOrganic2Frame);
   }
 
@@ -601,6 +622,7 @@ import LoadingState from '../LoadingState.astro';
     }
 
     frame++;
+    if (stillMotion.matches) return;
     requestAnimationFrame(draw);
   }
 
@@ -750,6 +772,7 @@ ${weft}${warp}${intersections}</svg>`;
         const block = el.closest('.swatch-item')!.querySelector('.swatch-block') as HTMLElement;
         block.style.background = hex;
         el.closest('.swatch-item')!.querySelector('.swatch-hex')!.textContent = hex;
+        if (stillMotion.matches) redrawOnce();
       });
     });
   }
@@ -815,6 +838,7 @@ ${weft}${warp}${intersections}</svg>`;
 
   densitySlider.addEventListener('input', () => {
     density = Number(densitySlider.value);
+    if (stillMotion.matches) redrawOnce();
   });
 
   canvas.addEventListener('click', () => {

@@ -30,6 +30,8 @@ output_structure:
 design_decisions:
   - title: "Structured JSON over streaming text"
     body: "All six formats arrive together and render into independent copyable cards. Streaming would have made per-section copy interactions much more complex, and curators typically want all formats at once anyway."
+  - title: "Alt text is one of the six formats, not an export option"
+    body: "Alt text comes back in the same response as the wall label and renders into the same kind of copyable card. The prompt constrains it to one or two sentences focused on what is visible, because the common failure is alt text that interprets the work instead of describing it, which leaves a screen reader user with the curator's reading and none of the object. The limitation is honest and worth stating: the model never sees the artwork. It writes the alt text from the curator's source description, so anything missing from that text is missing from the output too. The tool drafts the description; it cannot verify it."
   - title: "A single API call for all six formats"
     body: "Higher latency per generation, but simpler architecture and a better match for how the tool gets used. The tradeoff was worth it."
   - title: "Tone as a prompt injection, not a separate system prompt"
