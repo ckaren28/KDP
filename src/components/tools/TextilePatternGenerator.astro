@@ -295,7 +295,10 @@ import LoadingState from '../LoadingState.astro';
       const angle = (p / 5) * Math.PI * 2 - Math.PI / 2;
       c.save();
       c.rotate(angle);
-      c.fillStyle = (p % 2 === 0) ? colors[2] : colors[3];
+      // Every petal the same. Alternating on p % 2 across five petals meant the
+      // run wrapped, so one flower had three of one colour and two of another
+      // with the seam in a different place each tile. It read as a mistake.
+      c.fillStyle = colors[2];
       c.beginPath();
       c.moveTo(0, 0);
       c.bezierCurveTo(-pHalf * 1.2, -pLen * 0.25, -pHalf, -pLen * 0.75, 0, -pLen);
@@ -317,10 +320,12 @@ import LoadingState from '../LoadingState.astro';
     c.stroke();
 
     const leafY      = stemStartY + stemLen * 0.33;
-    const leafColors = [colors[2], colors[3]];
+    // Both leaves one colour, and not the petal colour: the plant reads as a
+    // plant when foliage and flower are told apart, not when every part is a
+    // different swatch.
     for (let l = 0; l < 2; l++) {
       const side = l === 0 ? 1 : -1;
-      c.fillStyle = leafColors[l];
+      c.fillStyle = colors[3];
       drawLeaf(c, side * tileSize * 0.04, leafY, side * leafLen, leafY - leafLen * 0.6, 0.45);
     }
 
@@ -332,12 +337,82 @@ import LoadingState from '../LoadingState.astro';
     c.restore();
   }
 
+  /* ── ORGANIC SHAPES, shared by the live canvas and the mockup renders ──
+     Both paths used to carry their own copy of this geometry, which is exactly
+     how they drifted apart. One definition each, called from both. */
+
+  /** The sway under the floral field. Amplitude scales with the tile so the
+      motion reads the same at every density. It was a flat 4px on a thirteen
+      second cycle, which is technically animating and looks broken: slow enough
+      that you notice something is wrong before you notice it is moving. */
+  const FLORAL_SPEED = 0.02;
+  const floralDrift  = (tileSize: number) => Math.sin(organicT) * tileSize * 0.06;
+
+  /** Concentric bands out from the middle of the field, one colour each.
+   *
+   *  The four non-background colours are rings rather than a noise field: two
+   *  earlier attempts hashed col and row, and both read as random no matter how
+   *  the frequency was tuned, because a viewer reads structure or reads noise
+   *  and there is not much in between. Rings are structure you can see in one
+   *  look.
+   *
+   *  The ring width is derived rather than fixed, a quarter of the distance from
+   *  the centre to the corner, so the field always shows exactly one pass
+   *  through the four colours whatever the canvas size or the density. Clamped
+   *  rather than wrapped, so the corners stay on the outermost colour instead of
+   *  starting a second cycle that would put the centre colour back at the edge.
+   *
+   *  This is a placed print, not a repeat: it does not tile, and the mockups
+   *  each centre it on their own panel. That is deliberate. */
+  function truchetColor(col: number, row: number, cols: number, rows: number): string {
+    const cx   = (cols - 1) / 2;
+    const cy   = (rows - 1) / 2;
+    const ring = Math.max(Math.hypot(cx, cy) / 4, 1e-6);
+    const idx  = Math.min(3, Math.floor(Math.hypot(col - cx, row - cy) / ring));
+    return colors[1 + idx];
+  }
+
+  /* Ribbon and groove, as a fraction of the tile.
+   *
+   *  The ribbon was 0.6 when a cell drew one arc. A correct Truchet cell draws
+   *  two, which at that width doubled the ink and made the ribbon the majority
+   *  of the surface: figure and ground swapped, the background survived only as
+   *  the thin shapes between strokes, and whichever colour the field happened to
+   *  favour read as the background. 0.34 puts the coverage back where it was
+   *  when the pattern was designed, with the ground dominant and the line drawn
+   *  on it. The groove holds its old 0.3 ratio to the ribbon. */
+  const TRUCHET_RIBBON = 0.34;
+  const TRUCHET_GROOVE = TRUCHET_RIBBON * 0.3;
+
+  /** A Truchet cell is TWO quarter arcs, not one.
+   *
+   *  Each arc runs between the midpoints of two adjacent edges, and the pair
+   *  together lands on all four, so whichever orientation a neighbour picks its
+   *  arcs meet these. Drawing a single arc per cell left half the edge midpoints
+   *  unterminated, so ribbons stopped dead at the cell boundary and the field
+   *  read as a grid of fragments instead of continuous line.
+   *
+   *  Two strokes, not one path: canvas joins consecutive arcs in a path with a
+   *  straight line from the current point, which would cut a chord across the
+   *  cell. */
+  function strokeTruchet(c: CanvasRenderingContext2D, x: number, y: number, t: number, isA: boolean) {
+    const r = t / 2;
+    c.beginPath();
+    if (isA) c.arc(x, y, r, 0, Math.PI / 2);
+    else     c.arc(x + t, y, r, Math.PI / 2, Math.PI);
+    c.stroke();
+    c.beginPath();
+    if (isA) c.arc(x + t, y + t, r, Math.PI, Math.PI * 3 / 2);
+    else     c.arc(x, y + t, r, Math.PI * 3 / 2, Math.PI * 2);
+    c.stroke();
+  }
+
   function drawOrganicFrame() {
     if (paused) return;
     const W  = canvas.width;
     const H  = canvas.height;
     const tileSize = Math.round(300 - (density - 1) * 20);
-    const drift    = Math.sin(organicT) * 4;
+    const drift    = floralDrift(tileSize);
 
     ctx.globalAlpha = 1.0;
     ctx.fillStyle   = colors[0];
@@ -361,7 +436,7 @@ import LoadingState from '../LoadingState.astro';
     mockupTick++;
     if (mockupTick % MOCKUP_EVERY === 0) updateMockupPatterns();
 
-    organicT += 0.008;
+    organicT += FLORAL_SPEED;
     if (stillMotion.matches) { organicRafId = null; return; }
     organicRafId = requestAnimationFrame(drawOrganicFrame);
   }
@@ -379,7 +454,10 @@ import LoadingState from '../LoadingState.astro';
     const W        = canvas.width;
     const H        = canvas.height;
     const tileSize = getTileSize();
-    const phase    = Math.floor(organic2T / 60);
+    // Continuous, not floored. A floored phase flipped every cell on the same
+    // frame once a second and the whole field snapped; carrying the fraction
+    // lets each cell cross its own threshold, so the flips travel across it.
+    const phase    = organic2T / 60;
 
     ctx.fillStyle   = colors[0];
     ctx.fillRect(0, 0, W, H);
@@ -395,27 +473,15 @@ import LoadingState from '../LoadingState.astro';
         const x         = col * tileSize;
         const y         = row * tileSize;
         const isTypeA   = Math.sin(col * 1.7 + row * 2.3 + phase) > 0;
-        const cellColor = colors[1 + ((col * 2 + row * 3) % 4)];
+        const cellColor = truchetColor(col, row, cols, rows);
 
-        ctx.lineWidth   = tileSize * 0.6;
+        ctx.lineWidth   = tileSize * TRUCHET_RIBBON;
         ctx.strokeStyle = cellColor;
-        ctx.beginPath();
-        if (isTypeA) {
-          ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
-        } else {
-          ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
-        }
-        ctx.stroke();
+        strokeTruchet(ctx, x, y, tileSize, isTypeA);
 
-        ctx.lineWidth   = tileSize * 0.18;
+        ctx.lineWidth   = tileSize * TRUCHET_GROOVE;
         ctx.strokeStyle = colors[0];
-        ctx.beginPath();
-        if (isTypeA) {
-          ctx.arc(x, y, tileSize / 2, 0, Math.PI / 2);
-        } else {
-          ctx.arc(x + tileSize, y + tileSize, tileSize / 2, Math.PI, Math.PI * 3 / 2);
-        }
-        ctx.stroke();
+        strokeTruchet(ctx, x, y, tileSize, isTypeA);
       }
     }
 
@@ -663,7 +729,7 @@ import LoadingState from '../LoadingState.astro';
       oc.width  = W; oc.height = H;
       const oc2 = oc.getContext('2d')!;
       const tileSize2 = Math.round(300 - (density - 1) * 20);
-      const drift2    = Math.sin(organicT) * 4;
+      const drift2    = floralDrift(tileSize2);
       oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
       const cols2 = Math.ceil(W / tileSize2) + 2;
       const rows2 = Math.ceil(H / tileSize2) + 2;
@@ -685,7 +751,7 @@ import LoadingState from '../LoadingState.astro';
       oc.width  = W; oc.height = H;
       const oc2 = oc.getContext('2d')!;
       const ts2   = getTileSize();
-      const phase2 = Math.floor(organic2T / 60);
+      const phase2 = organic2T / 60;
       oc2.fillStyle = colors[0]; oc2.fillRect(0, 0, W, H);
       oc2.lineCap = 'butt'; oc2.lineJoin = 'round'; oc2.globalAlpha = 1.0;
       const cols3 = Math.ceil(W / ts2) + 1;
@@ -693,16 +759,10 @@ import LoadingState from '../LoadingState.astro';
       for (let row = 0; row < rows3; row++) {
         for (let col = 0; col < cols3; col++) {
           const x3 = col * ts2, y3 = row * ts2;
-          const isA3   = Math.sin(col * 1.7 + row * 2.3 + phase2) > 0;
-          const cc  = colors[1 + ((col * 2 + row * 3) % 4)];
-          function drawTruchetArc(c: CanvasRenderingContext2D) {
-            c.beginPath();
-            if (isA3) { c.arc(x3, y3, ts2 / 2, 0, Math.PI / 2); }
-            else      { c.arc(x3 + ts2, y3 + ts2, ts2 / 2, Math.PI, Math.PI * 3 / 2); }
-            c.stroke();
-          }
-          oc2.lineWidth = ts2 * 0.6;  oc2.strokeStyle = cc;         drawTruchetArc(oc2);
-          oc2.lineWidth = ts2 * 0.18; oc2.strokeStyle = colors[0];  drawTruchetArc(oc2);
+          const isA3 = Math.sin(col * 1.7 + row * 2.3 + phase2) > 0;
+          const cc   = truchetColor(col, row, cols3, rows3);
+          oc2.lineWidth = ts2 * TRUCHET_RIBBON; oc2.strokeStyle = cc;        strokeTruchet(oc2, x3, y3, ts2, isA3);
+          oc2.lineWidth = ts2 * TRUCHET_GROOVE; oc2.strokeStyle = colors[0]; strokeTruchet(oc2, x3, y3, ts2, isA3);
         }
       }
       const dataUrl2 = oc.toDataURL('image/png');
