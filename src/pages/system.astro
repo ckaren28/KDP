@@ -1,0 +1,244 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import styles from './system.module.css';
+import {
+  readTokens, tokensFor, byName, contrast, fmt, grade, type Token,
+} from '../utils/tokens';
+
+const s = styles;
+
+/* Every value below is parsed out of `src/styles/tokens.css` at build time.
+   Nothing on this page is retyped, so it cannot drift from what ships: change
+   a hex in tokens.css and the swatch, the ratio and the grade all move with
+   it. A pair that stops passing starts failing in public. */
+const blocks = readTokens('src/styles/tokens.css');
+const light  = tokensFor(blocks, ':root');
+const dark   = tokensFor(blocks, 'html[data-theme="dark"]');
+
+/* Roles, not names. A hairline and a body color are both colors and are held
+   to entirely different thresholds, so grading them the same way would either
+   fail the border for no reason or pass the text for the wrong one. */
+const INK     = ['black', 'text-body', 'muted', 'sienna', 'sienna-light'];
+const SURFACE = ['off-white', 'warm-white', 'placeholder-bg', 'hover-sweep'];
+
+/** Text tokens are held to 4.5:1, since the smallest of them carries 10px mono. */
+function inkRows(theme: Token[]) {
+  const ground = byName(theme, 'off-white')!.value;
+  return INK.map((name) => {
+    const t = byName(theme, name)!;
+    const ratio = contrast(t.value, ground)!;
+    return { ...t, ratio, grade: grade(ratio) };
+  });
+}
+
+const themes = [
+  { key: 'light', label: 'Light, the print in daylight', tokens: light },
+  { key: 'dark',  label: 'Dark, back in the darkroom',   tokens: dark  },
+].map((t) => ({
+  ...t,
+  ground: byName(t.tokens, 'off-white')!.value,
+  ink: inkRows(t.tokens),
+  surfaces: SURFACE.map((n) => byName(t.tokens, n)).filter(Boolean) as Token[],
+  line: byName(t.tokens, 'border')!,
+}));
+
+const scale    = light.filter((t) => /^fs-\d+$/.test(t.name));
+const display  = light.filter((t) => t.name.startsWith('fs-') && !/^fs-\d+$/.test(t.name));
+const tracking = light.filter((t) => t.name.startsWith('track-'));
+const space    = light.filter((t) => t.name.startsWith('space-'));
+
+const families = [
+  { token: 'font-display', label: 'Display', sample: 'Aa', note: 'Bricolage Grotesque. Variable, and the only face still served from Google, because its optical-size axis has to stay live.' },
+  { token: 'font-body',    label: 'Body',    sample: 'Aa', note: 'Instrument Sans. Self-hosted.' },
+  { token: 'font-mono',    label: 'Mono',    sample: 'Aa', note: 'Space Mono. Carries every eyebrow, label and piece of metadata on the site.' },
+];
+---
+
+<MainLayout title="Design system · Karen Dettmar" theme="light">
+  <div class="page-container">
+
+    <div class="reveal">
+      <span class="page-eyebrow">Design system</span>
+      <h1 class="page-title">The <em>darkroom</em> system</h1>
+    </div>
+
+    <div class={`${s.lead} reveal`}>
+      <p>
+        One token contract, two brands. This site is oxblood ink on a pale blue
+        ground; <a href="https://studio.karendettmar.com">the studio site</a> is
+        terracotta on warm paper, with a serif display face instead of a grotesque.
+        They are not two stylesheets that resemble each other. They declare the same
+        token names in the same roles, and each one then flips those same names again
+        for its dark scheme, so there are two brands and four schemes running on one
+        vocabulary.
+      </p>
+      <p>
+        Every value on this page is parsed out of <code>src/styles/tokens.css</code>
+        at build time. Nothing here is retyped. A documentation page that keeps its
+        own copy of the palette is wrong within a month, and the failure is silent:
+        the docs go on looking correct while the site walks away from them. Changing
+        a hex moves the swatch, the ratio and the grade together, which means a pair
+        that stops passing starts failing in public.
+      </p>
+    </div>
+
+    <!-- ── COLOR ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="colorLabel">
+      <span class="page-eyebrow" id="colorLabel">Color</span>
+      <p class={s.blurb}>
+        Ratios are WCAG 2.1, computed at build time against each scheme's own
+        ground. Translucent tokens are flattened onto that ground first, because a
+        ratio taken from raw <code>rgba</code> channels describes a color nobody
+        ever sees. Text is held to 4.5:1 rather than the large-text 3:1, since the
+        smallest thing wearing these colors is a 10px mono label.
+      </p>
+
+      {themes.map((theme) => (
+        <div class={s.theme} style={`--panel: ${theme.ground}; --panel-ink: ${byName(theme.tokens, 'black')!.value};`}>
+          <h2 class={s.themeName}>{theme.label}</h2>
+
+          <table class={s.table}>
+            <caption class="visually-hidden">Text colors on the {theme.key} ground, with contrast ratios</caption>
+            <thead>
+              <tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">On ground</th><th scope="col">Ratio</th><th scope="col">Grade</th></tr>
+            </thead>
+            <tbody>
+              {theme.ink.map((t) => (
+                <tr>
+                  <th scope="row"><code>--{t.name}</code></th>
+                  <td><code class={s.hex}>{t.value}</code></td>
+                  <td>
+                    <span class={s.proof} style={`background: ${theme.ground}; color: ${t.value};`}>Aa</span>
+                  </td>
+                  <td class={s.num}>{fmt(t.ratio)}</td>
+                  <td>
+                    <span class={`${s.grade} ${t.grade === 'Fail' ? s.gradeFail : ''}`}>{t.grade}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div class={s.surfaces}>
+            {theme.surfaces.map((t) => (
+              <div class={s.surface}>
+                <span class={s.chip} style={`background: ${t.value};`}></span>
+                <code>--{t.name}</code>
+                <code class={s.hex}>{t.value}</code>
+              </div>
+            ))}
+            <div class={s.surface}>
+              <span class={s.chip} style={`background: ${theme.ground}; border-bottom: 4px solid ${theme.line.value};`}></span>
+              <code>--{theme.line.name}</code>
+              <code class={s.hex}>{theme.line.value}</code>
+            </div>
+          </div>
+          <p class={s.foot}>
+            Surfaces and the hairline are ungraded on purpose. They carry no text
+            and are not the only signal for any control, so the text thresholds
+            would be the wrong instrument pointed at them.
+          </p>
+        </div>
+      ))}
+    </section>
+
+    <!-- ── TYPE ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="typeLabel">
+      <span class="page-eyebrow" id="typeLabel">Type</span>
+
+      <div class={s.families}>
+        {families.map((f) => (
+          <div class={s.family}>
+            <span class={s.familySample} style={`font-family: var(--${f.token});`}>{f.sample}</span>
+            <div>
+              <code>--{f.token}</code>
+              <p class={s.foot}>{f.note}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h2 class={s.subhead}>The scale</h2>
+      <p class={s.blurb}>
+        Numbered, not named after a role, because the same rung carries mono
+        metadata and body copy alike and a <code>--fs-body-*</code> / <code>--fs-mono-*</code>
+        split would need two names for one value. In <code>rem</code>, so a reader
+        who has raised their browser font size gets larger type here too; the pixel
+        figure beside each rung is its size at a default 16px root.
+      </p>
+      <ul class={s.rungs}>
+        {scale.map((t) => (
+          <li class={s.rung}>
+            <code class={s.rungName}>--{t.name}</code>
+            <span class={s.rungSpec}>{t.value}</span>
+            <span class={s.rungSample} style={`font-size: ${t.value};`}>Grade the ratio, not the swatch</span>
+            {t.note && <span class={s.rungNote}>{t.note}</span>}
+          </li>
+        ))}
+      </ul>
+
+      <h2 class={s.subhead}>Display sizes</h2>
+      <p class={s.blurb}>
+        These stay role-named rather than numbered, because they fluid-scale and
+        each one belongs to a specific piece of the page rather than to a rung.
+        Resize the window and they move.
+      </p>
+      <ul class={s.rungs}>
+        {display.map((t) => (
+          <li class={s.rung}>
+            <code class={s.rungName}>--{t.name}</code>
+            <span class={s.rungSpec}>{t.value}</span>
+            <span class={s.rungDisplay} style={`font-size: ${t.value};`}>Aa</span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class={s.subhead}>Tracking</h2>
+      <p class={s.blurb}>Three registers. Display type pulls tight, mono metadata opens up.</p>
+      <ul class={s.rungs}>
+        {tracking.map((t) => (
+          <li class={s.rung}>
+            <code class={s.rungName}>--{t.name}</code>
+            <span class={s.rungSpec}>{t.value}</span>
+            <span
+              class={s.trackSample}
+              style={`letter-spacing: ${t.value}; ${t.name.startsWith('track-meta') ? 'font-family: var(--font-mono); text-transform: uppercase; font-size: var(--fs-150);' : 'font-family: var(--font-display); font-size: var(--fs-600);'}`}
+            >Karen Dettmar</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- ── SPACE ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="spaceLabel">
+      <span class="page-eyebrow" id="spaceLabel">Space</span>
+      <p class={s.blurb}>
+        A 4px base. These are not an idealized ramp imposed afterwards; they are the
+        values the layouts had already landed on, collected and named.
+      </p>
+      <ul class={s.rungs}>
+        {space.map((t) => (
+          <li class={s.rung}>
+            <code class={s.rungName}>--{t.name}</code>
+            <span class={s.rungSpec}>{t.value}</span>
+            <span class={s.bar} style={`width: ${t.value};`}></span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- ── LINE ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="lineLabel">
+      <span class="page-eyebrow" id="lineLabel">Line</span>
+      <p class={s.blurb}>
+        The whole site draws exactly two: a hairline and a pill. There is no radius
+        scale, because a scale of radii nobody uses is inventory, not a system.
+      </p>
+      <div class={s.borders}>
+        <div class={s.borderDemo} style="border: var(--hairline);"><code>--hairline</code></div>
+        <div class={s.borderDemo} style="border: var(--hairline); border-radius: var(--radius-pill);"><code>--radius-pill</code></div>
+      </div>
+    </section>
+
+  </div>
+</MainLayout>
