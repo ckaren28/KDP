@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import styles from './system.module.css';
 import LoadingState from '../components/LoadingState.astro';
 import { componentInventory } from '../utils/components';
+import { easingCensus, durationCensus, reducedMotionSites } from '../utils/motion';
 import {
   readTokens, readTokensPreferring, tokensFor, byName, contrast, fmt, grade, type Token,
 } from '../utils/tokens';
@@ -109,6 +110,23 @@ const studioThemes = [
 const inventory = componentInventory(['pages/system.astro']);
 const live = inventory.filter((c) => c.uses > 0);
 const dead = inventory.filter((c) => c.uses === 0);
+
+const easings   = easingCensus();
+const durations = durationCensus();
+const rmSites   = reducedMotionSites();
+const rmCss     = rmSites.filter((r) => r.kind === 'CSS');
+const rmJs      = rmSites.filter((r) => r.kind === 'JS');
+
+/** A cubic-bezier plotted in a unit box, y flipped for SVG. */
+const bez = (x1: number, y1: number, x2: number, y2: number, size = 132) =>
+  `M 0 ${size} C ${x1 * size} ${size - y1 * size} ${x2 * size} ${size - y2 * size} ${size} 0`;
+
+const curves = [
+  { name: 'cubic-bezier(0.2, 0.8, 0.3, 1)',  d: bez(0.2, 0.8, 0.3, 1),
+    use: 'The default. Hovers, toggles, anything that answers a pointer.' },
+  { name: 'cubic-bezier(0.16, 1, 0.3, 1)',   d: bez(0.16, 1, 0.3, 1),
+    use: 'The reveal. Longer, later settle, for something arriving rather than responding.' },
+];
 
 const families = [
   { token: 'font-display', label: 'Display', sample: 'Aa', note: 'Bricolage Grotesque. Variable, and the only face still served from Google, because its optical-size axis has to stay live.' },
@@ -517,6 +535,120 @@ const families = [
         <code>shadow-md</code>, <code>text-gray-600</code>, and reaches for not one
         token on this page, which is precisely how it ended up unused: it could not
         be dropped into a site that looks like this.
+      </p>
+    </section>
+
+
+    <!-- ── MOTION ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="motionLabel">
+      <span class="page-eyebrow" id="motionLabel">Motion</span>
+      <p class={s.blurb}>
+        This is the part of the system that is not a system yet, and the page
+        would be worth less if it pretended otherwise. Color, type, space and
+        line are tokens with one definition each. Motion is a convention held by
+        hand across the stylesheets, and the counts below are scanned from the
+        source at build time for the same reason every other number here is: a
+        claim about consistency should not be the one thing taken on trust.
+      </p>
+
+      <h2 class={s.subhead}>Two curves, and how they are spelled</h2>
+      <div class={s.curves}>
+        {curves.map((c) => (
+          <div class={s.curve}>
+            <svg viewBox="-6 -6 144 144" class={s.curvePlot} role="img" aria-label={`Easing curve ${c.name}`}>
+              <line x1="0" y1="132" x2="132" y2="132" class={s.axis} />
+              <line x1="0" y1="132" x2="0" y2="0" class={s.axis} />
+              <path d={`M 0 132 L 132 0`} class={s.axisDiag} />
+              <path d={c.d} class={s.curveLine} />
+            </svg>
+            <code>{c.name}</code>
+            <p class={s.foot}>{c.use}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class={s.blurb}>
+        There are {easings.length} distinct easing curves in the source, written
+        {' '}{easings.reduce((n, e) => n + e.spellings.length, 0)} different ways.
+        The gap between those two numbers is the whole argument for tokenizing
+        motion: nothing below is a different intention, only a different set of
+        keystrokes, and no search will ever find all of one curve.
+      </p>
+      <table class={s.table}>
+        <caption class="visually-hidden">Easing curves and every spelling of each</caption>
+        <thead>
+          <tr><th scope="col">Curve</th><th scope="col">Uses</th><th scope="col">Spelled as</th></tr>
+        </thead>
+        <tbody>
+          {easings.map((e) => (
+            <tr>
+              <th scope="row"><code>{e.canonical}</code></th>
+              <td class={s.num}>{e.total}</td>
+              <td>
+                {e.spellings.map((sp) => (
+                  <div><code class={s.hex}>{sp.text}</code> <span class={s.num}>×{sp.count}</span></div>
+                ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2 class={s.subhead}>Durations</h2>
+      <p class={s.blurb}>
+        {durations.length} distinct durations, against eleven rungs of type and
+        eleven of space. The type scale earned its rungs by collecting what the
+        layouts already landed on; the same pass has never been run on time.
+        The ten most used:
+      </p>
+      <ul class={s.rungs}>
+        {durations.slice(0, 10).map((d) => (
+          <li class={s.rung}>
+            <code class={s.rungName}>{d.value}</code>
+            <span class={s.rungSpec}>{d.count} uses</span>
+            <span class={s.bar} style={`width: ${Math.round((d.count / durations[0].count) * 100)}%;`}></span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class={s.subhead}>Reduced motion</h2>
+      <p class={s.blurb}>
+        One rule, stated in <code>global.css</code>: reduced motion gets the
+        content, not a slower entrance. Nothing is retimed and nothing fades in
+        late. The animation is removed and the thing it was going to reveal is
+        simply there.
+      </p>
+      <p class={s.blurb}>
+        It is honored in {rmSites.length} places, {rmCss.length} in CSS and
+        {' '}{rmJs.length} in script, and it has to be both. A media query cannot
+        reach inside a <code>requestAnimationFrame</code> loop drawing to a
+        canvas, so every loop tests the preference itself, on every frame rather
+        than once at startup, which is why toggling the setting takes effect
+        without a reload.
+      </p>
+      <div class={s.forks}>
+        <div>
+          <h3 class={s.forkHead}>In CSS</h3>
+          <ul class={s.forkList}>
+            {rmCss.map((r) => <li><code>{r.path}</code></li>)}
+          </ul>
+        </div>
+        <div>
+          <h3 class={s.forkHead}>In script</h3>
+          <ul class={s.forkList}>
+            {rmJs.map((r) => <li><code>{r.path}</code></li>)}
+          </ul>
+        </div>
+      </div>
+      <p class={s.foot}>
+        One of those was missing until recently. The textile pattern generator
+        ran three animation loops with no check at all, on the same site as a
+        case study about accessibility. Fixing it was not the one branch it
+        looked like: with no loop running, nothing was left to pick up a state
+        change, so the density slider and the color inputs went dead the moment
+        the motion stopped. Both had always relied on the next frame arriving to
+        render their change. Turning an animation off is rarely one branch, and
+        the control that depended on the loop is the part that breaks quietly.
       </p>
     </section>
 
