@@ -363,12 +363,20 @@ import LoadingState from '../LoadingState.astro';
    *  starting a second cycle that would put the centre colour back at the edge.
    *
    *  This is a placed print, not a repeat: it does not tile, and the mockups
-   *  each centre it on their own panel. That is deliberate. */
-  function truchetColor(col: number, row: number, cols: number, rows: number): string {
-    const cx   = (cols - 1) / 2;
-    const cy   = (rows - 1) / 2;
-    const ring = Math.max(Math.hypot(cx, cy) / 4, 1e-6);
-    const idx  = Math.min(3, Math.floor(Math.hypot(col - cx, row - cy) / ring));
+   *  each centre it on their own panel. That is deliberate.
+   *
+   *  Measured in pixels, not in cell indices. Centring on (cols - 1) / 2 looked
+   *  right at fine density and drifted off centre as the tiles grew, because
+   *  cols is ceil(W / tile) + 1: it counts the overshoot past the right edge,
+   *  and a cell index sits at a corner while the cell it colours is half a tile
+   *  further on. Both errors are a fraction of a tile, which is a few pixels
+   *  when the tile is small and most of a tile when it is large. The canvas
+   *  centre is W / 2 whatever the density, so that is what to measure from. */
+  function truchetColor(col: number, row: number, t: number, W: number, H: number): string {
+    const dx   = (col + 0.5) * t - W / 2;
+    const dy   = (row + 0.5) * t - H / 2;
+    const ring = Math.max(Math.hypot(W / 2, H / 2) / 4, 1e-6);
+    const idx  = Math.min(3, Math.floor(Math.hypot(dx, dy) / ring));
     return colors[1 + idx];
   }
 
@@ -473,7 +481,7 @@ import LoadingState from '../LoadingState.astro';
         const x         = col * tileSize;
         const y         = row * tileSize;
         const isTypeA   = Math.sin(col * 1.7 + row * 2.3 + phase) > 0;
-        const cellColor = truchetColor(col, row, cols, rows);
+        const cellColor = truchetColor(col, row, tileSize, W, H);
 
         ctx.lineWidth   = tileSize * TRUCHET_RIBBON;
         ctx.strokeStyle = cellColor;
@@ -760,7 +768,7 @@ import LoadingState from '../LoadingState.astro';
         for (let col = 0; col < cols3; col++) {
           const x3 = col * ts2, y3 = row * ts2;
           const isA3 = Math.sin(col * 1.7 + row * 2.3 + phase2) > 0;
-          const cc   = truchetColor(col, row, cols3, rows3);
+          const cc   = truchetColor(col, row, ts2, W, H);
           oc2.lineWidth = ts2 * TRUCHET_RIBBON; oc2.strokeStyle = cc;        strokeTruchet(oc2, x3, y3, ts2, isA3);
           oc2.lineWidth = ts2 * TRUCHET_GROOVE; oc2.strokeStyle = colors[0]; strokeTruchet(oc2, x3, y3, ts2, isA3);
         }
