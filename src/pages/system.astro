@@ -527,15 +527,19 @@ const families = [
           ))}
         </tbody>
       </table>
-      <p class={s.foot}>
-        {dead.length} of {inventory.length} are unreferenced and are on the list to
-        delete. Leaving them visible here is the point: an inventory that only
-        lists the parts still in use is a brochure. <code>ProjectCard</code> is the
-        instructive one. It is written in raw Tailwind utilities, <code>bg-white</code>,
-        <code>shadow-md</code>, <code>text-gray-600</code>, and reaches for not one
-        token on this page, which is precisely how it ended up unused: it could not
-        be dropped into a site that looks like this.
-      </p>
+      {dead.length > 0 ? (
+        <p class={s.foot}>
+          {dead.length} of {inventory.length} are unreferenced. They stay in the
+          table rather than being filtered out of it, because an inventory
+          listing only what is still in use is a brochure.
+        </p>
+      ) : (
+        <p class={s.foot}>
+          Every component in the tree is referenced. The count above is scanned
+          rather than maintained, so that either stays true or stops being true
+          in public.
+        </p>
+      )}
     </section>
 
 
