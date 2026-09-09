@@ -2,7 +2,7 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import styles from './system.module.css';
 import {
-  readTokens, tokensFor, byName, contrast, fmt, grade, type Token,
+  readTokens, readTokensPreferring, tokensFor, byName, contrast, fmt, grade, type Token,
 } from '../utils/tokens';
 
 const s = styles;
@@ -18,13 +18,19 @@ const dark   = tokensFor(blocks, 'html[data-theme="dark"]');
 /* Roles, not names. A hairline and a body color are both colors and are held
    to entirely different thresholds, so grading them the same way would either
    fail the border for no reason or pass the text for the wrong one. */
-const INK     = ['black', 'text-body', 'muted', 'sienna', 'sienna-light'];
-const SURFACE = ['off-white', 'warm-white', 'placeholder-bg', 'hover-sweep'];
+/* Which tokens carry text is a property of the brand, not of the name. On this
+   site --sienna-light is link text (TrackSelector.module.css:116). On the studio
+   site the same token is only --drip-color, a decorative graphic, so holding it
+   to a text threshold there would fail a color for a job it does not do. Same
+   mistake as grading the hairline. */
+const INK        = ['black', 'text-body', 'muted', 'sienna', 'sienna-light'];
+const STUDIO_INK = ['black', 'text-body', 'muted', 'sienna'];
+const SURFACE    = ['off-white', 'warm-white', 'placeholder-bg', 'hover-sweep'];
 
 /** Text tokens are held to 4.5:1, since the smallest of them carries 10px mono. */
-function inkRows(theme: Token[]) {
+function inkRows(theme: Token[], names: string[] = INK) {
   const ground = byName(theme, 'off-white')!.value;
-  return INK.map((name) => {
+  return names.map((name) => {
     const t = byName(theme, name)!;
     const ratio = contrast(t.value, ground)!;
     return { ...t, ratio, grade: grade(ratio) };
@@ -46,6 +52,54 @@ const scale    = light.filter((t) => /^fs-\d+$/.test(t.name));
 const display  = light.filter((t) => t.name.startsWith('fs-') && !/^fs-\d+$/.test(t.name));
 const tracking = light.filter((t) => t.name.startsWith('track-'));
 const space    = light.filter((t) => t.name.startsWith('space-'));
+
+/* The studio palette, from the sibling checkout when there is one and from the
+   committed snapshot otherwise. See readTokensPreferring for why both exist. */
+const studioSrc = readTokensPreferring([
+  { path: '../fashion-studio/src/styles/tokens.css', label: 'the fashion-studio working tree', live: true },
+  { path: 'src/data/studio-tokens.css',              label: 'the committed snapshot',          live: false },
+]);
+const studioLight = tokensFor(studioSrc.blocks, ':root');
+const studioDark  = tokensFor(studioSrc.blocks, 'html[data-theme="dark"]');
+
+const ROLES: Record<string, string> = {
+  'black':          'Body text, and the strongest thing on the page',
+  'off-white':      'The ground everything is measured against',
+  'warm-white':     'Secondary surface',
+  'sienna':         'The accent, and every link',
+  'sienna-light':   'The accent, lifted',
+  'muted':          'Metadata, eyebrows, 10px mono labels',
+  'border':         'The hairline, the only rule drawn',
+  'text-body':      'Long-form copy, quieter than --black',
+  'hover-sweep':    'The fill a link sweeps to',
+  'on-sweep':       'Text sitting on that sweep',
+  'placeholder-bg': 'An image that has not arrived yet',
+};
+
+/** Tokens both brands declare, in role order rather than file order. */
+const shared = Object.keys(ROLES)
+  .filter((n) => byName(light, n) && byName(studioLight, n))
+  .map((n) => ({
+    name: n,
+    role: ROLES[n],
+    eng: byName(light, n)!,
+    studio: byName(studioLight, n)!,
+  }));
+
+/** Where the contract deliberately stops being shared. */
+const engOnly    = light.filter((t) => !byName(studioLight, t.name) && !/^(fs|space|track|radius|hairline)/.test(t.name));
+const studioOnly = studioLight.filter((t) => !byName(light, t.name));
+
+/* The studio site's own tokens.css records the contrast math in a comment.
+   Recomputing it here checks that comment rather than repeating it. */
+const studioThemes = [
+  { key: 'light', label: 'Studio, light', tokens: studioLight },
+  { key: 'dark',  label: 'Studio, dark',  tokens: studioDark  },
+].map((t) => ({
+  ...t,
+  ground: byName(t.tokens, 'off-white')!.value,
+  ink: inkRows(t.tokens, STUDIO_INK),
+}));
 
 const families = [
   { token: 'font-display', label: 'Display', sample: 'Aa', note: 'Bricolage Grotesque. Variable, and the only face still served from Google, because its optical-size axis has to stay live.' },
@@ -140,6 +194,112 @@ const families = [
           </p>
         </div>
       ))}
+    </section>
+
+    <!-- ── TWO BRANDS ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="brandsLabel">
+      <span class="page-eyebrow" id="brandsLabel">Two brands, one contract</span>
+      <p class={s.blurb}>
+        The studio site is a different brand: terracotta on warm paper, a serif
+        display face, no mono at all. It is not a variation on this one and it is
+        not meant to look related. What the two share is the vocabulary. Every row
+        below is a token name that means the same thing on both sites and holds a
+        different value on each, which is the only reason one set of components
+        could ever wear either skin.
+      </p>
+
+      <table class={s.table}>
+        <caption class="visually-hidden">Shared tokens and their value in each brand</caption>
+        <thead>
+          <tr>
+            <th scope="col">Token</th>
+            <th scope="col">Role</th>
+            <th scope="col" colspan="2">This site</th>
+            <th scope="col" colspan="2">Studio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {shared.map((row) => (
+            <tr>
+              <th scope="row"><code>--{row.name}</code></th>
+              <td class={s.role}>{row.role}</td>
+              <td><span class={s.swatch} style={`background: ${row.eng.value};`}></span></td>
+              <td><code class={s.hex}>{row.eng.value}</code></td>
+              <td><span class={s.swatch} style={`background: ${row.studio.value};`}></span></td>
+              <td><code class={s.hex}>{row.studio.value}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2 class={s.subhead}>Where the contract forks</h2>
+      <p class={s.blurb}>
+        The interesting half. A shared vocabulary is only worth having if it is
+        allowed to stop: forcing one site to carry the other's tokens would be
+        tidiness bought with meaning.
+      </p>
+      <div class={s.forks}>
+        <div>
+          <h3 class={s.forkHead}>Only here</h3>
+          <ul class={s.forkList}>
+            {engOnly.map((t) => <li><code>--{t.name}</code> <span class={s.hex}>{t.value}</span></li>)}
+          </ul>
+        </div>
+        <div>
+          <h3 class={s.forkHead}>Only on the studio site</h3>
+          <ul class={s.forkList}>
+            {studioOnly.map((t) => <li><code>--{t.name}</code> <span class={s.hex}>{t.value}</span></li>)}
+          </ul>
+        </div>
+      </div>
+
+      <h2 class={s.subhead}>The studio's own contrast, recomputed</h2>
+      <p class={s.blurb}>
+        The studio <code>tokens.css</code> states its ratios in a header comment,
+        including the two colors that failed first and what replaced them. These
+        numbers are computed here from the same values, so they check that comment
+        rather than repeat it, and they agree with it.
+      </p>
+      <p class={s.blurb}>
+        <code>--sienna-light</code> is absent from these two tables and present in
+        the ones above. On this site it is link text, so it is held to 4.5:1 and
+        makes it at 6.37:1. On the studio site the same token is only
+        <code>--drip-color</code>, a decorative graphic that carries no text, and
+        measuring it against a text threshold would report a 2.60:1 failure for a
+        job it was never given. Which threshold applies is a property of the role,
+        not of the name, and the role is allowed to differ between brands.
+      </p>
+      {studioThemes.map((theme) => (
+        <div class={s.theme} style={`--panel: ${theme.ground}; --panel-ink: ${byName(theme.tokens, 'black')!.value};`}>
+          <h3 class={s.themeName}>{theme.label}</h3>
+          <table class={s.table}>
+            <caption class="visually-hidden">Studio {theme.key} text colors with contrast ratios</caption>
+            <thead>
+              <tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">On ground</th><th scope="col">Ratio</th><th scope="col">Grade</th></tr>
+            </thead>
+            <tbody>
+              {theme.ink.map((t) => (
+                <tr>
+                  <th scope="row"><code>--{t.name}</code></th>
+                  <td><code class={s.hex}>{t.value}</code></td>
+                  <td><span class={s.proof} style={`background: ${theme.ground}; color: ${t.value};`}>Aa</span></td>
+                  <td class={s.num}>{fmt(t.ratio)}</td>
+                  <td><span class={`${s.grade} ${t.grade === 'Fail' ? s.gradeFail : ''}`}>{t.grade}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      <p class={s.foot}>
+        Studio values read from <strong>{studioSrc.source.label}</strong>.
+        {studioSrc.source.live
+          ? ' A local build sees the sibling repo and reads it directly.'
+          : ' Netlify checks out one repo, so a deployed build reads the committed snapshot instead. `npm run sync:studio-tokens -- --check` fails if the two have drifted.'}
+        {' '}Needing a snapshot at all is the plainest argument for extracting both
+        palettes into one versioned package, which is the next stage of this work.
+      </p>
     </section>
 
     <!-- ── TYPE ── -->

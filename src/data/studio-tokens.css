@@ -1,0 +1,72 @@
+/* ── SNAPSHOT: studio.karendettmar.com tokens ──────────────────────
+   NOT the source of truth. The real file is
+   `fashion-studio/src/styles/tokens.css`, in a separate repo.
+
+   This copy exists because Netlify checks out one repo, so /system
+   cannot read the sibling working tree at build time without breaking
+   the deploy. When the sibling IS present (any local build), the page
+   reads it live and ignores this file; the provenance line on /system
+   says which of the two it used.
+
+   Refresh with `npm run sync:studio-tokens`, which also fails loudly
+   if the two have diverged. That this file has to exist at all is the
+   plainest argument for extracting both palettes into one versioned
+   package, which is the next stage of this work.
+   ───────────────────────────────────────────────────────────────── */
+
+/* ── DESIGN TOKENS ──
+   --muted and --sienna both carry 10px uppercase labels, so they are held to
+   the 4.5:1 small-text threshold, not the 3:1 large-text one. Their original
+   values (#9A8872 at 3.23:1 and #B85C38 at 4.28:1) both failed; these are the
+   nearest passing colors in the same hue and saturation. */
+:root {
+  --black: #2C1A0E;
+  --off-white: #F7F2EA;   /* warm off-white ground for light mode */
+  --warm-white: #F1EADC;
+  --sienna: #AC5634;      /* 4.56:1 on --off-white */
+  --sienna-light: #D4845C;
+  --muted: #7C6C59;       /* 4.54:1 on --off-white */
+  --border: rgba(44,26,14,0.14);
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Archivo', sans-serif;
+
+  /* One measure for every band on the page — the header, the hero, the work
+     grid and the contact block all sit on it, so the left edge is a single
+     line down the page. Matches the engineering site's container. */
+  --measure: 1200px;
+  --gutter: 48px;
+
+  /* Semantic tokens */
+  --text-body: #5A4030;
+  --hover-sweep: #3D2B1A;
+  --on-sweep: var(--off-white);
+  --placeholder-bg: #DED5BE;
+
+  --fashion-bg: #f5f0e8;
+  --fashion-bg-dark: #1a110a;
+}
+
+@media (max-width: 900px) {
+  :root { --gutter: 24px; }
+}
+
+/* ── DARK MODE ── */
+html[data-theme="dark"] {
+  --black: #faf8f5;
+  --off-white: #18100A;
+  --warm-white: #241810;
+  --sienna: #C4683F;      /* 4.83:1 on dark --off-white */
+  --sienna-light: #D4845C;
+  --muted: #8E7966;       /* was #7A6858 at 3.53:1 — failed small text */
+  --border: rgba(237,229,208,0.09);
+
+  --text-body: rgba(237,229,208,0.62);
+  --hover-sweep: #2C1F14;
+  --on-sweep: #faf8f5;
+  --placeholder-bg: #2C1F14;
+
+  --fashion-bg: #1a110a;
+}
+
+
+

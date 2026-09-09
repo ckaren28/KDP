@@ -9,7 +9,10 @@ const s = styles;
 const disciplines = [
   { name: 'Design Engineering',    desc: 'React, Astro, TypeScript, APIs' },
   { name: 'Creative Technology',   desc: 'Interactive demos, prototypes, AI tools' },
-  { name: 'Design Systems',        desc: 'Interaction, motion, and the one behind this site' },
+  // The only discipline here with a page proving it. The link is on the phrase
+  // that makes the claim, not appended after it, so the row keeps its shape.
+  { name: 'Design Systems',        desc: 'Interaction, motion, and',
+    link: { href: '/system', text: 'the one behind this site' } },
 ];
 
 const contact = [
@@ -43,7 +46,10 @@ const contact = [
         {disciplines.map((d) => (
           <li class={s['row']}>
             <h2 class={s['row-key']}>{d.name}</h2>
-            <p class={s['row-val']}>{d.desc}</p>
+            <p class={s['row-val']}>
+              {d.desc}
+              {d.link && <> <a href={d.link.href} class={s['inline-link']}>{d.link.text}</a></>}
+            </p>
           </li>
         ))}
       </ul>

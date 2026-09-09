@@ -219,3 +219,20 @@
   .egg-note[data-visible],
   .egg-note[data-hiding] { animation-duration: 0.01ms; }
 }
+
+/* The one link that sits inside a row rather than wrapping it, so the
+   Design Systems row can point at /system without becoming a .row--link
+   and pulling its h2 into the link text. */
+.inline-link {
+  color: var(--sienna);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s ease;
+}
+.inline-link:hover { color: var(--black); }
+.inline-link:focus-visible {
+  outline: 2px solid var(--sienna);
+  outline-offset: 3px;
+  border-radius: 2px;
+}

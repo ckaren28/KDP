@@ -81,6 +81,28 @@ export function readTokens(relativePath: string): Block[] {
   return parseBlocks(readFileSync(path, 'utf8'));
 }
 
+/**
+ * Read the first of `candidates` that exists, and say which one it was.
+ *
+ * The studio palette lives in a separate repo, and Netlify checks out one
+ * repo, so a build there cannot see the sibling working tree. Any local build
+ * can, and should prefer it. The page prints the source it got, because a
+ * snapshot presented as live would be exactly the silent drift this whole
+ * page argues against.
+ */
+export function readTokensPreferring(
+  candidates: { path: string; label: string; live: boolean }[],
+): { blocks: Block[]; source: { label: string; live: boolean } } {
+  for (const c of candidates) {
+    try {
+      return { blocks: readTokens(c.path), source: { label: c.label, live: c.live } };
+    } catch {
+      continue;
+    }
+  }
+  throw new Error(`No tokens file found. Tried: ${candidates.map((c) => c.path).join(', ')}`);
+}
+
 export function tokensFor(blocks: Block[], selector: string): Token[] {
   return blocks.find((b) => b.selector === selector)?.tokens ?? [];
 }
