@@ -1,6 +1,8 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import styles from './system.module.css';
+import LoadingState from '../components/LoadingState.astro';
+import { componentInventory } from '../utils/components';
 import {
   readTokens, readTokensPreferring, tokensFor, byName, contrast, fmt, grade, type Token,
 } from '../utils/tokens';
@@ -100,6 +102,13 @@ const studioThemes = [
   ground: byName(t.tokens, 'off-white')!.value,
   ink: inkRows(t.tokens, STUDIO_INK),
 }));
+
+/* Demoing a component is not using it, so this page excludes itself from the
+   count. Otherwise the inventory promotes anything the gallery touches, which
+   is the measurement reading its own instrument. */
+const inventory = componentInventory(['pages/system.astro']);
+const live = inventory.filter((c) => c.uses > 0);
+const dead = inventory.filter((c) => c.uses === 0);
 
 const families = [
   { token: 'font-display', label: 'Display', sample: 'Aa', note: 'Bricolage Grotesque. Variable, and the only face still served from Google, because its optical-size axis has to stay live.' },
@@ -398,6 +407,117 @@ const families = [
         <div class={s.borderDemo} style="border: var(--hairline);"><code>--hairline</code></div>
         <div class={s.borderDemo} style="border: var(--hairline); border-radius: var(--radius-pill);"><code>--radius-pill</code></div>
       </div>
+    </section>
+
+
+    <!-- ── COMPONENTS ── -->
+    <section class={`${s.section} reveal`} aria-labelledby="componentsLabel">
+      <span class="page-eyebrow" id="componentsLabel">Components</span>
+      <p class={s.blurb}>
+        The honest shape of this system is that most of it is classes, not
+        components. Seventeen <code>.astro</code> files exist; the vocabulary that
+        actually holds the site together is a handful of shared class names in
+        <code>global.css</code> that every page reaches for. That is a legitimate
+        answer for a site this size. A component library built ahead of a second
+        consumer is inventory, and the second consumer here is the studio site,
+        which is what the next stage is for.
+      </p>
+
+      <h2 class={s.subhead}>The shared vocabulary</h2>
+      <div class={s.specimens}>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo}><span class="page-eyebrow">Design system</span></div>
+          <code>.page-eyebrow</code>
+          <p class={s.foot}>Mono, uppercase, widest tracking. Labels every section on every page, and is always the accessible name for the section it opens.</p>
+        </div>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo}><span class={s.titleDemo}>Aa <em>Bb</em></span></div>
+          <code>.page-title</code>
+          <p class={s.foot}>Bricolage at <code>--fs-page</code>, optical size pinned to 72. Emphasis is color, not italic, because Bricolage has no true italic and a synthesized one is a slant, not a face.</p>
+        </div>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo}>
+            <a href="/system" class={s.focusDemo}>Focus me with Tab</a>
+          </div>
+          <code>:focus-visible</code>
+          <p class={s.foot}>Two-pixel accent ring, offset so it never sits on the glyphs. Never removed anywhere, and never replaced with an outline of none plus a color change.</p>
+        </div>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo}><span class={s.pillDemo}>A pill</span></div>
+          <code>--radius-pill</code>
+          <p class={s.foot}>The only curve on the site. Everything else is a square corner and a hairline.</p>
+        </div>
+      </div>
+
+      <h2 class={s.subhead}>LoadingState</h2>
+      <p class={s.blurb}>
+        The one genuinely reusable component, in both variants: a stitch for a
+        wait with nothing to report, and a progress form with a skeleton for one
+        that has a message. All three tools use it, which is why the three of them
+        wait in the same voice.
+      </p>
+      <!-- The real component owns aria-live and aria-busy. Two permanently busy
+           live regions on a documentation page would announce nothing useful and
+           never settle, so the demo is hidden from assistive tech and described
+           in the text instead. The semantics belong to the real usage. -->
+      <div class={s.specimens}>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo} aria-hidden="true"><LoadingState /></div>
+          <code>variant="stitch"</code>
+        </div>
+        <div class={s.specimen}>
+          <div class={s.specimenDemo} aria-hidden="true"><LoadingState message="Reading the palette" /></div>
+          <code>variant="progress"</code>
+        </div>
+      </div>
+
+      <h2 class={s.subhead}>ThemeSwitch</h2>
+      <p class={s.blurb}>
+        The safelight, up in the header. It is not duplicated here on purpose: it
+        carries <code>id="themeSwitch"</code> and the layout script binds to that
+        id, so a second copy would be a duplicate id and a control that only half
+        works. A gallery that breaks the thing it documents is worse than a
+        gallery with a gap in it. Use the one in the header.
+      </p>
+
+      <h2 class={s.subhead}>Inventory</h2>
+      <p class={s.blurb}>
+        Counted at build time by scanning the source, not kept by hand, because a
+        hand-kept inventory is a second source of truth about the first one and
+        rots the same way a hand-copied palette does. This page excludes itself
+        from the count, since demonstrating a component is not using one.
+      </p>
+      <table class={s.table}>
+        <caption class="visually-hidden">Every component, with how many files reference it</caption>
+        <thead>
+          <tr><th scope="col">Component</th><th scope="col">Path</th><th scope="col">Referenced by</th></tr>
+        </thead>
+        <tbody>
+          {live.map((c) => (
+            <tr>
+              <th scope="row"><code>{c.name}</code></th>
+              <td><code class={s.hex}>{c.path}</code></td>
+              <td class={s.num}>{c.uses}</td>
+            </tr>
+          ))}
+          {dead.map((c) => (
+            <tr class={s.deadRow}>
+              <th scope="row"><code>{c.name}</code></th>
+              <td><code class={s.hex}>{c.path}</code></td>
+              <td class={s.num}>none</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class={s.foot}>
+        {dead.length} of {inventory.length} are unreferenced and are on the list to
+        delete. Leaving them visible here is the point: an inventory that only
+        lists the parts still in use is a brochure. <code>ProjectCard</code> is the
+        instructive one. It is written in raw Tailwind utilities, <code>bg-white</code>,
+        <code>shadow-md</code>, <code>text-gray-600</code>, and reaches for not one
+        token on this page, which is precisely how it ended up unused: it could not
+        be dropped into a site that looks like this.
+      </p>
     </section>
 
   </div>
