@@ -209,6 +209,14 @@ const d = entry.data;
     .xpp-body :global(li) { margin-bottom: 8px; }
     .xpp-body :global(strong) { color: var(--black); font-weight: 600; }
     .xpp-body :global(em) { color: var(--sienna); font-style: normal; }
+    /* Underlined so a link never reads by color alone. */
+    .xpp-body :global(a) {
+      color: var(--sienna);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .xpp-body :global(a:hover) { color: var(--black); }
+    .xpp-body :global(a:focus-visible) { outline: 2px solid var(--sienna); outline-offset: 3px; }
 
     @media (max-width: 900px) {
       .xpp { padding: 100px 24px 72px; }
