@@ -1,0 +1,30 @@
+---
+// The demo is a standalone page in public/demos so it keeps its own globals,
+// CDN scripts and canvases away from the site's. It is same origin, so the
+// frame can be sized to its content instead of scrolling inside the page.
+---
+
+<iframe
+  id="incense-frame"
+  src="/demos/incense-five-ways.html"
+  title="Incense, five ways: five live panels, one for each rendering tool"
+  style="width:100%;height:1400px;border:0;display:block;background:#2A0E13"
+></iframe>
+
+<script>
+  const frame = document.getElementById('incense-frame') as HTMLIFrameElement | null;
+  const fit = () => {
+    const doc = frame?.contentDocument;
+    if (!frame || !doc?.body) return;
+    // Measure the body, not the document: the document is never shorter than
+    // the frame, so it could grow but never shrink back on a wider screen.
+    const size = () => {
+      const h = Math.ceil(doc.body.getBoundingClientRect().height);
+      if (Math.abs(frame.offsetHeight - h) > 1) frame.style.height = `${h}px`;
+    };
+    size();
+    new ResizeObserver(size).observe(doc.body);
+  };
+  frame?.addEventListener('load', fit);
+  if (frame?.contentDocument?.readyState === 'complete') fit();
+</script>

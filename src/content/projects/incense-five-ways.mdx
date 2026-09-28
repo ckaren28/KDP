@@ -1,0 +1,37 @@
+---
+title: "Incense, Five Ways"
+description: "One subject drawn with SVG, Canvas 2D, WebGL, Three.js and GSAP, each panel doing the one job its tool is actually for."
+subtitle: "Choosing a rendering tool, shown rather than told"
+track: "tech"
+tags: ["Creative Technology", "SVG", "Canvas API", "WebGL", "Three.js", "GSAP"]
+date: 2026-09-16
+password_protected: false
+live_url: "https://karendettmar.com/projects/incense-five-ways"
+tool_on_top: true
+
+problem_statement: "Front-end rendering tools are usually compared in a feature table, which says what each one can do but not when you'd reach for it. The obvious fix, one animation ported to every tool, doesn't work either: good renderers are built to draw the same picture, so side by side they look identical and the only real difference is cost, which you can't see."
+
+who_its_for: "Designers and engineers deciding what a visual idea needs before they build it, and anyone who has been told to just use Three.js."
+
+why_i_built_it: "Most of my recent projects are tools built around a model. I wanted one about engineering judgment instead: choosing between technologies and being able to defend the choice. Incense gave me one subject with a diagram, smoke, heat, depth and a sequence in it, which is one job for each tool."
+
+scope_constraints: "Five panels, one subject. The tools are ordered by layer, since Three.js is a library on top of WebGL rather than its peer. WebGPU is the next layer down and isn't built here. p5.js, Pixi and D3 get a sentence each rather than a panel, because none of them changes the argument. The incense set is my own drawing; the match and the label card behind the heat haze are still placeholders."
+
+what_changed: "The premise changed twice. I first ported one smoke animation to four renderers, then falling petals, then gave each side an equal time budget so the slower tools visibly thinned out. The measurements came out in exactly the order you'd expect, and it still looked like four copies of one picture. That was the finding: the difference between these tools isn't how they draw, it's what they're for. So every panel now does a different job, and the wrong tool for that job would be obvious."
+
+design_decisions:
+  - title: "SVG: a diagram you can point at"
+    body: "Every part is a real element, so it can be named on hover, reached with the keyboard and read aloud, and zooming to 8x redraws it sharp instead of scaling pixels."
+  - title: "Canvas 2D: smoke that stains the page"
+    body: "Canvas forgets each mark the moment it's drawn, so the smoke accumulates into a drawing and ten thousand marks cost the same as ten. Stains use ordinary blending, not additive, or they climb to white."
+  - title: "WebGL: heat haze"
+    body: "Bending everything behind the smoke means running a small program on every pixel, every frame. That is what the GPU is for, and the panel reports the frame time so the cost is visible."
+  - title: "Three.js: a scene you walk around"
+    body: "Cameras, lights and depth come supplied, so the smoke can pass in front of and behind the stick as you orbit it by dragging or with the arrow keys."
+  - title: "GSAP: a different axis"
+    body: "GSAP draws nothing. It sequences the lighting as a timeline you can scrub, which is why it sits beside the renderers rather than competing with them. With reduced motion on, the sequence is shown finished."
+---
+
+import IncenseFiveWays from '../../components/tools/IncenseFiveWays.astro';
+
+<IncenseFiveWays />
