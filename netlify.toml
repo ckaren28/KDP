@@ -15,6 +15,13 @@
 [functions."textile-palette"]
   timeout = 20
 
+# /projects has no page of its own; send it to the tech listing server-side
+# so there's no meta-refresh flash
+[[redirects]]
+  from = "/projects"
+  to = "/projects/tech"
+  status = 301
+
 # Fashion/textile content moved to studio.karendettmar.com, so redirect old URLs
 [[redirects]]
   from = "/studio"
