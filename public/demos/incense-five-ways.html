@@ -4,15 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Incense, five ways</title>
+<script>
+  // Follow the site's theme. Inside the case-study frame that is the parent
+  // page's; opened on its own it is the visitor's saved choice. The panels paint
+  // their colors once, so a switch reloads the frame rather than repainting.
+  (function () {
+    var t = null;
+    try { t = window.parent !== window && window.parent.document.documentElement.getAttribute('data-theme'); } catch (e) {}
+    if (!t) { try { t = localStorage.getItem('theme') || sessionStorage.getItem('theme'); } catch (e) {} }
+    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+    try {
+      if (window.parent !== window) {
+        var root = window.parent.document.documentElement;
+        new window.parent.MutationObserver(function () {
+          if (root.getAttribute('data-theme') !== document.documentElement.getAttribute('data-theme')) location.reload();
+        }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+      }
+    } catch (e) {}
+  })();
+</script>
 <style>
+  /* Grounds match the site's page color in each theme, so the frame doesn't
+     read as a box set into the page. */
   :root {
-    --ground: #2A0E13;
+    --ground: #3A0810;
     --surface: #3A0810;
+    --stage-in: #4A121C;
+    --stage-out: #25060B;
     --ink: #F2EFE9;
     --muted: #9A8288;
     --print: #A6C8E8;
     --ember: #E8704A;
     --border: rgba(242,239,233,0.14);
+  }
+  /* The negative print, same as the site's light theme: powder-blue ground,
+     oxblood ink. */
+  html[data-theme="light"] {
+    --ground: #D7E3EE;
+    --surface: #C5D6E6;
+    --stage-in: #D2E0EC;
+    --stage-out: #B4C8DB;
+    --ink: #2A0E13;
+    --muted: #515C69;
+    --print: #6B1621;
+    --ember: #C8492A;
+    --border: rgba(42,14,19,0.17);
   }
   * { box-sizing: border-box; }
   body {
@@ -42,7 +78,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    background: radial-gradient(ellipse at 52% 62%, #4A121C 0%, var(--surface) 58%, #25060B 100%);
+    background: radial-gradient(ellipse at 52% 62%, var(--stage-in) 0%, var(--surface) 58%, var(--stage-out) 100%);
     border: 1px solid var(--border);
     overflow: hidden;
     touch-action: none;
@@ -186,6 +222,28 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pixelRatio = () => Math.min(window.devicePixelRatio || 1, 2);
 
+  // Colors the panels paint with, per theme. Light is the negative: dark ink and
+  // dark smoke on the powder-blue ground, since light smoke on a light ground
+  // disappears.
+  const LIGHT = document.documentElement.getAttribute('data-theme') === 'light';
+  const P = LIGHT ? {
+    line: '#2A0E13', accent: '#6B1621', ember: '#C8492A', muted: '#515C69',
+    dab: '42,14,19',
+    dish: 'rgba(42,14,19,0.16)', stick: 'rgba(42,14,19,0.6)', holder: 'rgba(42,14,19,0.3)',
+    back: ['#D2E0EC', '#C5D6E6', '#B4C8DB'], rule: 'rgba(42,14,19,0.12)', type: 'rgba(42,14,19,0.34)',
+    hazeSmoke: [-0.45, -0.55, -0.5], hazeGlow: [0.3, -0.12, -0.22],
+    puff: [0.16, 0.05, 0.07], puffAdditive: false, puffOpacity: 0.55,
+    solidDish: '#2A0E13', solidStick: '#2A0E13', solidOpacity: 0.35,
+  } : {
+    line: '#F2EFE9', accent: '#A6C8E8', ember: '#E8704A', muted: '#9A8288',
+    dab: '232,227,215',
+    dish: 'rgba(235,235,235,0.4)', stick: 'rgba(166,166,166,0.65)', holder: 'rgba(235,235,235,0.5)',
+    back: ['#4A121C', '#3A0810', '#25060B'], rule: 'rgba(242,239,233,0.12)', type: 'rgba(242,239,233,0.30)',
+    hazeSmoke: [0.62, 0.72, 0.82], hazeGlow: [0.91, 0.44, 0.29],
+    puff: [0.78, 0.83, 0.9], puffAdditive: true, puffOpacity: 1,
+    solidDish: '#EBEBEB', solidStick: '#A6A6A6', solidOpacity: 1,
+  };
+
   // The setup, in a 300 x 300 space, shared by the flat panels. Copied from
   // assets/incense-solid.svg and assets/incense-outline.svg, so keep them in step.
   const SCENE = {
@@ -215,25 +273,25 @@
     stage.insertAdjacentHTML('beforeend', `
       <svg viewBox="0 0 300 300" id="svgArt">
         <g id="svgZoomGroup" style="transform-origin:${S.ember.x}px ${S.ember.y}px">
-          <g class="part" data-part="smoke" fill="none" stroke="#A6C8E8" stroke-width="0.6" opacity="0.75">
+          <g class="part" data-part="smoke" fill="none" stroke="${P.accent}" stroke-width="0.6" opacity="0.75">
             <path d="M171 104 C 166 84 178 70 172 52 C 168 38 176 28 174 16"/>
             <path d="M171 104 C 180 86 172 72 180 56 C 186 44 180 34 184 22"/>
             <path d="M171 104 C 164 90 158 78 160 64" opacity="0.6"/>
           </g>
           <g class="part" data-part="dish">
-            <path d="${S.dishRim}" pointer-events="visible" fill="none" stroke="#F2EFE9" stroke-width="0.7"/>
+            <path d="${S.dishRim}" pointer-events="visible" fill="none" stroke="${P.line}" stroke-width="0.7"/>
           </g>
           <g class="part" data-part="holder">
-            <path d="${S.holder}" pointer-events="visible" fill="none" stroke="#F2EFE9" stroke-width="0.7" stroke-linejoin="round"/>
+            <path d="${S.holder}" pointer-events="visible" fill="none" stroke="${P.line}" stroke-width="0.7" stroke-linejoin="round"/>
           </g>
           <g class="part" data-part="stick">
-            <path d="${S.stickAboveHolder}" pointer-events="visible" fill="none" stroke="#F2EFE9" stroke-width="0.7" stroke-linejoin="round"/>
+            <path d="${S.stickAboveHolder}" pointer-events="visible" fill="none" stroke="${P.line}" stroke-width="0.7" stroke-linejoin="round"/>
           </g>
           <g class="part" data-part="ember">
-            <circle cx="${S.ember.x}" cy="${S.ember.y}" r="2.1" fill="#E8704A"/>
-            <circle cx="${S.ember.x}" cy="${S.ember.y}" r="5.5" fill="none" stroke="#E8704A" stroke-width="0.4" opacity="0.7"/>
+            <circle cx="${S.ember.x}" cy="${S.ember.y}" r="2.1" fill="${P.ember}"/>
+            <circle cx="${S.ember.x}" cy="${S.ember.y}" r="5.5" fill="none" stroke="${P.ember}" stroke-width="0.4" opacity="0.7"/>
           </g>
-          <g stroke="#9A8288" stroke-width="0.3" font-family="ui-monospace, monospace" font-size="5" fill="#9A8288">
+          <g stroke="${P.muted}" stroke-width="0.3" font-family="ui-monospace, monospace" font-size="5" fill="${P.muted}">
             <line x1="40" y1="292" x2="90" y2="292"/>
             <line x1="40" y1="289" x2="40" y2="295"/>
             <line x1="90" y1="289" x2="90" y2="295"/>
@@ -251,15 +309,15 @@
       const on = () => {
         status.innerHTML = `<b>${g.dataset.part}</b>. ${parts[g.dataset.part].split('. ').slice(1).join('. ')}`;
         g.querySelectorAll('*').forEach((el) => {
-          if (el.getAttribute('stroke')) el.setAttribute('stroke', '#A6C8E8');
-          if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', '#A6C8E8');
+          if (el.getAttribute('stroke')) el.setAttribute('stroke', P.accent);
+          if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', P.accent);
         });
       };
       const off = () => {
         status.textContent = idle;
         g.querySelectorAll('*').forEach((el) => {
-          if (el.getAttribute('stroke')) el.setAttribute('stroke', g.dataset.part === 'smoke' ? '#A6C8E8' : '#F2EFE9');
-          if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', '#E8704A');
+          if (el.getAttribute('stroke')) el.setAttribute('stroke', g.dataset.part === 'smoke' ? P.accent : P.line);
+          if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', P.ember);
         });
       };
       g.addEventListener('pointerenter', on);
@@ -291,9 +349,9 @@
     {
       const g = dab.getContext('2d');
       const grad = g.createRadialGradient(24, 24, 0, 24, 24, 24);
-      grad.addColorStop(0, 'rgba(232,227,215,0.55)');
-      grad.addColorStop(0.5, 'rgba(232,227,215,0.16)');
-      grad.addColorStop(1, 'rgba(232,227,215,0)');
+      grad.addColorStop(0, `rgba(${P.dab},0.55)`);
+      grad.addColorStop(0.5, `rgba(${P.dab},0.16)`);
+      grad.addColorStop(1, `rgba(${P.dab},0)`);
       g.fillStyle = grad;
       g.fillRect(0, 0, 48, 48);
     }
@@ -314,13 +372,13 @@
     function paintBase() {
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
       const S = SCENE;
-      ctx.fillStyle = 'rgba(235,235,235,0.4)';
+      ctx.fillStyle = P.dish;
       ctx.beginPath(); ctx.ellipse(S.dish.cx, S.dish.cy, S.dish.rx, S.dish.ry, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = 'rgba(166,166,166,0.65)';
+      ctx.fillStyle = P.stick;
       ctx.fill(new Path2D(S.stick));
-      ctx.fillStyle = 'rgba(235,235,235,0.5)';
+      ctx.fillStyle = P.holder;
       ctx.fill(new Path2D(S.holder));
-      ctx.fillStyle = '#E8704A';
+      ctx.fillStyle = P.ember;
       ctx.beginPath(); ctx.arc(S.ember.x, S.ember.y, 2.1, 0, Math.PI * 2); ctx.fill();
     }
 
@@ -411,15 +469,15 @@
     {
       const g = back.getContext('2d');
       const bg = g.createRadialGradient(266, 320, 20, 266, 320, 420);
-      bg.addColorStop(0, '#4A121C');
-      bg.addColorStop(0.6, '#3A0810');
-      bg.addColorStop(1, '#25060B');
+      bg.addColorStop(0, P.back[0]);
+      bg.addColorStop(0.6, P.back[1]);
+      bg.addColorStop(1, P.back[2]);
       g.fillStyle = bg;
       g.fillRect(0, 0, 512, 512);
-      g.strokeStyle = 'rgba(242,239,233,0.12)';
+      g.strokeStyle = P.rule;
       g.lineWidth = 1;
       for (let y = 40; y < 512; y += 26) { g.beginPath(); g.moveTo(0, y); g.lineTo(512, y); g.stroke(); }
-      g.fillStyle = 'rgba(242,239,233,0.30)';
+      g.fillStyle = P.type;
       g.font = '600 34px ui-monospace, monospace';
       g.textAlign = 'center';
       g.fillText('SANDALWOOD', 256, 150);
@@ -429,11 +487,11 @@
       const S = SCENE;
       g.save();
       g.scale(k, k);
-      g.fillStyle = 'rgba(235,235,235,0.45)';
+      g.fillStyle = P.dish;
       g.beginPath(); g.ellipse(S.dish.cx, S.dish.cy, S.dish.rx, S.dish.ry, 0, 0, Math.PI * 2); g.fill();
-      g.fillStyle = 'rgba(166,166,166,0.7)';
+      g.fillStyle = P.stick;
       g.fill(new Path2D(S.stick));
-      g.fillStyle = 'rgba(235,235,235,0.55)';
+      g.fillStyle = P.holder;
       g.fill(new Path2D(S.holder));
       g.restore();
     }
@@ -461,6 +519,9 @@
       uniform float time;
       uniform float heat;
       uniform vec2 ember;
+      // Added to the picture: light on the dark ground, negative (darkening) on light.
+      uniform vec3 smokeTint;
+      uniform vec3 glowTint;
 
       float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
       float noise(vec2 p) {
@@ -492,9 +553,9 @@
                           plume(p + vec2(0.0, e)) - plume(p - vec2(0.0, e)));
         vec3 c = texture(back, p + slope * heat * 2.2).rgb;
         // The smoke itself, and the ember's glow.
-        c += vec3(0.62, 0.72, 0.82) * m * 0.30;
+        c += smokeTint * m * 0.30;
         float d = distance(p, ember);
-        c += vec3(0.91, 0.44, 0.29) * exp(-d * 26.0) * 0.85;
+        c += glowTint * exp(-d * 26.0) * 0.85;
         color = vec4(c, 1.0);
       }`));
     gl.linkProgram(program);
@@ -513,6 +574,8 @@
     const uTime = gl.getUniformLocation(program, 'time');
     const uHeat = gl.getUniformLocation(program, 'heat');
     gl.uniform2f(gl.getUniformLocation(program, 'ember'), SCENE.ember.x / 300, SCENE.ember.y / 300);
+    gl.uniform3fv(gl.getUniformLocation(program, 'smokeTint'), P.hazeSmoke);
+    gl.uniform3fv(gl.getUniformLocation(program, 'glowTint'), P.hazeGlow);
 
     function resize() {
       const side = Math.round(stage.clientWidth * pixelRatio());
@@ -616,8 +679,9 @@
     const puffs = [];
     for (let i = 0; i < COUNT; i++) {
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: puffTexture, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-        color: new THREE.Color(0.78, 0.83, 0.9),
+        map: puffTexture, transparent: true, depthWrite: false,
+        blending: P.puffAdditive ? THREE.AdditiveBlending : THREE.NormalBlending,
+        color: new THREE.Color(...P.puff),
       }));
       scene.add(sprite);
       puffs.push({ sprite, age: Math.random() * 6, life: 4 + Math.random() * 3, seed: Math.random() * 6.28, vx: 0, vz: 0, pos: TIP.clone() });
@@ -642,7 +706,7 @@
         q.sprite.position.copy(q.pos);
         q.sprite.scale.setScalar(size);
         const fade = Math.min(q.age / 1.2, 1) * (1 - q.age / q.life);
-        q.sprite.material.opacity = 0.42 * fade * fade;
+        q.sprite.material.opacity = 0.42 * fade * fade * P.puffOpacity;
       }
     }
 
@@ -722,19 +786,19 @@
     const S = SCENE;
     stage.insertAdjacentHTML('beforeend', `
       <svg viewBox="0 0 300 300">
-        <ellipse cx="${S.dish.cx}" cy="${S.dish.cy}" rx="${S.dish.rx}" ry="${S.dish.ry}" fill="#EBEBEB" opacity="0.5"/>
-        <path d="${S.stick}" fill="#A6A6A6" opacity="0.8"/>
-        <path d="${S.holder}" fill="#EBEBEB" opacity="0.6"/>
+        <ellipse cx="${S.dish.cx}" cy="${S.dish.cy}" rx="${S.dish.rx}" ry="${S.dish.ry}" fill="${P.solidDish}" opacity="${0.5 * P.solidOpacity}"/>
+        <path d="${S.stick}" fill="${P.solidStick}" opacity="${0.8 * P.solidOpacity}"/>
+        <path d="${S.holder}" fill="${P.solidDish}" opacity="${0.6 * P.solidOpacity}"/>
         <g id="matchGroup" opacity="0">
           <line id="matchStick" x1="230" y1="150" x2="262" y2="168" stroke="#B98A63" stroke-width="2" stroke-linecap="round"/>
-          <ellipse id="flame" cx="228" cy="148" rx="3.2" ry="5" fill="#E8704A" opacity="0"/>
+          <ellipse id="flame" cx="228" cy="148" rx="3.2" ry="5" fill="${P.ember}" opacity="0"/>
         </g>
-        <circle id="emberDot" cx="${S.ember.x}" cy="${S.ember.y}" r="2.2" fill="#E8704A" opacity="0"/>
-        <circle id="emberRing" cx="${S.ember.x}" cy="${S.ember.y}" r="3" fill="none" stroke="#E8704A" stroke-width="0.6" opacity="0"/>
+        <circle id="emberDot" cx="${S.ember.x}" cy="${S.ember.y}" r="2.2" fill="${P.ember}" opacity="0"/>
+        <circle id="emberRing" cx="${S.ember.x}" cy="${S.ember.y}" r="3" fill="none" stroke="${P.ember}" stroke-width="0.6" opacity="0"/>
         <path id="wisp" d="M171 104 C 165 84 177 70 171 52 C 166 38 175 26 172 12"
-              fill="none" stroke="#A6C8E8" stroke-width="0.9" opacity="0.85"/>
+              fill="none" stroke="${P.accent}" stroke-width="0.9" opacity="0.85"/>
         <text id="caption" x="150" y="288" text-anchor="middle" font-family="ui-monospace, monospace"
-              font-size="7" letter-spacing="1.2" fill="#9A8288" opacity="0">LIT AT 7.02</text>
+              font-size="7" letter-spacing="1.2" fill="${P.muted}" opacity="0">LIT AT 7.02</text>
       </svg>`);
 
     const script = document.createElement('script');

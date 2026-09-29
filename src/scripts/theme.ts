@@ -11,6 +11,7 @@ export type Theme = 'light' | 'dark';
 export function applyTheme(t: Theme) {
   document.documentElement.setAttribute('data-theme', t);
   try { localStorage.setItem('theme', t); } catch { /* private mode */ }
+  try { sessionStorage.setItem('theme', t); } catch { /* private mode */ }
   window.dispatchEvent(new CustomEvent<Theme>('themechange', { detail: t }));
 }
 

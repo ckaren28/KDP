@@ -36,7 +36,12 @@ const LINES = ['KAREN', 'DETTMAR'];
     (function () {
       var stored = null;
       try { stored = localStorage.getItem('theme'); } catch (e) {}
-      document.documentElement.setAttribute('data-theme', stored || 'dark');
+      // Same order as MainLayout: the switch, then this visit's theme, then dark.
+      var carried = null;
+      try { carried = sessionStorage.getItem('theme'); } catch (e) {}
+      var t = stored || carried || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      try { sessionStorage.setItem('theme', t); } catch (e) {}
     })();
   </script>
   <link rel="canonical" href="https://karendettmar.com/" />

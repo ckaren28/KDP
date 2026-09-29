@@ -60,9 +60,15 @@ const { title, theme = 'light' } = Astro.props;
   <script is:inline define:vars={{ pageTheme: theme }}>
     (function () {
       document.documentElement.classList.add('js');
-      var stored = null;
+      // A choice made with the switch wins. Failing that, keep whatever theme
+      // the visitor was already seeing this visit, so moving between pages
+      // never flips it. The page's own default only decides the first page.
+      var stored = null, carried = null;
       try { stored = localStorage.getItem('theme'); } catch (e) {}
-      document.documentElement.setAttribute('data-theme', stored || pageTheme);
+      try { carried = sessionStorage.getItem('theme'); } catch (e) {}
+      var t = stored || carried || pageTheme;
+      document.documentElement.setAttribute('data-theme', t);
+      try { sessionStorage.setItem('theme', t); } catch (e) {}
     })();
   </script>
   <!-- Arriving through the shutter. Module scripts are deferred, so by the time
