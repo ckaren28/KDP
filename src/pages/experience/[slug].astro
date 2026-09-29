@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
-import PasswordGate from '../../components/PasswordGate.astro';
 
 export async function getStaticPaths() {
   // Compact roles render as a line on the work page and get no page of their own.
@@ -19,8 +18,8 @@ const d = entry.data;
 ---
 
 <MainLayout title={`${d.company} · Karen Dettmar`} theme="light">
-  {/* Gated, so keep it out of search results: the text is in the HTML and a
-      crawler would otherwise index what the gate hides. */}
+  {/* Kept out of search results: these pages are for people Karen sends here,
+      not for search traffic. */}
   <meta slot="head" name="robots" content="noindex" />
 
   <style>
@@ -231,12 +230,6 @@ const d = entry.data;
   <article class="xpp">
     <a href="/projects/tech#experience" class="xpp-back">← Back to work</a>
 
-    {/* Every experience page is gated. Same password and cookie as the gated
-        projects, so entering it once opens all of them. */}
-    <PasswordGate noun="page" />
-
-    <div id="gated-content" style="display:none">
-
     <p class="xpp-meta">
       <span class="xpp-company">{d.company}</span>
       <span>{d.role}</span>
@@ -283,7 +276,6 @@ const d = entry.data;
     )}
 
     <div class="xpp-body"><Content /></div>
-    </div>
   </article>
 
 </MainLayout>

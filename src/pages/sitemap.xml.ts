@@ -2,7 +2,7 @@ import { getCollection } from 'astro:content';
 
 // Written by hand rather than with @astrojs/sitemap so it adds no dependency,
 // and so what it leaves out is explicit. Left out: the experience pages, which
-// are password protected and noindexed; /admin/; and the tag listings, which
+// are noindexed; /admin/; and the tag listings, which
 // only repeat the work page.
 const SITE = 'https://karendettmar.com';
 
