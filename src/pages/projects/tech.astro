@@ -7,11 +7,6 @@ import { getCollection } from 'astro:content';
 const allExperience = (await getCollection('experience'))
   .sort((a, b) => a.data.order - b.data.order);
 
-// Two tiers on purpose. Roles with something to show get a card and a case page;
-// roles with a real result but nothing showable get a single line, so the
-// section isn't padded out to an even five.
-const experience = allExperience.filter((e) => !e.data.compact);
-const compactExperience = allExperience.filter((e) => e.data.compact);
 
 // The grid reads the content collection. It used to be a hardcoded array here,
 // which meant two sources of truth for the same four projects. Edit the MDX and
@@ -275,6 +270,10 @@ const projects = (await getCollection('projects'))
       max-width: 46ch;
     }
     .exp-item { margin-top: 8px; }
+    .exp-thumb { display: block; border: 1px solid var(--border); transition: border-color 0.35s ease; }
+    .exp-thumb img { display: block; width: 100%; height: auto; }
+    .exp-thumb:hover { border-color: var(--sienna); }
+    .exp-thumb:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
     /* Each item now carries a paragraph under its caption, and 8px let two of
        them run together. Only the gap between items changes. */
     .exp-item + .exp-item { margin-top: 64px; }
@@ -303,56 +302,47 @@ const projects = (await getCollection('projects'))
     }
 
     /* ── WORK EXPERIENCE ──
-       Cards lead on the work, not the job title. The title sits in the small
-       mono metadata line beside the dates, so the section doesn't open with two
-       "Developer Advocate" headings. The result is the visual anchor because a
-       quantified outcome carries further than a screenshot. */
+       A list, not cards. The history is secondary to the work above, so each
+       row is only company, role and one short line. The headline and result
+       live on the case page, behind the password. */
     .xp { margin-top: 96px; padding-top: 40px; border-top: 1px solid var(--border); }
 
-    /* Same grid and card treatment as the projects above. The employment history
-       is secondary to the work, so it must not out-weigh it visually, which a
-       full-width stack of long rows did. Everything past the hook lives on the
-       card's own page. */
-    .xp-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+    .xp-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--border);
     }
-    .xp-card {
+    .xp-list li { border-bottom: 1px solid var(--border); }
+    .xp-row {
       position: relative;
       display: flex;
-      flex-direction: column;
-      padding: 30px 32px 26px;
-      border: 1px solid var(--border);
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 22px 0 22px 18px;
       text-decoration: none;
       color: inherit;
-      overflow: hidden;
-      transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2,0.8,0.3,1);
     }
-    .xp-card::before {
+    .xp-row::before {
       content: '';
       position: absolute;
-      left: 0; top: 0; bottom: 0;
+      left: 0; top: 22px; bottom: 22px;
       width: 2px;
       background: var(--sienna);
       transform: scaleY(0);
       transform-origin: top;
       transition: transform 0.45s cubic-bezier(0.2,0.8,0.3,1);
     }
-    .xp-card:hover {
-      border-color: var(--sienna);
-      background: var(--warm-white);
-      transform: translateY(-3px);
-    }
-    .xp-card:hover::before { transform: scaleY(1); }
-    .xp-card:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+    .xp-row:hover::before { transform: scaleY(1); }
+    .xp-row:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
 
     .xp-meta {
       display: flex;
       align-items: baseline;
       gap: 10px;
       flex-wrap: wrap;
-      margin: 0 0 14px;
+      margin: 0 0 8px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
       letter-spacing: 0.14em;
@@ -362,43 +352,16 @@ const projects = (await getCollection('projects'))
     .xp-company { color: var(--black); font-weight: 700; }
     .xp-meta span:not(.xp-company)::before { content: '·'; margin-right: 10px; }
 
-    .xp-headline {
-      margin: 0 0 14px;
-      font-family: var(--font-display);
-      font-size: clamp(18px, 1.9vw, 23px);
-      font-weight: 600;
-      line-height: 1.24;
-      letter-spacing: -0.022em;
-      color: var(--black);
-    }
-
-    .xp-result {
-      margin: 0 0 auto;
-      padding-left: 14px;
-      border-left: 2px solid var(--sienna);
-      font-size: var(--fs-300);
+    .xp-abstract {
+      margin: 0;
+      font-size: var(--fs-350);
       line-height: 1.6;
-      color: var(--sienna);
-    }
-
-    .xp-foot {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 22px;
-    }
-    .xp-link {
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text-body);
       transition: color 0.25s ease;
     }
-    .xp-card:hover .xp-link { color: var(--sienna); }
+    .xp-row:hover .xp-abstract { color: var(--sienna); }
 
-    /* States the work is internal rather than leaving a card that looks like it
+    /* States the work is internal rather than leaving a row that looks like it
        forgot its images. */
     .xp-nda {
       flex-shrink: 0;
@@ -412,25 +375,8 @@ const projects = (await getCollection('projects'))
       color: var(--muted);
     }
 
-    /* Roles with a real result but nothing showable. A line, not a card. */
-    .xp-compact {
-      margin: 24px 0 0;
-      padding: 0;
-      list-style: none;
-      border-top: 1px solid var(--border);
-    }
-    .xp-compact li { padding: 20px 0 0; }
-    .xp-compact .xp-meta { margin-bottom: 8px; }
-    .xp-compact-line {
-      margin: 0;
-      font-size: var(--fs-350);
-      line-height: 1.65;
-      color: var(--text-body);
-      max-width: 74ch;
-    }
-    .xp-compact-sep { margin: 0 8px; color: var(--muted); }
-    .xp-card:hover .xp-headline { color: var(--sienna); }
-    .xp-headline { transition: color 0.25s ease; }
+    /* Compact roles have no case page, so the row is plain text, not a link. */
+    .xp-row--static::before { display: none; }
 
     .canvas-section {
       position: relative;
@@ -525,8 +471,6 @@ const projects = (await getCollection('projects'))
       .canvas-section { height: 50vh; min-height: 320px; }
       .experiments { margin-top: 64px; padding-top: 32px; }
       .xp { margin-top: 64px; padding-top: 32px; }
-      .xp-grid { grid-template-columns: 1fr; }
-      .xp-card { padding: 26px 22px; }
     }
   </style>
 
@@ -578,7 +522,7 @@ const projects = (await getCollection('projects'))
         <p class="exp-note">
           Unfinished on purpose. Each one exists to work out a single technique in
           isolation, which is usually where the interesting problems turn up first.
-          They run in the browser, here on the page.
+          Most run in the browser, here on the page.
         </p>
       </div>
 
@@ -640,56 +584,68 @@ const projects = (await getCollection('projects'))
           motion is on, it falls back to the idle cloud rather than breaking.
         </p>
       </div>
+
+      {/* Too heavy to run inline (WebGL, Three.js and GSAP together), so this one
+          is a still that opens the full piece on its own page. */}
+      <div class="exp-item">
+        <a class="exp-thumb" href="/projects/incense-five-ways">
+          <img
+            src="/images/incense-five-ways-thumb.jpg"
+            alt="The SVG and Canvas panels of Incense, Five Ways: a line drawing of an incense stick beside a painted one trailing smoke."
+            width="1200"
+            height="588"
+            loading="lazy"
+          />
+        </a>
+        <div class="exp-caption">
+          <span>
+            Incense, five ways. One subject, five rendering tools.
+            <a class="face-src" href="/projects/incense-five-ways">Open it</a>
+          </span>
+          <span>SVG · Canvas · WebGL · Three.js · GSAP</span>
+        </div>
+        <p class="exp-detail">
+          Each panel does the one job its tool is actually for: a diagram you can point
+          at, smoke that stains the page, heat haze on every pixel, a scene you walk
+          around, and a sequence. Porting one animation to every renderer only showed
+          five copies of the same picture, so the comparison became about what each
+          tool is for rather than how it draws.
+        </p>
+      </div>
     </section>
 
-    {experience.length > 0 && (
+    {allExperience.length > 0 && (
       <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
         <div class="exp-head">
           <h2 class="exp-title" id="experienceLabel">Experience</h2>
           <p class="exp-note">
-            Design and front-end work, and the four years of developer advocacy
-            in the middle of it. Where the evidence survives, it's here.
+            Design, product, DevRel and front-end work.
           </p>
         </div>
 
-        <div class="xp-grid">
-          {experience.map(({ data, slug }) => (
-            <a
-              class="xp-card"
-              href={`/experience/${slug}`}
-            >
-              <p class="xp-meta">
-                <span class="xp-company">{data.company}</span>
-                <span>{data.role}</span>
-              </p>
-
-              <h3 class="xp-headline">{data.headline}</h3>
-              <p class="xp-result">{data.result}</p>
-
-              <span class="xp-foot">
-                <span class="xp-link">Read the full case</span>
+        <ul class="xp-list">
+          {allExperience.map(({ data, slug }) => {
+            const inner = (
+              <>
+                <div>
+                  <p class="xp-meta">
+                    <span class="xp-company">{data.company}</span>
+                    <span>{data.role}</span>
+                  </p>
+                  <p class="xp-abstract">{data.abstract}</p>
+                </div>
                 {data.nda && <span class="xp-nda">Internal</span>}
-              </span>
-            </a>
-          ))}
-        </div>
-
-        {compactExperience.length > 0 && (
-          <ul class="xp-compact">
-            {compactExperience.map(({ data }) => (
+              </>
+            );
+            return (
               <li>
-                <p class="xp-meta">
-                  <span class="xp-company">{data.company}</span>
-                  <span>{data.role}</span>
-                  {data.nda && <span class="xp-nda">Internal</span>}
-                </p>
-                <p class="xp-compact-line">
-                  {data.headline}<span class="xp-compact-sep">·</span>{data.result}
-                </p>
+                {data.compact
+                  ? <div class="xp-row xp-row--static">{inner}</div>
+                  : <a class="xp-row" href={`/experience/${slug}`}>{inner}</a>}
               </li>
-            ))}
-          </ul>
-        )}
+            );
+          })}
+        </ul>
       </section>
     )}
 

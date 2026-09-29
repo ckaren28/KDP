@@ -88,6 +88,9 @@ const experience = defineCollection({
     headline: z.string(),
     // The quantified outcome. The headline number of the card.
     result: z.string(),
+    // One short line shown on the work page in place of the result, which now
+    // sits behind the password on the case page.
+    abstract: z.string(),
     summary: z.string(),
     // Secondary things worth listing under the headline work. Keep it to two,
     // chosen, since an exhaustive list reads as a CV bleeding into a portfolio.
