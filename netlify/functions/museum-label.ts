@@ -1,5 +1,8 @@
+import { fromThisSite, bodyTooLarge, FORBIDDEN, TOO_LARGE } from "../lib/guard";
+
 type HandlerEvent = {
   httpMethod: string;
+  headers?: Record<string, string | undefined>;
   body: string | null;
 };
 
@@ -16,6 +19,10 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
     if (event.httpMethod !== "POST") {
       return { statusCode: 405, headers: JSON_HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
     }
+
+    // Every call is billed to the API key, so only this site may call it.
+    if (!fromThisSite(event.headers)) return FORBIDDEN;
+    if (bodyTooLarge(event.body, 20_000)) return TOO_LARGE;
 
     const body = JSON.parse(event.body || "{}") as {
       title?: string;
@@ -35,6 +42,12 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
       tone = "neutral",
       stayCloseToSource = true,
     } = body;
+
+    // Caps keep a single request from being padded into an expensive one.
+    const tooLong = [title, artist, year, medium, tone].some((v) => String(v).length > 300);
+    if (tooLong || String(description).length > 6000) {
+      return { statusCode: 400, headers: JSON_HEADERS, body: JSON.stringify({ error: "That's longer than this tool takes. Please shorten the description (6,000 characters at most)." }) };
+    }
 
     if (!description || String(description).trim().length < 30) {
       return { statusCode: 400, headers: JSON_HEADERS, body: JSON.stringify({ error: "Please include a longer artwork description (30+ chars)." }) };

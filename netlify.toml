@@ -15,6 +15,21 @@
 [functions."textile-palette"]
   timeout = 20
 
+# Security headers on every response. HSTS is already sent by Netlify.
+# - X-Frame-Options: only this site may put its pages in a frame (the Incense
+#   demo is framed by its own case study, which is same origin).
+# - Permissions-Policy: the camera is for the face-cloud experiment on this
+#   site only; nothing here uses the microphone or location.
+# No Content-Security-Policy yet: the demos load Three.js and GSAP from CDNs and
+# the layouts use inline scripts, so a CSP needs its own careful pass.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(), geolocation=()"
+
 # /projects has no page of its own; send it to the tech listing server-side
 # so there's no meta-refresh flash
 [[redirects]]

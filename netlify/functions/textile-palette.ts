@@ -1,5 +1,8 @@
+import { fromThisSite, bodyTooLarge, FORBIDDEN, TOO_LARGE } from "../lib/guard";
+
 type HandlerEvent = {
   httpMethod: string;
+  headers?: Record<string, string | undefined>;
   body: string | null;
 };
 
@@ -15,8 +18,16 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
       return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
     }
 
+    // Every call is billed to the API key, so only this site may call it.
+    if (!fromThisSite(event.headers)) return FORBIDDEN;
+    if (bodyTooLarge(event.body, 2_000)) return TOO_LARGE;
+
     const body = JSON.parse(event.body || "{}") as { concept?: string };
     const { concept = "" } = body;
+
+    if (String(concept).length > 300) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Please keep the concept under 300 characters." }) };
+    }
 
     if (!concept || String(concept).trim().length < 3) {
       return { statusCode: 400, body: JSON.stringify({ error: "Please include a concept (3+ chars)." }) };

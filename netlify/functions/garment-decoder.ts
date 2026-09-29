@@ -1,5 +1,8 @@
+import { fromThisSite, bodyTooLarge, FORBIDDEN, TOO_LARGE } from "../lib/guard";
+
 type HandlerEvent = {
   httpMethod: string;
+  headers?: Record<string, string | undefined>;
   body: string | null;
 };
 
@@ -101,6 +104,11 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
       return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
     }
 
+    // Every call is billed to the API key, so only this site may call it. The
+    // body limit leaves room for a photo at MAX_IMAGE_BYTES once base64 encoded.
+    if (!fromThisSite(event.headers)) return FORBIDDEN;
+    if (bodyTooLarge(event.body, 3_000_000)) return TOO_LARGE;
+
     const body = JSON.parse(event.body || "{}") as Record<string, unknown>;
     const {
       description = "",
@@ -121,6 +129,10 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
     const normalizedImageMediaType = String(imageMediaType).toLowerCase().split(";")[0];
     const hasImage = Boolean(String(imageBase64).trim());
     const hasDesc  = String(description).trim().length >= 20;
+
+    if (String(description).length > 4000 || String(fabricType).length > 200 || String(garmentType).length > 200) {
+      return { statusCode: 400, body: JSON.stringify({ error: "That's longer than this tool takes. Please shorten the description (4,000 characters at most)." }) };
+    }
 
     if (!hasDesc && !hasImage) {
       return { statusCode: 400, body: JSON.stringify({ error: "Please include a garment description (20+ chars) or upload a photo." }) };
