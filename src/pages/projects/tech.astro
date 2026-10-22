@@ -612,6 +612,36 @@ const projects = (await getCollection('projects'))
           tool is for rather than how it draws.
         </p>
       </div>
+
+      {/* A standalone page rather than inline: it carries its own controls and
+          layout, and is still a prototype being reworked. */}
+      <div class="exp-item">
+        <a class="exp-thumb" href="/demos/riso-ink-chooser.html">
+          <img
+            src="/images/riso-ink-chooser-thumb.jpg"
+            alt="A landscape in blue, pink, green and orange beside the same picture predicted in two riso inks, purple and fluorescent green, where the orange sun turns pale green."
+            width="1200"
+            height="394"
+            loading="lazy"
+          />
+        </a>
+        <div class="exp-caption">
+          <span>
+            Riso ink chooser. Which two inks, for this image.
+            <a class="face-src" href="/demos/riso-ink-chooser.html">Open it</a>
+          </span>
+          <span>Canvas · Color science</span>
+        </div>
+        <p class="exp-detail">
+          A riso print usually gets two or three inks, each on its own drum, and the
+          choice is made before anything is printed. This tries every pair of inks
+          against your image and ranks them by how close they get, measured as
+          perceptual distance in Lab color. Inks are modeled as see-through filters
+          that multiply, so each pair can only make a flat sheet of colors, and the
+          page shows that sheet with your image's colors placed on it and the lost
+          ones ringed. Not yet checked against a real print.
+        </p>
+      </div>
     </section>
 
     {allExperience.length > 0 && (

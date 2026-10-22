@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riso Ink Chooser</title>
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --card: #fffdf9;
+    --fg: #1d1b19;
+    --muted: #5d5852;
+    --line: #d9d3ca;
+    --accent: #b0154f;
+    --focus: #1a5fb4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1917;
+      --card: #24221f;
+      --fg: #f1ede6;
+      --muted: #aaa49b;
+      --line: #3d3a35;
+      --accent: #ff7aae;
+      --focus: #8ab4ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  h3 { font-size: 14px; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .lede { color: var(--muted); max-width: 70ch; }
+  .back { color: var(--muted); font-size: 13px; text-decoration: none; }
+  .back:hover { color: var(--fg); text-decoration: underline; }
+  .note {
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    background: var(--card);
+    color: var(--muted);
+    font-size: 13px;
+    max-width: 80ch;
+    margin: 16px 0 24px;
+  }
+  button, select, input, .file-label {
+    font: inherit;
+    color: var(--fg);
+  }
+  button, .file-label {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  button:hover, .file-label:hover { border-color: var(--muted); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  select, input[type="color"] {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 8px;
+  }
+  input[type="color"] { padding: 2px; width: 44px; height: 34px; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: end;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field > span { font-size: 13px; color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .file-input:focus-visible + .file-label { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .drop { border: 1px dashed var(--line); border-radius: 10px; }
+  .drop.over { border-color: var(--accent); }
+
+  details.inkset { width: 100%; }
+  details.inkset summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .ink-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 4px 12px;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  .ink-grid label { display: flex; gap: 6px; align-items: center; }
+
+  .chip { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.25); flex: none; }
+
+  .palette { display: flex; height: 28px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 4px; }
+  .palette div { height: 100%; }
+  .caption { font-size: 12px; color: var(--muted); }
+
+  .layout { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
+  @media (min-width: 900px) { .layout { grid-template-columns: 340px 1fr; } }
+
+  ol.results { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ol.results button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    display: grid;
+    gap: 6px;
+  }
+  ol.results button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .pair-name { display: flex; gap: 6px; align-items: center; font-weight: 600; }
+  .pair-meta { font-size: 12px; color: var(--muted); }
+  .mini { display: flex; height: 10px; border-radius: 3px; overflow: hidden; }
+  .mini div { height: 100%; }
+
+  .detail { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .compare canvas, .plates canvas { width: 100%; height: auto; display: block; border-radius: 4px; border: 1px solid var(--line); }
+  .split { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 700px) { .split { grid-template-columns: 280px 1fr; } }
+  .gamut-wrap { position: relative; }
+  #gamut { width: 100%; max-width: 280px; aspect-ratio: 1; display: block; border-radius: 4px; }
+  .axis { font-size: 12px; color: var(--muted); }
+  .plates { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  ul.lost { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  ul.lost li { display: flex; gap: 8px; align-items: center; }
+  .sw { width: 28px; height: 20px; border-radius: 3px; border: 1px solid rgba(0,0,0,.2); flex: none; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+  .status { font-size: 13px; color: var(--muted); min-height: 1.5em; margin-top: 12px; }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <p><a class="back" href="/projects/tech#experiments">← Back to work</a></p>
+  <h1>Riso Ink Chooser</h1>
+  <p class="lede">Drop in your artwork and choose a paper. Every pair of riso inks is tried against your image, ranked by how close it gets, with the colors each pair would lose.</p>
+  <p class="note">Prototype. Ink colors are screen approximations from the community list on stencil.wiki (via the riso-colors package), and fluorescent inks print brighter than a screen can show. Inks are modeled as see-through filters that multiply. None of this has been checked against a real print yet.</p>
+
+  <section class="controls drop" id="drop" aria-label="Image and print settings">
+    <div class="field">
+      <span>Artwork</span>
+      <div class="row">
+        <input class="file-input" type="file" id="file" accept="image/*">
+        <label class="file-label" for="file">Choose an image</label>
+        <button type="button" id="sample">Use the sample</button>
+      </div>
+    </div>
+    <label class="field">
+      <span>Paper</span>
+      <div class="row">
+        <select id="paper">
+          <option value="#FFFFFF">White</option>
+          <option value="#F5F0E1">Natural</option>
+          <option value="#F2E6C9">Cream</option>
+          <option value="#F6D5DA">Pink</option>
+          <option value="#D9E7F1">Light blue</option>
+          <option value="#CDB08A">Kraft</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="color" id="paperCustom" value="#FFFFFF" aria-label="Custom paper color" hidden>
+      </div>
+    </label>
+    <label class="field">
+      <span>Ink already on a drum</span>
+      <select id="lock"><option value="">None</option></select>
+    </label>
+    <label class="field">
+      <span>Count a color as lost above <output id="threshOut">12</output> ΔE</span>
+      <input type="range" id="thresh" min="4" max="30" step="1" value="12">
+    </label>
+    <details class="inkset">
+      <summary>Inks your studio has</summary>
+      <div class="row" style="margin-top:8px">
+        <button type="button" id="allInks">Select all</button>
+        <button type="button" id="noInks">Clear</button>
+      </div>
+      <div class="ink-grid" id="inkGrid"></div>
+    </details>
+  </section>
+
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+
+  <section aria-labelledby="paletteHead" id="paletteSec" hidden>
+    <h2 id="paletteHead">Your image's main colors</h2>
+    <div class="palette" id="palette"></div>
+    <p class="caption">Width shows how much of the image each color covers.</p>
+  </section>
+
+  <div class="layout" id="layout" hidden>
+    <section aria-labelledby="rankHead">
+      <h2 id="rankHead">Best ink pairs</h2>
+      <ol class="results" id="results"></ol>
+    </section>
+    <section class="detail" aria-labelledby="detailHead">
+      <h2 id="detailHead">Pair</h2>
+      <p class="caption" id="detailMeta"></p>
+      <div class="compare">
+        <figure style="margin:0">
+          <canvas id="orig" role="img" aria-label="Your original image"></canvas>
+          <figcaption class="caption">Original</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <canvas id="sim" role="img" aria-label="Predicted print"></canvas>
+          <figcaption class="caption">Predicted print</figcaption>
+        </figure>
+      </div>
+      <div class="split">
+        <div class="gamut-wrap">
+          <h3>Every color this pair can make</h3>
+          <canvas id="gamut" role="img" aria-label="All colors the two inks can make"></canvas>
+          <p class="axis" id="axisX"></p>
+          <p class="axis" id="axisY"></p>
+          <p class="caption">Each dot is one of your image's colors, filled with the original and placed on the closest color the pair can print. A ringed dot is lost.</p>
+        </div>
+        <div>
+          <h3>Colors you'd lose</h3>
+          <ul class="lost" id="lost"></ul>
+          <div class="plates">
+            <figure style="margin:0">
+              <canvas id="plate1" role="img" aria-label="Drum 1 layer"></canvas>
+              <figcaption class="caption" id="plate1Cap"></figcaption>
+            </figure>
+            <figure style="margin:0">
+              <canvas id="plate2" role="img" aria-label="Drum 2 layer"></canvas>
+              <figcaption class="caption" id="plate2Cap"></figcaption>
+            </figure>
+          </div>
+          <div class="actions">
+            <button type="button" id="copy">Copy ink names</button>
+            <button type="button" id="download">Download palette</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+// Source: riso-colors by Matt DesLauriers (MIT), scraped from stencil.wiki. White is left out:
+// on white paper it prints nothing, and on colored paper it is opaque, which this model can't do.
+const RAW = [["Black","#000000"],["Burgundy","#914E72"],["Blue","#0078BF"],["Green","#00A95C"],["Medium Blue","#3255A4"],["Bright Red","#F15060"],["RisoFederal Blue","#3D5588"],["Purple","#765BA7"],["Teal","#00838A"],["Flat Gold","#BB8B41"],["Hunter Green","#407060"],["Red","#FF665E"],["Brown","#925F52"],["Yellow","#FFE800"],["Marine Red","#D2515E"],["Orange","#FF6C2F"],["Fluorescent Pink","#FF48B0"],["Light Gray","#88898A"],["Metallic Gold","#AC936E"],["Crimson","#E45D50"],["Fluorescent Orange","#FF7477"],["Cornflower","#62A8E5"],["Sky Blue","#4982CF"],["Sea Blue","#0074A2"],["Lake","#235BA8"],["Indigo","#484D7A"],["Midnight","#435060"],["Mist","#D5E4C0"],["Granite","#A5AAA8"],["Charcoal","#70747C"],["Smoky Teal","#5F8289"],["Steel","#375E77"],["Slate","#5E695E"],["Turquoise","#00AA93"],["Emerald","#19975D"],["Grass","#397E58"],["Forest","#516E5A"],["Spruce","#4A635D"],["Moss","#68724D"],["Sea Foam","#62C2B1"],["Kelly Green","#67B346"],["Light Teal","#009DA5"],["Ivy","#169B62"],["Pine","#237E74"],["Lagoon","#2F6165"],["Violet","#9D7AD2"],["Orchid","#AA60BF"],["Plum","#845991"],["Raisin","#775D7A"],["Grape","#6C5D80"],["Scarlet","#F65058"],["Tomato","#D2515E"],["Cranberry","#D1517A"],["Maroon","#9E4C6E"],["Raspberry Red","#D1517A"],["Brick","#A75154"],["Light Lime","#E3ED55"],["Sunflower","#FFB511"],["Melon","#FFAE3B"],["Apricot","#F6A04D"],["Paprika","#EE7F4B"],["Pumpkin","#FF6F4C"],["Bright Olive Green","#B49F29"],["Bright Gold","#BA8032"],["Copper","#BD6439"],["Mahogany","#8E595A"],["Bisque","#F2CDCF"],["Bubble Gum","#F984CA"],["Light Mauve","#E6B5C9"],["Dark Mauve","#BD8CA6"],["Wine","#914E72"],["Gray","#928D88"],["Aqua","#5EC8E5"],["Mint","#82D8D5"],["Fluorescent Yellow","#FFE900"],["Fluorescent Red","#FF4C65"],["Fluorescent Green","#44D62C"]];
+
+const G = 26;          // coverage steps per ink: 0%, 4%, ... 100%
+const K = 16;          // colors pulled from the image
+const MAX_SIDE = 360;  // working size of the image
+const TOP_N = 12;
+
+// ---------- color ----------
+const s2l = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+const l2s = c => {
+  c = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, Math.round(c * 255)));
+};
+const hexToRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const rgbToHex = (r, g, b) => '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+const fLab = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+function linToLab(r, g, b, out, o) {
+  const x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047;
+  const y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
+  const z = (0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / 1.08883;
+  const fx = fLab(x), fy = fLab(y), fz = fLab(z);
+  out[o] = 116 * fy - 16; out[o + 1] = 500 * (fx - fy); out[o + 2] = 200 * (fy - fz);
+}
+
+// Inks sharing a hex in the source are one color, so they are merged rather than ranked twice.
+const INKS = [];
+{
+  const byHex = new Map();
+  for (const [name, hex] of RAW) {
+    if (byHex.has(hex)) { byHex.get(hex).names.push(name); continue; }
+    const ink = { names: [name], hex };
+    byHex.set(hex, ink); INKS.push(ink);
+  }
+  INKS.forEach((ink, i) => {
+    ink.id = i;
+    ink.name = ink.names.join(' / ');
+    ink.lin = hexToRgb(ink.hex).map(s2l);
+    // Per coverage step, how much light the ink lets through in each channel.
+    ink.steps = new Float32Array(G * 3);
+    for (let s = 0; s < G; s++) {
+      const a = s / (G - 1);
+      for (let c = 0; c < 3; c++) ink.steps[s * 3 + c] = 1 - a + a * ink.lin[c];
+    }
+  });
+}
+
+// Every color a pair can print: paper times what each ink lets through, on a G x G grid of coverages.
+function surface(inkA, inkB, paperLin) {
+  const lab = new Float32Array(G * G * 3);
+  const lin = new Float32Array(G * G * 3);
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const k = (i * G + j) * 3;
+    for (let c = 0; c < 3; c++) lin[k + c] = paperLin[c] * inkA.steps[i * 3 + c] * inkB.steps[j * 3 + c];
+    linToLab(lin[k], lin[k + 1], lin[k + 2], lab, k);
+  }
+  return { lab, lin };
+}
+
+function mixLin(r, pl, a, b, out) {
+  for (let c = 0; c < 3; c++) out[c] = pl[c] * (1 - a + a * r.A.lin[c]) * (1 - b + b * r.B.lin[c]);
+}
+
+function nearest(lab, L, a, b) {
+  let best = 0, bd = Infinity;
+  for (let k = 0, n = lab.length; k < n; k += 3) {
+    const dl = lab[k] - L, da = lab[k + 1] - a, db = lab[k + 2] - b;
+    const d = dl * dl + da * da + db * db;
+    if (d < bd) { bd = d; best = k / 3; }
+  }
+  return [best, Math.sqrt(bd)];
+}
+
+// ---------- image ----------
+function mulberry32(a) {
+  return () => {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// k-means in Lab, seeded so the same image always gives the same palette.
+function kmeans(labs, n, k) {
+  const rng = mulberry32(7);
+  const C = new Float32Array(k * 3);
+  const d2 = new Float32Array(n).fill(Infinity);
+  let pick = Math.floor(rng() * n);
+  for (let c = 0; c < k; c++) {
+    C[c * 3] = labs[pick * 3]; C[c * 3 + 1] = labs[pick * 3 + 1]; C[c * 3 + 2] = labs[pick * 3 + 2];
+    let sum = 0;
+    for (let p = 0; p < n; p++) {
+      const dl = labs[p * 3] - C[c * 3], da = labs[p * 3 + 1] - C[c * 3 + 1], db = labs[p * 3 + 2] - C[c * 3 + 2];
+      const d = dl * dl + da * da + db * db;
+      if (d < d2[p]) d2[p] = d;
+      sum += d2[p];
+    }
+    let r = rng() * sum; pick = n - 1;
+    for (let p = 0; p < n; p++) { r -= d2[p]; if (r <= 0) { pick = p; break; } }
+  }
+  const assign = new Int32Array(n);
+  const counts = new Float32Array(k);
+  for (let it = 0; it < 15; it++) {
+    for (let p = 0; p < n; p++) {
+      let best = 0, bd = Infinity;
+      for (let c = 0; c < k; c++) {
+        const dl = labs[p * 3] - C[c * 3], da = labs[p * 3 + 1] - C[c * 3 + 1], db = labs[p * 3 + 2] - C[c * 3 + 2];
+        const d = dl * dl + da * da + db * db;
+        if (d < bd) { bd = d; best = c; }
+      }
+      assign[p] = best;
+    }
+    const S = new Float32Array(k * 3); counts.fill(0);
+    for (let p = 0; p < n; p++) {
+      const c = assign[p]; counts[c]++;
+      S[c * 3] += labs[p * 3]; S[c * 3 + 1] += labs[p * 3 + 1]; S[c * 3 + 2] += labs[p * 3 + 2];
+    }
+    for (let c = 0; c < k; c++) if (counts[c]) for (let q = 0; q < 3; q++) C[c * 3 + q] = S[c * 3 + q] / counts[c];
+  }
+  return { C, counts, assign };
+}
+
+// ---------- state ----------
+const $ = id => document.getElementById(id);
+const state = {
+  pixels: null, w: 0, h: 0,     // working image, RGBA
+  clusters: [],                 // {lab:[L,a,b], rgb:[r,g,b], w}
+  allowed: new Set(INKS.map(i => i.id)),
+  results: [], selected: null,
+};
+
+function paperHex() {
+  return $('paper').value === 'custom' ? $('paperCustom').value.toUpperCase() : $('paper').value;
+}
+function paperLin() { return hexToRgb(paperHex()).map(s2l); }
+function threshold() { return Number($('thresh').value); }
+
+function loadSource(src, label) {
+  const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+  const s = Math.min(1, MAX_SIDE / Math.max(sw, sh));
+  const w = Math.max(1, Math.round(sw * s)), h = Math.max(1, Math.round(sh * s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  // Transparent areas become paper, which is what they'd be in print.
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(src, 0, 0, w, h);
+  state.pixels = ctx.getImageData(0, 0, w, h).data;
+  state.w = w; state.h = h;
+
+  const o = $('orig'); o.width = w; o.height = h;
+  o.getContext('2d').drawImage(c, 0, 0);
+  o.setAttribute('aria-label', `Original image: ${label}`);
+
+  extractPalette();
+  rank();
+}
+
+function extractPalette() {
+  const px = state.pixels, total = state.w * state.h;
+  const stride = Math.max(1, Math.floor(total / 20000));
+  const n = Math.ceil(total / stride);
+  const labs = new Float32Array(n * 3);
+  let m = 0;
+  for (let p = 0; p < total; p += stride, m++) {
+    linToLab(s2l(px[p * 4]), s2l(px[p * 4 + 1]), s2l(px[p * 4 + 2]), labs, m * 3);
+  }
+  const { C, counts } = kmeans(labs, m, K);
+  const clusters = [];
+  for (let c = 0; c < K; c++) {
+    if (!counts[c]) continue;
+    clusters.push({ lab: [C[c * 3], C[c * 3 + 1], C[c * 3 + 2]], w: counts[c] / m, rgb: labToRgb(C[c * 3], C[c * 3 + 1], C[c * 3 + 2]) });
+  }
+  clusters.sort((a, b) => b.w - a.w);
+  state.clusters = clusters;
+
+  const pal = $('palette'); pal.innerHTML = '';
+  for (const cl of clusters) {
+    const d = document.createElement('div');
+    d.style.flex = String(cl.w); d.style.background = rgbToHex(...cl.rgb);
+    d.title = `${rgbToHex(...cl.rgb)}, ${Math.round(cl.w * 100)}% of the image`;
+    pal.appendChild(d);
+  }
+  pal.setAttribute('role', 'img');
+  pal.setAttribute('aria-label', `${clusters.length} main colors, largest first`);
+  $('paletteSec').hidden = false;
+}
+
+function labToRgb(L, a, b) {
+  const fy = (L + 16) / 116, fx = fy + a / 500, fz = fy - b / 200;
+  const inv = t => t ** 3 > 0.008856 ? t ** 3 : (t - 16 / 116) / 7.787;
+  const X = inv(fx) * 0.95047, Y = inv(fy), Z = inv(fz) * 1.08883;
+  const r = 3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z;
+  const g = -0.9692660 * X + 1.8760108 * Y + 0.0415560 * Z;
+  const bl = 0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z;
+  return [l2s(Math.max(0, r)), l2s(Math.max(0, g)), l2s(Math.max(0, bl))];
+}
+
+// Score a pair: average distance from each image color to the closest printable color, weighted by area.
+function scorePair(A, B, pl) {
+  const surf = surface(A, B, pl);
+  const T = threshold();
+  let score = 0, lostShare = 0;
+  const hits = state.clusters.map(cl => {
+    const [k, d] = nearest(surf.lab, cl.lab[0], cl.lab[1], cl.lab[2]);
+    score += cl.w * d;
+    if (d > T) lostShare += cl.w;
+    return { k, d };
+  });
+  return { A, B, score, lostShare, hits, surf };
+}
+
+function rank() {
+  if (!state.pixels) return;
+  const t0 = performance.now();
+  const pl = paperLin();
+  const lock = $('lock').value === '' ? null : Number($('lock').value);
+  const ids = INKS.filter(i => state.allowed.has(i.id) || i.id === lock);
+  const out = [];
+  for (let x = 0; x < ids.length; x++) for (let y = x + 1; y < ids.length; y++) {
+    const A = ids[x], B = ids[y];
+    if (lock !== null && A.id !== lock && B.id !== lock) continue;
+    out.push(scorePair(A, B, pl));
+  }
+  out.sort((a, b) => a.score - b.score);
+  state.results = out;
+  const ms = Math.round(performance.now() - t0);
+  if (!out.length) {
+    $('status').textContent = 'Pick at least two inks to compare.';
+    $('layout').hidden = true;
+    return;
+  }
+  $('status').textContent = `Tried ${out.length.toLocaleString()} ink pairs in ${ms} ms on ${paperName()} paper.`;
+  $('layout').hidden = false;
+  renderList();
+  select(out[0]);
+}
+
+function paperName() {
+  const sel = $('paper');
+  return sel.value === 'custom' ? `custom ${paperHex()}` : sel.options[sel.selectedIndex].text.toLowerCase();
+}
+
+function linHex(lin, k) { return rgbToHex(l2s(lin[k]), l2s(lin[k + 1]), l2s(lin[k + 2])); }
+
+function renderList() {
+  const ol = $('results'); ol.innerHTML = '';
+  for (const r of state.results.slice(0, TOP_N)) {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', 'false');
+    const lostPct = Math.round(r.lostShare * 100);
+    b.innerHTML = `
+      <span class="pair-name"><span class="chip" style="background:${r.A.hex}"></span>${esc(r.A.name)}
+        <span aria-hidden="true">+</span><span class="chip" style="background:${r.B.hex}"></span>${esc(r.B.name)}</span>
+      <span class="mini" aria-hidden="true">${r.hits.map((h, i) => `<div style="flex:${state.clusters[i].w};background:${linHex(r.surf.lin, h.k * 3)}"></div>`).join('')}</span>
+      <span class="pair-meta">Average ΔE ${r.score.toFixed(1)} · ${lostPct ? `loses ${lostPct}% of the image` : 'loses nothing'}</span>`;
+    b.addEventListener('click', () => select(r));
+    r.button = b;
+    li.appendChild(b); ol.appendChild(li);
+  }
+}
+
+function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+function select(r) {
+  state.selected = r;
+  for (const x of state.results.slice(0, TOP_N)) x.button && x.button.setAttribute('aria-pressed', String(x === r));
+  $('detailHead').textContent = `${r.A.name} + ${r.B.name}`;
+  $('detailMeta').textContent = `Average ΔE ${r.score.toFixed(1)} on ${paperName()} paper. Under about 2 is invisible; over 10 is a clearly different color.`;
+  drawSim(r);
+  drawGamut(r);
+  drawLost(r);
+}
+
+// Map every pixel to its closest printable color; the coverages found are the two drum layers.
+function drawSim(r) {
+  const { w, h, pixels } = state;
+  const sim = $('sim'), p1 = $('plate1'), p2 = $('plate2');
+  for (const c of [sim, p1, p2]) { c.width = w; c.height = h; }
+  const S = sim.getContext('2d').createImageData(w, h);
+  const P1 = p1.getContext('2d').createImageData(w, h);
+  const P2 = p2.getContext('2d').createImageData(w, h);
+  const cache = new Map(), lab = new Float32Array(3), m = new Float32Array(3), pl = paperLin();
+  const step = 1 / (G - 1);
+  for (let p = 0; p < w * h; p++) {
+    const o = p * 4;
+    const key = (pixels[o] >> 2) << 12 | (pixels[o + 1] >> 2) << 6 | (pixels[o + 2] >> 2);
+    let hit = cache.get(key);
+    if (hit === undefined) {
+      linToLab(s2l(pixels[o]), s2l(pixels[o + 1]), s2l(pixels[o + 2]), lab, 0);
+      const k = nearest(r.surf.lab, lab[0], lab[1], lab[2])[0];
+      // The 4% grid is fine for ranking but bands smooth gradients, so search finely around the hit.
+      const a0 = Math.floor(k / G) * step, b0 = (k % G) * step;
+      let best = Infinity, ba = a0, bb = b0;
+      for (let u = -4; u <= 4; u++) for (let v = -4; v <= 4; v++) {
+        const a = Math.min(1, Math.max(0, a0 + u * step / 4)), b = Math.min(1, Math.max(0, b0 + v * step / 4));
+        mixLin(r, pl, a, b, m);
+        linToLab(m[0], m[1], m[2], m, 0);
+        const d = (m[0] - lab[0]) ** 2 + (m[1] - lab[1]) ** 2 + (m[2] - lab[2]) ** 2;
+        if (d < best) { best = d; ba = a; bb = b; }
+      }
+      mixLin(r, pl, ba, bb, m);
+      hit = [l2s(m[0]), l2s(m[1]), l2s(m[2]), Math.round(255 * (1 - ba)), Math.round(255 * (1 - bb))];
+      cache.set(key, hit);
+    }
+    S.data[o] = hit[0]; S.data[o + 1] = hit[1]; S.data[o + 2] = hit[2]; S.data[o + 3] = 255;
+    P1.data[o] = P1.data[o + 1] = P1.data[o + 2] = hit[3]; P1.data[o + 3] = 255;
+    P2.data[o] = P2.data[o + 1] = P2.data[o + 2] = hit[4]; P2.data[o + 3] = 255;
+  }
+  sim.getContext('2d').putImageData(S, 0, 0);
+  p1.getContext('2d').putImageData(P1, 0, 0);
+  p2.getContext('2d').putImageData(P2, 0, 0);
+  sim.setAttribute('aria-label', `Predicted print in ${r.A.name} and ${r.B.name}`);
+  $('plate1Cap').textContent = `Drum 1: ${r.A.name}. Black is full ink.`;
+  $('plate2Cap').textContent = `Drum 2: ${r.B.name}. Black is full ink.`;
+}
+
+function drawGamut(r) {
+  const cv = $('gamut');
+  const dpr = window.devicePixelRatio || 1;
+  const size = Math.round((cv.clientWidth || 280) * dpr);
+  cv.width = size; cv.height = size;
+  const ctx = cv.getContext('2d');
+  const img = ctx.createImageData(size, size);
+  const pl = paperLin();
+  for (let y = 0; y < size; y++) {
+    const b = 1 - y / (size - 1);
+    for (let x = 0; x < size; x++) {
+      const a = x / (size - 1), o = (y * size + x) * 4;
+      for (let c = 0; c < 3; c++) {
+        img.data[o + c] = l2s(pl[c] * (1 - a + a * r.A.lin[c]) * (1 - b + b * r.B.lin[c]));
+      }
+      img.data[o + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+
+  const T = threshold();
+  state.clusters.forEach((cl, i) => {
+    const { k, d } = r.hits[i];
+    const x = Math.floor(k / G) / (G - 1) * (size - 1);
+    const y = (1 - (k % G) / (G - 1)) * (size - 1);
+    const rad = (4 + Math.sqrt(cl.w) * 26) * dpr;
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2);
+    ctx.fillStyle = rgbToHex(...cl.rgb); ctx.fill();
+    ctx.lineWidth = 1.5 * dpr; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, rad + 1.5 * dpr, 0, Math.PI * 2);
+    ctx.lineWidth = 1 * dpr; ctx.strokeStyle = 'rgba(0,0,0,0.55)'; ctx.stroke();
+    if (d > T) {
+      ctx.beginPath(); ctx.arc(x, y, rad + 5 * dpr, 0, Math.PI * 2);
+      ctx.lineWidth = 2.5 * dpr; ctx.strokeStyle = '#000'; ctx.setLineDash([4 * dpr, 3 * dpr]); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+  $('axisX').textContent = `Left to right: ${r.A.name}, 0% to 100%.`;
+  $('axisY').textContent = `Bottom to top: ${r.B.name}, 0% to 100%.`;
+  const lostN = r.hits.filter(h => h.d > T).length;
+  cv.setAttribute('aria-label', `Square of every color ${r.A.name} and ${r.B.name} can make. ${lostN} of ${state.clusters.length} image colors fall outside it.`);
+}
+
+function drawLost(r) {
+  const ul = $('lost'); ul.innerHTML = '';
+  const T = threshold();
+  const rows = state.clusters.map((cl, i) => ({ cl, ...r.hits[i] })).filter(x => x.d > T).sort((a, b) => b.cl.w * b.d - a.cl.w * a.d);
+  if (!rows.length) {
+    ul.innerHTML = `<li class="empty">None. Every main color lands within ${T} ΔE.</li>`;
+    return;
+  }
+  for (const x of rows) {
+    const li = document.createElement('li');
+    const got = linHex(r.surf.lin, x.k * 3);
+    li.innerHTML = `<span class="sw" style="background:${rgbToHex(...x.cl.rgb)}" title="Original"></span>
+      <span class="sw" style="background:${got}" title="Closest printable"></span>
+      <span>${rgbToHex(...x.cl.rgb)} becomes ${got} · ΔE ${x.d.toFixed(1)} · ${Math.max(1, Math.round(x.cl.w * 100))}% of the image</span>`;
+    ul.appendChild(li);
+  }
+}
+
+// ---------- sample ----------
+function sampleImage() {
+  const c = document.createElement('canvas'); c.width = 480; c.height = 320;
+  const x = c.getContext('2d');
+  const sky = x.createLinearGradient(0, 0, 0, 220);
+  sky.addColorStop(0, '#2B4A8C'); sky.addColorStop(1, '#F2A3B3');
+  x.fillStyle = sky; x.fillRect(0, 0, 480, 320);
+  x.fillStyle = '#FFB03B'; x.beginPath(); x.arc(330, 150, 46, 0, Math.PI * 2); x.fill();
+  x.fillStyle = '#5F8A6A'; x.beginPath(); x.moveTo(0, 210);
+  x.bezierCurveTo(120, 150, 260, 230, 480, 180); x.lineTo(480, 320); x.lineTo(0, 320); x.fill();
+  x.fillStyle = '#2F5D3E'; x.beginPath(); x.moveTo(0, 260);
+  x.bezierCurveTo(160, 220, 300, 300, 480, 250); x.lineTo(480, 320); x.lineTo(0, 320); x.fill();
+  const rng = mulberry32(3);
+  for (let i = 0; i < 60; i++) {
+    x.fillStyle = i % 3 ? '#E8434F' : '#FFF4E0';
+    x.beginPath(); x.arc(rng() * 480, 270 + rng() * 45, 3 + rng() * 4, 0, Math.PI * 2); x.fill();
+  }
+  return c;
+}
+
+// ---------- wiring ----------
+function buildInkControls() {
+  const grid = $('inkGrid'), lock = $('lock');
+  for (const ink of INKS) {
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" checked data-id="${ink.id}"><span class="chip" style="background:${ink.hex}"></span>${esc(ink.name)}`;
+    grid.appendChild(lab);
+    const opt = document.createElement('option'); opt.value = ink.id; opt.textContent = ink.name;
+    lock.appendChild(opt);
+  }
+  grid.addEventListener('change', e => {
+    const id = Number(e.target.dataset.id);
+    e.target.checked ? state.allowed.add(id) : state.allowed.delete(id);
+    rank();
+  });
+  $('allInks').onclick = () => setAll(true);
+  $('noInks').onclick = () => setAll(false);
+}
+function setAll(on) {
+  for (const cb of $('inkGrid').querySelectorAll('input')) {
+    cb.checked = on;
+    on ? state.allowed.add(Number(cb.dataset.id)) : state.allowed.delete(Number(cb.dataset.id));
+  }
+  rank();
+}
+
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) { $('status').textContent = 'That file is not an image.'; return; }
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => { loadSource(img, file.name); URL.revokeObjectURL(url); };
+  img.onerror = () => { $('status').textContent = 'That image could not be read.'; };
+  img.src = url;
+}
+
+function withStatus(fn) {
+  $('status').textContent = 'Working…';
+  setTimeout(fn, 20);
+}
+
+buildInkControls();
+$('file').addEventListener('change', e => withStatus(() => loadFile(e.target.files[0])));
+$('sample').addEventListener('click', () => withStatus(() => loadSource(sampleImage(), 'sample landscape')));
+$('paper').addEventListener('change', () => {
+  $('paperCustom').hidden = $('paper').value !== 'custom';
+  withStatus(rank);
+});
+$('paperCustom').addEventListener('input', () => withStatus(rank));
+$('lock').addEventListener('change', () => withStatus(rank));
+$('thresh').addEventListener('input', () => {
+  $('threshOut').textContent = $('thresh').value;
+  // The ranking doesn't depend on the threshold, so only what counts as lost is redrawn.
+  const T = threshold();
+  for (const r of state.results) r.lostShare = r.hits.reduce((s, h, i) => s + (h.d > T ? state.clusters[i].w : 0), 0);
+  if (!state.selected) return;
+  renderList();
+  select(state.selected);
+});
+
+const drop = $('drop');
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault(); drop.classList.remove('over');
+  withStatus(() => loadFile(e.dataTransfer.files[0]));
+});
+
+$('copy').addEventListener('click', async () => {
+  const r = state.selected; if (!r) return;
+  const text = `${r.A.name} + ${r.B.name}`;
+  try { await navigator.clipboard.writeText(text); $('status').textContent = `Copied: ${text}`; }
+  catch { $('status').textContent = `Copy failed. The inks are ${text}.`; }
+});
+$('download').addEventListener('click', () => {
+  const r = state.selected; if (!r) return;
+  const data = {
+    inks: [r.A, r.B].map(i => ({ name: i.name, hex: i.hex })),
+    paper: paperHex(),
+    averageDeltaE: Number(r.score.toFixed(2)),
+    note: 'Ink colors are screen approximations from stencil.wiki via riso-colors.',
+  };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+  a.download = `riso-palette-${r.A.names[0]}-${r.B.names[0]}.json`.toLowerCase().replace(/\s+/g, '-');
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// Start on the sample so the page is never empty.
+loadSource(sampleImage(), 'sample landscape');
+</script>
+</body>
+</html>
