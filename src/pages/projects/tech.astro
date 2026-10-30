@@ -269,6 +269,68 @@ const projects = (await getCollection('projects'))
       color: var(--muted);
       max-width: 46ch;
     }
+    /* Experiments sit side by side on one scrolling row instead of stacking,
+       so four tall stages cost one stage of page height. Native scroll-snap
+       rather than a transform track: touch, trackpad and keyboard scrolling all
+       work for free, and the live canvases keep their real size. The next item
+       peeks in at the edge so the row reads as more than one. */
+    .exp-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .exp-count {
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .exp-arrows { display: flex; gap: 8px; }
+    .exp-arrow {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--fs-350);
+      color: var(--black);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border-color 0.25s ease, color 0.25s ease;
+    }
+    .exp-arrow:hover:not([disabled]) { border-color: var(--sienna); color: var(--sienna); }
+    .exp-arrow:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
+    .exp-arrow[disabled] { opacity: 0.35; cursor: default; }
+
+    .exp-track {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scrollbar-width: thin;
+      padding-bottom: 16px;
+    }
+    .exp-track:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .exp-track { scroll-behavior: smooth; }
+    }
+    .exp-track > .exp-item {
+      flex: 0 0 min(820px, 86%);
+      scroll-snap-align: start;
+      margin-top: 0;
+    }
+    /* Outranks the stacked layout's 64px gap between items further down. */
+    .exp-track > .exp-item + .exp-item { margin-top: 0; }
+    .exp-track .canvas-section { height: 52vh; min-height: 360px; }
+
     .exp-item { margin-top: 8px; }
     .exp-thumb { display: block; border: 1px solid var(--border); transition: border-color 0.35s ease; }
     .exp-thumb img { display: block; width: 100%; height: auto; }
@@ -469,6 +531,9 @@ const projects = (await getCollection('projects'))
       .project-grid { grid-template-columns: 1fr; }
       .project-card { padding: 26px 22px; }
       .canvas-section { height: 50vh; min-height: 320px; }
+      .exp-track .canvas-section { height: 46vh; min-height: 300px; }
+      .exp-track { gap: 16px; }
+      .exp-track > .exp-item { flex-basis: 88%; }
       .experiments { margin-top: 64px; padding-top: 32px; }
       .xp { margin-top: 64px; padding-top: 32px; }
     }
@@ -525,6 +590,16 @@ const projects = (await getCollection('projects'))
           Most run in the browser, here on the page.
         </p>
       </div>
+
+      <div class="exp-controls">
+        <span class="exp-count" id="expCount" aria-live="polite">1 / 4</span>
+        <div class="exp-arrows">
+          <button class="exp-arrow" id="expPrev" type="button" aria-label="Previous experiment" disabled>←</button>
+          <button class="exp-arrow" id="expNext" type="button" aria-label="Next experiment">→</button>
+        </div>
+      </div>
+
+      <div class="exp-track" id="expTrack" tabindex="0" role="region" aria-label="Experiments, scrolls sideways">
 
       <div
         class="exp-item"
@@ -642,6 +717,8 @@ const projects = (await getCollection('projects'))
           ones ringed. Not yet checked against a real print.
         </p>
       </div>
+
+      </div>
     </section>
 
     {allExperience.length > 0 && (
@@ -740,6 +817,50 @@ const projects = (await getCollection('projects'))
       }, { passive: true });
       addEventListener('resize', mark, { passive: true });
       mark();
+    })();
+  </script>
+
+  <script>
+    // ── EXPERIMENTS ROW ──
+    // The arrows step one item at a time and the count follows the scroll, so
+    // swiping, trackpad and keyboard scrolling all keep it right. The track is
+    // positioned, so each item's offsetLeft is measured from it directly.
+    (function () {
+      const track = document.getElementById('expTrack');
+      const prev = document.getElementById('expPrev') as HTMLButtonElement | null;
+      const next = document.getElementById('expNext') as HTMLButtonElement | null;
+      const count = document.getElementById('expCount');
+      if (!track || !prev || !next || !count) return;
+      const items = Array.from(track.children) as HTMLElement[];
+
+      function currentIndex() {
+        const left = track!.scrollLeft;
+        let best = 0;
+        items.forEach((el, i) => {
+          if (Math.abs(el.offsetLeft - left) <
+              Math.abs(items[best].offsetLeft - left)) best = i;
+        });
+        return best;
+      }
+
+      function update() {
+        const i = currentIndex();
+        const atEnd = track!.scrollLeft + track!.clientWidth >= track!.scrollWidth - 2;
+        count!.textContent = `${atEnd ? items.length : i + 1} / ${items.length}`;
+        prev!.disabled = track!.scrollLeft <= 2;
+        next!.disabled = atEnd;
+      }
+
+      function go(step: number) {
+        const target = items[Math.min(items.length - 1, Math.max(0, currentIndex() + step))];
+        track!.scrollTo({ left: target.offsetLeft });
+      }
+
+      prev.addEventListener('click', () => go(-1));
+      next.addEventListener('click', () => go(1));
+      track.addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update, { passive: true });
+      update();
     })();
   </script>
 
