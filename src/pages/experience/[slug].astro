@@ -95,6 +95,13 @@ const d = entry.data;
       font-weight: 400;
       color: var(--muted);
     }
+    .xpp-decision {
+      margin: 0;
+      max-width: 64ch;
+      font-size: var(--fs-350);
+      line-height: 1.7;
+      color: var(--text-body);
+    }
     .xpp-also { margin: 0; padding: 0; list-style: none; }
     .xpp-also li {
       position: relative;
@@ -239,6 +246,13 @@ const d = entry.data;
     <h1 class="xpp-headline">{d.headline}</h1>
     <p class="xpp-result">{d.result}</p>
     <p class="xpp-summary">{d.summary}</p>
+
+    {d.decision && (
+      <section class="xpp-also-wrap" aria-labelledby="decisionLabel">
+        <h2 class="xpp-also-label" id="decisionLabel">A decision</h2>
+        <p class="xpp-decision">{d.decision}</p>
+      </section>
+    )}
 
     {d.also && d.also.length > 0 && (
       <section class="xpp-also-wrap" aria-labelledby="alsoLabel">

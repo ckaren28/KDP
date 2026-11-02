@@ -63,8 +63,8 @@ const projects = defineCollection({
   }),
 });
 
-// Employment history, shown as the third section of the work page beneath the
-// tools and experiments.
+// Employment history, shown as the first section of the work page, above the
+// tools and experiments (moved up Nov 2026 on recruiter feedback).
 //
 // The shape is deliberate. Karen is leaving developer advocacy for design
 // engineering, and plain reverse chronology would open this section with two
@@ -95,6 +95,10 @@ const experience = defineCollection({
     // Secondary things worth listing under the headline work. Keep it to two,
     // chosen, since an exhaustive list reads as a CV bleeding into a portfolio.
     also: z.array(z.string()).optional(),
+    // One design trade-off: what she chose, what it cost, why. Added Nov 2026
+    // because interviewers kept asking for trade-off examples. Rendered under
+    // the summary on the case page. Only real decisions from the story bank.
+    decision: z.string().optional(),
     // Optional by design: internal or NDA'd work legitimately has nothing to
     // show, and saying so is better than padding the card.
     artifacts: z.array(imageItem).optional(),

@@ -165,7 +165,7 @@ const projects = (await getCollection('projects'))
     .experiments,
     .xp { scroll-margin-top: calc(var(--header-h, 68px) + var(--section-nav-h, 44px) + 8px); }
 
-    .work-section { margin-top: 0; }
+    .work-section { margin-top: 96px; padding-top: 40px; border-top: 1px solid var(--border); }
 
     .card-title {
       font-family: var(--font-display);
@@ -364,10 +364,12 @@ const projects = (await getCollection('projects'))
     }
 
     /* ── WORK EXPERIENCE ──
-       A list, not cards. The history is secondary to the work above, so each
-       row is only company, role and one short line. The headline and result
-       live on the case page. */
-    .xp { margin-top: 96px; padding-top: 40px; border-top: 1px solid var(--border); }
+       A list, not cards. It opens the page (Nov 2026: recruiter feedback was
+       to lead with experience), so it sits directly under the section nav with
+       no rule of its own; Projects below carries the divider. Each row is only
+       company, role and one short line. The headline and result live on the
+       case page. */
+    .xp { margin-top: 0; }
 
     .xp-list {
       margin: 0;
@@ -535,7 +537,7 @@ const projects = (await getCollection('projects'))
       .exp-track { gap: 16px; }
       .exp-track > .exp-item { flex-basis: 88%; }
       .experiments { margin-top: 64px; padding-top: 32px; }
-      .xp { margin-top: 64px; padding-top: 32px; }
+      .work-section { margin-top: 64px; padding-top: 32px; }
     }
   </style>
 
@@ -548,10 +550,45 @@ const projects = (await getCollection('projects'))
     </header>
 
     <nav class="section-nav" id="sectionNav" aria-label="Sections on this page">
+      <a href="#experience" data-nav="experience">Experience</a>
       <a href="#projects" data-nav="projects">Projects</a>
       <a href="#experiments" data-nav="experiments">Experiments</a>
-      <a href="#experience" data-nav="experience">Experience</a>
     </nav>
+
+    {allExperience.length > 0 && (
+      <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
+        <div class="exp-head">
+          <h2 class="exp-title" id="experienceLabel">Experience</h2>
+          <p class="exp-note">
+            Design, product, DevRel and front-end work.
+          </p>
+        </div>
+
+        <ul class="xp-list">
+          {allExperience.map(({ data, slug }) => {
+            const inner = (
+              <>
+                <div>
+                  <p class="xp-meta">
+                    <span class="xp-company">{data.company}</span>
+                    <span>{data.role}</span>
+                  </p>
+                  <p class="xp-abstract">{data.abstract}</p>
+                </div>
+                {data.nda && <span class="xp-nda">Internal</span>}
+              </>
+            );
+            return (
+              <li>
+                {data.compact
+                  ? <div class="xp-row xp-row--static">{inner}</div>
+                  : <a class="xp-row" href={`/experience/${slug}`}>{inner}</a>}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
 
     <section class="work-section reveal" id="projects" aria-labelledby="projectsLabel">
       <div class="exp-head">
@@ -721,40 +758,6 @@ const projects = (await getCollection('projects'))
       </div>
     </section>
 
-    {allExperience.length > 0 && (
-      <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
-        <div class="exp-head">
-          <h2 class="exp-title" id="experienceLabel">Experience</h2>
-          <p class="exp-note">
-            Design, product, DevRel and front-end work.
-          </p>
-        </div>
-
-        <ul class="xp-list">
-          {allExperience.map(({ data, slug }) => {
-            const inner = (
-              <>
-                <div>
-                  <p class="xp-meta">
-                    <span class="xp-company">{data.company}</span>
-                    <span>{data.role}</span>
-                  </p>
-                  <p class="xp-abstract">{data.abstract}</p>
-                </div>
-                {data.nda && <span class="xp-nda">Internal</span>}
-              </>
-            );
-            return (
-              <li>
-                {data.compact
-                  ? <div class="xp-row xp-row--static">{inner}</div>
-                  : <a class="xp-row" href={`/experience/${slug}`}>{inner}</a>}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-    )}
 
   </div>
 
