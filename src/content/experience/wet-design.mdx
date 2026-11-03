@@ -4,70 +4,86 @@ role: "Front End Developer"
 location: "Burbank, CA"
 start_date: 2019-02-01
 end_date: 2019-07-01
-headline: "Rebuilt a travel system nobody could maintain"
-result: "The legacy system was retired"
+headline: "Redesigning employee travel at WET"
+result: "Piloted, then rolled out company-wide; the legacy system was retired"
 abstract: "Redesigned and rebuilt an internal travel app."
-summary: "WET Design builds large-scale water features, the Bellagio fountains among them. Their internal travel-request app had outlived the person who wrote it: undocumented, desktop-only, and effectively frozen. I ran the interviews, designed it, and built it, as a team of one on a one-month timeline."
+summary: "WET Design builds large-scale water features, the Bellagio fountains among them. Its employee travel-request app was a decade old, undocumented and desktop-only, and the travel manager was coordinating requests over email. I interviewed the people who used it, designed the workflow and interface within WET's brand guidelines, and built the front end as the sole front-end developer."
 also:
   - "Redesigned and deployed the company intranet, turning it into the primary source of company updates. Time on page rose 25%, about 30 seconds"
-  - "Sketched and consulted with the branding team on interface direction and technical feasibility before build"
-nda: true
-decision: "I split the app into two views. The travel manager got every request in one place, with notes and approve or deny right there, so approvals stopped happening over email. Employees got a request form and a table of their own requests. I spent the most time on the form, and made a trip with several legs one request instead of a ticket per leg."
-order: 3
+order: 1
 ---
 
-## The system before
+## What I learned
 
-Three things were wrong with the app it replaced, and only one of them was visual.
+I sat down with the travel manager to see how requests were actually processed, and
+interviewed several of the employees who traveled most. Four things stood out:
 
-**It couldn't be maintained.** The person who built it had left, taking the knowledge with
-them. The documentation that remained was close to useless. Changes that should have been
-routine weren't happening at all.
+- Trips had **several legs**, and the old form assumed a simple out-and-back.
+- Travelers weren't sure whether to enter **times in their own time zone or the destination's**.
+- **Changing a request meant starting a new one** from scratch.
+- Requests needed **a manager's approval**, and a way to comment on and resubmit them.
 
-**It couldn't be adjusted.** Altering a form field or adding an email setting was
-disproportionately difficult, so the form drifted further from what the travel manager
-actually needed with every passing month.
+## Decisions
 
-**It couldn't be reached.** The app was desktop-only. At a company whose employees spend
-their days building fountains in the field rather than sitting behind a desk, that made the
-tool useless at exactly the moment someone needed it.
+<p class="why">Heard: trips had several legs, and time zones confused people.</p>
 
-## Finding the actual objective
+**One request, several legs.** The form holds as many segments as the trip needs, single legs
+and round trips together. Each leg has labeled departure and arrival times with guidance on
+which location's time to use, and an airport-code lookup instead of free text.
 
-The brief I was handed was "replace the legacy travel management system." That's a
-description of the work, not a goal, so I interviewed the travel manager and the employees
-filing requests before designing anything.
+<figure class="browser">
+  <a class="browser-chrome" data-url="WET Travel" href="/images/wet/travel-request-form.png" target="_blank" rel="noopener">
+    <img src="/images/wet/travel-request-form.png" width="1366" height="1199" loading="lazy"
+      alt="Design of the Create Travel Request form: traveler, manager, purpose, project and job code fields; a Trip 1 block with departing and arrival airports, dates and preferred times; Add Single Trip and Add Roundtrip buttons; car rental, hotel and loaner phone options; and an additional information box." />
+  </a>
+  <figcaption>Request form design. Each leg is its own block.</figcaption>
+</figure>
 
-Two things came out of it that weren't in the brief. The travel manager needed **strong
-admin functionality**, because she was the one absorbing every gap in the old form as
-manual follow-up. And employees needed to **add context to a request**, because a trip to a job
-site isn't a set of dropdowns and the old form forced them to file something not quite true
-and then explain it over email.
+<p class="why">Heard: changing a request meant starting over, and every trip needed a manager's approval.</p>
 
-That reframed the project: not a port, but an intuitive, streamlined app with real admin
-tooling behind it.
+**A request that lives, not a one-off form.** Managers approve or decline from a notification
+that carries the trip's essentials, and a request can be commented on, updated and resubmitted
+instead of started over.
 
-## Designing it inside someone else's brand
+<figure>
+  <a href="/images/wet/travel-approval-email-crop.png" target="_blank" rel="noopener">
+    <img src="/images/wet/travel-approval-email-crop.png" width="865" height="545" loading="lazy"
+      alt="Design of an approval notification email: a pink card reading that an employee has submitted a travel request, with employee, trip type, project, location and travel dates, and a link to approve or decline." />
+  </a>
+  <figcaption>Approval notification design.</figcaption>
+</figure>
 
-WET had a large design department and a comprehensive brand book. The app was internal, but
-aligning it with the brand was a stated objective, since internal tools are still the
-company talking to its own staff.
+<p class="why">Heard: the travel manager was absorbing everything over email.</p>
 
-I worked from the primary brand colors, red and black, and **added pink as an accent**, which isn't in the book. Pink reads as warm and happy, it's a hue of the brand red so it
-sits inside the existing system rather than fighting it, and against travel it carries a
-useful note of urgency and play. It let an internal utility feel like it belonged to the
-company without looking like a form.
+**Two views, two jobs.** Employees got the form and a table of their own requests. The travel
+manager got every request in one place, filterable, with approve and decline right there, so
+approvals stopped happening over email. Color told you which side you were on: red for
+employees, blue for the manager.
 
-## What shipped
+<figure class="browser">
+  <a class="browser-chrome" data-url="WET Travel" href="/images/wet/travel-manager-built.jpg" target="_blank" rel="noopener">
+    <img src="/images/wet/travel-manager-built.jpg" width="1956" height="1467" loading="lazy"
+      alt="Screenshot of the built Travel Requests page: a sortable, searchable table of requests with request number, date, employee, travel purpose, billing, one-way and round-trip legs with airports and dates, and Approved, Pending or Declined status." />
+  </a>
+  <figcaption>The built manager view, with test data.</figcaption>
+</figure>
 
-An intuitive, modern app that worked on both desktop and mobile, built in Vue with SASS and
-GraphQL. A manager's home page for the admin side, and a request form that finally let
-people say what they actually needed.
+## Outcome
 
-The old system was phased out.
+I built the front end in Vue, JavaScript, SASS and GraphQL, responsive so it worked on a phone
+as well as at a desk. WET's IT team tested it first, it was piloted in a couple of departments,
+and then it rolled out company-wide. The old system was retired.
 
-## What I'd do differently
+## Also at WET: the intranet
 
-I inherited an app that died with its author and then built its replacement alone, in a
-month, at a company I left five months later. I documented the design decisions but not the
-system, which means I handed over the same problem I'd been hired to fix, just newer.
+I redesigned the company intranet on Confluence. The hardest part was the events calendar: a
+dot on each day with an event, opening a tooltip with the details, which Confluence at the
+time didn't make easy to integrate.
+
+<figure>
+  <a href="/images/wet/intranet-calendar.png" target="_blank" rel="noopener">
+    <img src="/images/wet/intranet-calendar.png" width="584" height="468" loading="lazy" class="fig-narrow"
+      alt="The intranet calendar for June 2019, with today highlighted in red, a red dot on Friday the 7th, and a tooltip open describing a Jam Session in the Playground Cafeteria from 1 to 2 PM." />
+  </a>
+  <figcaption>The intranet calendar, with the event dot and tooltip.</figcaption>
+</figure>

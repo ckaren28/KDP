@@ -18,6 +18,13 @@ export default defineConfig({
     // easter egg). Without pre-bundling it, Vite discovers it late in dev,
     // re-optimizes, and the already-resolved chunk URL 404s, which is the
     // "Failed to fetch dynamically imported module" error.
-    optimizeDeps: { include: ['html-to-image'] }
+    optimizeDeps: { include: ['html-to-image'] },
+    server: {
+      allowedHosts: [
+        'file-luis-microphone-bullet.trycloudflare.com',
+        // Any Cloudflare quick tunnel, for sharing a local preview.
+        '.trycloudflare.com'
+      ]
+    }
   }
 });

@@ -12,19 +12,17 @@
     "packageJson": {
       "dependencies": [
         "npm:@astrojs/mdx@^4.3.13",
-        "npm:@astrojs/react@^4.4.2",
         "npm:@astrojs/tailwind@^6.0.2",
+        "npm:@mediapipe/tasks-vision@~0.10.35",
         "npm:@types/node@^25.6.0",
-        "npm:@types/react-dom@^19.2.3",
-        "npm:@types/react@^19.2.8",
         "npm:astro@^5.16.10",
-        "npm:decap-server@^3.5.0",
-        "npm:gsap@^3.14.2",
+        "npm:cloudinary@^2.10.0",
+        "npm:dotenv@^17.4.2",
+        "npm:html-to-image@^1.11.13",
         "npm:netlify-cli@^6.14.9",
-        "npm:react-dom@^19.2.3",
-        "npm:react@^19.2.3",
         "npm:sharp@~0.34.5",
-        "npm:tailwindcss@^3.4.19"
+        "npm:tailwindcss@^3.4.19",
+        "npm:three@~0.164.1"
       ]
     }
   }

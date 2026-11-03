@@ -4,82 +4,89 @@ role: "Developer Advocate"
 location: "New York, NY"
 start_date: 2020-02-01
 end_date: 2022-10-01
-headline: "Built the demo for Wix's first DevCon, then keynoted it"
-result: "77% of attendees built an avatar with it"
-abstract: "A live demo app for Wix's first developer conference."
-summary: "Wix's first developer conference needed a demo that showed off every new platform capability at once. It had to exist before some of those capabilities did. I built an avatar generator that ran the whole way through the platform, then presented it live as the keynote."
+headline: "Designed and built an avatar builder for Wix's first DevCon"
+result: "77% of attendees made an avatar"
+abstract: "A generative avatar widget for a live developer conference."
+summary: "Wix's first developer conference needed a 30-minute live demo of developer products that were still being built, for a live room and a virtual audience, in two months. I came up with a generative avatar widget that walked attendees through those products, designed how it worked, and built it in Wix Blocks and JavaScript, working with the Blocks product manager and lead engineer. The illustrations and the conference identity are by Wix's design team."
 also:
-  - "Asked for an onboarding deck for new hires, built a site on the Wix platform instead. Time on the homepage doubled after feedback-driven edits"
+  - "Presented the demo live as the keynote, \"Build with us,\" to 300 developers. The recording is on the Wix DevCon site under Keynotes"
   - "Ran a developer-experience study whose findings shipped as onboarding UI changes, refreshed documentation and new product features"
-artifacts:
-  - image: "/images/wix/devcon-avatars.jpg"
-    caption: "Output from the avatar generator, Wix DevCon 2022"
-  - image: "/images/wix/devcon-keynote.jpg"
-    caption: "Presenting the keynote to 300 developers"
-decision: "One flow instead of separate demos. I could have shown each launch on its own. I connected them into one path, from avatar to catalog to spin wheel to booking, so attendees used every product in one experience. That meant one unfinished API could break the whole flow, so I did all the QA myself and found real bugs before launch."
 order: 2
 ---
 
-## Building on features that didn't exist yet
+## The idea
 
-The demo had to cover every new release going out at the conference (Blocks, the ecommerce
-SPIs, the Bookings API) on a **two-month timeline**, and several of those weren't finished
-when I started. Some I was building against before they were stable enough to build against.
+NFTs were having a moment, and I saw the same generative-attribute pattern as a fun, on-brand
+way to demo what Blocks could do. You build an avatar, and it travels through the rest of the
+platform: into the ecommerce catalog as a product, onto a spin wheel, and for the winners, a
+one-to-one booking with the CEO and CTO. All on one page, so nothing reloads.
 
-The constraint wasn't design, it was sequencing. So I ran it as a scoped agile process with
-the boundaries agreed up front and regular reviews, because the thing most likely to kill it
-was finding out in week seven that something had changed in week three.
+<div class="fig-pair">
+<figure>
+  <a href="/images/wix/avatar-lofi.jpg" target="_blank" rel="noopener">
+    <img src="/images/wix/avatar-lofi.jpg" width="1405" height="770" loading="lazy"
+      alt="Low-fidelity wireframe of the ecommerce page: a Generate Art box with arrow controls for hair, eyes, nose and clothes and Randomize and Buy Now buttons, above a thank-you form, with sticky notes reading Select face, hair, outfit, eyes; Avatar Generator (block); and Same page (multi state)." />
+  </a>
+  <figcaption>Low-fi: one page with multi-state boxes.</figcaption>
+</figure>
+<figure>
+  <a href="/images/wix/avatar-widget-phone.png" target="_blank" rel="noopener">
+    <img src="/images/wix/avatar-widget-phone.png" width="667" height="1400" loading="lazy" class="fig-phone"
+      alt="The avatar widget on a phone: an avatar with long purple hair on a lime background, above rows for skin, hair, eyes, face, facial hair, shirt and background, each with arrows and a color swatch, and a Randomize button." />
+  </a>
+  <figcaption>Shipped.</figcaption>
+</figure>
+</div>
 
-## Getting every team on board
+## Decisions
 
-The lead-up meant aligning every team launching at DevCon: the ecommerce, Bookings and
-scheduling teams, the Wix Code team, their product managers, marketing and design for the
-external event, and the CTO and CEO. We flew out to headquarters a month early to work with
-them in person, because a demo that
-depends on several teams' unfinished releases can't be negotiated over email.
+**Arrows, not dropdowns.** Each attribute steps through its options with a pair of arrows. In a
+crowded room you get a minute of someone's attention: stepping is faster than opening a menu,
+it reads from a distance, and it works with a thumb on a phone.
 
-## The demo itself
+**A curated set.** The design team made far more options than I shipped. Cycling through
+everything is exhausting at a conference, so I cut it down.
 
-You create an avatar in a custom component, and it flows through the rest of the platform
-from there, into the ecommerce catalog as a product, through the new integrations, and out
-the other side. One continuous thing rather than a tour of disconnected features.
+**Every color pairing checked.** Every attribute drew from the same conference palette, so two
+could land on the same hue. I generated every combination and checked contrast against WCAG
+2.1 AA, then blocked the pairings that failed in code instead of changing the design team's
+palette.
 
-That was the design decision that mattered. A demo that visits each capability in turn shows
-you a list. A demo where your own avatar travels through all of them shows you a platform.
+<div class="fig-row">
+  <figure>
+    <img src="/images/wix/avatar-clash-dark.jpg" width="513" height="513" loading="lazy"
+      alt="Avatar with orange hair and a green shirt on the near-black background; every part stands out." />
+    <figcaption>Dark holds.</figcaption>
+  </figure>
+  <figure>
+    <img src="/images/wix/avatar-clash-lime.jpg" width="515" height="515" loading="lazy"
+      alt="The same avatar on a lime background; the green shirt nearly blends into it." />
+    <figcaption>Lime: the shirt collides.</figcaption>
+  </figure>
+  <figure>
+    <img src="/images/wix/avatar-clash-orange.jpg" width="515" height="515" loading="lazy"
+      alt="The same avatar on an orange background; the orange hair disappears into it." />
+    <figcaption>Orange: the hair disappears. Blocked.</figcaption>
+  </figure>
+</div>
 
-The look came from the NFT craze, which was at its height, and the visuals were new assets
-made with Wix's design team.
+<figure>
+  <a href="/images/wix/avatar-blocks-editor.jpg" target="_blank" rel="noopener">
+    <img src="/images/wix/avatar-blocks-editor.jpg" width="1488" height="852" loading="lazy"
+      alt="The Wix Blocks editor with the avatar generator widget at the top and its JavaScript below, importing one module per attribute and building the SVG." />
+  </a>
+  <figcaption>Built in Wix Blocks, still in beta, one SVG module per attribute.</figcaption>
+</figure>
 
-## Building it found the bugs
+## Outcome
 
-Being first to implement the new releases meant I hit their edges before any customer did.
-The demo doubled as the platform's first real integration test, and the bugs it turned up got
-fixed before launch rather than after.
+**77% of attendees made an avatar.** People shared their avatars on Twitter during the event,
+and building on the new releases first surfaced platform bugs that were fixed before launch.
 
-## The keynote
-
-I presented it live to 300 developers, a community that had started the year at ten.
-**77% of attendees went on to create an avatar**, which is the number I care about: not that
-people watched the demo, but that they opened the tool afterwards and used it.
-
-The recording is still up on the [Wix DevCon site](https://www.wixdevcon.com/vod), listed
-under Keynotes as "Build with us." I was Karen Chin then.
-
-## At the venue
-
-The event also had large screens showing iridescent, silver anamorphic 3D blobs, designed by
-Wix's design team. You typed a message on a laptop beside the screen, it appeared in the
-display, and you took a selfie or a video in front of it. People lined up for it.
-
-A teammate built most of it, on the same platform the conference was launching. The input was
-a form on a Wix site, written in the code editor, which sent the message in JavaScript to a
-Raspberry Pi driving the screen. My part was the message itself: testing and debugging what
-came through, writing the error messages, and checking the length before anything was sent,
-so a name or a word never broke onto a second line of the screen.
-
-## What I'd do differently
-
-I built the demo and the talk as one artifact, which made both fragile. A change to an
-unfinished API was also a change to the script, two days out. I'd separate what I'm
-demonstrating from what I'm saying about it next time, so a late platform change costs me a
-slide instead of a rehearsal.
+<figure>
+  <span class="browser-chrome" data-url="Wix DevCon">
+    <img src="https://res.cloudinary.com/deqij2maw/image/upload/v1777477690/portfolio/wix-devcon/DevCon.gif" width="1024" height="858" loading="lazy"
+      alt="Animated Wix DevCon announcement page: the Wix dev con Summer 2022 NYC title in a wireframe room with floating 3D objects." />
+  </span>
+  <figcaption>The DevCon announcement page I designed and built for the Wix developer community.</figcaption>
+</figure>

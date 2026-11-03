@@ -412,3 +412,63 @@ body.dk.dk-live { cursor:none; }
   .dk .dk-cur { display:none; }
   body.dk.dk-live { cursor:auto; }
 }
+
+/* On /about the supporting line carries a plain link to the bio, so the page's
+   content never depends on finding the pull-a-letter interaction. .dk-id is
+   pointer-events:none, so the link turns them back on for itself. */
+.dk .dk-more {
+  pointer-events:auto;
+  margin-left:.35em;
+  color:var(--ink);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  white-space:nowrap;
+}
+.dk .dk-more:focus-visible { outline:2px solid var(--chrome); outline-offset:4px; border-radius:2px; }
+
+/* On /about the pull uncovers the introduction itself rather than a link.
+   Spans, not paragraphs, because the card lives inside the h1. Body face at
+   reading size, left-aligned so two short paragraphs read as prose. */
+.dk .dk-bio { display:block; max-width:min(78vw,500px); text-align:left; outline:none; }
+.dk .dk-bio-p {
+  display:block; margin:0 0 .9em;
+  font-family:'Instrument Sans', system-ui, sans-serif;
+  font-size:clamp(13px,1.15vw,15.5px); font-weight:400; line-height:1.6;
+  letter-spacing:0; text-transform:none; color:var(--chrome);
+}
+.dk .dk-bio-p:last-child { margin-bottom:0; color:var(--soft); }
+
+/* ── /about: the darkroom as a hero with the page continuing below ──
+   The landing version owns the whole viewport and can't scroll. Here the
+   identity block becomes a full-height section in flow, the print stays fixed
+   behind it, and the rest of the page scrolls up over it on a solid ground. */
+html.dk-root.dk-scroll, html.dk-scroll body.dk { height:auto; overflow-x:hidden; overflow-y:visible; }
+.dk.dk-about .dk-id { position:relative; inset:auto; min-height:100vh; min-height:100svh; }
+/* A vertical drag on the print scrolls the page; it still develops on the way. */
+.dk.dk-about canvas.dk-stage { touch-action:pan-y; }
+.dk.dk-about .ab-rest {
+  position:relative; z-index:4;
+  background:var(--ox-deep); color:var(--chrome);
+  border-top:1px solid var(--faint);
+}
+.dk.dk-live.dk-about .ab-rest, .dk.dk-live.dk-about .ab-rest * { cursor:auto; }
+.dk.dk-live.dk-about .ab-rest a, .dk.dk-live.dk-about .ab-rest a * { cursor:pointer; }
+.dk.dk-about .dk-hint, .dk.dk-about .dk-contact, .dk.dk-about .dk-cur { transition:opacity .3s ease; }
+.dk.dk-about.dk-past .dk-hint,
+.dk.dk-about.dk-past .dk-contact,
+.dk.dk-about.dk-past .dk-cur { opacity:0; pointer-events:none; }
+.dk.dk-about.dk-past .dk-nav { background:var(--ox-deep); transition:background .3s ease; }
+.dk.dk-about .ab-rest .page-eyebrow {
+  display:block; margin-bottom:24px;
+  font-family:'Space Mono', ui-monospace, monospace; font-size:10px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+}
+
+/* /about: a quieter cue than the boxed pill, in the same voice as the corner
+   hint. It breathes until the first pull, then leaves for good. */
+.dk .dk-cue.dk-cue--quiet {
+  padding:0; border:0; border-radius:0; gap:0;
+  font-size:11px; letter-spacing:.22em; color:var(--soft);
+  opacity:.8;
+}
+.dk .dk-name.touched .dk-cue.dk-cue--quiet { opacity:0; visibility:hidden; transition:opacity .45s, visibility 0s .45s; }

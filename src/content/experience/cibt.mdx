@@ -5,47 +5,37 @@ location: "Washington, D.C."
 start_date: 2017-01-01
 end_date: 2017-11-01
 headline: "Changed the survey, not the sample"
-result: "One week outdrew five weeks of the original"
+result: "One week of the redesigned survey outdrew five weeks of the original"
 abstract: "Research into why visa applicants were leaving."
-summary: "CIBT processes visas and passports for corporate clients and individual travelers. People were reaching the requirements page and the application funnel and leaving, and nobody could say why. I ran on-site polls across both pages to find out. When the first round returned thin, low-quality answers, I rebuilt the instrument rather than the sample."
+summary: "CIBT processes visas and passports for corporate clients and individual travelers. People were reaching the visa requirements page and the application funnel and leaving, and analytics could say they left but not why. I ran on-site polls on both pages to find out, and when the first round came back thin, I redesigned the survey rather than waiting for more of the same answers."
 also:
   - "Designed and built responsive landing pages for corporate clients including Microsoft, Apple and IBM"
-  - "Maintained and redesigned components across multilingual company sites"
-order: 5
+  - "Built responsive templates by hand in HTML, CSS and JavaScript, to WCAG standards"
+order: 3
 ---
 
-## What I was trying to find out
+## Decisions
 
-Two pages were losing people: the **requirements** page, where travelers check what a
-visa needs, and the **application funnel** itself. Analytics could say they left. It
-couldn't say why.
+<p class="why">Analytics showed where people left, not why.</p>
 
-## Round one
+**Ask where people leave.** I put polls directly on the two pages losing people: the
+requirements page, where travelers check what a visa needs, and the application funnel. Round
+one returned **420 responses**, 291 on requirements and 129 in the funnel, but the answers
+were vague.
 
-I put open-ended polls on both pages and let them run for six weeks. They returned
-**420 responses**, 291 on requirements and 129 in the funnel.
+<p class="why">An open question asks for a thought before someone has agreed to take part.</p>
 
-The volume was workable but the answers were vague. Opening with an open question asks
-someone to compose a thought before they've agreed to participate at all, and most
-people simply don't.
+**Lead with yes or no.** For round two I opened with a binary question and asked the open
+one only as a follow-up. **One week of the redesigned survey drew more than double what five
+weeks of the original had**, and the answers got more specific: people who had found what they
+needed and hit a particular wall.
 
-## Changing the instrument, not the sample
+<p class="why">Hundreds of free-text answers don't rank themselves.</p>
 
-For round two I inverted the structure: lead with a **binary yes/no**, then ask the open
-question as a follow-up to whoever answered.
-
-The effect was immediate. **One week of round two drew more than double what five weeks
-of round one had.** Roughly half of the people who answered the first question went on
-to answer the second, which meant the qualitative pool grew alongside the quantitative
-one instead of competing with it.
-
-The answers also changed character. Round one produced procedural questions from people
-asking how to use the service. Round two produced declarative ones from people who had
-already found what they needed and hit a specific wall. More useful, and more specific.
+**Code the answers into themes.** I sorted the free text into categories, which put the
+blockers in order.
 
 ## What it found
-
-Coding the free-text into themes put the blockers in order:
 
 <svg class="dv-chart" viewBox="0 0 620 232" role="img" aria-label="Response themes coded from the requirements-page free text, by number of mentions. Requirements not clear, 69. Visa processing time, 36. Price, 30. Cannot find documents, 28. Address or license change, 11. Cannot find order number, 11. Email or print application, 8. Live chat, 6.">
   <line class="dv-axis" x1="180" y1="14" x2="180" y2="220" />
@@ -85,18 +75,30 @@ Coding the free-text into themes put the blockers in order:
 
 <p class="dv-cap">Mentions, coded from open-text responses on the requirements page</p>
 
-- **Requirements not clear.** The largest single category.
-- **Cost not clear.** People couldn't tell what the total would be, service fees included.
-- **Processing time not clear.**
-- **Can't find the documents.** Letters of invitation and business cover letters especially.
-- **Too time-consuming.** The theme both rounds agreed on.
+**Unclear requirements** was the largest category by far, ahead of processing time, price, and
+not being able to find documents like letters of invitation. Underneath them sat a request the
+site had no answer for: *let me save this and come back*. People gathered passports, photos and
+employer letters over days, and the funnel assumed a single sitting.
 
-Underneath those sat a repeated request the site had no answer for: *let me save this and
-come back*. People were gathering passports, photos and employer letters over days, and
-the funnel assumed a single sitting.
+## Also at CIBT: the corporate site
 
-## What I'd do differently
+CIBT went through a complete facelift of its site and logo. I helped the lead designer and
+marketing manager carry it out, and worked with the Digital Media Manager to design, build and
+QA the corporate site for clients.
 
-The round-one design was the mistake, and it cost five weeks to find out. I'd now treat
-the first question as a participation decision rather than a research question. Earn the
-response first, ask for the thinking second.
+<div class="fig-two">
+<figure>
+  <a href="/images/cibt/consumer-site.png" target="_blank" rel="noopener">
+    <img src="/images/cibt/consumer-site.png" width="584" height="515" loading="lazy" class="fig-plain"
+      alt="The CIBTvisas consumer site in a browser window, with a visa requirements checker over an airport photo and tiles for China, Russia, India and Australia visas." />
+  </a>
+  <figcaption>The consumer visa site</figcaption>
+</figure>
+<figure>
+  <a href="/images/cibt/corporate-site.png" target="_blank" rel="noopener">
+    <img src="/images/cibt/corporate-site.png" width="583" height="515" loading="lazy" class="fig-plain"
+      alt="The CIBT corporate site in a browser window, with a Shanghai skyline hero reading Global Visa and Immigration Solutions above a dark section on global mobility." />
+  </a>
+  <figcaption>The corporate site</figcaption>
+</figure>
+</div>

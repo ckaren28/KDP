@@ -15,6 +15,7 @@
 [functions."textile-palette"]
   timeout = 20
 
+
 # Security headers on every response. HSTS is already sent by Netlify.
 # - X-Frame-Options: only this site may put its pages in a frame (the Incense
 #   demo is framed by its own case study, which is same origin).
@@ -32,6 +33,12 @@
 
 # /projects has no page of its own; send it to the tech listing server-side
 # so there's no meta-refresh flash
+# The bio moved into the /about reveal (Nov 2026).
+[[redirects]]
+  from = "/about/me"
+  to = "/about"
+  status = 301
+
 [[redirects]]
   from = "/projects"
   to = "/projects/tech"

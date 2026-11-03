@@ -2,11 +2,6 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getCollection } from 'astro:content';
 
-// Employment history. `order` drives the sequence rather than the dates, so it
-// can be adjusted without rewriting frontmatter.
-const allExperience = (await getCollection('experience'))
-  .sort((a, b) => a.data.order - b.data.order);
-
 
 // The grid reads the content collection. It used to be a hardcoded array here,
 // which meant two sources of truth for the same four projects. Edit the MDX and
@@ -25,7 +20,7 @@ const projects = (await getCollection('projects'))
   }));
 ---
 
-<MainLayout title="Work · Karen Dettmar" theme="dark">
+<MainLayout title="Lab · Karen Dettmar" theme="dark">
 
   <style>
     .tech-page {
@@ -545,50 +540,17 @@ const projects = (await getCollection('projects'))
 
     <header class="page-header reveal">
       <div class="page-header-top">
-        <h1 class="page-title"><em>Work</em></h1>
+        <h1 class="page-title"><em>Lab</em></h1>
       </div>
     </header>
 
     <nav class="section-nav" id="sectionNav" aria-label="Sections on this page">
-      <a href="#experience" data-nav="experience">Experience</a>
       <a href="#projects" data-nav="projects">Projects</a>
       <a href="#experiments" data-nav="experiments">Experiments</a>
     </nav>
 
-    {allExperience.length > 0 && (
-      <section class="xp reveal" id="experience" aria-labelledby="experienceLabel">
-        <div class="exp-head">
-          <h2 class="exp-title" id="experienceLabel">Experience</h2>
-          <p class="exp-note">
-            Design, product, DevRel and front-end work.
-          </p>
-        </div>
-
-        <ul class="xp-list">
-          {allExperience.map(({ data, slug }) => {
-            const inner = (
-              <>
-                <div>
-                  <p class="xp-meta">
-                    <span class="xp-company">{data.company}</span>
-                    <span>{data.role}</span>
-                  </p>
-                  <p class="xp-abstract">{data.abstract}</p>
-                </div>
-                {data.nda && <span class="xp-nda">Internal</span>}
-              </>
-            );
-            return (
-              <li>
-                {data.compact
-                  ? <div class="xp-row xp-row--static">{inner}</div>
-                  : <a class="xp-row" href={`/experience/${slug}`}>{inner}</a>}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-    )}
+    {/* Experience moved to the homepage's case studies (Nov 2026), so this
+        page is the lab: tools and experiments, without repeating the work. */}
 
     <section class="work-section reveal" id="projects" aria-labelledby="projectsLabel">
       <div class="exp-head">

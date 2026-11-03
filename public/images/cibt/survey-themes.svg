@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+<rect width="800" height="600" fill="#ffffff"/>
+<text x="48" y="70" font-family="Helvetica, Arial, sans-serif" font-size="15" letter-spacing="2" fill="#6b6b6b">WHY APPLICANTS LEFT · CODED SURVEY ANSWERS</text>
+<line x1="290" y1="110" x2="290" y2="540" stroke="#d9d9d9" stroke-width="1.5"/>
+<rect x="290" y="120" width="400" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="141" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Requirements not clear</text>
+<text x="700" y="141" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">69</text>
+<rect x="290" y="172" width="209" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="193" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Visa processing time</text>
+<text x="509" y="193" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">36</text>
+<rect x="290" y="224" width="174" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="245" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Price</text>
+<text x="474" y="245" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">30</text>
+<rect x="290" y="276" width="162" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="297" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Cannot find documents</text>
+<text x="462" y="297" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">28</text>
+<rect x="290" y="328" width="64" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="349" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Address / license change</text>
+<text x="364" y="349" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">11</text>
+<rect x="290" y="380" width="64" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="401" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Cannot find order number</text>
+<text x="364" y="401" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">11</text>
+<rect x="290" y="432" width="46" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="453" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Email or print application</text>
+<text x="346" y="453" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">8</text>
+<rect x="290" y="484" width="35" height="30" rx="4" fill="#7A2230"/>
+<text x="276" y="505" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#333">Live chat</text>
+<text x="335" y="505" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#111">6</text>
+</svg>

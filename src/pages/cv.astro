@@ -29,7 +29,7 @@ import '../styles/cv-print.css';
     <!-- Name & identity -->
     <header class={styles['cv-header']}>
       <h1 class={styles['cv-name']}>Karen Dettmar</h1>
-      <p class={styles['cv-subtitle']}>Creative Technologist &nbsp;·&nbsp; Design Engineer &nbsp;·&nbsp; New York City</p>
+      <p class={styles['cv-subtitle']}>UX Engineer &nbsp;·&nbsp; Design Technologist &nbsp;·&nbsp; New York City</p>
       <p class={styles['cv-contact']}>
         <a href="mailto:karen.dettmar@gmail.com">karen.dettmar@gmail.com</a>
         <span class={styles['cv-sep']}>·</span>
@@ -40,53 +40,23 @@ import '../styles/cv-print.css';
       </p>
     </header>
 
-    <!-- Summary. Content mirrors Career Goals/cv-tool/content/base.json, the single source of truth. -->
-    <p class={styles['cv-summary']}>
-      Designer and front-end engineer with roughly seven years building production interfaces at the intersection of design and code. I hand-write HTML, CSS, and JavaScript, work in React and TypeScript, and prototype in code rather than argue about a mockup. Most of that time has been spent on the seam between design and engineering, four and a half years of it inside the developer platforms at Wix and Intuit, designing and building the tools, interfaces and documentation that both sides shipped from. Claude Code, Cursor, and Codex are core to how I work.
-    </p>
-
-    <!-- Skills & Tools -->
+    <!-- Generated Nov 3, 2026 from Career Goals/cv-tool (base.json + cuts/uxe-general.json), the same source as the downloadable PDF. Edit there and regenerate rather than by hand. -->
     <section class={styles['cv-section']}>
       <h2 class={styles['cv-section-heading']}>Skills &amp; Tools</h2>
       <div class={styles['cv-skills']}>
         <div class={styles['cv-skill-row']}>
           <span class={styles['cv-skill-cat']}>Engineering</span>
-          <span class={styles['cv-skill-val']}>TypeScript, JavaScript, React, React Native, Vue, Next.js, Astro, HTML5, CSS3, SASS, Tailwind CSS, Node.js, PHP, Ruby, Canvas animation, Three.js and WebGL, responsive layouts, component architecture, WCAG and ADA accessibility, REST APIs, Git</span>
+          <span class={styles['cv-skill-val']}>JavaScript, React, HTML, CSS, Node.js, REST APIs, SDK integration, responsive UI, WCAG accessibility, Git, TypeScript, Vue, Astro, Tailwind CSS</span>
         </div>
         <div class={styles['cv-skill-row']}>
           <span class={styles['cv-skill-cat']}>Design</span>
-          <span class={styles['cv-skill-val']}>Figma, Sketch, design systems, prototyping in code, wireframing, low and hi-fi prototypes, visual and brand systems, Adobe Illustrator, Photoshop, After Effects</span>
-        </div>
-        <div class={styles['cv-skill-row']}>
-          <span class={styles['cv-skill-cat']}>Research</span>
-          <span class={styles['cv-skill-val']}>User calls, user personas, contextual inquiry, information architecture, usability testing, beta testing, QA</span>
-        </div>
-        <div class={styles['cv-skill-row']}>
-          <span class={styles['cv-skill-cat']}>AI</span>
-          <span class={styles['cv-skill-val']}>Claude API, prompt design, structured output design, LLM integration, Claude Code, Cursor, Codex, Midjourney</span>
-        </div>
-        <div class={styles['cv-skill-row']}>
-          <span class={styles['cv-skill-cat']}>Platforms</span>
-          <span class={styles['cv-skill-val']}>WordPress, Webflow, Wix, Shopify and Liquid, Contentful, LEMP stack</span>
+          <span class={styles['cv-skill-val']}>Figma, prototyping in code, wireframing, user flows, usability testing</span>
         </div>
       </div>
     </section>
 
-    <!-- Experience -->
     <section class={styles['cv-section']}>
       <h2 class={styles['cv-section-heading']}>Experience</h2>
-
-      <div class={styles['cv-role']}>
-        <div class={styles['cv-role-meta']}>
-          <span class={styles['cv-role-title']}>Independent Design Engineering</span>
-          <span class={styles['cv-role-loc']}>New York, NY</span>
-          <span class={styles['cv-role-date']}>Jan 2026 – Current</span>
-        </div>
-        <ul class={styles['cv-bullets']}>
-          <li>Designing and building interactive web tools in <strong class={styles['cv-em']}>TypeScript, Astro, Three.js, WebGL and Canvas</strong>, from concept through deployment, including real-time graphics and generative pattern systems.</li>
-        </ul>
-      </div>
-
       <div class={styles['cv-role']}>
         <div class={styles['cv-role-meta']}>
           <span class={styles['cv-role-title']}>Developer Advocate</span>
@@ -94,8 +64,9 @@ import '../styles/cv-print.css';
           <span class={styles['cv-role-loc']}>New York, NY</span>
           <span class={styles['cv-role-date']}>Nov 2022 – Sept 2024</span>
         </div>
+        <div class={styles['cv-role-scope']}>Design and front-end engineering for internal developer platforms</div>
         <ul class={styles['cv-bullets']}>
-          <li>Designed and built the scorecard, leaderboard, and reporting interface in <strong class={styles['cv-em']}>React</strong> for the InnerSource Tournament, a readiness program spanning documentation standards and code coverage across the AI and Data business units. <strong class={styles['cv-em']}>Result: 150 participants, and 40% of the services scored became ready for other teams to adopt on their own.</strong></li>
+          <li>Designed and built a <strong class={styles['cv-em']}>React</strong> scorecard, leaderboard, and reporting interface for the scaled InnerSource Tournament, replacing the pilot's spreadsheet scoring, with a platform engineer setting up a weekly pull of each service's maturity data from the developer portal. <strong class={styles['cv-em']}>Result: 150 participants, and 40% of the services scored became ready for other teams to adopt on their own.</strong></li>
           <li>Built and shipped engineer-facing tools and interactive learning experiences used by <strong class={styles['cv-em']}>7,000+ global employees</strong>, owning the full development lifecycle from prototype through public deployment.</li>
           <li>Redesigned and implemented Intuit's external-facing open source website.</li>
           <li>Delivered internal training on React Security, InnerSource, OpenSource, <strong class={styles['cv-em']}>Design Systems,</strong> and documentation standards, including the design systems session in new-employee onboarding.</li>
@@ -110,11 +81,12 @@ import '../styles/cv-print.css';
           <span class={styles['cv-role-loc']}>New York, NY</span>
           <span class={styles['cv-role-date']}>Feb 2020 – Oct 2022</span>
         </div>
+        <div class={styles['cv-role-scope']}>Product design, user research and front-end for the developer platform</div>
         <ul class={styles['cv-bullets']}>
-          <li>Built the demo product for the first ever <strong class={styles['cv-em']}>Wix DevCon</strong> from scratch, on several platform services that had not yet shipped, carrying it through prototyping, QA, and approvals with PMs, engineers, marketing, and the CEO against a fixed launch date it had to work on live. Delivered the keynote presenting it. <strong class={styles['cv-em']}>Result:</strong> a community that started at 10 developers became a 300-person live keynote audience, and the demo build surfaced and fixed platform bugs.</li>
-          <li>Designed and ran a user study assessing developer experience on the platform. <strong class={styles['cv-em']}>Findings drove product, R&amp;D, and UX to ship onboarding UI updates, refreshed documentation, and new product features.</strong></li>
-          <li>Established the first NYC Wix meetups where no local community existed. <strong class={styles['cv-em']}>Result: 8 attendees at the first meetup to 16 repeat attendees monthly.</strong></li>
+          <li>Built the demo product for the first ever <strong class={styles['cv-em']}>Wix DevCon</strong> from scratch, on several platform services that had not yet shipped, carrying it through prototyping, QA, and approvals with PMs, engineers, marketing, and the CEO against a fixed launch date it had to work on live. <strong class={styles['cv-em']}>Result:</strong> the build surfaced and fixed platform bugs, and I presented it in the keynote to a 300-person live audience.</li>
           <li>Taught workshops on JavaScript fundamentals, UI/UX best practice, and design-to-code transitions, including a workshop that took college design students through their portfolio finals.</li>
+          <li>Designed and ran a user study assessing developer experience on the platform. <strong class={styles['cv-em']}>Findings drove product, R&amp;D, and UX to ship onboarding UI updates, refreshed documentation, and new product features.</strong></li>
+          <li>Asked for a new-hire onboarding deck, built an <strong class={styles['cv-em']}>onboarding site</strong> on the Wix platform instead and revised it from new-hire feedback. <strong class={styles['cv-em']}>Result: time on the homepage doubled.</strong></li>
         </ul>
       </div>
 
@@ -126,8 +98,8 @@ import '../styles/cv-print.css';
           <span class={styles['cv-role-date']}>Feb 2019 – Jul 2019</span>
         </div>
         <ul class={styles['cv-bullets']}>
+          <li>Designed and built the front end of an internal <strong class={styles['cv-em']}>travel request and approval app</strong> that replaced a legacy system: interviewed the travel manager and frequent travelers, designed the workflow, wireframes and UI, and coded a <strong class={styles['cv-em']}>responsive single-page app</strong> in VueJS, JavaScript, HTML, SASS, and GraphQL as the sole front-end developer. <strong class={styles['cv-em']}>Result: after IT testing and a departmental pilot, it rolled out company-wide.</strong></li>
           <li>Redesigned and deployed the company intranet, consulting with the branding team on interface and technical requirements to make it the primary channel for company communication. Built and <strong class={styles['cv-em']}>usability tested</strong> its components in Confluence, CSS, and JavaScript. <strong class={styles['cv-em']}>Result: 25% increase in time on page.</strong></li>
-          <li>Built an internal travel management application: researched, wireframed, <strong class={styles['cv-em']}>usability tested</strong>, and coded a <strong class={styles['cv-em']}>responsive, mobile-friendly single-page app</strong> in VueJS, JavaScript, HTML, and SASS, defining user flow and data structure to the travel manager's requirements. <strong class={styles['cv-em']}>Result: replaced and retired the deprecated legacy system.</strong></li>
           <li>Maintained, updated, and built <strong class={styles['cv-em']}>mobile modular components</strong> for the existing site.</li>
         </ul>
       </div>
@@ -141,7 +113,6 @@ import '../styles/cv-print.css';
         </div>
         <ul class={styles['cv-bullets']}>
           <li>Redesigned and implemented the company website, meeting regularly with the CEO on design direction. Built on a <strong class={styles['cv-em']}>LEMP stack (CentOS, NGINX, MySQL, PHP)</strong> with a <strong class={styles['cv-em']}>WordPress theme written from scratch. Result: 10% increase in page visits</strong>, and the redesign was what made the campaign launch on schedule.</li>
-          <li>Produced monthly print and digital campaigns around studio releases, including advertisements published in <strong class={styles['cv-em']}>Cinefex</strong> and <strong class={styles['cv-em']}>Variety</strong>, with accompanying hero image updates and blog posts.</li>
           <li>Built a <strong class={styles['cv-em']}>Raspberry Pi conference room booking system</strong> for the studio.</li>
         </ul>
       </div>
@@ -154,25 +125,19 @@ import '../styles/cv-print.css';
           <span class={styles['cv-role-date']}>Jan 2017 – Nov 2017</span>
         </div>
         <ul class={styles['cv-bullets']}>
-          <li>Maintained and redesigned components for multilingual company sites, providing bespoke landing pages for high-profile corporate clients (<strong class={styles['cv-em']}>Microsoft, Apple, IBM</strong>) alongside the consumer-facing traveler experience.</li>
           <li>Built <strong class={styles['cv-em']}>clean, scalable, responsive templates</strong> by hand in HTML, CSS, and JavaScript, built to <strong class={styles['cv-em']}>WCAG</strong> standards.</li>
-          <li>Worked closely with the Digital Media Manager to design, create, deploy, and QA corporate sites across regions, serving as the defining document for corporate brand and company culture.</li>
+          <li>Ran on-site polls on the visa requirements page and the application funnel to find out why travelers were leaving. When the first round returned thin answers, redesigned the survey to open with a yes/no question before the open one. <strong class={styles['cv-em']}>Result: one week of the redesigned survey drew more than double what five weeks of the original had</strong>, and the coded responses ranked the blockers, led by unclear requirements.</li>
+          <li>Maintained and redesigned components for multilingual company sites, providing bespoke landing pages for high-profile corporate clients (<strong class={styles['cv-em']}>Microsoft, Apple, IBM</strong>) alongside the consumer-facing traveler experience.</li>
         </ul>
       </div>
-
     </section>
 
-    <!-- Education -->
     <section class={`${styles['cv-section']} ${styles['cv-section-last']}`}>
       <h2 class={styles['cv-section-heading']}>Education</h2>
       <div class={styles['cv-edu-list']}>
         <div class={styles['cv-edu-item']}>
           <span class={styles['cv-edu-degree']}>Certification in Fashion Design</span>
           <span class={styles['cv-edu-school']}>Parsons School of Design – The New School &nbsp;·&nbsp; Full-time 2025</span>
-        </div>
-        <div class={styles['cv-edu-item']}>
-          <span class={styles['cv-edu-degree']}>Sewing &amp; Garment Construction</span>
-          <span class={styles['cv-edu-school']}>Fashion Institute of Technology (FIT)</span>
         </div>
         <div class={styles['cv-edu-item']}>
           <span class={styles['cv-edu-degree']}>Full Stack Web Development Program: MEAN, Ruby on Rails, Python &amp; Django</span>

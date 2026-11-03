@@ -221,3 +221,47 @@ img {
   .cursor, .cursor-ring { display: none; }
 }
 
+
+/* Browser-window mockup for historical app screenshots (Nov 2026). Drawn in
+   CSS around the original image, so the screenshot itself is never altered.
+   data-url carries the label shown in the address bar. */
+.browser-chrome {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 22px 48px -24px rgba(0, 0, 0, 0.45);
+}
+.browser-chrome::before {
+  content: '';
+  display: block;
+  height: 34px;
+  background:
+    radial-gradient(circle at 18px 17px, #ff5f57 5px, transparent 5.5px),
+    radial-gradient(circle at 36px 17px, #febc2e 5px, transparent 5.5px),
+    radial-gradient(circle at 54px 17px, #28c840 5px, transparent 5.5px),
+    #ececf0;
+  border-bottom: 1px solid #d9d9de;
+}
+.browser-chrome::after {
+  content: attr(data-url);
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(52%, 340px);
+  height: 20px;
+  border-radius: 6px;
+  background: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #8a8a90;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.browser-chrome img { display: block; width: 100%; height: auto; border: 0 !important; }

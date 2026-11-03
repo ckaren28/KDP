@@ -58,7 +58,9 @@ export function initDarkroom(root: HTMLElement) {
   const cardEl = root.querySelector<HTMLElement>('.dk-card');
   const shutter = root.querySelector<HTMLAnchorElement>('.dk-shutter');
   const revealBtn = root.querySelector<HTMLButtonElement>('.dk-reveal');
-  if (!view || !nameEl || !curEl || !hintEl || !cardEl || !shutter || !revealBtn) return;
+  // The shutter is optional: on /about the pull reveals the introduction
+  // itself, with no link onward, so the card holds text instead.
+  if (!view || !nameEl || !curEl || !hintEl || !cardEl || !revealBtn) return;
 
   // Past the guard, so a replacement cursor is guaranteed to be drawn. Only
   // now is it safe for the stylesheet to hide the real one. If this module
@@ -195,7 +197,7 @@ export function initDarkroom(root: HTMLElement) {
     cardEl!.setAttribute('aria-hidden', on ? 'false' : 'true');
     // The card is a container now, so the tab stop belongs to the shutter
     // inside it rather than to the card itself.
-    shutter!.tabIndex = on ? 0 : -1;
+    if (shutter) shutter.tabIndex = on ? 0 : -1;
     revealBtn!.setAttribute('aria-expanded', on ? 'true' : 'false');
   }
 
@@ -255,7 +257,7 @@ export function initDarkroom(root: HTMLElement) {
   // keeps its heading role. Focus moves to the shutter once it's revealed.
   revealBtn.addEventListener('click', () => {
     reveal(!revealed);
-    if (revealed) shutter.focus();
+    if (revealed) (shutter ?? cardEl).focus();
   });
 
   // Enter still opens the work for the visitor who pulled a letter with the
@@ -269,7 +271,7 @@ export function initDarkroom(root: HTMLElement) {
   // only claims the key when nothing interactive holds it. Otherwise tabbing to
   // About and pressing Enter would land on the work page instead.
   window.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key !== 'Enter' || !revealed || e.defaultPrevented) return;
+    if (!shutter || e.key !== 'Enter' || !revealed || e.defaultPrevented) return;
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
     const held = document.activeElement as HTMLElement | null;
     if (held?.closest('a[href], button, input, select, textarea, [contenteditable]')) return;

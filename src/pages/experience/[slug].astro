@@ -121,8 +121,10 @@ const d = entry.data;
 
     .xpp-artifacts {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      /* One column: print spreads are wide, and side by side they shrank to
+         thumbnails with ragged rows. */
+      grid-template-columns: 1fr;
+      gap: 28px;
       margin: 0 0 40px;
     }
     .xpp-artifacts figure { margin: 0; }
@@ -215,9 +217,80 @@ const d = entry.data;
     }
     .xpp-body :global(h2:first-child) { margin-top: 0; }
     .xpp-body :global(p) { margin: 0 0 16px; }
-    .xpp-body :global(ul) { margin: 0 0 16px; padding-left: 20px; }
+    .xpp-body :global(ul) { margin: 0 0 16px; padding-left: 20px; list-style: disc; }
+    .xpp-body :global(li::marker) { color: var(--sienna); }
     .xpp-body :global(li) { margin-bottom: 8px; }
     .xpp-body :global(strong) { color: var(--black); font-weight: 600; }
+    /* Historical screenshots inside a case body. Shown at their own aspect
+       ratio, each linking to the full-size file since the originals are small. */
+    .xpp-body :global(figure) { margin: 28px 0 32px; }
+    .xpp-body :global(figure a) { display: block; text-decoration: none; }
+    .xpp-body :global(figure img) {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    /* Low-fi beside what shipped. */
+    .xpp-body :global(.fig-pair) {
+      display: grid;
+      grid-template-columns: 2.1fr 1fr;
+      gap: 16px;
+      align-items: start;
+      margin: 28px 0 32px;
+    }
+    .xpp-body :global(.fig-pair figure) { margin: 0; }
+    @media (max-width: 600px) {
+      .xpp-body :global(.fig-pair) { grid-template-columns: 1fr; }
+    }
+    /* The finding a decision answers, set above it so the reasoning reads at
+       a glance without another paragraph of process. */
+    .xpp-body :global(p.why) {
+      margin: 30px 0 6px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.1em;
+      line-height: 1.6;
+      text-transform: uppercase;
+      color: var(--sienna);
+    }
+    /* The phone capture has square white corners around a rounded device;
+       clipping to the device's own radius removes them. */
+    .xpp-body :global(img.fig-phone) {
+      border: 0 !important;
+      background: transparent !important;
+      border-radius: 12% / 5.6%;
+    }
+    /* Two images side by side, equal width. */
+    .xpp-body :global(.fig-two) {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0 32px;
+    }
+    .xpp-body :global(.fig-two figure) { margin: 0; }
+    @media (max-width: 600px) { .xpp-body :global(.fig-two) { grid-template-columns: 1fr; } }
+    /* Screenshots that already carry their own browser window: no extra box. */
+    .xpp-body :global(img.fig-plain) { border: 0 !important; background: transparent !important; }
+    .xpp-body :global(img.fig-narrow) { max-width: 360px; margin: 0 auto; }
+    /* Three small images side by side, each with its own caption. */
+    .xpp-body :global(.fig-row) {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 28px 0 32px;
+    }
+    .xpp-body :global(.fig-row figure) { margin: 0; }
+    @media (max-width: 600px) {
+      .xpp-body :global(.fig-row) { grid-template-columns: 1fr; }
+    }
+    .xpp-body :global(figcaption) {
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-100);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1.6;
+      color: var(--muted);
+    }
     .xpp-body :global(em) { color: var(--sienna); font-style: normal; }
     /* Underlined so a link never reads by color alone. */
     .xpp-body :global(a) {
@@ -235,7 +308,7 @@ const d = entry.data;
   </style>
 
   <article class="xpp">
-    <a href="/projects/tech#experience" class="xpp-back">← Back to work</a>
+    <a href="/#work" class="xpp-back">← Back to work</a>
 
     <p class="xpp-meta">
       <span class="xpp-company">{d.company}</span>

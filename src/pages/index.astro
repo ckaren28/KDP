@@ -1,147 +1,329 @@
 ---
-// This page does not go through MainLayout, so it does not inherit global.css,
-// and that is where the self-hosted @font-face rules are reached from. Space
-// Mono carries every small label on this page (the cue, the role, the location,
-// the shutter's label, the hint, the email); without this import the only face
-// the page declares is the Bricolage that comes from Google in the head, and
-// all of that type silently falls back to whatever ui-monospace resolves to.
-// It looks correct on a machine with the fonts installed locally, which is
-// exactly why it has to be an import and not an assumption.
-import '../styles/fonts.css';
-import '../styles/darkroom.css';
-import ThemeSwitch from '../components/global/ThemeSwitch.astro';
-import Shutter from '../components/global/Shutter.astro';
-import { SITE_TITLE } from '../consts';
+// The homepage leads with professional work (Nov 2026). The darkroom, the
+// pull-a-letter landing that used to live here, moved to /about with its
+// behavior intact. This page is for the people deciding whether to interview
+// Karen, so the two strongest case studies are one click away and nothing
+// has to be discovered first.
+import MainLayout from '../layouts/MainLayout.astro';
 
-const EMAIL = 'karen.dettmar@gmail.com';
-const description = 'Karen Dettmar, Creative Technologist in New York.';
+const featured = [
+  {
+    href: '/experience/wet-design',
+    frame: 'WET Travel',
+    image: '/images/wet/travel-request-form.png',
+    width: 1366, height: 1199,
+    alt: 'Design of the WET Create Travel Request form, with a trip block for airports, dates and times and buttons to add a single trip or a round trip.',
+    meta: ['WET Design', 'Research, UX, sole front-end developer'],
+    title: 'Redesigning employee travel at WET',
+    body: 'I interviewed travelers, designed the workflow and built the Vue front end of a request-and-approval app that replaced a legacy system company-wide.',
+  },
+  {
+    href: '/experience/wix',
+    image: '/images/wix/avatar-output.jpg',
+    width: 1200, height: 1185,
+    alt: 'An avatar made with the Wix DevCon avatar builder: purple hair, sunglasses and a black DevCon shirt on a dark grid background.',
+    meta: ['Wix', 'Concept, interaction design, build'],
+    title: 'Designing an avatar builder for Wix DevCon',
+    body: 'A generative avatar builder for a live developer conference, illustrated by Wix’s design team, that 77% of attendees used.',
+  },
+  {
+    href: '/experience/cibt',
+    image: '/images/cibt/survey-themes.svg',
+    width: 800, height: 600,
+    alt: 'Bar chart of why visa applicants left, coded from survey answers: requirements not clear leads with 69 mentions, then processing time 36, price 30 and cannot find documents 28.',
+    meta: ['CIBT', 'Research, survey design'],
+    title: 'Finding out why visa applicants were leaving',
+    body: 'I redesigned an on-site survey so one week of answers outdrew the previous five and ranked why applicants were leaving.',
+  },
+];
 
-// Rendered server-side, not injected by JS: the h1 has to carry real text in
-// the served HTML for crawlers and for anyone arriving without the script.
-// darkroom.ts picks these spans up rather than creating them.
-const LINES = ['KAREN', 'DETTMAR'];
+const more = [
+  { href: '/experience/intuit', label: 'Intuit', text: 'Making engineering maturity actionable: a leaderboard that tells teams what to do next.' },
+  { href: '/experience/pixomondo', label: 'Pixomondo', text: 'Print campaigns for a VFX studio, and the site they pointed at.' },
+  { href: '/projects/tech', label: 'Lab', text: 'Tools and experiments: browser prototypes, garment and textile tools.' },
+];
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="dk-root" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{SITE_TITLE} · Creative Technologist</title>
-  <meta name="description" content={description} />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <!-- Theme must resolve before paint. The darkroom opens dark; a stored
-       choice from anywhere on the site wins. -->
-  <script is:inline>
-    (function () {
-      var stored = null;
-      try { stored = localStorage.getItem('theme'); } catch (e) {}
-      // Same order as MainLayout: the switch, then this visit's theme, then dark.
-      var carried = null;
-      try { carried = sessionStorage.getItem('theme'); } catch (e) {}
-      var t = stored || carried || 'dark';
-      document.documentElement.setAttribute('data-theme', t);
-      try { sessionStorage.setItem('theme', t); } catch (e) {}
-    })();
-  </script>
-  <link rel="canonical" href="https://karendettmar.com/" />
-  <meta property="og:title" content={`${SITE_TITLE} · Creative Technologist`} />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://karendettmar.com/" />
-  <meta property="og:site_name" content="Karen Dettmar" />
-  <!-- This page writes its own head rather than going through MainLayout, so
-       the card image has to be repeated here or the landing page is the one
-       page that still shares blank. -->
-  <meta property="og:image" content="https://karendettmar.com/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Karen Dettmar, Creative Technologist and Design Engineer, with cyanotype botanicals" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`${SITE_TITLE} · Creative Technologist`} />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="https://karendettmar.com/og-image.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
-    rel="stylesheet"
-  />
-</head>
+<MainLayout title="Karen Dettmar · UX Engineer and Design Technologist" theme="dark">
+  <style>
+    .home {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px 100px;
+    }
 
-<body class="dk">
-  <a href="#main" class="dk-skip">Skip to content</a>
+    /* Full-bleed band; the text inside keeps the page's own column. */
+    .dh {
+      position: relative;
+      overflow: hidden;
+      min-height: min(62vh, 600px);
+      display: flex;
+      align-items: flex-end;
+    }
+    .dh-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .dh-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 132px 48px 0;
+    }
+    /* The section rule is the hero's bottom edge, so the stems grow from it. */
+    .home-label.dh-label { margin: 72px 0 0; }
 
-  <canvas class="dk-stage" aria-hidden="true"></canvas>
-  <div class="dk-grain" aria-hidden="true"></div>
+    .home-intro { max-width: 820px; margin-bottom: 0; }
+    .home-eyebrow {
+      display: block;
+      margin-bottom: 18px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .home-name {
+      margin: 0 0 22px;
+      font-family: var(--font-display);
+      font-size: var(--fs-page);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--black);
+    }
+    .home-name em { font-style: normal; color: var(--sienna); }
+    .home-lead {
+      margin: 0;
+      max-width: 40ch;
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      line-height: 1.5;
+      color: var(--text-body);
+    }
 
-  <div class="dk-id" id="main" tabindex="-1">
-    <h1 class="dk-name">
-      <!-- The h1 keeps its heading role. The visual letters are aria-hidden so
-           they aren't spelled out one span at a time; this carries the name. -->
-      <span class="dk-sr">Karen Dettmar</span>
-      {LINES.map((word, li) => (
-        <span class="dk-line" data-l={li} aria-hidden="true">
-          {[...word].map((ch, i) => (
-            <span
-              class="dk-ltr"
-              style={i > 0 && ch === 'T' && word[i - 1] === 'T' ? 'margin-left:0.06em' : undefined}
-            >{ch}</span>
-          ))}
-        </span>
-      ))}
-      <span class="dk-cue" aria-hidden="true">
-        <span class="dk-cue-grip"></span>
-        Grab a letter and pull
-      </span>
-      <div class="dk-card" id="dkLink" aria-hidden="true">
-        <!-- Straight to /projects/tech, not /projects: that route is a 301 and
-             the redirect hop would land between the closing blades and the
-             opening ones. The nav keeps the tidy /projects URL.
+    .home-label {
+      margin: 0 0 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-             The line lives inside the shutter, so the sentence and the way in
-             are one target rather than a statement with a door beside it. -->
-        <Shutter href="/projects/tech" line="Easier to show you than explain." />
-      </div>
-    </h1>
-    <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't
-         standing on the h1's role; visible only when focused. -->
-    <button type="button" class="dk-reveal" aria-expanded="false" aria-controls="dkLink">
-      Show introduction
-    </button>
-    <!-- One block, so it can step back as a unit while the introduction is
-         open. See .dk-supporting in darkroom.css. -->
-    <div class="dk-supporting">
-      <div class="dk-rule" aria-hidden="true"></div>
-      <p class="dk-role">Creative Technologist</p>
-      <p class="dk-what">I build browser tools, prototypes, and interfaces that respond.</p>
-      <p class="dk-loc">New York</p>
+    .feature-list { list-style: none; margin: 0 0 80px; padding: 0; }
+    .feature {
+      display: grid;
+      /* Image column held to a modest width so the screenshots read as
+         evidence beside the text rather than as posters. */
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      gap: clamp(24px, 4vw, 56px);
+      align-items: center;
+      padding: 36px 0;
+      border-bottom: 1px solid var(--border);
+      color: inherit;
+      text-decoration: none;
+    }
+    .feature-media {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .feature-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .feature:hover .feature-media img { transform: scale(1.02); }
+    /* The WET card shows its screenshot inside a browser window, sitting on
+       the page rather than filling the crop. */
+    /* A tall phone screenshot shown whole, not cropped. White ground, because the capture has white corners. */
+    .feature-media--contain { background: #fff; padding: 24px 0; }
+    .feature-media--contain img { object-fit: contain; object-position: center; }
+    .feature-media--framed {
+      border: 0;
+      background: transparent;
+      overflow: visible;
+      display: flex;
+      align-items: center;
+    }
+    .feature-media--framed .browser-chrome { width: 100%; max-height: 100%; }
+    .feature-media--framed .browser-chrome img {
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .feature-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 14px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .feature-meta span:first-child { color: var(--black); font-weight: 700; }
+    .feature-meta span + span::before { content: '·'; margin-right: 10px; }
+    .feature-title {
+      margin: 0 0 14px;
+      font-family: var(--font-display);
+      font-size: clamp(1.625rem, 3vw, 2.375rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--black);
+      transition: color 0.2s ease;
+    }
+    .feature:hover .feature-title { color: var(--sienna); }
+    .feature-body {
+      margin: 0 0 18px;
+      max-width: 48ch;
+      font-size: var(--fs-400);
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .feature-cta {
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sienna);
+    }
+    .feature:focus-visible { outline: 2px solid var(--sienna); outline-offset: 6px; }
+
+    .more-list { list-style: none; margin: 0 0 72px; padding: 0; }
+    .more-list li { border-bottom: 1px solid var(--border); }
+    .more-row {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 20px;
+      align-items: baseline;
+      padding: 18px 0;
+      color: inherit;
+      text-decoration: none;
+    }
+    .more-name { font-weight: 700; color: var(--black); }
+    .more-year {
+      font-family: var(--font-mono);
+      font-size: var(--fs-150);
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .more-text { font-size: var(--fs-350); line-height: 1.6; color: var(--text-body); }
+    .more-row:hover .more-text, .more-row:hover .more-name { color: var(--sienna); }
+    .more-row:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+
+    .home-contact {
+      font-size: var(--fs-400);
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+    .home-contact a {
+      color: var(--sienna);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 900px) {
+      .home { padding: 0 24px 72px; }
+      .dh { min-height: min(70vh, 560px); }
+      .dh-inner { padding: 104px 24px 0; }
+      .feature { grid-template-columns: 1fr; padding: 28px 0; }
+      .more-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+
+  <!-- The hero. Everything in it is ordinary text, readable from the first
+       frame; the canvas behind it only develops the botanical print under the
+       pointer. See scripts/develop-hero.ts. -->
+  <section class="dh" aria-label="Introduction">
+    <canvas class="dh-stage" aria-hidden="true"></canvas>
+    <div class="dh-inner">
+      <header class="home-intro">
+        <span class="home-eyebrow">UX Engineering · Design Technology · Product Design · New York</span>
+        <h1 class="home-name">Karen <em>Dettmar</em></h1>
+        <p class="home-lead">I research how people actually work, design the interactions, and prototype them until they hold up as real interfaces.</p>
+      </header>
+      <h2 class="home-label dh-label" id="work">Selected work</h2>
     </div>
+  </section>
+
+  <div class="home">
+
+    <section class="reveal" aria-labelledby="work">
+      <ul class="feature-list">
+        {featured.map((f) => (
+          <li>
+            <a class="feature" href={f.href}>
+              {f.frame ? (
+                <div class="feature-media feature-media--framed">
+                  <div class="browser-chrome" data-url={f.frame}>
+                    <img src={f.image} width={f.width} height={f.height} alt={f.alt} loading="lazy" />
+                  </div>
+                </div>
+              ) : (
+                <div class={f.contain ? 'feature-media feature-media--contain' : 'feature-media'}>
+                  <img src={f.image} width={f.width} height={f.height} alt={f.alt} loading="lazy" />
+                </div>
+              )}
+              <div>
+                <p class="feature-meta">{f.meta.map((m) => <span>{m}</span>)}</p>
+                <h3 class="feature-title">{f.title}</h3>
+                <p class="feature-body">{f.body}</p>
+                <span class="feature-cta">Read the case study →</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="reveal" aria-labelledby="moreLabel">
+      <h2 class="home-label" id="moreLabel">More work</h2>
+      <ul class="more-list">
+        {more.map((m) => (
+          <li>
+            <a class="more-row" href={m.href}>
+              <span class="more-name">{m.label}</span>
+              <span class="more-text">{m.text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <p class="home-contact reveal">
+      Hiring for UX engineering, design technology or product design? <a href="mailto:karen.dettmar@gmail.com">karen.dettmar@gmail.com</a> · <a href="/cv">CV</a> · <a href="/about">About me</a>
+    </p>
   </div>
+</MainLayout>
 
-  <nav class="dk-nav" aria-label="Primary">
-    <a href="/" class="dk-who" aria-label="Karen Dettmar, home">KD</a>
-    <ul>
-      <li><a href="/projects/tech">Work</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/cv">CV</a></li>
-      <li class="dk-switch"><ThemeSwitch /></li>
-    </ul>
-  </nav>
+<style is:global>
+  html.hero-top body > header { background-color: transparent; }
+</style>
 
-  <p class="dk-hint" aria-hidden="true">Move to develop</p>
-  <a href={`mailto:${EMAIL}`} class="dk-contact">{EMAIL}</a>
-  <div class="dk-cur" aria-hidden="true"></div>
-
-  <script>
-    import { initDarkroom } from '../scripts/darkroom';
-    import { initThemeTyping } from '../scripts/theme';
-    import { initPrintEgg } from '../scripts/print';
-    import { initCopyEmail } from '../scripts/copyEmail';
-    initThemeTyping();
-    initPrintEgg();
-    initCopyEmail();
-    initDarkroom(document.body);
-  </script>
-</body>
-</html>
+<script>
+  import { initDevelopHero } from '../scripts/develop-hero';
+  const hero = document.querySelector<HTMLElement>('.dh');
+  if (hero) initDevelopHero(hero);
+  // At the top of the page the header goes clear, so the ferns hang from the
+  // real top edge of the window instead of from under the nav bar. It takes
+  // its ground back as soon as the page scrolls.
+  const root = document.documentElement;
+  const atTop = () => root.classList.toggle('hero-top', window.scrollY <= 8);
+  atTop();
+  window.addEventListener('scroll', atTop, { passive: true });
+</script>

@@ -160,6 +160,16 @@
   font-family: var(--font-body);
 }
 
+/* One line under the role naming what the work actually was, mirroring the
+   PDF from Career Goals/cv-tool. */
+.cv-role-scope {
+  margin: -2px 0 6px;
+  font-family: var(--font-body);
+  font-size: var(--fs-300);
+  font-style: italic;
+  color: var(--muted);
+}
+
 .cv-role-loc {
   font-family: var(--font-mono);
   font-size: var(--fs-200);
