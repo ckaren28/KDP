@@ -264,4 +264,5 @@ img {
   white-space: nowrap;
   overflow: hidden;
 }
-.browser-chrome img { display: block; width: 100%; height: auto; border: 0 !important; }
+.browser-chrome img,
+.browser-chrome video { display: block; width: 100%; height: auto; border: 0 !important; }

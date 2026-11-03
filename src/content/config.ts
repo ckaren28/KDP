@@ -109,6 +109,11 @@ const experience = defineCollection({
     // than leaving a card that looks like it forgot its images. To a hiring
     // manager "internal, happy to discuss" reads as discretion, not a gap.
     nda: z.boolean().optional().default(false),
+    // Path to an encrypted case (public/encrypted/*.json, made by
+    // scripts/encrypt-case.mjs). When set, the page shows the headline and a
+    // password box, and everything else arrives only after unlocking. The repo
+    // is public, so the frontmatter of such an entry must stay neutral.
+    encrypted: z.string().optional(),
     // Drops the entry to a single line beneath the cards and builds no detail
     // page. For roles with a real result but nothing to show, where a full card
     // would be padding. Uneven depth reads as editorial judgement; five equal

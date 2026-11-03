@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
+import EncryptedCase from '../../components/EncryptedCase.astro';
 
 export async function getStaticPaths() {
   // Compact roles render as a line on the work page and get no page of their own.
@@ -317,6 +318,7 @@ const d = entry.data;
     </p>
 
     <h1 class="xpp-headline">{d.headline}</h1>
+    {d.encrypted ? <EncryptedCase src={d.encrypted} /> : <>
     <p class="xpp-result">{d.result}</p>
     <p class="xpp-summary">{d.summary}</p>
 
@@ -363,6 +365,7 @@ const d = entry.data;
     )}
 
     <div class="xpp-body"><Content /></div>
+    </>}
   </article>
 
 </MainLayout>

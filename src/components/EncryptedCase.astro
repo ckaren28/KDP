@@ -1,0 +1,116 @@
+---
+// A password-protected case study that unlocks in place.
+//
+// The repo is public, so the case itself is never in it as readable text:
+// public/encrypted/<name>.json holds AES-GCM ciphertext made by
+// scripts/encrypt-case.mjs. The password derives the key in the browser, so
+// this works on any host, including the local preview, with no server.
+interface Props { src: string }
+const { src } = Astro.props;
+---
+
+<div class="enc" data-src={src}>
+  <div class="enc-box">
+    <p class="enc-eyebrow">Password protected</p>
+    <p class="enc-label">This case study covers internal work, so it's behind a password. Enter it to read it here.</p>
+    <form class="enc-form">
+      <input type="password" placeholder="Password" autocomplete="current-password" aria-label="Password" />
+      <button type="submit">Unlock</button>
+    </form>
+    <p class="enc-error" aria-live="polite"></p>
+  </div>
+  <div class="enc-out" hidden></div>
+</div>
+
+<style>
+  .enc-box {
+    max-width: 560px;
+    margin: 0 0 40px;
+    padding: 22px 24px 18px;
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--sienna);
+  }
+  .enc-eyebrow {
+    margin: 0 0 8px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-150);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .enc-label { margin: 0 0 16px; font-size: var(--fs-350); line-height: 1.7; color: var(--text-body); }
+  .enc-form { display: flex; gap: 10px; flex-wrap: wrap; }
+  .enc-form input {
+    flex: 1 1 200px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--black);
+    font: inherit;
+    font-size: var(--fs-350);
+  }
+  .enc-form button {
+    padding: 10px 18px;
+    border: 1px solid var(--black);
+    background: var(--black);
+    color: var(--off-white);
+    font-family: var(--font-mono);
+    font-size: var(--fs-150);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .enc-form button:hover { background: var(--sienna); border-color: var(--sienna); }
+  .enc-form input:focus-visible,
+  .enc-form button:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
+  .enc-error { margin: 10px 0 0; font-size: var(--fs-300); color: var(--sienna); }
+  .enc-error:empty { display: none; }
+</style>
+
+<script>
+  // Remembered in this browser for a week, so a reviewer who comes back to
+  // the page isn't asked again. Stored with its own expiry.
+  const KEY = 'kd_case_pw';
+  const WEEK = 7 * 24 * 60 * 60 * 1000;
+  function readSaved(): string | null {
+    try {
+      const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (v && typeof v.pw === 'string' && v.exp > Date.now()) return v.pw;
+      localStorage.removeItem(KEY);
+    } catch {}
+    return null;
+  }
+  const dec = (b64: string) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+
+  async function unlock(root: HTMLElement, pw: string): Promise<boolean> {
+    const err = root.querySelector<HTMLElement>('.enc-error');
+    try {
+      const data = await (await fetch(root.dataset.src!)).json();
+      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+      const key = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: dec(data.salt), iterations: data.iterations, hash: 'SHA-256' },
+        base, { name: 'AES-GCM', length: 256 }, false, ['decrypt'],
+      );
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: dec(data.iv) }, key, dec(data.ct));
+      const out = root.querySelector<HTMLElement>('.enc-out')!;
+      out.innerHTML = new TextDecoder().decode(plain);
+      out.hidden = false;
+      root.querySelector('.enc-box')?.remove();
+      try { localStorage.setItem(KEY, JSON.stringify({ pw, exp: Date.now() + WEEK })); } catch {}
+      return true;
+    } catch {
+      if (err) err.textContent = 'That password isn’t right.';
+      return false;
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('.enc').forEach((root) => {
+    const saved = readSaved();
+    if (saved) unlock(root, saved).then((ok) => { if (!ok) root.querySelector('.enc-error')!.textContent = ''; });
+    root.querySelector('form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pw = root.querySelector<HTMLInputElement>('input')?.value ?? '';
+      if (pw) unlock(root, pw);
+    });
+  });
+</script>
