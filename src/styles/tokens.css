@@ -1,23 +1,27 @@
 /* ── DESIGN TOKENS ──────────────────────────────────────────────
-   "Taste and a little nerve" (Nov 2026 redesign). Warm paper and ink,
-   one loud pink used sparingly, and a very dark blue-grey night mode.
+   "Taste and a little nerve" (Nov 2026 redesign). Warm linen and ink,
+   a bright violet with moss as its second color, and a very dark
+   blue-grey night mode.
    Token NAMES are inherited from the darkroom system so every page picks
    up the new palette without being rewritten:
      --black      ink (text)          --off-white  ground
-     --sienna     accent, text-safe   --accent-loud  the decorative pink
+     --sienna     accent, text-safe   --accent-loud  decorative accent
+     --tone2      moss, the second color
    ─────────────────────────────────────────────────────────────── */
 :root {
-  --black: #17161A;
-  --off-white: #F2EEEA;
-  --warm-white: #EAE5E0;
-  --sienna: #C8126C;           /* text-safe pink (4.5:1 on the ground) */
-  --sienna-light: #E0207E;
-  --accent-loud: #FF2E8A;      /* nerve, scribbles: large or decorative only */
-  --muted: #625C64;
-  --border: rgba(23,22,26,0.14);
+  --black: #18171B;
+  --off-white: #EFE9E1;        /* linen */
+  --warm-white: #E7E0D6;
+  --sienna: #5730D0;           /* violet, 6.4:1 on linen */
+  --sienna-light: #6A47DA;
+  --accent-loud: #5730D0;
+  --tone2: #66782F;            /* moss */
+  --tone2-flip: #A9BC6A;       /* moss on an ink (inverted) surface */
+  --muted: #5F5A60;
+  --border: rgba(24,23,27,0.14);
 
-  --print: #F3DCE7;            /* pearl */
-  --print-lt: #F8EAF0;
+  --print: #E4DDF5;            /* pale lilac */
+  --print-lt: #EEE9F9;
 
   --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
   --font-black: 'UnifrakturMaguntia', 'Old English Text MT', serif;
@@ -25,12 +29,12 @@
   --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
 
   --text-body: #3F3B42;
-  --hover-sweep: #17161A;
-  --on-sweep: #F2EEEA;
-  --placeholder-bg: #E2DCD6;
+  --hover-sweep: #18171B;
+  --on-sweep: #EFE9E1;
+  --placeholder-bg: #E0D9CF;
 
-  --fashion-bg: #F2EEEA;
-  --fashion-bg-dark: #0E1117;
+  --fashion-bg: #EFE9E1;
+  --fashion-bg-dark: #0F1218;
 
   --ease-snap: cubic-bezier(.34,1.56,.64,1);
   --ease-slow: cubic-bezier(.22,1,.36,1);
@@ -39,11 +43,13 @@
 /* ── NIGHT ── a very dark blue-grey, never pure black */
 html[data-theme="dark"] {
   --black: #ECE9F0;
-  --off-white: #0E1117;
-  --warm-white: #151A23;
-  --sienna: #FF5CA8;
-  --sienna-light: #FF7DB9;
-  --accent-loud: #FF4FA0;
+  --off-white: #0F1218;
+  --warm-white: #161B24;
+  --sienna: #A592FF;
+  --sienna-light: #B8A9FF;
+  --accent-loud: #A592FF;
+  --tone2: #A9BC6A;
+  --tone2-flip: #66782F;
   --muted: #98A0AE;
   --border: rgba(236,233,240,0.13);
 
@@ -52,10 +58,10 @@ html[data-theme="dark"] {
 
   --text-body: rgba(236,233,240,0.74);
   --hover-sweep: #ECE9F0;
-  --on-sweep: #0E1117;
+  --on-sweep: #0F1218;
   --placeholder-bg: #1A202B;
 
-  --fashion-bg: #0E1117;
+  --fashion-bg: #0F1218;
   color-scheme: dark;
 }
 

@@ -43,11 +43,11 @@ export function initBubble(slot: HTMLElement) {
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.z = 5.4;
 
-  // soft studio reflections: pink, cobalt and white panels
+  // soft studio reflections: blue, moss and white panels
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envS = new THREE.Scene();
   envS.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ color: 0x2a2630, side: THREE.BackSide })));
-  for (const [c, i, p] of [[0xff2e8a, 3.2, [-4, 2, 3]], [0x5b6cff, 2.6, [4, -1, 3]], [0xffffff, 4, [0, 4, -2]], [0xffe3d0, 2, [0, -4, 4]]] as const) {
+  for (const [c, i, p] of [[0x8fa8ff, 3, [-4, 2, 3]], [0xb9d49a, 2.4, [4, -1, 3]], [0xffffff, 4, [0, 4, -2]], [0xf3dfc4, 2, [0, -4, 4]]] as const) {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(i), side: THREE.DoubleSide }));
     m.position.set(p[0], p[1], p[2]);
     m.lookAt(0, 0, 0);
@@ -101,7 +101,7 @@ export function initBubble(slot: HTMLElement) {
   const inv = new THREE.Matrix3();
 
   // ---------- the bubble ----------
-  const film = { color: 0xf7dce8, roughness: 0.1, metalness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05, iridescence: 0.9, iridescenceIOR: 1.33, transparent: true, opacity: 0.42, depthWrite: false };
+  const film = { color: 0xeef0f6, roughness: 0.1, metalness: 0.08, clearcoat: 1, clearcoatRoughness: 0.05, iridescence: 0.9, iridescenceIOR: 1.33, transparent: true, opacity: 0.4, depthWrite: false };
   const geo = new THREE.SphereGeometry(1, small ? 72 : 140, small ? 52 : 100);
   const base = (geo.attributes.position.array as Float32Array).slice();
   const bubbleMat = new THREE.MeshPhysicalMaterial(film);
