@@ -1,329 +1,237 @@
 ---
-// The homepage leads with professional work (Nov 2026). The darkroom, the
-// pull-a-letter landing that used to live here, moved to /about with its
-// behavior intact. This page is for the people deciding whether to interview
-// Karen, so the two strongest case studies are one click away and nothing
-// has to be discovered first.
+// Homepage, Nov 2026 redesign ("taste and a little nerve").
+// Hero: the headline with one blackletter word circled, and the poppable
+// portrait bubble. Work: ruled cards whose copy is the live site's own.
 import MainLayout from '../layouts/MainLayout.astro';
+import Bubble from '../components/Bubble.astro';
 
-const featured = [
+const work = [
   {
     href: '/experience/wet-design',
-    frame: 'WET Travel',
-    image: '/images/wet/travel-request-form.png',
-    width: 1366, height: 1199,
-    alt: 'Design of the WET Create Travel Request form, with a trip block for airports, dates and times and buttons to add a single trip or a round trip.',
-    meta: ['WET Design', 'Research, UX, sole front-end developer'],
     title: 'Redesigning employee travel at WET',
     body: 'I interviewed travelers, designed the workflow and built the Vue front end of a request-and-approval app that replaced a legacy system company-wide.',
+    org: 'WET Design', role: 'Research, UX, sole front-end developer',
+    peek: '/images/wet/travel-request-form.png',
   },
   {
     href: '/experience/wix',
-    image: '/images/wix/avatar-output.jpg',
-    width: 1200, height: 1185,
-    alt: 'An avatar made with the Wix DevCon avatar builder: purple hair, sunglasses and a black DevCon shirt on a dark grid background.',
-    meta: ['Wix', 'Concept, interaction design, build'],
     title: 'Designing an avatar builder for Wix DevCon',
     body: 'A generative avatar builder for a live developer conference, illustrated by Wix’s design team, that 77% of attendees used.',
+    org: 'Wix', role: 'Concept, interaction design, build',
+    peek: '/images/wix/avatar-output.jpg',
   },
   {
     href: '/experience/cibt',
-    image: '/images/cibt/survey-themes.svg',
-    width: 800, height: 600,
-    alt: 'Bar chart of why visa applicants left, coded from survey answers: requirements not clear leads with 69 mentions, then processing time 36, price 30 and cannot find documents 28.',
-    meta: ['CIBT', 'Research, survey design'],
     title: 'Finding out why visa applicants were leaving',
     body: 'I redesigned an on-site survey so one week of answers outdrew the previous five and ranked why applicants were leaving.',
+    org: 'CIBT', role: 'Research, survey design',
+    peek: '/images/cibt/survey-themes.svg',
   },
-];
-
-const more = [
-  { href: '/experience/intuit', label: 'Intuit', text: 'Making engineering maturity actionable: a leaderboard that tells teams what to do next. Password protected.' },
-  { href: '/experience/pixomondo', label: 'Pixomondo', text: 'Print campaigns for a VFX studio, and the site they pointed at.' },
-  { href: '/projects/tech', label: 'Lab', text: 'Tools and experiments: browser prototypes, garment and textile tools.' },
+  {
+    href: '/experience/intuit',
+    title: 'Intuit',
+    body: 'Making engineering maturity actionable: a leaderboard that tells teams what to do next. Password protected.',
+    org: 'Intuit', role: 'Private',
+    peek: 'lock',
+  },
+  {
+    href: '/experience/pixomondo',
+    title: 'Pixomondo',
+    body: 'Print campaigns for a VFX studio, and the site they pointed at.',
+    org: 'Pixomondo', role: 'Print and web',
+    peek: '/images/pixomondo/star-trek-discovery.png',
+  },
 ];
 ---
 
-<MainLayout title="Karen Dettmar · UX Engineer and Design Technologist" theme="dark">
+<MainLayout title="Karen Dettmar · UX Engineer and Design Technologist">
+  <div class="home">
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-copy">
+        <h1>Interfaces with taste and a little
+          <span class="rude">nerve<svg viewBox="0 0 240 80" preserveAspectRatio="none" aria-hidden="true"><path d="M14,44 C10,20 70,6 132,8 C196,10 238,24 230,48 C222,70 150,76 96,72 C40,68 6,58 12,36 C18,18 60,12 104,12"/></svg></span>.
+        </h1>
+        <p class="lede">I design and build interfaces. Prototyping, thoughtful interaction, and the small details that make something feel finished. Always thinking about the tradeoffs.</p>
+      </div>
+      <Bubble />
+    </section>
+
+    <section id="work" aria-labelledby="workLabel">
+      <h2 class="work-head" id="workLabel">Selected work</h2>
+      <div class="cards">
+        {work.map((w) => (
+          <a class="card" href={w.href} data-peek={w.peek}>
+            <span class="t">{w.title}<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2,10 L198,10" /></svg></span>
+            <span class="d">{w.body}</span>
+            <span class="r"><span>{w.org}</span><b>{w.role}</b></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="hello" aria-label="Contact">
+      <a class="big" href="mailto:karen.dettmar@gmail.com">Say hello →</a>
+      <a class="lab" href="/projects/tech">Lab: tools and experiments</a>
+    </section>
+  </div>
+
+  <div class="peek" id="peek" aria-hidden="true"></div>
+
+  <script>
+    // "nerve": draw the circle a beat after the type lands; hover redraws it.
+    const rude = document.querySelector('.rude');
+    if (rude) {
+      const draw = () => { rude.classList.remove('go'); void (rude as HTMLElement).offsetWidth; rude.classList.add('go'); };
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(draw, 1300));
+      rude.addEventListener('mouseenter', draw);
+    }
+
+    // Card underline: a new hand-sketched stroke on every hover.
+    const jit = (n: number) => (Math.random() * 2 - 1) * n;
+    const sketch = () => {
+      const y0 = 9 + jit(2), slope = jit(4);
+      let d = `M${(2 + jit(2)).toFixed(1)},${(y0 + jit(1.5)).toFixed(1)}`;
+      for (let x = 14; x <= 198; x += 10 + Math.random() * 8) d += ` L${x.toFixed(1)},${(y0 + slope * x / 200 + jit(1.7)).toFixed(1)}`;
+      const back = 3 + jit(1.2), stop = 40 + Math.random() * 90;
+      for (let x = 194; x >= stop; x -= 12 + Math.random() * 10) d += ` L${x.toFixed(1)},${(y0 + back + slope * x / 200 + jit(1.9)).toFixed(1)}`;
+      return d;
+    };
+    document.querySelectorAll<SVGPathElement>('.card .t path').forEach((p) => {
+      p.setAttribute('d', sketch());
+      p.closest('.card')?.addEventListener('mouseenter', () => p.setAttribute('d', sketch()));
+    });
+
+    // Phones have no hover: draw each card's line as it scrolls into view.
+    if (matchMedia('(hover: none)').matches) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
+      }), { threshold: 0.6 });
+      document.querySelectorAll('.card').forEach((c) => io.observe(c));
+    }
+
+    // Hover preview: a small tilted print that trails the cursor.
+    const peek = document.getElementById('peek');
+    if (peek && matchMedia('(hover: hover)').matches) {
+      let px = 0, py = 0, tx = 0, ty = 0, raf = 0;
+      const move = () => {
+        px += (tx - px) * 0.22; py += (ty - py) * 0.22;
+        const tilt = Math.max(-6, Math.min(6, (tx - px) * 0.08)) - 2.5;
+        peek.style.transform = `translate(${px}px, ${py}px) rotate(${tilt}deg)`;
+        raf = requestAnimationFrame(move);
+      };
+      document.querySelectorAll<HTMLElement>('.card[data-peek]').forEach((card) => {
+        card.addEventListener('mouseenter', (e) => {
+          const src = card.dataset.peek!;
+          peek.innerHTML = src === 'lock'
+            ? '<div class="peek-lock"><div><b>Locked</b><br>Password protected</div></div>'
+            : `<img alt="" src="${src}">`;
+          tx = px = e.clientX + 18; ty = py = e.clientY + 16;
+          peek.classList.add('on');
+          if (!raf) move();
+        });
+        card.addEventListener('mousemove', (e) => {
+          tx = Math.min(e.clientX + 18, innerWidth - 180);
+          ty = Math.min(e.clientY + 16, innerHeight - 130);
+        });
+        card.addEventListener('mouseleave', () => { peek.classList.remove('on'); cancelAnimationFrame(raf); raf = 0; });
+      });
+    }
+  </script>
+
   <style>
     .home {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 0 48px 100px;
+      padding: 0 max(24px, env(safe-area-inset-right, 0px)) 72px max(24px, env(safe-area-inset-left, 0px));
     }
 
-    /* Full-bleed band; the text inside keeps the page's own column. */
-    .dh {
-      position: relative;
-      overflow: hidden;
-      min-height: min(62vh, 600px);
-      display: flex;
-      align-items: flex-end;
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 24px;
+      padding-block: clamp(32px, 6vw, 80px) 56px;
     }
-    .dh-stage {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .dh-inner {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 132px 48px 0;
-    }
-    /* The section rule is the hero's bottom edge, so the stems grow from it. */
-    .home-label.dh-label { margin: 72px 0 0; }
-
-    .home-intro { max-width: 820px; margin-bottom: 0; }
-    .home-eyebrow {
-      display: block;
-      margin-bottom: 18px;
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .home-name {
-      margin: 0 0 22px;
+    h1 {
       font-family: var(--font-display);
-      font-size: var(--fs-page);
-      font-weight: 600;
-      line-height: 1.02;
-      letter-spacing: -0.035em;
-      color: var(--black);
-    }
-    .home-name em { font-style: normal; color: var(--sienna); }
-    .home-lead {
-      margin: 0;
-      max-width: 40ch;
-      font-size: clamp(1.125rem, 2vw, 1.5rem);
-      line-height: 1.5;
-      color: var(--text-body);
-    }
-
-    .home-label {
-      margin: 0 0 18px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
       font-weight: 400;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .feature-list { list-style: none; margin: 0 0 80px; padding: 0; }
-    .feature {
-      display: grid;
-      /* Image column held to a modest width so the screenshots read as
-         evidence beside the text rather than as posters. */
-      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-      gap: clamp(24px, 4vw, 56px);
-      align-items: center;
-      padding: 36px 0;
-      border-bottom: 1px solid var(--border);
-      color: inherit;
-      text-decoration: none;
-    }
-    .feature-media {
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #fff;
-    }
-    .feature-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-      transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-    }
-    .feature:hover .feature-media img { transform: scale(1.02); }
-    /* The WET card shows its screenshot inside a browser window, sitting on
-       the page rather than filling the crop. */
-    /* A tall phone screenshot shown whole, not cropped. White ground, because the capture has white corners. */
-    .feature-media--contain { background: #fff; padding: 24px 0; }
-    .feature-media--contain img { object-fit: contain; object-position: center; }
-    .feature-media--framed {
-      border: 0;
-      background: transparent;
-      overflow: visible;
-      display: flex;
-      align-items: center;
-    }
-    .feature-media--framed .browser-chrome { width: 100%; max-height: 100%; }
-    .feature-media--framed .browser-chrome img {
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      object-position: top center;
-    }
-    .feature-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 0 0 14px;
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .feature-meta span:first-child { color: var(--black); font-weight: 700; }
-    .feature-meta span + span::before { content: '·'; margin-right: 10px; }
-    .feature-title {
-      margin: 0 0 14px;
-      font-family: var(--font-display);
-      font-size: clamp(1.625rem, 3vw, 2.375rem);
-      font-weight: 600;
-      line-height: 1.12;
-      letter-spacing: -0.025em;
+      font-size: clamp(50px, 8vw, 112px);
+      line-height: .98;
+      letter-spacing: -.015em;
+      margin: 0;
       color: var(--black);
-      transition: color 0.2s ease;
+      text-wrap: balance;
     }
-    .feature:hover .feature-title { color: var(--sienna); }
-    .feature-body {
-      margin: 0 0 18px;
-      max-width: 48ch;
-      font-size: var(--fs-400);
-      line-height: 1.75;
-      color: var(--text-body);
-    }
-    .feature-cta {
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--sienna);
-    }
-    .feature:focus-visible { outline: 2px solid var(--sienna); outline-offset: 6px; }
+    .rude { position: relative; display: inline-block; font-family: var(--font-black); color: var(--accent-loud); font-size: 1.06em; padding: 0 .08em; }
+    .rude svg { position: absolute; inset: -18% -14% -22% -12%; width: 126%; height: 140%; overflow: visible; pointer-events: none; }
+    .rude path { fill: none; stroke: var(--black); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 640; stroke-dashoffset: 640; }
+    :global(.rude.go) path { animation: draw 1.4s var(--ease-slow) both; }
+    @keyframes draw { from { stroke-dashoffset: 640; } to { stroke-dashoffset: 0; } }
+    .lede { max-width: 44ch; margin: 28px 0 0; color: var(--muted); font-size: 18px; line-height: 1.55; }
 
-    .more-list { list-style: none; margin: 0 0 72px; padding: 0; }
-    .more-list li { border-bottom: 1px solid var(--border); }
-    .more-row {
-      display: grid;
-      grid-template-columns: 180px minmax(0, 1fr);
-      gap: 20px;
-      align-items: baseline;
-      padding: 18px 0;
-      color: inherit;
-      text-decoration: none;
+    .work-head {
+      display: flex; justify-content: space-between; padding-block: 14px; margin: 0;
+      font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
     }
-    .more-name { font-weight: 700; color: var(--black); }
-    .more-year {
-      font-family: var(--font-mono);
-      font-size: var(--fs-150);
-      letter-spacing: 0.12em;
-      color: var(--muted);
+    .cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      grid-column: span 2;
+      position: relative; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+      padding: 18px 20px 16px;
+      border: 1px solid var(--border);
+      color: var(--black); text-decoration: none; background: transparent;
+      transition: transform .45s var(--ease-snap), background .25s, color .25s, border-color .25s;
     }
-    .more-text { font-size: var(--fs-350); line-height: 1.6; color: var(--text-body); }
-    .more-row:hover .more-text, .more-row:hover .more-name { color: var(--sienna); }
-    .more-row:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+    .card:nth-child(-n+2) { grid-column: span 3; }
+    .card:nth-child(-n+2) .t { font-size: 40px; }
+    .t { position: relative; align-self: flex-start; font-family: var(--font-display); font-size: 30px; line-height: 1.02; text-wrap: balance; }
+    .t svg { position: absolute; left: -2%; bottom: -.3em; width: 104%; height: .5em; overflow: visible; pointer-events: none; }
+    .t path { fill: none; stroke: var(--accent-loud); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .55s var(--ease-slow); }
+    .d { color: var(--muted); font-size: 15px; line-height: 1.5; transition: color .25s; }
+    .r { margin-top: auto; padding-top: 6px; display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); transition: color .25s; }
+    .r b { font-weight: 400; color: var(--sienna); text-align: right; }
+    .card:hover, .card:focus-visible { background: var(--black); color: var(--off-white); border-color: var(--black); transform: translateY(-4px) rotate(-.7deg); }
+    .card:hover .t, .card:focus-visible .t { font-style: italic; }
+    .card:hover .t path, .card:focus-visible .t path, :global(.card.seen) .t path { stroke-dashoffset: 0; }
+    .card:hover .d, .card:hover .r, .card:focus-visible .d, .card:focus-visible .r { color: var(--off-white); }
+    .card:hover .r b, .card:focus-visible .r b { color: var(--accent-loud); }
+    .card:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
 
-    .home-contact {
-      font-size: var(--fs-400);
-      line-height: 1.7;
-      color: var(--text-body);
-    }
-    .home-contact a {
-      color: var(--sienna);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
+    .hello { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 12px; padding-top: 56px; }
+    .big { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); color: var(--black); text-decoration: none; }
+    .big:hover { color: var(--sienna); font-style: italic; }
+    .lab { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .lab:hover { color: var(--sienna); }
 
-    @media (max-width: 900px) {
-      .home { padding: 0 24px 72px; }
-      .dh { min-height: min(70vh, 560px); }
-      .dh-inner { padding: 104px 24px 0; }
-      .feature { grid-template-columns: 1fr; padding: 28px 0; }
-      .more-row { grid-template-columns: 1fr; gap: 4px; }
+    .peek {
+      position: fixed; left: 0; top: 0; z-index: 30; width: 160px; pointer-events: none;
+      opacity: 0; transform: translate(-9999px, 0); transition: opacity .2s;
+      border: 1px solid var(--black); background: var(--off-white); padding: 4px;
+      box-shadow: 0 18px 40px -20px rgba(0,0,0,.45);
+    }
+    :global(.peek.on) { opacity: 1; }
+    .peek :global(img) { display: block; width: 100%; height: 100px; object-fit: cover; object-position: top; }
+    .peek :global(.peek-lock) { height: 100px; display: grid; place-items: center; text-align: center; background: var(--black); color: var(--off-white); font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }
+    .peek :global(.peek-lock b) { display: block; font-family: var(--font-black); font-weight: 400; font-size: 26px; color: var(--accent-loud); line-height: 1; text-transform: none; }
+
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card, .card:nth-child(-n+2) { grid-column: span 1; }
+      .card:first-child { grid-column: span 2; }
+      .card:nth-child(2) .t { font-size: 30px; }
+    }
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .home { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+      .cards { grid-template-columns: 1fr; }
+      .card, .card:first-child { grid-column: auto; }
+      .card:first-child .t { font-size: 32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rude path { stroke-dashoffset: 0; }
+      .card, .t path, .peek { transition: none; }
     }
   </style>
-
-  <!-- The hero. Everything in it is ordinary text, readable from the first
-       frame; the canvas behind it only develops the botanical print under the
-       pointer. See scripts/develop-hero.ts. -->
-  <section class="dh" aria-label="Introduction">
-    <canvas class="dh-stage" aria-hidden="true"></canvas>
-    <div class="dh-inner">
-      <header class="home-intro">
-        <span class="home-eyebrow">UX Engineering · Design Technology · Product Design · New York</span>
-        <h1 class="home-name">Karen <em>Dettmar</em></h1>
-        <p class="home-lead">I research how people actually work, design the interactions, and prototype them until they hold up as real interfaces.</p>
-      </header>
-      <h2 class="home-label dh-label" id="work">Selected work</h2>
-    </div>
-  </section>
-
-  <div class="home">
-
-    <section class="reveal" aria-labelledby="work">
-      <ul class="feature-list">
-        {featured.map((f) => (
-          <li>
-            <a class="feature" href={f.href}>
-              {f.frame ? (
-                <div class="feature-media feature-media--framed">
-                  <div class="browser-chrome" data-url={f.frame}>
-                    <img src={f.image} width={f.width} height={f.height} alt={f.alt} loading="lazy" />
-                  </div>
-                </div>
-              ) : (
-                <div class={f.contain ? 'feature-media feature-media--contain' : 'feature-media'}>
-                  <img src={f.image} width={f.width} height={f.height} alt={f.alt} loading="lazy" />
-                </div>
-              )}
-              <div>
-                <p class="feature-meta">{f.meta.map((m) => <span>{m}</span>)}</p>
-                <h3 class="feature-title">{f.title}</h3>
-                <p class="feature-body">{f.body}</p>
-                <span class="feature-cta">Read the case study →</span>
-              </div>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="reveal" aria-labelledby="moreLabel">
-      <h2 class="home-label" id="moreLabel">More work</h2>
-      <ul class="more-list">
-        {more.map((m) => (
-          <li>
-            <a class="more-row" href={m.href}>
-              <span class="more-name">{m.label}</span>
-              <span class="more-text">{m.text}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <p class="home-contact reveal">
-      Hiring for UX engineering, design technology or product design? <a href="mailto:karen.dettmar@gmail.com">karen.dettmar@gmail.com</a> · <a href="/cv">CV</a> · <a href="/about">About me</a>
-    </p>
-  </div>
 </MainLayout>
-
-<style is:global>
-  html.hero-top body > header { background-color: transparent; }
-</style>
-
-<script>
-  import { initDevelopHero } from '../scripts/develop-hero';
-  const hero = document.querySelector<HTMLElement>('.dh');
-  if (hero) initDevelopHero(hero);
-  // At the top of the page the header goes clear, so the ferns hang from the
-  // real top edge of the window instead of from under the nav bar. It takes
-  // its ground back as soon as the page scrolls.
-  const root = document.documentElement;
-  const atTop = () => root.classList.toggle('hero-top', window.scrollY <= 8);
-  atTop();
-  window.addEventListener('scroll', atTop, { passive: true });
-</script>

@@ -3,7 +3,7 @@
 .tool-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 120px 48px 100px;
+  padding: 48px 48px 100px;
 }
 
 .back-nav {
@@ -397,7 +397,7 @@
    canvas cannot fit a 375px viewport, so the page overflowed and the canvas
    was squeezed into a vertical sliver showing one blown-up tile. */
 @media (max-width: 900px) {
-  .tool-page { padding: 100px 24px 72px; }
+  .tool-page { padding: 32px 24px 72px; }
 
   .tool-layout {
     grid-template-columns: 1fr;

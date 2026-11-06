@@ -6,6 +6,24 @@ import '../styles/cv-print.css';
 
 <MainLayout title="CV · Karen Dettmar">
 
+  <!-- Redesign note (Nov 2026): the CV keeps the previous palette and type so
+       its print / PDF output does not change. Scoped with :has() to this page. -->
+  <link slot="head" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
+  <style is:global>
+    html:has(.cv-legacy) {
+      --black:#2A0E13; --off-white:#D7E3EE; --warm-white:#C8D8E6; --sienna:#6B1621; --sienna-light:#8E2A34;
+      --muted:#515C69; --border:rgba(42,14,19,0.17); --text-body:#3F4A55; --placeholder-bg:#BFD1E1;
+      --font-display:'Bricolage Grotesque', system-ui, sans-serif; --font-body:'Instrument Sans', system-ui, sans-serif; --font-mono:'Space Mono', ui-monospace, monospace;
+      --track-display:-0.038em; --track-tight:-0.028em;
+    }
+    html[data-theme="dark"]:has(.cv-legacy) {
+      --black:#F2EFE9; --off-white:#3A0810; --warm-white:#4A121C; --sienna:#A6C8E8; --sienna-light:#C4DCF2;
+      --muted:#9A8288; --border:rgba(242,239,233,0.14); --text-body:rgba(242,239,233,0.68); --placeholder-bg:#4A121C;
+    }
+    html:has(.cv-legacy) { font-synthesis-weight: auto; }
+  </style>
+
+
   <!-- The print instance of Bricolage is only referenced inside @media print,
        so the browser would not begin fetching it until the print dialog is
        already open. Too late, and the PDF falls back to the variable font it
@@ -19,7 +37,7 @@ import '../styles/cv-print.css';
     crossorigin
   />
 
-  <div class={styles['cv-wrapper']}>
+  <div class={`${styles['cv-wrapper']} cv-legacy`}>
 
     <!-- Download button -->
     <div class={styles['cv-actions']}>

@@ -7,12 +7,9 @@
 // all of that type silently falls back to whatever ui-monospace resolves to.
 // It looks correct on a machine with the fonts installed locally, which is
 // exactly why it has to be an import and not an assumption.
-import '../../styles/fonts.css';
-import '../../styles/tokens.css';
-import '../../styles/darkroom.css';
+import MainLayout from '../../layouts/MainLayout.astro';
 import TrackSelector from '../../components/TrackSelector.astro';
 import styles from './about.module.css';
-import ThemeSwitch from '../../components/global/ThemeSwitch.astro';
 import { SITE_TITLE } from '../../consts';
 
 const EMAIL = 'karen.dettmar@gmail.com';
@@ -32,185 +29,55 @@ const contact = [
 ];
 const description = 'About Karen Dettmar, UX Engineer and Design Technologist in New York.';
 
-// Rendered server-side, not injected by JS: the h1 has to carry real text in
-// the served HTML for crawlers and for anyone arriving without the script.
-// darkroom.ts picks these spans up rather than creating them.
-const LINES = ['KAREN', 'DETTMAR'];
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="dk-root dk-scroll" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About · {SITE_TITLE}</title>
-  <meta name="description" content={description} />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <!-- Theme must resolve before paint. The darkroom opens dark; a stored
-       choice from anywhere on the site wins. -->
-  <script is:inline>
-    (function () {
-      var stored = null;
-      try { stored = localStorage.getItem('theme'); } catch (e) {}
-      // Same order as MainLayout: the switch, then this visit's theme, then dark.
-      var carried = null;
-      try { carried = sessionStorage.getItem('theme'); } catch (e) {}
-      var t = stored || carried || 'dark';
-      document.documentElement.setAttribute('data-theme', t);
-      try { sessionStorage.setItem('theme', t); } catch (e) {}
-    })();
-  </script>
-  <link rel="canonical" href="https://karendettmar.com/about/" />
-  <meta property="og:title" content={`About · ${SITE_TITLE}`} />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://karendettmar.com/about/" />
-  <meta property="og:site_name" content="Karen Dettmar" />
-  <!-- This page writes its own head rather than going through MainLayout, so
-       the card image has to be repeated here or the landing page is the one
-       page that still shares blank. -->
-  <meta property="og:image" content="https://karendettmar.com/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Karen Dettmar, UX Engineer and Design Technologist, with cyanotype botanicals" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`About · ${SITE_TITLE}`} />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="https://karendettmar.com/og-image.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
-    rel="stylesheet"
-  />
-</head>
+<!-- Nov 2026 redesign: the darkroom hero is retired; About uses the shared
+     layout. Bio, disciplines, contact and interests are the live copy. -->
+<MainLayout title={`About · ${SITE_TITLE}`}>
+  <div class={s['about-wrapper']}>
+    <header class={s['about-header']}>
+      <span class="page-eyebrow">About</span>
+      <h1 class="page-title">Karen <em>Dettmar</em></h1>
+    </header>
 
-<body class="dk dk-about">
-  <a href="#main" class="dk-skip">Skip to content</a>
-
-  <canvas class="dk-stage" aria-hidden="true"></canvas>
-  <div class="dk-grain" aria-hidden="true"></div>
-
-  <div class="dk-id" id="main" tabindex="-1">
-    <h1 class="dk-name">
-      <!-- The h1 keeps its heading role. The visual letters are aria-hidden so
-           they aren't spelled out one span at a time; this carries the name. -->
-      <span class="dk-sr">Karen Dettmar</span>
-      {LINES.map((word, li) => (
-        <span class="dk-line" data-l={li} aria-hidden="true">
-          {[...word].map((ch, i) => (
-            <span
-              class="dk-ltr"
-              style={i > 0 && ch === 'T' && word[i - 1] === 'T' ? 'margin-left:0.06em' : undefined}
-            >{ch}</span>
-          ))}
-        </span>
-      ))}
-      <span class="dk-cue dk-cue--quiet" aria-hidden="true">Pull a letter to reveal</span>
-      <div class="dk-card" id="dkLink" aria-hidden="true">
-        <!-- Straight to /projects/tech, not /projects: that route is a 301 and
-             the redirect hop would land between the closing blades and the
-             opening ones. The nav keeps the tidy /projects URL.
-
-             The line lives inside the shutter, so the sentence and the way in
-             are one target rather than a statement with a door beside it. -->
-        <span class="dk-bio" tabindex="-1">
-          <span class="dk-bio-p">A UX engineer and design technologist in New York. I've spent my career where design meets code: building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</span>
-          <span class="dk-bio-p">I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are cooking and Muay Thai. There's only so much time in a day!</span>
-        </span>
-      </div>
-    </h1>
-    <!-- Keyboard equivalent of pulling a letter. A real button, so it isn't
-         standing on the h1's role; visible only when focused. -->
-    <button type="button" class="dk-reveal" aria-expanded="false" aria-controls="dkLink">
-      Show about me
-    </button>
-    <!-- One block, so it can step back as a unit while the introduction is
-         open. See .dk-supporting in darkroom.css. -->
-    <div class="dk-supporting">
-      <div class="dk-rule" aria-hidden="true"></div>
-      <p class="dk-role">UX Engineer · Design Technologist</p>
-      <p class="dk-what">I design and build interfaces, and I make things by hand.</p>
-      <p class="dk-loc">New York</p>
+    <div class={s['bio']}>
+      <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code: building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
+      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are cooking and Muay Thai. There's only so much time in a day!</p>
     </div>
+
+    <section class={s['section']} aria-labelledby="disciplinesLabel">
+      <span class="page-eyebrow" id="disciplinesLabel">What I do</span>
+      <ul class={s['row-list']}>
+        {disciplines.map((d) => (
+          <li class={s['row']}>
+            <h2 class={s['row-key']}>{d.name}</h2>
+            <p class={s['row-val']}>
+              {d.desc}
+              {d.link && <> <a href={d.link.href} class={s['inline-link']}>{d.link.text}</a></>}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class={s['section']} aria-labelledby="contactLabel" id="contact">
+      <span class="page-eyebrow" id="contactLabel">Get in touch</span>
+      <p class={s['availability']}>Available for UX Engineer and Design Technologist roles.</p>
+      <ul class={s['row-list']}>
+        {contact.map((c) => (
+          <li>
+            <a
+              href={c.href}
+              class={`${s['row']} ${s['row--link']}`}
+              {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              <span class={s['row-key']}>{c.label}</span>
+              <span class={s['row-val']}>{c.value}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   </div>
-
-
-  <!-- The rest of the About page, below the hero. It scrolls up over the
-       print on a solid ground; the hint and the fixed email step away once it
-       arrives (see the script below). -->
-  <main class="ab-rest" id="more">
-    <div class={s['about-wrapper']}>
-      <section class={s['section']} aria-labelledby="disciplinesLabel">
-        <span class="page-eyebrow" id="disciplinesLabel">What I do</span>
-        <ul class={s['row-list']}>
-          {disciplines.map((d) => (
-            <li class={s['row']}>
-              <h2 class={s['row-key']}>{d.name}</h2>
-              <p class={s['row-val']}>
-                {d.desc}
-                {d.link && <> <a href={d.link.href} class={s['inline-link']}>{d.link.text}</a></>}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section class={s['section']} aria-labelledby="contactLabel">
-        <span class="page-eyebrow" id="contactLabel">Get in touch</span>
-        <p class={s['availability']}>Available for UX Engineer and Design Technologist roles.</p>
-        <ul class={s['row-list']}>
-          {contact.map((c) => (
-            <li>
-              <a
-                href={c.href}
-                class={`${s['row']} ${s['row--link']}`}
-                {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                <span class={s['row-key']}>{c.label}</span>
-                <span class={s['row-val']}>{c.value}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-    <TrackSelector bordered={true} prompt="Interests" />
-  </main>
-
-  <nav class="dk-nav" aria-label="Primary">
-    <a href="/" class="dk-who" aria-label="Karen Dettmar, home">KD</a>
-    <ul>
-      <li><a href="/#work">Work</a></li>
-      <li><a href="/projects/tech">Lab</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/cv">CV</a></li>
-      <li class="dk-switch"><ThemeSwitch /></li>
-    </ul>
-  </nav>
-
-  <p class="dk-hint" aria-hidden="true">Move to develop</p>
-  <a href={`mailto:${EMAIL}`} class="dk-contact">{EMAIL}</a>
-  <div class="dk-cur" aria-hidden="true"></div>
-
-  <script>
-    import { initDarkroom } from '../../scripts/darkroom';
-    import { initThemeTyping } from '../../scripts/theme';
-    import { initPrintEgg } from '../../scripts/print';
-    import { initCopyEmail } from '../../scripts/copyEmail';
-    initThemeTyping();
-    initPrintEgg();
-    initCopyEmail();
-    initDarkroom(document.body);
-    // Once the rest of the page scrolls into view, the hero's corner chrome
-    // (the hint, the fixed email, the drawn cursor) steps away and the nav
-    // takes a solid ground so it doesn't sit on top of text.
-    const restEl = document.querySelector('.ab-rest');
-    if (restEl) {
-      new IntersectionObserver(([e]) => {
-        document.body.classList.toggle('dk-past', e.isIntersecting);
-      }, { rootMargin: '0px 0px -55% 0px' }).observe(restEl);
-    }
-  </script>
-</body>
-</html>
+  <TrackSelector bordered={true} prompt="Interests" />
+</MainLayout>

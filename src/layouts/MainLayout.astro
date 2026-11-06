@@ -41,13 +41,9 @@ const { title, theme = 'light' } = Astro.props;
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Only Bricolage comes from Google now: its opsz axis has to stay live,
-       and a variable font is what delivers that. Instrument Sans and Space
-       Mono are self-hosted static instances (see styles/fonts.css), and both
-       ship real italics, so the browser never synthesizes a slant. Bricolage
-       has no italic at all, so display type carries emphasis with color
-       rather than a fake oblique. -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
+  <!-- Instrument Serif (display), UnifrakturMaguntia (the one rude word),
+       Geist and Geist Mono (body and labels). -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=UnifrakturMaguntia&family=Geist:wght@400;500&family=Geist+Mono&display=swap" rel="stylesheet" />
   <!-- Theme: must run before body renders to prevent flash. A stored choice
        beats the page default; there is no visible toggle, so type light / dark.
        Also marks the document as scripted, which is what lets .reveal hide
@@ -66,7 +62,11 @@ const { title, theme = 'light' } = Astro.props;
       var stored = null, carried = null;
       try { stored = localStorage.getItem('theme'); } catch (e) {}
       try { carried = sessionStorage.getItem('theme'); } catch (e) {}
-      var t = stored || carried || pageTheme;
+      // No choice yet: follow the visitor's system setting (night browsing is
+      // the reason dark mode exists). pageTheme is only a fallback.
+      var sys = null;
+      try { sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) {}
+      var t = stored || carried || sys || pageTheme;
       document.documentElement.setAttribute('data-theme', t);
       try { sessionStorage.setItem('theme', t); } catch (e) {}
     })();
@@ -95,10 +95,6 @@ const { title, theme = 'light' } = Astro.props;
   </script>
 </head>
 <body>
-  <!-- CURSOR -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-
   <Header />
   <main>
     <slot />
@@ -112,37 +108,6 @@ const { title, theme = 'light' } = Astro.props;
     initThemeTyping();
     initPrintEgg();
     initCopyEmail();
-
-    // ── CUSTOM CURSOR ──
-    // Nothing here gives up the system cursor until both elements resolve and
-    // the reduced-motion check passes. `cursor-live` is what unlocks
-    // `cursor: none` in global.css, so a module that never loads, or a visitor
-    // who asked for less motion, simply keeps the real pointer.
-    const cursor = document.getElementById('cursor') as HTMLElement | null;
-    const ring = document.getElementById('cursorRing') as HTMLElement | null;
-    const stillPointer = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      || window.matchMedia('(pointer: coarse)').matches;
-
-    if (cursor && ring && !stillPointer) {
-      document.documentElement.classList.add('cursor-live');
-
-      let ringX = 0, ringY = 0, curX = 0, curY = 0;
-
-      document.addEventListener('mousemove', (e) => {
-        curX = e.clientX; curY = e.clientY;
-        cursor.style.left = curX + 'px';
-        cursor.style.top = curY + 'px';
-      });
-
-      const animateRing = () => {
-        ringX += (curX - ringX) * 0.12;
-        ringY += (curY - ringY) * 0.12;
-        ring.style.left = ringX + 'px';
-        ring.style.top = ringY + 'px';
-        requestAnimationFrame(animateRing);
-      };
-      animateRing();
-    }
 
     // ── SCROLL REVEAL ──
     const reveals = document.querySelectorAll('.reveal');

@@ -3,7 +3,7 @@
 .tool-page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 120px 2rem 8rem;
+  padding: 48px 2rem 8rem;
   font-family: var(--font-display);
   color: var(--black);
 }
