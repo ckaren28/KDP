@@ -8,7 +8,7 @@
 // It looks correct on a machine with the fonts installed locally, which is
 // exactly why it has to be an import and not an assumption.
 import MainLayout from '../../layouts/MainLayout.astro';
-import TrackSelector from '../../components/TrackSelector.astro';
+import Spotlight from '../../components/Spotlight.astro';
 import styles from './about.module.css';
 import { SITE_TITLE } from '../../consts';
 
@@ -79,5 +79,5 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
       </ul>
     </section>
   </div>
-  <TrackSelector bordered={true} prompt="Interests" />
+  <Spotlight />
 </MainLayout>

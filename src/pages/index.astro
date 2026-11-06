@@ -4,6 +4,7 @@
 // portrait bubble. Work: ruled cards whose copy is the live site's own.
 import MainLayout from '../layouts/MainLayout.astro';
 import Bubble from '../components/Bubble.astro';
+import HoverPeek from '../components/HoverPeek.astro';
 
 const work = [
   {
@@ -75,7 +76,7 @@ const work = [
     </section>
   </div>
 
-  <div class="peek" id="peek" aria-hidden="true"></div>
+  <HoverPeek />
 
   <script>
     // "nerve": draw the circle a beat after the type lands; hover redraws it.
@@ -107,34 +108,6 @@ const work = [
         if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
       }), { threshold: 0.6 });
       document.querySelectorAll('.card').forEach((c) => io.observe(c));
-    }
-
-    // Hover preview: a small tilted print that trails the cursor.
-    const peek = document.getElementById('peek');
-    if (peek && matchMedia('(hover: hover)').matches) {
-      let px = 0, py = 0, tx = 0, ty = 0, raf = 0;
-      const move = () => {
-        px += (tx - px) * 0.22; py += (ty - py) * 0.22;
-        const tilt = Math.max(-6, Math.min(6, (tx - px) * 0.08)) - 2.5;
-        peek.style.transform = `translate(${px}px, ${py}px) rotate(${tilt}deg)`;
-        raf = requestAnimationFrame(move);
-      };
-      document.querySelectorAll<HTMLElement>('.card[data-peek]').forEach((card) => {
-        card.addEventListener('mouseenter', (e) => {
-          const src = card.dataset.peek!;
-          peek.innerHTML = src === 'lock'
-            ? '<div class="peek-lock"><div><b>Locked</b><br>Password protected</div></div>'
-            : `<img alt="" src="${src}">`;
-          tx = px = e.clientX + 18; ty = py = e.clientY + 16;
-          peek.classList.add('on');
-          if (!raf) move();
-        });
-        card.addEventListener('mousemove', (e) => {
-          tx = Math.min(e.clientX + 18, innerWidth - 180);
-          ty = Math.min(e.clientY + 16, innerHeight - 130);
-        });
-        card.addEventListener('mouseleave', () => { peek.classList.remove('on'); cancelAnimationFrame(raf); raf = 0; });
-      });
     }
   </script>
 
@@ -203,17 +176,6 @@ const work = [
     .lab { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
     .lab:hover { color: var(--sienna); }
 
-    .peek {
-      position: fixed; left: 0; top: 0; z-index: 30; width: 160px; pointer-events: none;
-      opacity: 0; transform: translate(-9999px, 0); transition: opacity .2s;
-      border: 1px solid var(--black); background: var(--off-white); padding: 4px;
-      box-shadow: 0 18px 40px -20px rgba(0,0,0,.45);
-    }
-    :global(.peek.on) { opacity: 1; }
-    .peek :global(img) { display: block; width: 100%; height: 100px; object-fit: cover; object-position: top; }
-    .peek :global(.peek-lock) { height: 100px; display: grid; place-items: center; text-align: center; background: var(--black); color: var(--off-white); font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; }
-    .peek :global(.peek-lock b) { display: block; font-family: var(--font-black); font-weight: 400; font-size: 26px; color: var(--accent-loud); line-height: 1; text-transform: none; }
-
     @media (max-width: 980px) {
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .card, .card:nth-child(-n+2) { grid-column: span 1; }
@@ -231,7 +193,7 @@ const work = [
     }
     @media (prefers-reduced-motion: reduce) {
       .rude path { stroke-dashoffset: 0; }
-      .card, .t path, .peek { transition: none; }
+      .card, .t path { transition: none; }
     }
   </style>
 </MainLayout>

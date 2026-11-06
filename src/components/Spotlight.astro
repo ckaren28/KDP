@@ -1,0 +1,131 @@
+---
+// About page: a dark band where the cursor is a light. Things are hidden in
+// the dark until the light finds them: hobbies (swap freely, they change), a
+// portrait, and the two side doors (Fashion studio, Technology lab) that used
+// to be the big split panel.
+//
+// To change a hobby, edit `hobbies` below. `img` is optional: without one the
+// tile shows its label only, which is how the placeholders look today.
+interface Hobby { label: string; img?: string; x: number; y: number; w: number; tilt: number }
+
+const hobbies: Hobby[] = [
+  { label: 'Cooking',   x: 6,  y: 12, w: 18, tilt: -4 },
+  { label: 'Muay Thai', x: 70, y: 8,  w: 17, tilt: 3 },
+];
+---
+
+<section class="spot" aria-labelledby="spotLabel" data-spot>
+  <h2 class="spot-label" id="spotLabel">Off the clock</h2>
+  <p class="spot-hint" aria-hidden="true">Move your light around</p>
+
+  <div class="spot-layer">
+    {hobbies.map((h) => (
+      <figure class="hobby" style={`left:${h.x}%; top:${h.y}%; width:${h.w}%; --tilt:${h.tilt}deg`}>
+        {h.img ? <img src={h.img} alt={h.label} loading="lazy" /> : <div class="hobby-ph" aria-hidden="true"></div>}
+        <figcaption>{h.label}</figcaption>
+      </figure>
+    ))}
+
+    <img class="me" src="/images/about/karen.png" alt="Karen Dettmar" width="400" height="541" loading="lazy" />
+
+    <a class="door door--fashion" href="https://studio.karendettmar.com">
+      <span class="door-k">Fashion</span>
+      <span class="door-v">Collections, construction & craft →</span>
+    </a>
+    <a class="door door--tech" href="/projects/tech">
+      <img src="/images/about/tech-laptop-navy.png" alt="" aria-hidden="true" />
+      <span class="door-k">Technology</span>
+      <span class="door-v">Tools, prototypes & interactive work →</span>
+    </a>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-spot]').forEach((spot) => {
+    if (!matchMedia('(hover: hover)').matches) { spot.classList.add('spot--lit'); return; }
+    let x = 50, y = 50, tx = 50, ty = 50, raf = 0, on = false;
+    const step = () => {
+      x += (tx - x) * 0.18; y += (ty - y) * 0.18;
+      spot.style.setProperty('--x', x + '%');
+      spot.style.setProperty('--y', y + '%');
+      raf = on || Math.abs(tx - x) + Math.abs(ty - y) > 0.1 ? requestAnimationFrame(step) : 0;
+    };
+    spot.addEventListener('pointermove', (e) => {
+      const r = spot.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width) * 100;
+      ty = ((e.clientY - r.top) / r.height) * 100;
+      if (!raf) raf = requestAnimationFrame(step);
+    });
+    spot.addEventListener('pointerenter', () => { on = true; spot.classList.add('spot--on'); });
+    spot.addEventListener('pointerleave', () => { on = false; spot.classList.remove('spot--on'); });
+    // Keyboard: focusing a door lights the whole band so it can be read.
+    spot.addEventListener('focusin', () => spot.classList.add('spot--lit'));
+    spot.addEventListener('focusout', () => spot.classList.remove('spot--lit'));
+  });
+</script>
+
+<style>
+  /* The band stays dark in both themes: it is a dark room with one light. */
+  .spot {
+    --x: 50%; --y: 50%; --r: 0px;
+    position: relative;
+    height: clamp(460px, 48vw, 620px);
+    margin-top: 72px;
+    background: #0B0D12;
+    color: #ECE9F0;
+    overflow: hidden;
+    cursor: crosshair;
+    transition: --r .35s var(--ease-slow);
+  }
+  @property --r { syntax: '<length>'; inherits: true; initial-value: 0px; }
+  :global(.spot--on) { --r: 170px; }
+  .spot-label {
+    position: absolute; left: max(24px, env(safe-area-inset-left, 0px)); top: 20px; z-index: 2; margin: 0;
+    font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; color: #98A0AE;
+  }
+  .spot-hint {
+    position: absolute; inset: 0; display: grid; place-items: center; margin: 0; pointer-events: none;
+    font-family: var(--font-display); font-style: italic; font-size: clamp(28px, 3.4vw, 44px); color: rgba(236,233,240,.32);
+    transition: opacity .4s;
+  }
+  :global(.spot--on) .spot-hint, :global(.spot--lit) .spot-hint { opacity: 0; }
+
+  /* Everything hidden lives in this layer; the light is its mask. */
+  .spot-layer {
+    position: absolute; inset: 0;
+    -webkit-mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #000 45%, rgba(0,0,0,.35) 75%, transparent 100%);
+            mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #000 45%, rgba(0,0,0,.35) 75%, transparent 100%);
+  }
+  :global(.spot--lit) .spot-layer { -webkit-mask-image: none; mask-image: none; }
+
+  .hobby { position: absolute; margin: 0; transform: rotate(var(--tilt)); }
+  .hobby img, .hobby-ph { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 4px solid #ECE9F0; }
+  .hobby-ph { background: repeating-linear-gradient(135deg, #1A202B 0 10px, #222936 10px 20px); }
+  .hobby figcaption { margin-top: 8px; font-family: var(--font-display); font-style: italic; font-size: 22px; line-height: 1; }
+
+  .me {
+    position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+    height: 82%; width: auto; filter: grayscale(1) contrast(1.05);
+  }
+
+  .door { position: absolute; display: grid; gap: 4px; color: #ECE9F0; text-decoration: none; }
+  .door-k { font-family: var(--font-display); font-size: clamp(30px, 3.2vw, 44px); line-height: 1; }
+  .door-v { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: #FF4FA0; }
+  .door:hover .door-k, .door:focus-visible .door-k { font-style: italic; }
+  .door:focus-visible { outline: 2px solid #FF4FA0; outline-offset: 6px; }
+  .door--fashion { left: 30%; top: 30%; }
+  .door--tech { right: 6%; top: 36%; justify-items: end; text-align: right; }
+  .door--tech img { width: 140px; height: auto; margin-bottom: 6px; }
+
+  /* Phones: no cursor to carry a light, so the room is simply lit and stacked. */
+  @media (hover: none), (max-width: 760px) {
+    .spot { height: auto; padding: 56px max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); cursor: auto; }
+    .spot-hint { display: none; }
+    .spot-layer { position: relative; -webkit-mask-image: none; mask-image: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .hobby, .door, .me { position: static; transform: none; width: auto !important; }
+    .hobby { transform: rotate(var(--tilt)); }
+    .door, .door--tech { justify-items: start; text-align: left; grid-column: 1 / -1; }
+    .me { grid-column: 1 / -1; justify-self: center; height: 320px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .spot, .spot-hint { transition: none; } }
+</style>

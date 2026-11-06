@@ -2,12 +2,12 @@
  * The homepage bubble.
  *
  * A pearly, iridescent sphere that leans toward the cursor, squishes when
- * clicked, and pops on the third click ("Sorry to burst your bubble"). Karen's
- * portrait sits inside as a pale reflection caught on the film; the portrait is
- * drawn by a shader that evaluates the bubble's own surface formula, so it
- * wobbles, squishes and clips with the bubble exactly.
+ * clicked, and pops on the third click ("Sorry to burst your bubble"). Inside,
+ * a slow soap-film swirl: thin-film interference color drawn by a shader that
+ * evaluates the bubble's own surface formula, so it wobbles, squishes and clips
+ * with the bubble exactly.
  *
- * If WebGL is unavailable the slot keeps its static fallback portrait.
+ * If WebGL is unavailable the slot keeps its static CSS fallback.
  */
 import * as THREE from 'three';
 
@@ -24,8 +24,7 @@ export function initBubble(slot: HTMLElement) {
   const canvas = slot.querySelector('canvas') as HTMLCanvasElement | null;
   const pop = slot.querySelector('.bb-pop') as HTMLElement | null;
   const hint = slot.querySelector('.bb-hint') as HTMLElement | null;
-  const photoSrc = slot.dataset.photo;
-  if (!canvas || !photoSrc) return;
+  if (!canvas) return;
 
   let renderer: THREE.WebGLRenderer;
   try {
@@ -56,12 +55,11 @@ export function initBubble(slot: HTMLElement) {
   }
   scene.environment = pmrem.fromScene(envS, 0.04).texture;
 
-  // ---------- portrait: a pale reflection on the film ----------
-  const photoMat = new THREE.ShaderMaterial({
+  // ---------- soap film: swirling interference color inside the bubble ----------
+  const swirlMat = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
     uniforms: {
-      map: { value: new THREE.TextureLoader().load(photoSrc) },
       time: { value: 0 },
       uInv: { value: new THREE.Matrix3() },
       uScale: { value: new THREE.Vector2(1, 1) },
@@ -71,7 +69,7 @@ export function initBubble(slot: HTMLElement) {
     },
     vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix*vec4(position,1.); vW = w.xyz; gl_Position = projectionMatrix*viewMatrix*w; }',
     fragmentShader: /* glsl */ `
-      uniform sampler2D map; uniform float time; uniform mat3 uInv; uniform vec2 uScale;
+      uniform float time; uniform mat3 uInv; uniform vec2 uScale;
       uniform float uA; uniform float uK; uniform float uBump; uniform vec3 uPtr; uniform float uZoom;
       varying vec3 vW;
       ${RADIUS_GLSL}
@@ -82,21 +80,24 @@ export function initBubble(slot: HTMLElement) {
         float rr = radiusAt(d);
         float inside = smoothstep(1.015, .985, len/rr);
         if(inside <= 0.) discard;
-        vec2 q = vW.xy / (uScale * rr);            // the bubble's unit disc: the portrait moves with every wobble
-        q *= mix(.9, 1., clamp(dot(q,q),0.,1.));   // slight lens bulge
-        q /= uZoom;
-        q += vec2(sin(q.y*6.+time*1.3), cos(q.x*5.-time*1.1)) * .006;
-        vec2 uv = vec2(q.x/1.996 + .5, (q.y + .22)/2.7 + .5);
-        if(uv.x<0. || uv.x>1. || uv.y<0. || uv.y>1.) discard;
-        vec4 t = texture2D(map, uv);
-        float g = dot(t.rgb, vec3(.299,.587,.114));
-        vec3 col = mix(vec3(1., .42, .7), vec3(1., .97, .99), smoothstep(.1, .85, g));
-        gl_FragColor = vec4(col, t.a * inside * (.32 + .38*(1.-g)));
+        vec2 q = vW.xy / (uScale * rr);            // the bubble's unit disc, so the film moves with every wobble
+        float r = length(q);
+        vec2 w = q / uZoom;                          // clicks stretch the swirl as the bubble swells
+        // film thickness: two slow folded waves, a ring, and drainage toward the bottom
+        float th = .55
+          + .22*sin(w.x*2.3 + time*.35 + 1.2*sin(w.y*3.1 - time*.25))
+          + .16*sin(w.y*2.7 - time*.3 + 1.1*sin(w.x*2.2 + time*.2))
+          + .10*sin(r*6. - time*.5)
+          - .18*w.y;
+        vec3 iri = .5 + .5*cos(6.2831*(th*1.5 + vec3(0., .33, .67)));
+        vec3 col = mix(iri, vec3(1.), .42);          // simplified: softened toward white
+        float a = inside * (.16 + .26*smoothstep(.35, 1., r));
+        gl_FragColor = vec4(col, a);
       }`,
   });
-  const photo = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 3.6), photoMat);
-  photo.renderOrder = 0;
-  scene.add(photo);
+  const swirl = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 3.6), swirlMat);
+  swirl.renderOrder = 0;
+  scene.add(swirl);
   const inv = new THREE.Matrix3();
 
   // ---------- the bubble ----------
@@ -136,7 +137,7 @@ export function initBubble(slot: HTMLElement) {
   }, { passive: true });
 
   const rot = { x: 0, y: 0, vx: 0, vy: 0 }, sq = { v: 0, s: 0 };
-  let photoS = 1, photoV = 0, press = 0, clicks = 0, popped = false, grow = 1, growV = 0, swell = 0;
+  let zoomS = 1, zoomV = 0, press = 0, clicks = 0, popped = false, grow = 1, growV = 0, swell = 0;
   let clickTimer = 0, regrowTimer = 0;
   const words = ['Click · click · click', 'Again', 'One more…'];
   const say = (t: string) => { if (hint) hint.textContent = t; };
@@ -190,7 +191,7 @@ export function initBubble(slot: HTMLElement) {
     growV += (1 - grow) * 0.12; growV *= 0.72; grow += growV;
     const s = Math.max(0.001, (1.05 + swell) * grow);
     bubble.scale.set(s * (1 - sq.s * 0.6), s * (1 + sq.s), s * (1 - sq.s * 0.6));
-    photoV += ((1 + clicks * 0.28) - photoS) * 0.14; photoV *= 0.72; photoS += photoV;
+    zoomV += ((1 + clicks * 0.28) - zoomS) * 0.14; zoomV *= 0.72; zoomS += zoomV;
     press *= 0.93;
 
     const A = 0.085 + swell * 0.25;
@@ -207,12 +208,12 @@ export function initBubble(slot: HTMLElement) {
     geo.computeVertexNormals();
 
     bubble.updateMatrixWorld(true);
-    const U = photoMat.uniforms;
+    const U = swirlMat.uniforms;
     U.uInv.value.copy(inv.setFromMatrix4(bubble.matrixWorld).invert());
     U.uScale.value.set(bubble.scale.x, bubble.scale.y);
     U.time.value = t; U.uA.value = A; U.uK.value = 1.3 + swell * 14; U.uBump.value = 0.06 + press * 0.12; U.uPtr.value.copy(dir);
-    U.uZoom.value = photoS * (small ? 1.15 : 1);
-    photo.visible = bubble.visible && grow > 0.03;
+    U.uZoom.value = zoomS * (small ? 1.15 : 1);
+    swirl.visible = bubble.visible && grow > 0.03;
 
     for (const d of drops) {
       if (!d.m.visible) continue;
