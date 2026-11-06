@@ -23,7 +23,14 @@ export interface DevelopAsset {
 const BRUSH = 110;     // px radius of the light
 const STRENGTH = 0.16; // how much one pass develops
 
-export function initDevelop(container: HTMLElement, assets: DevelopAsset[]) {
+export interface DevelopHandle {
+  /** Where asset i sits, in px relative to the container (null until its source exists). */
+  box(i: number): { x: number; y: number; w: number; h: number } | null;
+  /** Develop asset i a little, as a hint that something is there. */
+  hint(i: number): void;
+}
+
+export function initDevelop(container: HTMLElement, assets: DevelopAsset[]): DevelopHandle {
   const view = document.createElement('canvas');
   view.className = 'develop-layer';
   view.setAttribute('aria-hidden', 'true');
@@ -160,4 +167,30 @@ export function initDevelop(container: HTMLElement, assets: DevelopAsset[]) {
   requestAnimationFrame(draw);
   // the print color follows the theme
   new MutationObserver(rebuildPrint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  const box = (i: number) => {
+    const src = sources[i];
+    return src ? placed(assets[i], src) : null;
+  };
+  return {
+    box,
+    hint(i) {
+      const b = box(i);
+      if (!b) return;
+      // a soft, partial exposure over the whole print: enough to see a shape
+      let n = 0;
+      const step = () => {
+        const grd = mctx.createRadialGradient(
+          (b.x + b.w / 2) * DPR, (b.y + b.h / 2) * DPR, 0,
+          (b.x + b.w / 2) * DPR, (b.y + b.h / 2) * DPR, Math.max(b.w, b.h) * 0.62 * DPR);
+        grd.addColorStop(0, 'rgba(0,0,0,0.05)');
+        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        mctx.fillStyle = grd;
+        mctx.fillRect(b.x * DPR, b.y * DPR, b.w * DPR, b.h * DPR);
+        dirty = true;
+        if (++n < 6) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    },
+  };
 }
