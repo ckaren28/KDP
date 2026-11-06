@@ -126,7 +126,9 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     .ab-page :global(.develop-layer) { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; }
     .fx-layer { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; }
     :global(.ab-page.on-torch) { cursor: pointer; }
-    .ab-page :global(.hint-word) { text-decoration: underline dotted; text-decoration-color: var(--sienna); text-underline-offset: 4px; cursor: help; }
+    /* hobby words look like plain text; hovering only warms them to the accent while their print develops */
+    .ab-page :global(.hint-word) { transition: color .4s var(--ease-slow); }
+    .ab-page :global(.hint-word:hover) { color: var(--sienna); }
     .ab-hint {
       text-align: center; margin: 0; padding: 8px 0 64px;
       font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--muted);
