@@ -269,3 +269,10 @@ img {
 }
 .browser-chrome img,
 .browser-chrome video { display: block; width: 100%; height: auto; border: 0 !important; }
+
+/* Visually hidden, still read by screen readers (headings the design doesn't show). */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* No eyebrow labels on the redesigned site (Nov 2026). Any that remain in
+   older templates are hidden here rather than left half-styled. */
+.page-eyebrow { display: none !important; }
