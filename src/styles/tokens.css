@@ -1,27 +1,26 @@
 /* ── DESIGN TOKENS ──────────────────────────────────────────────
    "Taste and a little nerve" (Nov 2026 redesign). Warm linen and ink,
-   a bright violet with moss as its second color, and a very dark
-   blue-grey night mode.
+   one tomato-red accent, and a very dark blue-grey night mode.
    Token NAMES are inherited from the darkroom system so every page picks
    up the new palette without being rewritten:
      --black      ink (text)          --off-white  ground
      --sienna     accent, text-safe   --accent-loud  decorative accent
-     --tone2      moss, the second color
+     --tone2      second color (same tomato for now: one accent)
    ─────────────────────────────────────────────────────────────── */
 :root {
   --black: #18171B;
   --off-white: #EFE9E1;        /* linen */
   --warm-white: #E7E0D6;
-  --sienna: #5730D0;           /* violet, 6.4:1 on linen */
-  --sienna-light: #6A47DA;
-  --accent-loud: #5730D0;
-  --tone2: #66782F;            /* moss */
-  --tone2-flip: #A9BC6A;       /* moss on an ink (inverted) surface */
+  --sienna: #C42D22;           /* tomato, 4.65:1 on linen */
+  --sienna-light: #D2452F;
+  --accent-loud: #C42D22;
+  --tone2: #C42D22;
+  --tone2-flip: #F04A2E;       /* tomato on an ink (inverted) surface */
   --muted: #5F5A60;
   --border: rgba(24,23,27,0.14);
 
-  --print: #E4DDF5;            /* pale lilac */
-  --print-lt: #EEE9F9;
+  --print: #F3DCD6;            /* pale tomato */
+  --print-lt: #F8EAE6;
 
   --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
   --font-black: 'UnifrakturMaguntia', 'Old English Text MT', serif;
@@ -45,11 +44,11 @@ html[data-theme="dark"] {
   --black: #ECE9F0;
   --off-white: #0F1218;
   --warm-white: #161B24;
-  --sienna: #A592FF;
-  --sienna-light: #B8A9FF;
-  --accent-loud: #A592FF;
-  --tone2: #A9BC6A;
-  --tone2-flip: #66782F;
+  --sienna: #F04A2E;
+  --sienna-light: #F46A52;
+  --accent-loud: #F04A2E;
+  --tone2: #F04A2E;
+  --tone2-flip: #C42D22;
   --muted: #98A0AE;
   --border: rgba(236,233,240,0.13);
 
