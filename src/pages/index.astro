@@ -1,8 +1,8 @@
 ---
 // Homepage, Nov 2026 redesign ("taste and a little nerve").
 // Hero: the headline with one blackletter word circled, and the poppable
-// soap bubble. Work: minimal ruled cards (title + org/role). `body` is the
-// live site's description, kept for the copy rewrite but not rendered.
+// soap bubble. Work: ruled cards (title, one outcome sentence, org/role).
+// `body` is the live site's longer description, kept for the copy rewrite.
 import MainLayout from '../layouts/MainLayout.astro';
 import Bubble from '../components/Bubble.astro';
 import HoverPeek from '../components/HoverPeek.astro';
@@ -13,13 +13,15 @@ const work = [
     href: '/experience/wet-design',
     title: 'Redesigning employee travel at WET',
     body: 'I interviewed travelers, designed the workflow and built the Vue front end of a request-and-approval app that replaced a legacy system company-wide.',
+    desc: 'Replaced a legacy travel system company-wide.',
     org: 'WET Design', role: 'Research, UX, sole front-end developer',
     peek: '/images/wet/travel-request-form.png',
   },
   {
     href: '/experience/wix',
-    title: 'Designing an avatar builder for Wix DevCon',
+    title: 'Designing and building an avatar builder for Wix DevCon',
     body: 'A generative avatar builder for a live developer conference, illustrated by Wix’s design team, that 77% of attendees used.',
+    desc: '77% of attendees made an avatar.',
     org: 'Wix', role: 'Concept, interaction design, build',
     peek: '/images/wix/avatar-output.jpg',
   },
@@ -27,13 +29,15 @@ const work = [
     href: '/experience/cibt',
     title: 'Finding out why visa applicants were leaving',
     body: 'I redesigned an on-site survey so one week of answers outdrew the previous five and ranked why applicants were leaving.',
+    desc: 'One week of survey answers outdrew the previous five.',
     org: 'CIBT', role: 'Research, survey design',
     peek: '/images/cibt/survey-themes.svg',
   },
   {
     href: '/experience/intuit',
-    title: 'Intuit',
+    title: 'Making engineering maturity actionable',
     body: 'Making engineering maturity actionable: a leaderboard that tells teams what to do next. Password protected.',
+    desc: 'A tournament that encouraged teams to level up, one sprint at a time.',
     org: 'Intuit', role: 'Private',
     peek: 'lock',
   },
@@ -41,6 +45,7 @@ const work = [
     href: '/experience/pixomondo',
     title: 'Pixomondo',
     body: 'Print campaigns for a VFX studio, and the site they pointed at.',
+    desc: 'Print campaigns for a VFX studio, and the site they pointed at.',
     org: 'Pixomondo', role: 'Print and web',
     peek: '/images/pixomondo/star-trek-discovery.png',
   },
@@ -54,14 +59,14 @@ const work = [
         <h1>Interfaces with taste and a little
           <span class="rude">nerve<svg viewBox="0 0 240 80" preserveAspectRatio="none" aria-hidden="true"><path d="M14,44 C10,20 70,6 132,8 C196,10 238,24 230,48 C222,70 150,76 96,72 C40,68 6,58 12,36 C18,18 60,12 104,12"/></svg></span>.
         </h1>
-        <p class="lede">I design and build interfaces. Prototyping, thoughtful interaction, and the small details that make something feel finished. Always thinking about the tradeoffs.</p>
+        <p class="lede">I design and build interfaces, from employee workflows to interactive tools. Research, prototypes, and the details that make them work.</p>
       </div>
       <Bubble />
     </section>
 
     <section id="work" aria-labelledby="workLabel">
       <h2 class="sr-only" id="workLabel">Selected work</h2>
-      <WorkCards items={work.map((w) => ({ href: w.href, title: w.title, left: w.org, right: w.role, peek: w.peek }))} />
+      <WorkCards items={work.map((w) => ({ href: w.href, title: w.title, desc: w.desc, left: w.org, right: w.role, peek: w.peek }))} />
     </section>
 
     <section class="hello" aria-label="Contact">
