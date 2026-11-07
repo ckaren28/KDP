@@ -48,23 +48,23 @@ const d = entry.data;
       align-items: baseline;
       gap: 10px;
       flex-wrap: wrap;
-      margin: 0 0 18px;
+      margin: 0 0 24px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
     }
-    .xpp-company { color: var(--black); font-weight: 700; }
+    .xpp-company { color: var(--black); font-weight: 400; }
     .xpp-meta span:not(.xpp-company)::before { content: '·'; margin-right: 10px; }
 
     .xpp-headline {
-      margin: 0 0 22px;
+      margin: 0 0 14px;
       font-family: var(--font-display);
-      font-size: clamp(28px, 4vw, 46px);
-      font-weight: 600;
-      line-height: 1.12;
-      letter-spacing: -0.03em;
+      font-size: clamp(32px, 4.4vw, 52px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
       color: var(--black);
     }
 
@@ -311,13 +311,12 @@ const d = entry.data;
   <article class="xpp">
     <a href="/#work" class="xpp-back">← Back to work</a>
 
+    <h1 class="xpp-headline">{d.headline}</h1>
     <p class="xpp-meta">
       <span class="xpp-company">{d.company}</span>
       <span>{d.role}</span>
       <span>{d.location}</span>
     </p>
-
-    <h1 class="xpp-headline">{d.headline}</h1>
     {d.encrypted ? <EncryptedCase src={d.encrypted} /> : <>
     <p class="xpp-result">{d.result}</p>
     <p class="xpp-summary">{d.summary}</p>

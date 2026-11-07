@@ -18,6 +18,9 @@ export interface DevelopAsset {
   top: number;
   /** Width in px (scaled down on narrow screens). */
   width: number;
+  /** Optional placement for narrow screens (under 760px), worked out when the
+      page lays out, so prints can move out from under the text on phones. */
+  narrow?: () => { x: number; top: number; width: number } | null;
 }
 
 const BRUSH = 110;     // px radius of the light
@@ -88,13 +91,14 @@ export function initDevelop(container: HTMLElement, assets: DevelopAsset[]): Dev
   }
 
   function placed(a: DevelopAsset, src: HTMLCanvasElement | HTMLImageElement) {
-    const scale = W < 760 ? 0.62 : 1;
-    const w = a.width * scale;
     const ratio = (src as HTMLImageElement).naturalHeight
       ? (src as HTMLImageElement).naturalHeight / (src as HTMLImageElement).naturalWidth
       : (src as HTMLCanvasElement).height / (src as HTMLCanvasElement).width;
-    const h = w * ratio;
-    return { x: a.x * W - w / 2, y: a.top * (W < 760 ? 0.9 : 1), w, h };
+    const n = W < 760 && a.narrow ? a.narrow() : null;
+    if (n) return { x: n.x * W - n.width / 2, y: n.top, w: n.width, h: n.width * ratio };
+    const scale = W < 760 ? 0.62 : 1;
+    const w = a.width * scale;
+    return { x: a.x * W - w / 2, y: a.top * (W < 760 ? 0.9 : 1), w, h: w * ratio };
   }
 
   function rebuildPrint() {
