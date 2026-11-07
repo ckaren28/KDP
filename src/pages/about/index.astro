@@ -91,10 +91,10 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
       let crayon: ReturnType<typeof renderCrayon> | undefined;
       const getCrayon = () => (crayon === undefined ? (crayon = renderCrayon(800)) : crayon);
       const getTorch = () => (torch === undefined ? (torch = renderBlowtorch(800)) : torch);
-      // On phones the prints would sit on the text, so they move to the open
-      // strip above the "Move around" line, side by side.
-      const hintEl = page.querySelector<HTMLElement>('.ab-hint');
-      const onPhone = (x: number) => (hintEl ? { x, top: hintEl.offsetTop + parseFloat(getComputedStyle(hintEl).paddingTop) - 125, width: 110 } : null);
+      // On phones the prints would sit on the text, so they line up side by
+      // side in the open strip right after the hobbies paragraph.
+      const hobbiesEl = page.querySelector<HTMLElement>('.hint-word')?.closest('p');
+      const onPhone = (x: number) => (hobbiesEl ? { x, top: hobbiesEl.getBoundingClientRect().bottom - page.getBoundingClientRect().top + 28, width: 110 } : null);
       // 0: gloves (MMA), 1: blowtorch (cheffing it up), 2: crayon (sketching)
       const dev = initDevelop(page, [
         { source: () => (gloves === undefined ? (gloves = renderGloves(900)) : gloves), x: 0.85, top: 150, width: 230, narrow: () => onPhone(0.82) },
@@ -260,7 +260,8 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     .ab-hint {
       text-align: center; margin: 0; padding: 8px 0 64px;
     }
-    @media (max-width: 759px) { .ab-hint { padding-top: 170px; } }
+    /* phones: room after the hobbies paragraph for the prints */
+    @media (max-width: 759px) { :global(.ab-page p:has(.hint-word)) { margin-bottom: 150px; } }
     .ab-hint {
       font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--muted);
     }
