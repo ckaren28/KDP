@@ -1,660 +1,185 @@
 ---
+// The system behind the site (Nov 2026 redesign). Every color and ratio is
+// read from src/styles/tokens.css at build time, so this page cannot drift
+// from what ships: change a hex there and the swatch and its grade move too.
 import MainLayout from '../layouts/MainLayout.astro';
-import styles from './system.module.css';
-import LoadingState from '../components/LoadingState.astro';
-import { componentInventory } from '../utils/components';
-import { easingCensus, durationCensus, reducedMotionSites } from '../utils/motion';
-import {
-  readTokens, readTokensPreferring, tokensFor, byName, contrast, fmt, grade, type Token,
-} from '../utils/tokens';
+import WorkCards from '../components/WorkCards.astro';
+import { readTokens, tokensFor, byName, contrast, fmt, grade } from '../utils/tokens';
 
-const s = styles;
-
-/* Every value below is parsed out of `src/styles/tokens.css` at build time.
-   Nothing on this page is retyped, so it cannot drift from what ships: change
-   a hex in tokens.css and the swatch, the ratio and the grade all move with
-   it. A pair that stops passing starts failing in public. */
 const blocks = readTokens('src/styles/tokens.css');
-const light  = tokensFor(blocks, ':root');
-const dark   = tokensFor(blocks, 'html[data-theme="dark"]');
+const light = tokensFor(blocks, ':root');
+const dark = tokensFor(blocks, 'html[data-theme="dark"]');
+const v = (t: typeof light, n: string) => byName(t, n)?.value ?? '';
 
-/* Roles, not names. A hairline and a body color are both colors and are held
-   to entirely different thresholds, so grading them the same way would either
-   fail the border for no reason or pass the text for the wrong one. */
-/* Which tokens carry text is a property of the brand, not of the name. On this
-   site --sienna-light is link text (TrackSelector.module.css:116). On the studio
-   site the same token is only --drip-color, a decorative graphic, so holding it
-   to a text threshold there would fail a color for a job it does not do. Same
-   mistake as grading the hairline. */
-const INK        = ['black', 'text-body', 'muted', 'sienna', 'sienna-light'];
-const STUDIO_INK = ['black', 'text-body', 'muted', 'sienna'];
-const SURFACE    = ['off-white', 'warm-white', 'placeholder-bg', 'hover-sweep'];
-
-/** Text tokens are held to 4.5:1, since the smallest of them carries 10px mono. */
-function inkRows(theme: Token[], names: string[] = INK) {
-  const ground = byName(theme, 'off-white')!.value;
-  return names.map((name) => {
-    const t = byName(theme, name)!;
-    const ratio = contrast(t.value, ground)!;
-    return { ...t, ratio, grade: grade(ratio) };
-  });
-}
-
-const themes = [
-  { key: 'light', label: 'Light, the print in daylight', tokens: light },
-  { key: 'dark',  label: 'Dark, back in the darkroom',   tokens: dark  },
-].map((t) => ({
-  ...t,
-  ground: byName(t.tokens, 'off-white')!.value,
-  ink: inkRows(t.tokens),
-  surfaces: SURFACE.map((n) => byName(t.tokens, n)).filter(Boolean) as Token[],
-  line: byName(t.tokens, 'border')!,
-}));
-
-const scale    = light.filter((t) => /^fs-\d+$/.test(t.name));
-const display  = light.filter((t) => t.name.startsWith('fs-') && !/^fs-\d+$/.test(t.name));
-const tracking = light.filter((t) => t.name.startsWith('track-'));
-const space    = light.filter((t) => t.name.startsWith('space-'));
-
-/* The studio palette, from the sibling checkout when there is one and from the
-   committed snapshot otherwise. See readTokensPreferring for why both exist. */
-const studioSrc = readTokensPreferring([
-  { path: '../fashion-studio/src/styles/tokens.css', label: 'the fashion-studio working tree', live: true },
-  { path: 'src/data/studio-tokens.css',              label: 'the committed snapshot',          live: false },
-]);
-const studioLight = tokensFor(studioSrc.blocks, ':root');
-const studioDark  = tokensFor(studioSrc.blocks, 'html[data-theme="dark"]');
-
-const ROLES: Record<string, string> = {
-  'black':          'Body text, and the strongest thing on the page',
-  'off-white':      'The ground everything is measured against',
-  'warm-white':     'Secondary surface',
-  'sienna':         'The accent, and every link',
-  'sienna-light':   'The accent, lifted',
-  'muted':          'Metadata, eyebrows, 10px mono labels',
-  'border':         'The hairline, the only rule drawn',
-  'text-body':      'Long-form copy, quieter than --black',
-  'hover-sweep':    'The fill a link sweeps to',
-  'on-sweep':       'Text sitting on that sweep',
-  'placeholder-bg': 'An image that has not arrived yet',
-};
-
-/** Tokens both brands declare, in role order rather than file order. */
-const shared = Object.keys(ROLES)
-  .filter((n) => byName(light, n) && byName(studioLight, n))
-  .map((n) => ({
-    name: n,
-    role: ROLES[n],
-    eng: byName(light, n)!,
-    studio: byName(studioLight, n)!,
-  }));
-
-/** Where the contract deliberately stops being shared. */
-const engOnly    = light.filter((t) => !byName(studioLight, t.name) && !/^(fs|space|track|radius|hairline)/.test(t.name));
-const studioOnly = studioLight.filter((t) => !byName(light, t.name));
-
-/* The studio site's own tokens.css records the contrast math in a comment.
-   Recomputing it here checks that comment rather than repeating it. */
-const studioThemes = [
-  { key: 'light', label: 'Studio, light', tokens: studioLight },
-  { key: 'dark',  label: 'Studio, dark',  tokens: studioDark  },
-].map((t) => ({
-  ...t,
-  ground: byName(t.tokens, 'off-white')!.value,
-  ink: inkRows(t.tokens, STUDIO_INK),
-}));
-
-/* Demoing a component is not using it, so this page excludes itself from the
-   count. Otherwise the inventory promotes anything the gallery touches, which
-   is the measurement reading its own instrument. */
-const inventory = componentInventory(['pages/system.astro']);
-const live = inventory.filter((c) => c.uses > 0);
-const dead = inventory.filter((c) => c.uses === 0);
-
-const easings   = easingCensus();
-const durations = durationCensus();
-const rmSites   = reducedMotionSites();
-const rmCss     = rmSites.filter((r) => r.kind === 'CSS');
-const rmJs      = rmSites.filter((r) => r.kind === 'JS');
-
-/** A cubic-bezier plotted in a unit box, y flipped for SVG. */
-const bez = (x1: number, y1: number, x2: number, y2: number, size = 132) =>
-  `M 0 ${size} C ${x1 * size} ${size - y1 * size} ${x2 * size} ${size - y2 * size} ${size} 0`;
-
-const curves = [
-  { name: 'cubic-bezier(0.2, 0.8, 0.3, 1)',  d: bez(0.2, 0.8, 0.3, 1),
-    use: 'The default. Hovers, toggles, anything that answers a pointer.' },
-  { name: 'cubic-bezier(0.16, 1, 0.3, 1)',   d: bez(0.16, 1, 0.3, 1),
-    use: 'The reveal. Longer, later settle, for something arriving rather than responding.' },
+// what each color does, in the order it matters
+const ROLES = [
+  { token: 'off-white', name: 'Ground' },
+  { token: 'black', name: 'Ink', text: true },
+  { token: 'sienna', name: 'Tomato', text: true },
+  { token: 'muted', name: 'Muted', text: true },
+  { token: 'warm-white', name: 'Surface' },
 ];
 
-const families = [
-  { token: 'font-display', label: 'Display', sample: 'Aa', note: 'Bricolage Grotesque. Variable, and the only face still served from Google, because its optical-size axis has to stay live.' },
-  { token: 'font-body',    label: 'Body',    sample: 'Aa', note: 'Instrument Sans. Self-hosted.' },
-  { token: 'font-mono',    label: 'Mono',    sample: 'Aa', note: 'Space Mono. Carries every eyebrow, label and piece of metadata on the site.' },
+const themes = [
+  { label: 'Linen', note: 'Light', t: light },
+  { label: 'Night', note: 'Dark, a blue-grey, never black', t: dark },
+].map(({ label, note, t }) => {
+  const ground = v(t, 'off-white');
+  return {
+    label, note, ground, ink: v(t, 'black'), line: v(t, 'border'),
+    swatches: ROLES.map((r) => {
+      const value = v(t, r.token);
+      const ratio = r.text ? contrast(value, ground) : null;
+      return { ...r, value, ratio: ratio ? fmt(ratio) : null, grade: ratio ? grade(ratio) : null };
+    }),
+  };
+});
+
+const faces = [
+  { name: 'Instrument Serif', role: 'Names and titles. Italic is the emphasis.', cls: 'f-serif', sample: 'Interfaces with <em>taste</em>' },
+  { name: 'Geist', role: 'Everything you read.', cls: 'f-body', sample: 'Prototyping, thoughtful interaction, and the small details that make something feel finished.' },
+  { name: 'Geist Mono', role: 'Meta, labels, the clock.', cls: 'f-mono', sample: 'New York · Design Technologist' },
+  { name: 'UnifrakturMaguntia', role: 'One word, once.', cls: 'f-black', sample: 'nerve' },
+];
+
+const easings = [
+  { name: 'Snap', token: '--ease-snap', value: 'cubic-bezier(.34,1.56,.64,1)', use: 'Cards lifting, things that land' },
+  { name: 'Slow', token: '--ease-slow', value: 'cubic-bezier(.22,1,.36,1)', use: 'Lines drawing, things that arrive' },
+];
+
+const parts = [
+  { name: 'Work cards', where: 'WorkCards.astro', see: '/' },
+  { name: 'Hover peek', where: 'HoverPeek.astro', see: '/projects/tech' },
+  { name: 'Soap bubble', where: 'Bubble.astro · three.js', see: '/' },
+  { name: 'Develop', where: 'develop.ts · canvas', see: '/about' },
+  { name: 'Paper', where: 'cv.module.css · print', see: '/cv' },
 ];
 ---
 
-<MainLayout title="Design system · Karen Dettmar" theme="light">
-  <div class="page-container">
+<MainLayout title="System · Karen Dettmar">
+  <div class="sys">
+    <h1 class="sys-title">System</h1>
+    <p class="lede">What this site is made of. Colors and ratios are read from the stylesheet when the site builds.</p>
 
-    <div class="reveal">
-      <span class="page-eyebrow">Design system</span>
-      <h1 class="page-title">The <em>darkroom</em> system</h1>
-    </div>
-
-    <div class={`${s.lead} reveal`}>
-      <p>
-        One token contract, two brands. This site is oxblood ink on a pale blue
-        ground; <a href="https://studio.karendettmar.com">the studio site</a> is
-        terracotta on warm paper, with a serif display face instead of a grotesque.
-        They are not two stylesheets that resemble each other. They declare the same
-        token names in the same roles, and each one then flips those same names again
-        for its dark scheme, so there are two brands and four schemes running on one
-        vocabulary.
-      </p>
-      <p>
-        Every value on this page is parsed out of <code>src/styles/tokens.css</code>
-        at build time. Nothing here is retyped. A documentation page that keeps its
-        own copy of the palette is wrong within a month, and the failure is silent:
-        the docs go on looking correct while the site walks away from them. Changing
-        a hex moves the swatch, the ratio and the grade together, which means a pair
-        that stops passing starts failing in public.
-      </p>
-    </div>
-
-    <!-- ── COLOR ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="colorLabel">
-      <span class="page-eyebrow" id="colorLabel">Color</span>
-      <p class={s.blurb}>
-        Ratios are WCAG 2.1, computed at build time against each scheme's own
-        ground. Translucent tokens are flattened onto that ground first, because a
-        ratio taken from raw <code>rgba</code> channels describes a color nobody
-        ever sees. Text is held to 4.5:1 rather than the large-text 3:1, since the
-        smallest thing wearing these colors is a 10px mono label.
-      </p>
-
-      {themes.map((theme) => (
-        <div class={s.theme} style={`--panel: ${theme.ground}; --panel-ink: ${byName(theme.tokens, 'black')!.value};`}>
-          <h2 class={s.themeName}>{theme.label}</h2>
-
-          <table class={s.table}>
-            <caption class="visually-hidden">Text colors on the {theme.key} ground, with contrast ratios</caption>
-            <thead>
-              <tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">On ground</th><th scope="col">Ratio</th><th scope="col">Grade</th></tr>
-            </thead>
-            <tbody>
-              {theme.ink.map((t) => (
-                <tr>
-                  <th scope="row"><code>--{t.name}</code></th>
-                  <td><code class={s.hex}>{t.value}</code></td>
-                  <td>
-                    <span class={s.proof} style={`background: ${theme.ground}; color: ${t.value};`}>Aa</span>
-                  </td>
-                  <td class={s.num}>{fmt(t.ratio)}</td>
-                  <td>
-                    <span class={`${s.grade} ${t.grade === 'Fail' ? s.gradeFail : ''}`}>{t.grade}</span>
-                  </td>
-                </tr>
+    <section aria-labelledby="color">
+      <h2 class="h" id="color">Color</h2>
+      <div class="themes">
+        {themes.map((th) => (
+          <div class="theme" style={`background:${th.ground};color:${th.ink};border-color:${th.line}`}>
+            <p class="theme-name">{th.label}<span>{th.note}</span></p>
+            <ul class="swatches">
+              {th.swatches.map((s) => (
+                <li>
+                  <span class="chip" style={`background:${s.value};border-color:${th.line}`}></span>
+                  <span class="sw-name">{s.name}</span>
+                  <span class="sw-meta">{s.ratio ? `${s.value} · ${s.ratio} ${s.grade}` : s.value}</span>
+                </li>
               ))}
-            </tbody>
-          </table>
-
-          <div class={s.surfaces}>
-            {theme.surfaces.map((t) => (
-              <div class={s.surface}>
-                <span class={s.chip} style={`background: ${t.value};`}></span>
-                <code>--{t.name}</code>
-                <code class={s.hex}>{t.value}</code>
-              </div>
-            ))}
-            <div class={s.surface}>
-              <span class={s.chip} style={`background: ${theme.ground}; border-bottom: 4px solid ${theme.line.value};`}></span>
-              <code>--{theme.line.name}</code>
-              <code class={s.hex}>{theme.line.value}</code>
-            </div>
-          </div>
-          <p class={s.foot}>
-            Surfaces and the hairline are ungraded on purpose. They carry no text
-            and are not the only signal for any control, so the text thresholds
-            would be the wrong instrument pointed at them.
-          </p>
-        </div>
-      ))}
-    </section>
-
-    <!-- ── TWO BRANDS ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="brandsLabel">
-      <span class="page-eyebrow" id="brandsLabel">Two brands, one contract</span>
-      <p class={s.blurb}>
-        The studio site is a different brand: terracotta on warm paper, a serif
-        display face, no mono at all. It is not a variation on this one and it is
-        not meant to look related. What the two share is the vocabulary. Every row
-        below is a token name that means the same thing on both sites and holds a
-        different value on each, which is the only reason one set of components
-        could ever wear either skin.
-      </p>
-
-      <table class={s.table}>
-        <caption class="visually-hidden">Shared tokens and their value in each brand</caption>
-        <thead>
-          <tr>
-            <th scope="col">Token</th>
-            <th scope="col">Role</th>
-            <th scope="col" colspan="2">This site</th>
-            <th scope="col" colspan="2">Studio</th>
-          </tr>
-        </thead>
-        <tbody>
-          {shared.map((row) => (
-            <tr>
-              <th scope="row"><code>--{row.name}</code></th>
-              <td class={s.role}>{row.role}</td>
-              <td><span class={s.swatch} style={`background: ${row.eng.value};`}></span></td>
-              <td><code class={s.hex}>{row.eng.value}</code></td>
-              <td><span class={s.swatch} style={`background: ${row.studio.value};`}></span></td>
-              <td><code class={s.hex}>{row.studio.value}</code></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 class={s.subhead}>Where the contract forks</h2>
-      <p class={s.blurb}>
-        The interesting half. A shared vocabulary is only worth having if it is
-        allowed to stop: forcing one site to carry the other's tokens would be
-        tidiness bought with meaning.
-      </p>
-      <div class={s.forks}>
-        <div>
-          <h3 class={s.forkHead}>Only here</h3>
-          <ul class={s.forkList}>
-            {engOnly.map((t) => <li><code>--{t.name}</code> <span class={s.hex}>{t.value}</span></li>)}
-          </ul>
-        </div>
-        <div>
-          <h3 class={s.forkHead}>Only on the studio site</h3>
-          <ul class={s.forkList}>
-            {studioOnly.map((t) => <li><code>--{t.name}</code> <span class={s.hex}>{t.value}</span></li>)}
-          </ul>
-        </div>
-      </div>
-
-      <h2 class={s.subhead}>The studio's own contrast, recomputed</h2>
-      <p class={s.blurb}>
-        The studio <code>tokens.css</code> states its ratios in a header comment,
-        including the two colors that failed first and what replaced them. These
-        numbers are computed here from the same values, so they check that comment
-        rather than repeat it, and they agree with it.
-      </p>
-      <p class={s.blurb}>
-        <code>--sienna-light</code> is absent from these two tables and present in
-        the ones above. On this site it is link text, so it is held to 4.5:1 and
-        makes it at 6.37:1. On the studio site the same token is only
-        <code>--drip-color</code>, a decorative graphic that carries no text, and
-        measuring it against a text threshold would report a 2.60:1 failure for a
-        job it was never given. Which threshold applies is a property of the role,
-        not of the name, and the role is allowed to differ between brands.
-      </p>
-      {studioThemes.map((theme) => (
-        <div class={s.theme} style={`--panel: ${theme.ground}; --panel-ink: ${byName(theme.tokens, 'black')!.value};`}>
-          <h3 class={s.themeName}>{theme.label}</h3>
-          <table class={s.table}>
-            <caption class="visually-hidden">Studio {theme.key} text colors with contrast ratios</caption>
-            <thead>
-              <tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">On ground</th><th scope="col">Ratio</th><th scope="col">Grade</th></tr>
-            </thead>
-            <tbody>
-              {theme.ink.map((t) => (
-                <tr>
-                  <th scope="row"><code>--{t.name}</code></th>
-                  <td><code class={s.hex}>{t.value}</code></td>
-                  <td><span class={s.proof} style={`background: ${theme.ground}; color: ${t.value};`}>Aa</span></td>
-                  <td class={s.num}>{fmt(t.ratio)}</td>
-                  <td><span class={`${s.grade} ${t.grade === 'Fail' ? s.gradeFail : ''}`}>{t.grade}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-
-      <p class={s.foot}>
-        Studio values read from <strong>{studioSrc.source.label}</strong>.
-        {studioSrc.source.live
-          ? ' A local build sees the sibling repo and reads it directly.'
-          : ' Netlify checks out one repo, so a deployed build reads the committed snapshot instead. `npm run sync:studio-tokens -- --check` fails if the two have drifted.'}
-        {' '}Needing a snapshot at all is the plainest argument for extracting both
-        palettes into one versioned package, which is the next stage of this work.
-      </p>
-    </section>
-
-    <!-- ── TYPE ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="typeLabel">
-      <span class="page-eyebrow" id="typeLabel">Type</span>
-
-      <div class={s.families}>
-        {families.map((f) => (
-          <div class={s.family}>
-            <span class={s.familySample} style={`font-family: var(--${f.token});`}>{f.sample}</span>
-            <div>
-              <code>--{f.token}</code>
-              <p class={s.foot}>{f.note}</p>
-            </div>
+            </ul>
           </div>
         ))}
       </div>
+      <p class="note">One accent. Tomato is the only color besides ink, and it gets brighter at night so it keeps its contrast.</p>
+    </section>
 
-      <h2 class={s.subhead}>The scale</h2>
-      <p class={s.blurb}>
-        Numbered, not named after a role, because the same rung carries mono
-        metadata and body copy alike and a <code>--fs-body-*</code> / <code>--fs-mono-*</code>
-        split would need two names for one value. In <code>rem</code>, so a reader
-        who has raised their browser font size gets larger type here too; the pixel
-        figure beside each rung is its size at a default 16px root.
-      </p>
-      <ul class={s.rungs}>
-        {scale.map((t) => (
-          <li class={s.rung}>
-            <code class={s.rungName}>--{t.name}</code>
-            <span class={s.rungSpec}>{t.value}</span>
-            <span class={s.rungSample} style={`font-size: ${t.value};`}>Grade the ratio, not the swatch</span>
-            {t.note && <span class={s.rungNote}>{t.note}</span>}
-          </li>
-        ))}
-      </ul>
-
-      <h2 class={s.subhead}>Display sizes</h2>
-      <p class={s.blurb}>
-        These stay role-named rather than numbered, because they fluid-scale and
-        each one belongs to a specific piece of the page rather than to a rung.
-        Resize the window and they move.
-      </p>
-      <ul class={s.rungs}>
-        {display.map((t) => (
-          <li class={s.rung}>
-            <code class={s.rungName}>--{t.name}</code>
-            <span class={s.rungSpec}>{t.value}</span>
-            <span class={s.rungDisplay} style={`font-size: ${t.value};`}>Aa</span>
-          </li>
-        ))}
-      </ul>
-
-      <h2 class={s.subhead}>Tracking</h2>
-      <p class={s.blurb}>Three registers. Display type pulls tight, mono metadata opens up.</p>
-      <ul class={s.rungs}>
-        {tracking.map((t) => (
-          <li class={s.rung}>
-            <code class={s.rungName}>--{t.name}</code>
-            <span class={s.rungSpec}>{t.value}</span>
-            <span
-              class={s.trackSample}
-              style={`letter-spacing: ${t.value}; ${t.name.startsWith('track-meta') ? 'font-family: var(--font-mono); text-transform: uppercase; font-size: var(--fs-150);' : 'font-family: var(--font-display); font-size: var(--fs-600);'}`}
-            >Karen Dettmar</span>
+    <section aria-labelledby="type">
+      <h2 class="h" id="type">Type</h2>
+      <ul class="faces">
+        {faces.map((f) => (
+          <li>
+            <p class={`spec ${f.cls}`} set:html={f.sample} />
+            <p class="face-meta"><span>{f.name}</span><span>{f.role}</span></p>
           </li>
         ))}
       </ul>
     </section>
 
-    <!-- ── SPACE ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="spaceLabel">
-      <span class="page-eyebrow" id="spaceLabel">Space</span>
-      <p class={s.blurb}>
-        A 4px base. These are not an idealized ramp imposed afterwards; they are the
-        values the layouts had already landed on, collected and named.
-      </p>
-      <ul class={s.rungs}>
-        {space.map((t) => (
-          <li class={s.rung}>
-            <code class={s.rungName}>--{t.name}</code>
-            <span class={s.rungSpec}>{t.value}</span>
-            <span class={s.bar} style={`width: ${t.value};`}></span>
+    <section aria-labelledby="motion">
+      <h2 class="h" id="motion">Motion</h2>
+      <ul class="eases">
+        {easings.map((e) => (
+          <li style={`--e:var(${e.token})`}>
+            <span class="track"><span class="dot"></span></span>
+            <span class="ease-name">{e.name}</span>
+            <span class="ease-meta">{e.use}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="note">Hover a row to run it. With reduced motion on, nothing moves.</p>
+    </section>
+
+    <section aria-labelledby="parts">
+      <h2 class="h" id="parts">Parts</h2>
+      <WorkCards items={[
+        { href: '/', title: 'A work card', left: 'Hover it', right: 'Live' },
+        { href: '/projects/tech', title: 'Same card in the Lab', left: 'One component', right: 'Both pages' },
+      ]} />
+      <ul class="rows">
+        {parts.map((p) => (
+          <li>
+            <a class="row-name" href={p.see}>{p.name}</a>
+            <span class="row-what">{p.where}</span>
           </li>
         ))}
       </ul>
     </section>
-
-    <!-- ── LINE ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="lineLabel">
-      <span class="page-eyebrow" id="lineLabel">Line</span>
-      <p class={s.blurb}>
-        The whole site draws exactly two: a hairline and a pill. There is no radius
-        scale, because a scale of radii nobody uses is inventory, not a system.
-      </p>
-      <div class={s.borders}>
-        <div class={s.borderDemo} style="border: var(--hairline);"><code>--hairline</code></div>
-        <div class={s.borderDemo} style="border: var(--hairline); border-radius: var(--radius-pill);"><code>--radius-pill</code></div>
-      </div>
-    </section>
-
-
-    <!-- ── COMPONENTS ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="componentsLabel">
-      <span class="page-eyebrow" id="componentsLabel">Components</span>
-      <p class={s.blurb}>
-        The honest shape of this system is that most of it is classes, not
-        components. Seventeen <code>.astro</code> files exist; the vocabulary that
-        actually holds the site together is a handful of shared class names in
-        <code>global.css</code> that every page reaches for. That is a legitimate
-        answer for a site this size. A component library built ahead of a second
-        consumer is inventory, and the second consumer here is the studio site,
-        which is what the next stage is for.
-      </p>
-
-      <h2 class={s.subhead}>The shared vocabulary</h2>
-      <div class={s.specimens}>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo}><span class="page-eyebrow">Design system</span></div>
-          <code>.page-eyebrow</code>
-          <p class={s.foot}>Mono, uppercase, widest tracking. Labels every section on every page, and is always the accessible name for the section it opens.</p>
-        </div>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo}><span class={s.titleDemo}>Aa <em>Bb</em></span></div>
-          <code>.page-title</code>
-          <p class={s.foot}>Bricolage at <code>--fs-page</code>, optical size pinned to 72. Emphasis is color, not italic, because Bricolage has no true italic and a synthesized one is a slant, not a face.</p>
-        </div>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo}>
-            <a href="/system" class={s.focusDemo}>Focus me with Tab</a>
-          </div>
-          <code>:focus-visible</code>
-          <p class={s.foot}>Two-pixel accent ring, offset so it never sits on the glyphs. Never removed anywhere, and never replaced with an outline of none plus a color change.</p>
-        </div>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo}><span class={s.pillDemo}>A pill</span></div>
-          <code>--radius-pill</code>
-          <p class={s.foot}>The only curve on the site. Everything else is a square corner and a hairline.</p>
-        </div>
-      </div>
-
-      <h2 class={s.subhead}>LoadingState</h2>
-      <p class={s.blurb}>
-        The one genuinely reusable component, in both variants: a stitch for a
-        wait with nothing to report, and a progress form with a skeleton for one
-        that has a message. All three tools use it, which is why the three of them
-        wait in the same voice.
-      </p>
-      <!-- The real component owns aria-live and aria-busy. Two permanently busy
-           live regions on a documentation page would announce nothing useful and
-           never settle, so the demo is hidden from assistive tech and described
-           in the text instead. The semantics belong to the real usage. -->
-      <div class={s.specimens}>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo} aria-hidden="true"><LoadingState /></div>
-          <code>variant="stitch"</code>
-        </div>
-        <div class={s.specimen}>
-          <div class={s.specimenDemo} aria-hidden="true"><LoadingState message="Reading the palette" /></div>
-          <code>variant="progress"</code>
-        </div>
-      </div>
-
-      <h2 class={s.subhead}>ThemeSwitch</h2>
-      <p class={s.blurb}>
-        The safelight, up in the header. It is not duplicated here on purpose: it
-        carries <code>id="themeSwitch"</code> and the layout script binds to that
-        id, so a second copy would be a duplicate id and a control that only half
-        works. A gallery that breaks the thing it documents is worse than a
-        gallery with a gap in it. Use the one in the header.
-      </p>
-
-      <h2 class={s.subhead}>Inventory</h2>
-      <p class={s.blurb}>
-        Counted at build time by scanning the source, not kept by hand, because a
-        hand-kept inventory is a second source of truth about the first one and
-        rots the same way a hand-copied palette does. This page excludes itself
-        from the count, since demonstrating a component is not using one.
-      </p>
-      <table class={s.table}>
-        <caption class="visually-hidden">Every component, with how many files reference it</caption>
-        <thead>
-          <tr><th scope="col">Component</th><th scope="col">Path</th><th scope="col">Referenced by</th></tr>
-        </thead>
-        <tbody>
-          {live.map((c) => (
-            <tr>
-              <th scope="row"><code>{c.name}</code></th>
-              <td><code class={s.hex}>{c.path}</code></td>
-              <td class={s.num}>{c.uses}</td>
-            </tr>
-          ))}
-          {dead.map((c) => (
-            <tr class={s.deadRow}>
-              <th scope="row"><code>{c.name}</code></th>
-              <td><code class={s.hex}>{c.path}</code></td>
-              <td class={s.num}>none</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {dead.length > 0 ? (
-        <p class={s.foot}>
-          {dead.length} of {inventory.length} are unreferenced. They stay in the
-          table rather than being filtered out of it, because an inventory
-          listing only what is still in use is a brochure.
-        </p>
-      ) : (
-        <p class={s.foot}>
-          Every component in the tree is referenced. The count above is scanned
-          rather than maintained, so that either stays true or stops being true
-          in public.
-        </p>
-      )}
-    </section>
-
-
-    <!-- ── MOTION ── -->
-    <section class={`${s.section} reveal`} aria-labelledby="motionLabel">
-      <span class="page-eyebrow" id="motionLabel">Motion</span>
-      <p class={s.blurb}>
-        This is the part of the system that is not a system yet, and the page
-        would be worth less if it pretended otherwise. Color, type, space and
-        line are tokens with one definition each. Motion is a convention held by
-        hand across the stylesheets, and the counts below are scanned from the
-        source at build time for the same reason every other number here is: a
-        claim about consistency should not be the one thing taken on trust.
-      </p>
-
-      <h2 class={s.subhead}>Two curves, and how they are spelled</h2>
-      <div class={s.curves}>
-        {curves.map((c) => (
-          <div class={s.curve}>
-            <svg viewBox="-6 -6 144 144" class={s.curvePlot} role="img" aria-label={`Easing curve ${c.name}`}>
-              <line x1="0" y1="132" x2="132" y2="132" class={s.axis} />
-              <line x1="0" y1="132" x2="0" y2="0" class={s.axis} />
-              <path d={`M 0 132 L 132 0`} class={s.axisDiag} />
-              <path d={c.d} class={s.curveLine} />
-            </svg>
-            <code>{c.name}</code>
-            <p class={s.foot}>{c.use}</p>
-          </div>
-        ))}
-      </div>
-
-      <p class={s.blurb}>
-        There are {easings.length} distinct easing curves in the source, written
-        {' '}{easings.reduce((n, e) => n + e.spellings.length, 0)} different ways.
-        The gap between those two numbers is the whole argument for tokenizing
-        motion: nothing below is a different intention, only a different set of
-        keystrokes, and no search will ever find all of one curve.
-      </p>
-      <table class={s.table}>
-        <caption class="visually-hidden">Easing curves and every spelling of each</caption>
-        <thead>
-          <tr><th scope="col">Curve</th><th scope="col">Uses</th><th scope="col">Spelled as</th></tr>
-        </thead>
-        <tbody>
-          {easings.map((e) => (
-            <tr>
-              <th scope="row"><code>{e.canonical}</code></th>
-              <td class={s.num}>{e.total}</td>
-              <td>
-                {e.spellings.map((sp) => (
-                  <div><code class={s.hex}>{sp.text}</code> <span class={s.num}>×{sp.count}</span></div>
-                ))}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 class={s.subhead}>Durations</h2>
-      <p class={s.blurb}>
-        {durations.length} distinct durations, against eleven rungs of type and
-        eleven of space. The type scale earned its rungs by collecting what the
-        layouts already landed on; the same pass has never been run on time.
-        The ten most used:
-      </p>
-      <ul class={s.rungs}>
-        {durations.slice(0, 10).map((d) => (
-          <li class={s.rung}>
-            <code class={s.rungName}>{d.value}</code>
-            <span class={s.rungSpec}>{d.count} uses</span>
-            <span class={s.bar} style={`width: ${Math.round((d.count / durations[0].count) * 100)}%;`}></span>
-          </li>
-        ))}
-      </ul>
-
-      <h2 class={s.subhead}>Reduced motion</h2>
-      <p class={s.blurb}>
-        One rule, stated in <code>global.css</code>: reduced motion gets the
-        content, not a slower entrance. Nothing is retimed and nothing fades in
-        late. The animation is removed and the thing it was going to reveal is
-        simply there.
-      </p>
-      <p class={s.blurb}>
-        It is honored in {rmSites.length} places, {rmCss.length} in CSS and
-        {' '}{rmJs.length} in script, and it has to be both. A media query cannot
-        reach inside a <code>requestAnimationFrame</code> loop drawing to a
-        canvas, so every loop tests the preference itself, on every frame rather
-        than once at startup, which is why toggling the setting takes effect
-        without a reload.
-      </p>
-      <div class={s.forks}>
-        <div>
-          <h3 class={s.forkHead}>In CSS</h3>
-          <ul class={s.forkList}>
-            {rmCss.map((r) => <li><code>{r.path}</code></li>)}
-          </ul>
-        </div>
-        <div>
-          <h3 class={s.forkHead}>In script</h3>
-          <ul class={s.forkList}>
-            {rmJs.map((r) => <li><code>{r.path}</code></li>)}
-          </ul>
-        </div>
-      </div>
-      <p class={s.foot}>
-        One of those was missing until recently. The textile pattern generator
-        ran three animation loops with no check at all, on the same site as a
-        case study about accessibility. Fixing it was not the one branch it
-        looked like: with no loop running, nothing was left to pick up a state
-        change, so the density slider and the color inputs went dead the moment
-        the motion stopped. Both had always relied on the next frame arriving to
-        render their change. Turning an animation off is rarely one branch, and
-        the control that depended on the loop is the part that breaks quietly.
-      </p>
-    </section>
-
   </div>
+
+  <style>
+    .sys { max-width: 1240px; margin: 0 auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) 120px max(24px, env(safe-area-inset-left, 0px)); }
+    .sys-title { font-family: var(--font-display); font-weight: 400; font-size: clamp(56px, 8vw, 112px); line-height: 1; letter-spacing: -.015em; margin: 0 0 16px; color: var(--black); }
+    .lede { max-width: 46ch; color: var(--text-body); font-size: var(--fs-450); line-height: 1.55; margin: 0 0 24px; }
+    section { margin-top: 88px; }
+    .h { font-family: var(--font-display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1; margin: 0 0 24px; color: var(--black); }
+    .note { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-350); max-width: 60ch; }
+
+    /* color */
+    .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .theme { border: 1px solid; padding: 24px; }
+    .theme-name { font-family: var(--font-display); font-size: 32px; line-height: 1; margin: 0 0 24px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .theme-name span, .sw-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; opacity: .72; }
+    .swatches { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+    .swatches li { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 14px; }
+    .chip { width: 40px; height: 40px; border: 1px solid; }
+    .sw-name { font-size: var(--fs-400); }
+
+    /* type */
+    .faces { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+    .faces li { padding: 28px 0 18px; border-bottom: 1px solid var(--border); }
+    .spec { margin: 0 0 14px; color: var(--black); }
+    .f-serif { font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: var(--track-display); }
+    .f-serif :global(em) { font-style: italic; color: var(--sienna); }
+    .f-body { font-family: var(--font-body); font-size: var(--fs-600); line-height: 1.45; max-width: 40ch; }
+    .f-mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+    .f-black { font-family: var(--font-black); font-size: clamp(56px, 8vw, 96px); line-height: 1; color: var(--sienna); }
+    .face-meta, .row-what, .ease-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .face-meta { margin: 0; display: flex; justify-content: space-between; gap: 16px; }
+    .face-meta span:first-child { color: var(--black); }
+
+    /* motion */
+    .eases { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+    .eases li { display: grid; grid-template-columns: minmax(0, 2fr) 120px minmax(0, 1fr); align-items: center; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .track { position: relative; height: 1px; background: var(--border); }
+    .dot { position: absolute; top: -7px; left: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--sienna); transition: left .9s var(--e); }
+    .eases li:hover .dot { left: calc(100% - 14px); }
+    .ease-name { font-family: var(--font-display); font-size: 28px; line-height: 1; }
+
+    /* parts */
+    .rows { list-style: none; margin: 32px 0 0; padding: 0; border-top: 1px solid var(--border); }
+    .rows li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: baseline; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+    .row-name { font-family: var(--font-display); font-size: 28px; line-height: 1.1; color: var(--black); text-decoration: none; }
+    .row-name:hover { font-style: italic; color: var(--sienna); }
+    .row-name:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
+
+    @media (max-width: 760px) {
+      .sys { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+      .themes { grid-template-columns: 1fr; }
+      .swatches li { grid-template-columns: 40px 1fr; }
+      .sw-meta { grid-column: 2; }
+      .eases li { grid-template-columns: 1fr auto; gap: 10px 16px; }
+      .track { grid-column: 1 / -1; order: 3; }
+      .face-meta { flex-direction: column; gap: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
+  </style>
 </MainLayout>
