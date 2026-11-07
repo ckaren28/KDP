@@ -1,57 +1,67 @@
 /* ── DESIGN TOKENS ──────────────────────────────────────────────
-   Darkroom palette. The landing page is the darkroom itself; the
-   rest of the site is the print seen in daylight, on bone paper in
-   oxblood ink. Dark mode returns to the darkroom, where powder
-   blue takes over as the accent, exactly as it does on the LP.
+   "Taste and a little nerve" (Nov 2026 redesign). Warm linen and ink,
+   one tomato-red accent, and a very dark blue-grey night mode.
+   Token NAMES are inherited from the darkroom system so every page picks
+   up the new palette without being rewritten:
+     --black      ink (text)          --off-white  ground
+     --sienna     accent, text-safe   --accent-loud  decorative accent
+     --tone2      second color (same tomato for now: one accent)
    ─────────────────────────────────────────────────────────────── */
 :root {
-  /* core */
-  --black: #2A0E13;            /* deep warm oxblood-black, body text   */
-  --off-white: #D7E3EE;        /* pale blue ground, the print, in daylight */
-  --warm-white: #C8D8E6;       /* secondary surface                     */
-  --sienna: #6B1621;           /* oxblood, primary accent              */
-  --sienna-light: #8E2A34;
-  --muted: #515C69;            /* dark enough for 10px mono on the blue */
-  --border: rgba(42,14,19,0.17);
+  --black: #18171B;
+  --off-white: #EFE9E1;        /* linen */
+  --warm-white: #E7E0D6;
+  --sienna: #C42D22;           /* tomato, 4.65:1 on linen */
+  --sienna-light: #D2452F;
+  --accent-loud: #C42D22;
+  --tone2: #C42D22;
+  --tone2-flip: #F04A2E;       /* tomato on an ink (inverted) surface */
+  --muted: #5F5A60;
+  --border: rgba(24,23,27,0.14);
 
-  /* the print */
-  --print: #A6C8E8;            /* powder blue                           */
-  --print-lt: #C4DCF2;
+  --print: #F3DCD6;            /* pale tomato */
+  --print-lt: #F8EAE6;
 
-  /* type */
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-body: 'Instrument Sans', system-ui, sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-black: 'UnifrakturMaguntia', 'Old English Text MT', serif;
+  --font-body: 'Geist', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
 
-  /* semantic */
-  --text-body: #3F4A55;
-  --hover-sweep: #3A0810;
-  --on-sweep: #D7E3EE;
-  --placeholder-bg: #BFD1E1;
+  --text-body: #3F3B42;
+  --hover-sweep: #18171B;
+  --on-sweep: #EFE9E1;
+  --placeholder-bg: #E0D9CF;
 
-  --fashion-bg: #D7E3EE;
-  --fashion-bg-dark: #3A0810;
+  --fashion-bg: #EFE9E1;
+  --fashion-bg-dark: #0F1218;
+
+  --ease-snap: cubic-bezier(.34,1.56,.64,1);
+  --ease-slow: cubic-bezier(.22,1,.36,1);
 }
 
-/* ── DARK MODE, back in the darkroom ── */
+/* ── NIGHT ── a very dark blue-grey, never pure black */
 html[data-theme="dark"] {
-  --black: #F2EFE9;
-  --off-white: #3A0810;
-  --warm-white: #4A121C;
-  --sienna: #A6C8E8;           /* powder blue leads in the dark         */
-  --sienna-light: #C4DCF2;
-  --muted: #9A8288;
-  --border: rgba(242,239,233,0.14);
+  --black: #ECE9F0;
+  --off-white: #0F1218;
+  --warm-white: #161B24;
+  --sienna: #F04A2E;
+  --sienna-light: #F46A52;
+  --accent-loud: #F04A2E;
+  --tone2: #F04A2E;
+  --tone2-flip: #C42D22;
+  --muted: #98A0AE;
+  --border: rgba(236,233,240,0.13);
 
-  --print: #A6C8E8;
-  --print-lt: #C4DCF2;
+  --print: #2A2F3B;
+  --print-lt: #343A48;
 
-  --text-body: rgba(242,239,233,0.68);
-  --hover-sweep: #6B1621;
-  --on-sweep: #F2EFE9;
-  --placeholder-bg: #4A121C;
+  --text-body: rgba(236,233,240,0.74);
+  --hover-sweep: #ECE9F0;
+  --on-sweep: #0F1218;
+  --placeholder-bg: #1A202B;
 
-  --fashion-bg: #3A0810;
+  --fashion-bg: #0F1218;
+  color-scheme: dark;
 }
 
 /* ── TYPE SCALE ─────────────────────────────────────────────────
@@ -88,8 +98,8 @@ html[data-theme="dark"] {
 
   /* ── TRACKING ──
      Three registers: display type pulls tight, mono metadata opens up. */
-  --track-display:   -0.038em;
-  --track-tight:     -0.028em;
+  --track-display:   -0.012em;
+  --track-tight:     -0.008em;
   --track-meta:       0.14em;
   --track-meta-wide:  0.24em;
 

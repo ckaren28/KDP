@@ -6,19 +6,6 @@ import '../styles/cv-print.css';
 
 <MainLayout title="CV · Karen Dettmar">
 
-  <!-- The print instance of Bricolage is only referenced inside @media print,
-       so the browser would not begin fetching it until the print dialog is
-       already open. Too late, and the PDF falls back to the variable font it
-       cannot embed. Preloading it means it is in cache when Cmd+P fires. -->
-  <link
-    slot="head"
-    rel="preload"
-    as="font"
-    type="font/woff2"
-    href="/fonts/BricolageGrotesque-print-300.woff2"
-    crossorigin
-  />
-
   <div class={styles['cv-wrapper']}>
 
     <!-- Download button -->

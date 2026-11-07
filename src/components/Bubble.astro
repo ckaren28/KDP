@@ -1,0 +1,52 @@
+---
+// The poppable soap bubble. See src/scripts/bubble.ts for the behavior.
+// Without WebGL (or before the script runs) the slot shows a CSS bubble,
+// so the page is never empty.
+---
+
+<div class="bb" role="button" tabindex="0" aria-label="A soap bubble. Click it three times to pop it.">
+  <div class="bb-fallback" aria-hidden="true"></div>
+  <canvas aria-hidden="true"></canvas>
+  <div class="bb-pop" aria-live="polite"><p>Sorry to burst your <span>bubble</span>.</p></div>
+  <div class="bb-hint">Click · click · click</div>
+</div>
+
+<script>
+  import { initBubble } from '../scripts/bubble';
+  document.querySelectorAll<HTMLElement>('.bb').forEach((el) => initBubble(el));
+</script>
+
+<style>
+  .bb {
+    position: relative;
+    height: clamp(320px, 38vw, 480px);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bb:focus-visible { outline: 2px solid var(--sienna); outline-offset: 4px; }
+  .bb canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .bb-fallback {
+    position: absolute; left: 50%; top: 50%;
+    width: min(70%, 300px); aspect-ratio: 1; height: auto;
+    transform: translate(-50%, -54%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.8), transparent 30%),
+                conic-gradient(from 200deg, #d9cff7, #c9d4ff, #dbeac4, #f3e6cf, #d9cff7);
+    opacity: .5;
+  }
+  :global(.bb-live) .bb-fallback { display: none; }
+  .bb-hint {
+    position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; pointer-events: none;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  }
+  .bb-pop {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center; pointer-events: none;
+    opacity: 0; transform: scale(.92); transition: opacity .35s, transform .6s var(--ease-snap);
+  }
+  :global(.bb-pop.on) { opacity: 1; transform: none; }
+  .bb-pop p { margin: 0; font-family: var(--font-display); font-style: italic; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.05; max-width: 9em; text-wrap: balance; color: var(--black); }
+  .bb-pop span { font-family: var(--font-black); font-style: normal; color: var(--accent-loud); }
+  @media (max-width: 760px) { .bb { height: 300px; } }
+  @media (prefers-reduced-motion: reduce) { .bb-pop { transition: none; } }
+</style>

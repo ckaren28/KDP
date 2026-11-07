@@ -13,18 +13,12 @@
    text layer, so the file stays selectable and ATS-readable.
    ─────────────────────────────────────────────────────────────── */
 
-/* Bricolage keeps its optical-size axis on screen, which means it stays a
-   variable font, and Chrome cannot embed one of those into a PDF, falling
-   back to Type3 glyph procedures. So print alone swaps in a static instance
-   pinned at opsz 30 / wght 300, the only weight the printed CV uses. Same
-   drawing, an embeddable file. */
-@font-face {
-  font-family: 'Bricolage Grotesque Print';
-  src: url('/fonts/BricolageGrotesque-print-300.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
+/* Geist on Google Fonts is a variable font, and Chrome cannot embed one of
+   those in a PDF (it falls back to Type3 glyphs). Print alone swaps in static
+   instances, the same files the cv-tool resume uses. */
+@font-face { font-family: 'Geist Print'; src: url('/fonts/Geist-400.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist Print'; src: url('/fonts/Geist-500.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist Mono Print'; src: url('/fonts/GeistMono-400.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
 
 .cv-print-only { display: none; }
 
@@ -35,27 +29,28 @@
     margin: 14mm 15mm;
   }
 
-  /* Paper is white; the ink stays oxblood. The screen ground (powder
-     blue in daylight, oxblood-black at night) is a lighting condition,
-     not part of the document. Dark mode is overridden too: whoever
-     prints at night should still get a page that reads. */
+  /* Paper is white with the site's ink and tomato, whatever the screen
+     theme: whoever prints at night should still get a page that reads. */
   :root,
   html[data-theme="dark"] {
-    --black: #2A0E13;
+    --black: #18171B;
     --off-white: #FFFFFF;
     --warm-white: #FFFFFF;
-    --sienna: #6B1621;
-    --sienna-light: #8E2A34;
-    --muted: #55606D;
-    --border: rgba(42, 14, 19, 0.28);
-    --text-body: #33404C;
-    /* the static instance, so the PDF gets a real embedded font */
-    --font-display: 'Bricolage Grotesque Print', 'Bricolage Grotesque', system-ui, sans-serif;
+    --sienna: #C42D22;
+    --sienna-light: #D2452F;
+    --muted: #5F5A60;
+    --border: rgba(24, 23, 27, 0.2);
+    --text-body: #2E2C32;
+    --font-body: 'Geist Print', 'Geist', system-ui, sans-serif;
+    --font-mono: 'Geist Mono Print', 'Geist Mono', ui-monospace, monospace;
   }
+
+  /* the dark theme sets color-scheme: dark, which paints the sheet margins */
+  :root { color-scheme: light !important; }
 
   html, body {
     background: #FFFFFF !important;
-    color: #2A0E13;
+    color: #18171B;
     /* the accent is meaning here, not decoration, so carry it into the file */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

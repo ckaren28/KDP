@@ -8,7 +8,7 @@
   max-width: 900px;
   margin: 0 auto;
   /* matches .page-container's rhythm; narrower only for the text measure */
-  padding: 140px 48px 100px;
+  padding: 48px 48px 100px;
 }
 
 .about-header {
@@ -193,7 +193,7 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .about-wrapper { padding: 100px 24px 72px; }
+  .about-wrapper { padding: 32px 24px 72px; }
   .section { margin-top: 64px; }
   .bio .bio-lead { font-size: var(--fs-500); }
 
