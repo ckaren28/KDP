@@ -65,8 +65,29 @@ const { title, theme = 'light' } = Astro.props;
       // No choice yet: follow the visitor's system setting (night browsing is
       // the reason dark mode exists). pageTheme is only a fallback.
       var sys = null;
-      try { sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) {}
-      var t = stored || carried || sys || pageTheme;
+      try {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) sys = 'dark';
+        else if (window.matchMedia('(prefers-color-scheme: light)').matches) sys = 'light';
+      } catch (e) {}
+      // No system signal at all: dark after sunset in New York, light after
+      // sunrise. Worked out in UTC, so it is Karen's sky wherever the visitor is.
+      function nycSky() {
+        var now = new Date(), rad = Math.PI / 180, lat = 40.7128, lng = -74.006;
+        var day = (Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 864e5;
+        var g = 2 * Math.PI / 365 * (day - 1);
+        var decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g);
+        var eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+        var ha = Math.acos(Math.cos(90.833 * rad) / (Math.cos(lat * rad) * Math.cos(decl)) - Math.tan(lat * rad) * Math.tan(decl)) / rad;
+        var rise = 720 - 4 * (lng + ha) - eqt, set = 720 - 4 * (lng - ha) - eqt; // minutes after UTC midnight
+        var m = now.getUTCHours() * 60 + now.getUTCMinutes();
+        // NYC sunset falls after UTC midnight, so the daylight window wraps
+        rise = (rise + 1440) % 1440; set = (set + 1440) % 1440;
+        var light = rise < set ? (m >= rise && m < set) : (m >= rise || m < set);
+        return light ? 'light' : 'dark';
+      }
+      var sky = null;
+      if (!stored && !carried && !sys) { try { sky = nycSky(); } catch (e) {} }
+      var t = stored || carried || sys || sky || pageTheme;
       document.documentElement.setAttribute('data-theme', t);
       try { sessionStorage.setItem('theme', t); } catch (e) {}
     })();

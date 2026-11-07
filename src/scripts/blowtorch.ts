@@ -90,39 +90,91 @@ export function renderBlowtorch(size = 800): Render | null {
   return { canvas, tip, dir: { x: (tip.x - back.x) / len, y: (tip.y - back.y) / len } };
 }
 
-/** Blow a short burst of blue flame from a point, in the given direction. */
+/**
+ * A real torch flame: a tapered cone pointing out of the nozzle, with a
+ * bright blue-white inner core, a translucent blue-violet outer jacket and a
+ * faint warm tip. It lights, flickers while it holds, then cuts out.
+ * Several clicks share one animation loop, so flames never wipe each other.
+ */
+interface Burn { x: number; y: number; ang: number; s: number; t0: number }
+const burns: Burn[] = [];
+let running = false;
+const LIFE = 1.5; // seconds a flame burns
+
 export function flame(layer: HTMLCanvasElement, x: number, y: number, dir: { x: number; y: number }, scale = 1) {
+  burns.push({ x, y, ang: Math.atan2(dir.y, dir.x), s: scale, t0: performance.now() });
+  if (running) return;
+  running = true;
   const ctx = layer.getContext('2d')!;
-  const DPR = Math.min(devicePixelRatio || 1, 2);
-  const parts = Array.from({ length: 70 }, (_, i) => {
-    const spread = (Math.random() - 0.5) * 0.35;
-    const c = Math.cos(spread), s = Math.sin(spread);
-    const dx = dir.x * c - dir.y * s, dy = dir.x * s + dir.y * c;
-    const speed = (180 + Math.random() * 260) * scale;
-    return { x, y, vx: dx * speed, vy: dy * speed, life: 1, delay: i * 0.012, r: (6 + Math.random() * 9) * scale };
-  });
-  let last = performance.now();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // one cone: base half-width w0 at the nozzle, swelling to w at ~35%, closing to a point at L
+  const cone = (L: number, w0: number, w: number, wob: number) => {
+    ctx.beginPath();
+    ctx.moveTo(0, -w0);
+    ctx.bezierCurveTo(L * 0.18, -w * 1.05, L * 0.55, -w * 0.8 + wob, L, wob * 0.6);
+    ctx.bezierCurveTo(L * 0.55, w * 0.8 + wob, L * 0.18, w * 1.05, 0, w0);
+    ctx.closePath();
+  };
+
   const run = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const DPR = layer.width / (layer.clientWidth || layer.width);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, layer.width, layer.height);
-    let alive = false;
-    for (const p of parts) {
-      if (p.delay > 0) { p.delay -= dt; alive = true; continue; }
-      p.life -= dt * 1.6;
-      if (p.life <= 0) continue;
-      alive = true;
-      p.x += p.vx * dt; p.y += p.vy * dt;
-      p.vy -= 60 * dt * scale; // hot air rises
-      const r = p.r * (1.6 - p.life) * DPR;
-      const g = ctx.createRadialGradient(p.x * DPR, p.y * DPR, 0, p.x * DPR, p.y * DPR, r);
-      // a blowtorch flame is blue at the core, violet at the edge
-      g.addColorStop(0, `rgba(170,200,255,${0.9 * p.life})`);
-      g.addColorStop(0.45, `rgba(110,120,255,${0.55 * p.life})`);
-      g.addColorStop(1, 'rgba(120,80,230,0)');
+    for (let i = burns.length - 1; i >= 0; i--) {
+      const b = burns[i];
+      const t = (now - b.t0) / 1000;
+      if (t > LIFE) { burns.splice(i, 1); continue; }
+      // ignite fast, hold, cut out
+      const k = Math.min(1, t / 0.12) * (t > LIFE - 0.25 ? (LIFE - t) / 0.25 : 1);
+      const f = reduced ? 0 : Math.sin(now / 37) * 0.5 + Math.sin(now / 23 + 1.3) * 0.35 + Math.sin(now / 71) * 0.3;
+      const L = (95 + f * 9) * b.s * k;
+      const W = (19 + f * 2) * b.s * Math.max(0.35, k);
+      const wob = f * 3 * b.s;
+
+      ctx.setTransform(DPR, 0, 0, DPR, b.x * DPR, b.y * DPR);
+      ctx.rotate(b.ang);
+
+      // outer jacket: pale blue fading to violet, then to nothing
+      let g = ctx.createLinearGradient(0, 0, L * 1.05, 0);
+      g.addColorStop(0, 'rgba(70,110,255,0.75)');
+      g.addColorStop(0.45, 'rgba(110,105,255,0.45)');
+      g.addColorStop(0.8, 'rgba(170,110,230,0.18)');
+      g.addColorStop(1, 'rgba(255,170,120,0)');
       ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(p.x * DPR, p.y * DPR, r, 0, Math.PI * 2); ctx.fill();
+      cone(L, W * 0.35, W, wob);
+      ctx.fill();
+
+      // a faint warm lick at the end of the jacket
+      g = ctx.createLinearGradient(L * 0.55, 0, L * 1.1, 0);
+      g.addColorStop(0, 'rgba(255,150,90,0)');
+      g.addColorStop(0.6, 'rgba(255,150,90,0.22)');
+      g.addColorStop(1, 'rgba(255,150,90,0)');
+      ctx.fillStyle = g;
+      cone(L * 1.08, W * 0.2, W * 0.55, wob * 1.4);
+      ctx.fill();
+
+      // inner core: the sharp blue-white cone
+      const Lc = L * 0.38;
+      g = ctx.createLinearGradient(0, 0, Lc, 0);
+      g.addColorStop(0, 'rgba(235,245,255,0.98)');
+      g.addColorStop(0.5, 'rgba(120,180,255,0.95)');
+      g.addColorStop(1, 'rgba(40,90,255,0.6)');
+      ctx.fillStyle = g;
+      cone(Lc, W * 0.28, W * 0.42, wob * 0.2);
+      ctx.fill();
+
+      // a soft glow at the nozzle
+      const r = W * 1.4;
+      g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+      g.addColorStop(0, 'rgba(150,190,255,0.45)');
+      g.addColorStop(1, 'rgba(150,190,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(-r, -r, r * 2, r * 2);
     }
-    if (alive) requestAnimationFrame(run); else ctx.clearRect(0, 0, layer.width, layer.height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (burns.length) requestAnimationFrame(run);
+    else { ctx.clearRect(0, 0, layer.width, layer.height); running = false; }
   };
   requestAnimationFrame(run);
 }
