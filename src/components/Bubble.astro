@@ -48,5 +48,7 @@
   .bb-pop p { margin: 0; font-family: var(--font-display); font-style: italic; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.05; max-width: 9em; text-wrap: balance; color: var(--black); }
   .bb-pop span { font-family: var(--font-black); font-style: normal; color: var(--accent-loud); }
   @media (max-width: 760px) { .bb { height: 300px; } }
+  /* phones: keep the work close to the top of the page */
+  @media (max-width: 600px) { .bb { height: 200px; margin-top: -8px; } }
   @media (prefers-reduced-motion: reduce) { .bb-pop { transition: none; } }
 </style>

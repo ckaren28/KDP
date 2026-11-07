@@ -29,8 +29,11 @@ const STRENGTH = 0.16; // how much one pass develops
 export interface DevelopHandle {
   /** Where asset i sits, in px relative to the container (null until its source exists). */
   box(i: number): { x: number; y: number; w: number; h: number } | null;
-  /** Develop asset i a little, as a hint that something is there. */
+  /** Develop asset i faintly, once, as a hint that something is there. */
   hint(i: number): void;
+  /** Draw asset i shifted by dx/dy px and turned by rot radians about its top
+      center (where the gloves hang from). All zero puts it back. */
+  move(i: number, dx: number, dy: number, rot: number): void;
 }
 
 export function initDevelop(container: HTMLElement, assets: DevelopAsset[]): DevelopHandle {
@@ -101,13 +104,30 @@ export function initDevelop(container: HTMLElement, assets: DevelopAsset[]): Dev
     return { x: a.x * W - w / 2, y: a.top * (W < 760 ? 0.9 : 1), w, h: w * ratio };
   }
 
+  // each asset's print, made once per layout; compose() lays them down, so one
+  // can move (the gloves bounce) without redoing the pixel work for the rest
+  let printed: (HTMLCanvasElement | null)[] = [];
+  const offsets = assets.map(() => ({ dx: 0, dy: 0, rot: 0 }));
   function rebuildPrint() {
+    printed = assets.map((a, i) => {
+      const src = sources[i];
+      if (!src) return null;
+      const p = placed(a, src);
+      return toPrint(src, p.w, p.h);
+    });
+    compose();
+  }
+  function compose() {
     pctx.clearRect(0, 0, print.width, print.height);
     assets.forEach((a, i) => {
-      const src = sources[i];
-      if (!src) return;
-      const p = placed(a, src);
-      pctx.drawImage(toPrint(src, p.w, p.h), p.x * DPR, p.y * DPR);
+      const src = sources[i], pr = printed[i];
+      if (!src || !pr) return;
+      const p = placed(a, src), o = offsets[i];
+      pctx.save();
+      pctx.translate((p.x + p.w / 2 + o.dx) * DPR, (p.y + o.dy) * DPR);
+      pctx.rotate(o.rot);
+      pctx.drawImage(pr, -(p.w / 2) * DPR, 0);
+      pctx.restore();
     });
     dirty = true;
   }
@@ -176,23 +196,30 @@ export function initDevelop(container: HTMLElement, assets: DevelopAsset[]): Dev
     const src = sources[i];
     return src ? placed(assets[i], src) : null;
   };
+  const hinted = new Set<number>();
   return {
     box,
+    move(i, dx, dy, rot) {
+      offsets[i] = { dx, dy, rot };
+      compose();
+    },
     hint(i) {
       const b = box(i);
-      if (!b) return;
-      // a soft, partial exposure over the whole print: enough to see a shape
+      if (!b || hinted.has(i)) return;
+      hinted.add(i);
+      // a faint ghost of the print, once: enough to know it is there, not what
+      // it is. Moving the cursor over it does the rest.
       let n = 0;
       const step = () => {
         const grd = mctx.createRadialGradient(
           (b.x + b.w / 2) * DPR, (b.y + b.h / 2) * DPR, 0,
           (b.x + b.w / 2) * DPR, (b.y + b.h / 2) * DPR, Math.max(b.w, b.h) * 0.62 * DPR);
-        grd.addColorStop(0, 'rgba(0,0,0,0.05)');
+        grd.addColorStop(0, 'rgba(0,0,0,0.035)');
         grd.addColorStop(1, 'rgba(0,0,0,0)');
         mctx.fillStyle = grd;
         mctx.fillRect(b.x * DPR, b.y * DPR, b.w * DPR, b.h * DPR);
         dirty = true;
-        if (++n < 6) requestAnimationFrame(step);
+        if (++n < 3) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
     },

@@ -1,7 +1,9 @@
 ---
 // About (Nov 2026 redesign). Hidden prints are spread across the whole page
 // background and develop where the cursor has been (src/scripts/develop.ts).
-// First print: a pair of boxing gloves modeled in three.js (Muay Thai).
+// Prints: gloves (MMA), a blowtorch (cheffing it up) and a crayon (sketching),
+// all modeled in three.js. The hobby words are tomato; hovering one gives a
+// faint, one-time hint of its print, and the cursor does the rest.
 import MainLayout from '../../layouts/MainLayout.astro';
 import styles from './about.module.css';
 import { SITE_TITLE } from '../../consts';
@@ -35,7 +37,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
 
     <div class={s['bio']}>
       <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code. Building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
-      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are more tactile-based, including sketching, <span class="hint-word" data-hint="1">cheffing it up</span> and <span class="hint-word" data-hint="0">Muay Thai</span>. I wish there was more time in the day.</p>
+      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are more tactile-based, including <span class="hint-word" data-hint="2">sketching</span>, <span class="hint-word" data-hint="1">cheffing it up</span> and <span class="hint-word" data-hint="0">MMA</span>. I wish there was more time in the day.</p>
     </div>
 
     <section class={s['section']} aria-labelledby="disciplinesLabel">
@@ -73,6 +75,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     </section>
   </div>
   <p class="ab-hint" aria-hidden="true">Move around. Things develop.</p>
+  <canvas class="ink-layer" id="inkLayer" aria-hidden="true"></canvas>
   <canvas class="fx-layer" id="fxLayer" aria-hidden="true"></canvas>
   </div>
 
@@ -80,47 +83,167 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     import { initDevelop } from '../../scripts/develop';
     import { renderGloves } from '../../scripts/gloves';
     import { renderBlowtorch, flame } from '../../scripts/blowtorch';
+    import { renderCrayon } from '../../scripts/crayon';
     const page = document.getElementById('abPage');
     if (page) {
       let gloves: HTMLCanvasElement | null | undefined;
       let torch: ReturnType<typeof renderBlowtorch> | undefined;
+      let crayon: ReturnType<typeof renderCrayon> | undefined;
+      const getCrayon = () => (crayon === undefined ? (crayon = renderCrayon(800)) : crayon);
       const getTorch = () => (torch === undefined ? (torch = renderBlowtorch(800)) : torch);
       // On phones the prints would sit on the text, so they move to the open
       // strip above the "Move around" line, side by side.
       const hintEl = page.querySelector<HTMLElement>('.ab-hint');
-      const onPhone = (x: number) => (hintEl ? { x, top: hintEl.offsetTop + parseFloat(getComputedStyle(hintEl).paddingTop) - 145, width: 130 } : null);
-      // 0: gloves (Muay Thai), 1: blowtorch (cheffing it up)
+      const onPhone = (x: number) => (hintEl ? { x, top: hintEl.offsetTop + parseFloat(getComputedStyle(hintEl).paddingTop) - 125, width: 110 } : null);
+      // 0: gloves (MMA), 1: blowtorch (cheffing it up), 2: crayon (sketching)
       const dev = initDevelop(page, [
-        { source: () => (gloves === undefined ? (gloves = renderGloves(900)) : gloves), x: 0.85, top: 150, width: 230, narrow: () => onPhone(0.7) },
-        { source: () => getTorch()?.canvas ?? null, x: 0.11, top: 470, width: 190, narrow: () => onPhone(0.3) },
+        { source: () => (gloves === undefined ? (gloves = renderGloves(900)) : gloves), x: 0.85, top: 150, width: 230, narrow: () => onPhone(0.82) },
+        { source: () => getTorch()?.canvas ?? null, x: 0.89, top: 560, width: 190, narrow: () => onPhone(0.18) },
+        { source: () => getCrayon()?.canvas ?? null, x: 0.11, top: 520, width: 160, narrow: () => onPhone(0.5) },
       ]);
 
       // hovering a hobby word hints its print
       page.querySelectorAll<HTMLElement>('.hint-word').forEach((w) =>
         w.addEventListener('mouseenter', () => dev.hint(Number(w.dataset.hint))));
 
-      // the blowtorch: click it and fire blows out of the nozzle
+      // click a print: the torch fires, the gloves bounce, the crayon draws a moon
       const fx = document.getElementById('fxLayer') as HTMLCanvasElement;
-      const sizeFx = () => {
+      const ink = document.getElementById('inkLayer') as HTMLCanvasElement;
+      const sizeLayers = () => {
         const DPR = Math.min(devicePixelRatio || 1, 2);
-        fx.width = Math.round(page.offsetWidth * DPR); fx.height = Math.round(page.scrollHeight * DPR);
-        fx.style.width = page.offsetWidth + 'px'; fx.style.height = page.scrollHeight + 'px';
+        for (const c of [fx, ink]) {
+          // the ink layer keeps its squiggles across a resize
+          const keep = c === ink && c.width ? (() => { const k = document.createElement('canvas'); k.width = c.width; k.height = c.height; k.getContext('2d')!.drawImage(c, 0, 0); return k; })() : null;
+          c.width = Math.round(page.offsetWidth * DPR); c.height = Math.round(page.scrollHeight * DPR);
+          c.style.width = page.offsetWidth + 'px'; c.style.height = page.scrollHeight + 'px';
+          if (keep) c.getContext('2d')!.drawImage(keep, 0, 0);
+        }
       };
-      new ResizeObserver(sizeFx).observe(page); sizeFx();
+      new ResizeObserver(sizeLayers).observe(page); sizeLayers();
       const local = (e: MouseEvent) => { const r = page.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
-      const onTorch = (x: number, y: number) => {
-        const b = dev.box(1);
+      const GLOVES = 0, TORCH = 1, CRAYON = 2;
+      const hit = (x: number, y: number) => [GLOVES, TORCH, CRAYON].find((i) => {
+        const b = dev.box(i);
         return b && x > b.x + b.w * 0.15 && x < b.x + b.w * 0.85 && y > b.y + b.h * 0.1 && y < b.y + b.h * 0.95;
-      };
+      });
       page.addEventListener('pointermove', (e) => {
         const p = local(e);
-        page.classList.toggle('on-torch', !!onTorch(p.x, p.y) && !(e.target as HTMLElement).closest('a, button'));
+        page.classList.toggle('on-print', hit(p.x, p.y) !== undefined && !(e.target as HTMLElement).closest('a, button'));
       });
+
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let bouncing = false;
+      const bounce = () => {
+        if (reduced || bouncing) return;
+        bouncing = true;
+        const t0 = performance.now();
+        const step = (now: number) => {
+          const t = (now - t0) / 1000;
+          if (t > 1.3) { dev.move(GLOVES, 0, 0, 0); bouncing = false; return; }
+          // a hop that settles, and a small swing on the laces
+          dev.move(GLOVES, 0, -9 * Math.exp(-4.5 * t) * Math.abs(Math.sin(t * 13)), 0.06 * Math.exp(-3.5 * t) * Math.sin(t * 9));
+          requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+
+      // the crayon's point traces a small crescent moon (opening left, away
+      // from the crayon); the path ends where it began, then the crayon drops
+      // a few px and stays. The moon stays too.
+      const moonPath = (R: number) => {
+        const pts: { x: number; y: number }[] = [];
+        const rad = (d: number) => (d * Math.PI) / 180;
+        // outer edge: 120° round the right side to -120° (y up, flipped below)
+        for (let i = 0; i <= 48; i++) { const a = rad(120 - (240 * i) / 48); pts.push({ x: R * Math.cos(a), y: -R * Math.sin(a) }); }
+        // inner edge: a circle shifted left that meets the outer one at both horns
+        const cx = -0.55 * R, r = Math.hypot(0.05 * R, 0.866 * R), e = Math.atan2(0.866, 0.05);
+        for (let i = 1; i <= 36; i++) { const a = -e + (2 * e * i) / 36; pts.push({ x: cx + r * Math.cos(a), y: -r * Math.sin(a) }); }
+        const p0 = pts[0];
+        return pts.map((p) => ({ x: p.x - p0.x, y: p.y - p0.y }));
+      };
+      // a crayon stroke: a few thin strands side by side that skip in places,
+      // then tiny gaps punched out along it like wax on textured paper
+      const waxSegment = (ctx: CanvasRenderingContext2D, a: { x: number; y: number }, b: { x: number; y: number }, s: number) => {
+        const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+        const nx = -(b.y - a.y) / len, ny = (b.x - a.x) / len; // across the stroke
+        for (let k = 0; k < 5; k++) {
+          if (Math.random() < 0.18) continue; // the wax skips
+          const off = (k / 4 - 0.5) * 2.4 * s + (Math.random() - 0.5) * 0.5 * s;
+          ctx.globalAlpha = 0.16 + Math.random() * 0.14;
+          ctx.lineWidth = (0.55 + Math.random() * 0.45) * s;
+          ctx.beginPath();
+          ctx.moveTo(a.x + nx * off, a.y + ny * off);
+          ctx.lineTo(b.x + nx * off, b.y + ny * off);
+          ctx.stroke();
+        }
+        // paper grain: knock a few specks out of what was just laid down
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 0.7;
+        for (let k = 0; k < 3; k++) {
+          const t = Math.random(), o = (Math.random() - 0.5) * 2.6 * s;
+          ctx.fillRect(a.x + (b.x - a.x) * t + nx * o, a.y + (b.y - a.y) * t + ny * o, 0.6 * s, 0.6 * s);
+        }
+        ctx.restore();
+      };
+
+      // after a moon the crayon rests a few px lower and stays there
+      const SETTLE = 6;
+      let drawing = false, restY = 0;
+      const drawMoon = (x0: number, y0: number, s: number) => {
+        if (drawing) return;
+        drawing = true;
+        const ctx = ink.getContext('2d')!;
+        const DPR = ink.width / (ink.clientWidth || ink.width);
+        const color = getComputedStyle(document.documentElement).getPropertyValue('--sienna').trim();
+        // one moon at a time, so a second click doesn't darken it
+        ctx.clearRect(0, 0, ink.width, ink.height);
+        const by = restY; // the tip starts wherever the crayon is resting
+        const pts = moonPath(13 * s);
+        const DRAW = 1.1, DROP = 0.35;
+        let drawn = 0;
+        const t0 = performance.now();
+        const step = (now: number) => {
+          const t = reduced ? DRAW + DROP : (now - t0) / 1000;
+          if (t <= DRAW || drawn < pts.length) {
+            const upto = Math.min(pts.length - 1, Math.round((Math.min(t, DRAW) / DRAW) * (pts.length - 1)));
+            ctx.save();
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineCap = 'round';
+            for (let i = Math.max(1, drawn); i <= upto; i++) {
+              waxSegment(ctx, { x: x0 + pts[i - 1].x, y: y0 + by + pts[i - 1].y }, { x: x0 + pts[i].x, y: y0 + by + pts[i].y }, s);
+            }
+            ctx.restore();
+            drawn = upto + 1;
+            dev.move(CRAYON, pts[upto].x, by + pts[upto].y, 0);
+          } else if (t <= DRAW + DROP) {
+            const k = 1 - Math.pow(1 - (t - DRAW) / DROP, 2);
+            dev.move(CRAYON, 0, by + (SETTLE - by) * k, 0);
+          } else {
+            restY = SETTLE;
+            dev.move(CRAYON, 0, SETTLE, 0);
+            drawing = false;
+            return;
+          }
+          requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+
       page.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('a, button')) return;
-        const p = local(e), b = dev.box(1), t = getTorch();
-        if (!b || !t || !onTorch(p.x, p.y)) return;
-        flame(fx, b.x + t.tip.x * b.w, b.y + t.tip.y * b.h, t.dir, b.w / 190);
+        const p = local(e), i = hit(p.x, p.y);
+        if (i === undefined) return;
+        const b = dev.box(i)!;
+        if (i === TORCH) {
+          const t = getTorch();
+          if (t) flame(fx, b.x + t.tip.x * b.w, b.y + t.tip.y * b.h, t.dir, b.w / 190);
+        } else if (i === GLOVES) {
+          bounce();
+        } else {
+          const c = getCrayon();
+          if (c) drawMoon(b.x + c.tip.x * b.w, b.y + c.tip.y * b.h, b.w / 160);
+        }
       });
     }
   </script>
@@ -129,10 +252,11 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     .ab-page { position: relative; isolation: isolate; }
     .ab-page :global(.develop-layer) { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; }
     .fx-layer { position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; }
-    :global(.ab-page.on-torch) { cursor: pointer; }
-    /* hobby words look like plain text; hovering only warms them to the accent while their print develops */
-    .ab-page :global(.hint-word) { transition: color .4s var(--ease-slow); }
-    .ab-page :global(.hint-word:hover) { color: var(--sienna); }
+    /* crayon lines sit under the prints, so the crayon stays on top of its line */
+    .ink-layer { position: absolute; left: 0; top: 0; z-index: -2; pointer-events: none; }
+    :global(.ab-page.on-print) { cursor: pointer; }
+    /* hobby words sit in the contrast color; hovering one faintly hints its print */
+    .ab-page :global(.hint-word) { color: var(--sienna); }
     .ab-hint {
       text-align: center; margin: 0; padding: 8px 0 64px;
     }
