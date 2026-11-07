@@ -34,8 +34,8 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     </header>
 
     <div class={s['bio']}>
-      <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code: building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
-      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are <span class="hint-word" data-hint="1">cooking</span> and <span class="hint-word" data-hint="0">Muay Thai</span>. There's only so much time in a day!</p>
+      <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code. Building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
+      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are more tactile-based, including sketching, <span class="hint-word" data-hint="1">cheffing it up</span> and <span class="hint-word" data-hint="0">Muay Thai</span>. I wish there was more time in the day.</p>
     </div>
 
     <section class={s['section']} aria-labelledby="disciplinesLabel">
@@ -87,7 +87,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
       const getTorch = () => (torch === undefined ? (torch = renderBlowtorch(800)) : torch);
       // 0: gloves (Muay Thai), 1: blowtorch (cooking)
       const dev = initDevelop(page, [
-        { source: () => (gloves === undefined ? (gloves = renderGloves(900)) : gloves), x: 0.84, top: 150, width: 300 },
+        { source: () => (gloves === undefined ? (gloves = renderGloves(900)) : gloves), x: 0.85, top: 150, width: 230 },
         { source: () => getTorch()?.canvas ?? null, x: 0.11, top: 470, width: 190 },
       ]);
 
