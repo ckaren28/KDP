@@ -1,5 +1,5 @@
 ---
-// Nov 2026 redesign: name in the display serif, a live New York clock, and a
+// Nov 2026 redesign: name in the display serif and a
 // plain-text Dark / Light switch. Below 640px the links fold into a Menu.
 const links = [
   { href: '/#work', label: 'Work' },
@@ -11,7 +11,6 @@ const links = [
 
 <header class="hd">
   <a href="/" class="hd-name" aria-label="Karen Dettmar, home">Karen Dettmar</a>
-  <span class="hd-clock" id="hdClock" aria-hidden="true">New York</span>
   <button type="button" class="hd-menu" id="hdMenu" aria-expanded="false" aria-controls="hdNav">Menu</button>
   <nav aria-label="Primary" id="hdNav">
     <ul>
@@ -23,13 +22,6 @@ const links = [
 
 <script>
   import { applyTheme, currentTheme } from '../../scripts/theme';
-
-  const clock = document.getElementById('hdClock');
-  if (clock) {
-    const fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
-    const tick = () => { clock.textContent = 'New York · ' + fmt.format(new Date()); };
-    tick(); setInterval(tick, 15000);
-  }
 
   const themeBtn = document.getElementById('hdTheme');
   if (themeBtn) {
@@ -73,13 +65,12 @@ const links = [
     text-decoration: none;
   }
   .hd-name:hover { font-style: italic; }
-  .hd-clock, .hd nav a, .hd-theme, .hd-menu {
+  .hd nav a, .hd-theme, .hd-menu {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: .04em;
     text-transform: uppercase;
   }
-  .hd-clock { color: var(--muted); }
   .hd ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; align-items: baseline; }
   .hd nav a { color: var(--black); text-decoration: none; }
   .hd nav a:hover, .hd-theme:hover { color: var(--sienna); }
@@ -89,7 +80,6 @@ const links = [
 
   @media (max-width: 640px) {
     .hd { align-items: center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-    .hd-clock { display: none; }
     .hd-menu { display: inline; }
     .hd nav { display: none; position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(100% + 4px); padding: 18px 22px; background: var(--off-white); border: 1px solid var(--black); }
     .hd nav.open { display: block; }

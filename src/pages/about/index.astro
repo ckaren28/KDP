@@ -37,7 +37,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
 
     <div class={s['bio']}>
       <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code. Building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
-      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current fixations are more tactile-based, including <span class="hint-word" data-hint="2">sketching</span>, <span class="hint-word" data-hint="1">cheffing it up</span> and <span class="hint-word" data-hint="0">MMA</span>. I wish there was more time in the day.</p>
+      <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current obsessions lately are tactile-based, including <span class="hint-word" data-hint="2" data-skill="visual craft" tabindex="0">sketching</span>, <span class="hint-word" data-hint="1" data-skill="organization" tabindex="0">cheffing it up</span> and <span class="hint-word" data-hint="0" data-skill="strategy" tabindex="0">MMA</span>. I wish there was more time in the day.</p>
     </div>
 
     <section class={s['section']} aria-labelledby="disciplinesLabel">
@@ -74,7 +74,6 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
       </ul>
     </section>
   </div>
-  <p class="ab-hint" aria-hidden="true">Move around. Things develop.</p>
   <canvas class="ink-layer" id="inkLayer" aria-hidden="true"></canvas>
   <canvas class="fx-layer" id="fxLayer" aria-hidden="true"></canvas>
   </div>
@@ -103,8 +102,18 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
       ]);
 
       // hovering a hobby word hints its print
-      page.querySelectorAll<HTMLElement>('.hint-word').forEach((w) =>
-        w.addEventListener('mouseenter', () => dev.hint(Number(w.dataset.hint))));
+      page.querySelectorAll<HTMLElement>('.hint-word').forEach((w) => {
+        // hovering swaps the hobby for the skill it trains; leaving swaps it back
+        const word = w.textContent ?? '';
+        const swap = (on: boolean) => { w.textContent = on ? (w.dataset.skill ?? word) : word; w.classList.toggle('show', on); };
+        w.addEventListener('mouseenter', () => { swap(true); dev.hint(Number(w.dataset.hint)); });
+        w.addEventListener('mouseleave', () => swap(false));
+        w.addEventListener('focus', () => swap(true));
+        w.addEventListener('blur', () => swap(false));
+        // phones: a tap toggles it
+        w.addEventListener('click', () => { if (matchMedia('(hover: none)').matches) { swap(!w.classList.contains('show')); dev.hint(Number(w.dataset.hint)); } });
+      });
+
 
       // click a print: the torch fires, the gloves bounce, the crayon draws a moon
       const fx = document.getElementById('fxLayer') as HTMLCanvasElement;
@@ -256,15 +265,10 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     .ink-layer { position: absolute; left: 0; top: 0; z-index: -2; pointer-events: none; }
     :global(.ab-page.on-print) { cursor: pointer; }
     /* hobby words sit in the contrast color; hovering one faintly hints its print */
-    .ab-page :global(.hint-word) { color: var(--sienna); }
-    .ab-hint {
-      text-align: center; margin: 0; padding: 8px 0 64px;
-    }
+    .ab-page :global(.hint-word) { color: var(--sienna); position: relative; cursor: default; }
+    .ab-page :global(.hint-word.show) { font-style: italic; }
+    .ab-page :global(.hint-word:focus-visible) { outline: 1px dotted var(--sienna); outline-offset: 2px; }
     /* phones: room after the hobbies paragraph for the prints */
     @media (max-width: 759px) { :global(.ab-page p:has(.hint-word)) { margin-bottom: 150px; } }
-    .ab-hint {
-      font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--muted);
-    }
-    @media (hover: none) { .ab-hint { display: none; } }
   </style>
 </MainLayout>
