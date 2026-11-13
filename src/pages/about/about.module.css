@@ -89,10 +89,10 @@
 }
 
 .row-key {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(20px, 2.4vw, 28px);
-  font-weight: 600;
-  letter-spacing: -0.032em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.15;
   color: var(--black);
 }
@@ -118,19 +118,16 @@
   font-family: var(--font-mono);
   font-size: var(--fs-150);
   font-weight: 400;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--muted);
   transition: color 0.3s ease;
 }
 
 .row--link .row-val {
-  /* Bricolage has no true italic, so the old slant here was synthesized */
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-style: normal;
   font-size: clamp(18px, 2.2vw, 24px);
-  font-weight: 600;
-  letter-spacing: -0.028em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   color: var(--black);
   justify-self: start;
   transition: color 0.3s ease, transform 0.3s ease;
@@ -159,7 +156,7 @@
   position: fixed;
   top: 80px;
   right: 48px;
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-300);
   font-weight: 400;
   letter-spacing: -0.01em;

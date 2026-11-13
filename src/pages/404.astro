@@ -35,14 +35,12 @@ import MainLayout from '../layouts/MainLayout.astro';
     font-family: var(--font-body);
     font-size: var(--fs-150);
     font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 28px;
   }
 
   .headline {
-    font-family: var(--font-display);
+    font-family: var(--font-display); font-stretch: var(--stretch-display);
     font-size: clamp(40px, 7vw, 80px);
     font-weight: 300;
     line-height: 1.0;
@@ -75,8 +73,6 @@ import MainLayout from '../layouts/MainLayout.astro';
   .link-primary {
     font-family: var(--font-body);
     font-size: var(--fs-150);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: var(--black);
     text-decoration: none;
     transition: color 0.3s ease;
@@ -86,8 +82,6 @@ import MainLayout from '../layouts/MainLayout.astro';
   .link-secondary {
     font-family: var(--font-body);
     font-size: var(--fs-150);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: var(--muted);
     text-decoration: none;
     transition: color 0.3s ease;

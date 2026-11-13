@@ -54,14 +54,14 @@ const { items } = Astro.props;
   }
   .card:nth-child(-n+2) { grid-column: span 3; }
   .card:nth-child(-n+2) .t { font-size: 40px; }
-  .t { position: relative; align-self: flex-start; font-family: var(--font-display); font-size: 30px; line-height: 1.02; text-wrap: balance; }
+  .t { position: relative; align-self: flex-start; font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: 30px; line-height: 1.02; text-wrap: balance; }
   .t svg { position: absolute; left: -2%; bottom: -.3em; width: 104%; height: .5em; overflow: visible; pointer-events: none; }
   .t path { fill: none; stroke: var(--accent-loud); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .55s var(--ease-slow); }
   .d { margin-top: -14px; max-width: 34ch; font-size: 15px; line-height: 1.45; color: var(--muted); transition: color .25s; }
   .r { margin-top: auto; padding-top: 6px; display: flex; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 1.4; color: var(--muted); transition: color .25s; }
   .r b { font-weight: 400; color: var(--muted); text-align: right; }
   .card:hover, .card:focus-visible { background: var(--black); color: var(--off-white); border-color: var(--black); transform: translateY(-4px) rotate(-.7deg); }
-  .card:hover .t, .card:focus-visible .t { font-style: italic; }
+  .card:hover .t, .card:focus-visible .t { color: var(--accent-loud, var(--sienna)); }
   .card:hover .t path, .card:focus-visible .t path, :global(.card.seen) .t path { stroke-dashoffset: 0; }
   .card:hover .r, .card:focus-visible .r, .card:hover .d, .card:focus-visible .d { color: var(--off-white); }
   .card:hover .r b, .card:focus-visible .r b { color: var(--off-white); }

@@ -11,8 +11,6 @@
   align-items: center;
   gap: 6px;
   font-size: var(--fs-200);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   margin-bottom: 48px;
@@ -31,8 +29,6 @@
 .project-nav-link {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -47,8 +43,6 @@
 .next-all {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -64,8 +58,6 @@
   display: block;
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 12px;
 }
@@ -112,8 +104,6 @@
   display: block;
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
   font-variant: small-caps;
   color: var(--muted);
   margin-bottom: 12px;
@@ -148,8 +138,6 @@
   font-family: var(--font-body);
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   padding: 13px 20px;
   transition: background 0.3s, opacity 0.3s;
 }
@@ -194,13 +182,9 @@
   font-size: var(--fs-150);
   color: var(--muted);
   flex: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 :global(.swatch-edit) {
   font-size: var(--fs-100);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--muted);
   opacity: 0;
   transition: opacity 0.15s;
@@ -237,8 +221,6 @@
   font-family: var(--font-body);
   font-size: var(--fs-150);
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   padding: 9px 12px;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
@@ -282,8 +264,6 @@
 }
 .density-label {
   font-size: var(--fs-100);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -296,8 +276,6 @@
   font-family: var(--font-body);
   font-size: var(--fs-150);
   font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   padding: 13px 20px;
   transition: border-color 0.3s, color 0.3s;
 }
@@ -335,8 +313,6 @@
 
 .canvas-hint {
   font-size: var(--fs-150);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-top: 10px;
   text-align: center;
@@ -352,8 +328,6 @@
   display: block;
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 32px;
 }
@@ -386,8 +360,6 @@
 .mockup-name {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 

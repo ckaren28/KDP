@@ -1,7 +1,7 @@
 @import './tokens.css';
 @import './fonts.css';
 
-/* Instrument Serif ships one weight: never let the browser fake a bold or a slant. */
+/* Never let the browser fake a bold. */
 html { font-synthesis-weight: none; }
 
 @tailwind base;
@@ -113,14 +113,12 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
   display: block;
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: var(--track-meta-wide);
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: var(--space-3);
 }
 
 .page-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-page);
   font-weight: 400;
   line-height: 0.98;
@@ -131,9 +129,9 @@ body:has(button:hover) .cursor-ring { width: 48px; height: 48px; opacity: 0.12; 
   border-bottom: var(--hairline);
 }
 
-/* Instrument Serif has a real italic: emphasis is italic plus the pink */
+/* Emphasis in titles is the accent color, not italic */
 .page-title em {
-  font-style: italic;
+  font-style: normal;
   color: var(--sienna);
 }
 

@@ -11,8 +11,6 @@
   padding: 2.5rem 0 4rem;
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 .back-nav a {
   color: var(--muted);
@@ -51,8 +49,6 @@
 .page-label {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 1.5rem;
   display: block;
@@ -67,7 +63,7 @@
    one meaning "expand" in these comments, since Tailwind scans this file as
    content and will emit the matching utility.) */
 .page-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(3rem, 7vw, 5.5rem);
   font-weight: 300;
   line-height: 0.95;
@@ -97,8 +93,6 @@
 .tag {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   border: 1px solid var(--border);
   padding: 4px 10px;
@@ -108,8 +102,6 @@
 .gh-link {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   border: 1px solid var(--border);
@@ -150,8 +142,6 @@
 .tab-btn {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--muted);
   background: none;
   border: none;
@@ -201,8 +191,6 @@
 .card-label {
   font-family: var(--font-body);
   font-size: var(--fs-100);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--muted);
   display: block;
   margin-bottom: 0.75rem;
@@ -258,8 +246,6 @@
   display: block;
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -336,8 +322,6 @@
 .section-label {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--muted);
   display: block;
   margin-bottom: 0.75rem;
@@ -364,7 +348,7 @@
 }
 
 .prose :global(h2) {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 300;
   letter-spacing: -0.01em;
@@ -380,7 +364,7 @@
 }
 
 .prose :global(h3) {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-600);
   font-weight: 300;
   color: var(--black);
@@ -484,8 +468,6 @@
   padding: 0.75rem 1rem;
   color: var(--muted);
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   font-size: var(--fs-250);
 }
 .prose :global(td) {
@@ -531,7 +513,7 @@
 
 /* ── HOW IT WORKS: Architecture diagram ── */
 .hw-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 300;
   line-height: 1;
@@ -568,8 +550,6 @@
   display: block;
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 1.25rem;
 }
@@ -643,8 +623,6 @@
 
 .arch-info-row span {
   font-size: var(--fs-150);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -787,8 +765,6 @@
 .footer-nav a {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;

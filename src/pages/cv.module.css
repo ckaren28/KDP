@@ -36,7 +36,7 @@
 }
 
 .cv-name {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(44px, 7vw, 72px);
   font-weight: 400;
   line-height: 0.92;
@@ -146,7 +146,7 @@
 }
 
 .cv-role-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-550);
   font-weight: 400;
   color: var(--black);
@@ -165,7 +165,7 @@
    PDF from Career Goals/cv-tool. */
 .cv-role-scope {
   margin: -2px 0 6px;
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-300);
   font-style: italic;
   color: var(--muted);
@@ -246,7 +246,7 @@
 }
 
 .cv-edu-degree {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-500);
   font-weight: 400;
   color: var(--black);

@@ -1,5 +1,5 @@
 /* ── DESIGN TOKENS ──────────────────────────────────────────────
-   "Taste and a little nerve" (Nov 2026 redesign). Warm linen and ink,
+   "Taste and a little nerve" (Nov 2026 redesign). Cool grey and ink,
    one tomato-red accent, and a very dark blue-grey night mode.
    Token NAMES are inherited from the darkroom system so every page picks
    up the new palette without being rewritten:
@@ -8,31 +8,32 @@
      --tone2      second color (same tomato for now: one accent)
    ─────────────────────────────────────────────────────────────── */
 :root {
-  --black: #18171B;
-  --off-white: #EFE9E1;        /* linen */
-  --warm-white: #E7E0D6;
+  --black: #16181D;
+  --off-white: #ECEEF1;        /* cool light grey (was linen #EFE9E1) */
+  --warm-white: #E2E5EA;
   --sienna: #C42D22;           /* tomato, 4.65:1 on linen */
   --sienna-light: #D2452F;
   --accent-loud: #C42D22;
   --tone2: #C42D22;
   --tone2-flip: #F04A2E;       /* tomato on an ink (inverted) surface */
-  --muted: #5F5A60;
-  --border: rgba(24,23,27,0.14);
+  --muted: #5A5F69;
+  --border: rgba(22,24,29,0.14);
 
   --print: #F3DCD6;            /* pale tomato */
   --print-lt: #F8EAE6;
 
-  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Libre Caslon Condensed', Georgia, serif; /* upright condensed serif; italic only on Say hello */
+  --stretch-display: 100%;      /* Pathway's width axis: narrow headings */
   --font-black: 'UnifrakturMaguntia', 'Old English Text MT', serif;
-  --font-body: 'Geist', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+  --font-body: 'Pathway Extreme', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Pathway Extreme', 'Helvetica Neue', Arial, sans-serif; /* labels; name kept from the mono era */
 
-  --text-body: #3F3B42;
-  --hover-sweep: #18171B;
-  --on-sweep: #EFE9E1;
-  --placeholder-bg: #E0D9CF;
+  --text-body: #3B3F48;
+  --hover-sweep: #16181D;
+  --on-sweep: #ECEEF1;
+  --placeholder-bg: #DADEE4;
 
-  --fashion-bg: #EFE9E1;
+  --fashion-bg: #ECEEF1;
   --fashion-bg-dark: #0F1218;
 
   --ease-snap: cubic-bezier(.34,1.56,.64,1);

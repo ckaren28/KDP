@@ -121,7 +121,6 @@ body.dk.dk-live { cursor:none; }
 .dk .dk-reveal {
   position:absolute; left:-9999px; top:auto;
   font-family:'Space Mono', ui-monospace, monospace; font-size:12px;
-  letter-spacing:.14em; text-transform:uppercase;
   background:var(--ox-deep); color:var(--chrome);
   border:1px solid var(--faint); border-radius:100px;
   padding:11px 20px; cursor:pointer;
@@ -140,8 +139,7 @@ body.dk.dk-live { cursor:none; }
   position:absolute; left:50%; top:100%; transform:translateX(-50%);
   margin-top:30px;
   display:inline-flex; align-items:center; gap:10px;
-  font-family:'Space Mono', ui-monospace, monospace; font-size:12px;
-  letter-spacing:.18em; text-transform:uppercase; color:var(--chrome);
+  font-family:'Space Mono', ui-monospace, monospace; font-size:12px; color:var(--chrome);
   white-space:nowrap; pointer-events:none;
   padding:9px 18px; border:1px solid var(--faint); border-radius:100px;
   opacity:.92;
@@ -257,7 +255,7 @@ body.dk.dk-live { cursor:none; }
 .dk .dk-rule { width:clamp(180px,26vw,360px); height:1px; background:var(--faint); }
 .dk .dk-role {
   margin:clamp(16px,2.2vw,24px) 0 0; font-family:'Space Mono', ui-monospace, monospace;
-  font-size:clamp(9.5px,1.05vw,12px); letter-spacing:.26em; text-transform:uppercase;
+  font-size:clamp(9.5px,1.05vw,12px);
   color:var(--soft); text-align:center;
 }
 /* The one sentence that says what the work is. Kept in the same mono as the
@@ -271,7 +269,7 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-loc {
   margin:9px 0 0; font-family:'Space Mono', ui-monospace, monospace;
-  font-size:clamp(9px,.95vw,10.5px); letter-spacing:.22em; text-transform:uppercase;
+  font-size:clamp(9px,.95vw,10.5px);
   color:var(--faint); text-align:center;
 }
 
@@ -300,15 +298,13 @@ body.dk.dk-live { cursor:none; }
 }
 .dk .dk-nav a {
   color:var(--soft); text-decoration:none; transition:color .18s;
-  letter-spacing:.14em; text-transform:uppercase;
 }
 .dk .dk-nav a:hover { color:var(--ink); }
 .dk .dk-nav a:focus-visible { outline:2px solid var(--chrome); outline-offset:5px; border-radius:2px; }
 
 .dk .dk-hint {
   position:fixed; left:clamp(20px,3.2vw,46px); bottom:26px; z-index:10; margin:0;
-  font-family:'Space Mono', ui-monospace, monospace; font-size:10.5px; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--faint);
+  font-family:'Space Mono', ui-monospace, monospace; font-size:10.5px; color:var(--faint);
   transition:opacity .7s ease; pointer-events:none;
 }
 .dk .dk-hint.gone { opacity:0; }
@@ -460,8 +456,7 @@ html.dk-root.dk-scroll, html.dk-scroll body.dk { height:auto; overflow-x:hidden;
 .dk.dk-about.dk-past .dk-nav { background:var(--ox-deep); transition:background .3s ease; }
 .dk.dk-about .ab-rest .page-eyebrow {
   display:block; margin-bottom:24px;
-  font-family:'Space Mono', ui-monospace, monospace; font-size:10px;
-  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  font-family:'Space Mono', ui-monospace, monospace; font-size:10px; color:var(--muted);
 }
 
 /* /about: a quieter cue than the boxed pill, in the same voice as the corner

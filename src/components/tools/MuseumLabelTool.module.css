@@ -22,7 +22,7 @@
   gap: 2.5rem;
 }
 .gallery-heading {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 300;
   color: var(--black);

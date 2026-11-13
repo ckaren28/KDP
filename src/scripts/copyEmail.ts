@@ -69,7 +69,7 @@ function show(link: HTMLAnchorElement, label: string, address: string) {
   tip.innerHTML = '';
   const line = document.createElement('span');
   line.textContent = label;
-  line.style.cssText = 'display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase';
+  line.style.cssText = 'display:block;font-size:10.5px;';
   const addr = document.createElement('span');
   addr.textContent = address;
   addr.style.cssText = 'display:block;font-size:11.5px;letter-spacing:.01em;opacity:.66;margin-top:3px';

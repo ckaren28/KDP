@@ -7,6 +7,7 @@ const links = [
   { href: '/about', label: 'About' },
   { href: '/cv', label: 'CV' },
 ];
+import ThemeSwitch from './ThemeSwitch.astro';
 ---
 
 <header class="hd">
@@ -15,7 +16,7 @@ const links = [
   <nav aria-label="Primary" id="hdNav">
     <ul>
       {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-      <li><button type="button" class="hd-theme" id="hdTheme">Dark</button></li>
+      <li class="hd-toggle"><ThemeSwitch /></li>
     </ul>
   </nav>
 </header>
@@ -58,19 +59,18 @@ const links = [
     transition: background-color .5s var(--ease-slow);
   }
   .hd-name {
-    font-family: var(--font-display);
+    font-family: var(--font-display); font-stretch: var(--stretch-display);
     font-size: 24px;
     line-height: 1;
     color: var(--black);
     text-decoration: none;
   }
-  .hd-name:hover { font-style: italic; }
+  .hd-name:hover { color: var(--sienna); }
   .hd nav a, .hd-theme, .hd-menu {
     font-family: var(--font-mono);
     font-size: 12px;
-    letter-spacing: .04em;
-    text-transform: uppercase;
   }
+  .hd-toggle { align-self: center; color: var(--black); }
   .hd ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; align-items: baseline; }
   .hd nav a { color: var(--black); text-decoration: none; }
   .hd nav a:hover, .hd-theme:hover { color: var(--sienna); }

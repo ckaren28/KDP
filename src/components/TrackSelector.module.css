@@ -9,8 +9,6 @@
   padding: 32px 48px;
   font-size: var(--fs-150);
   font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -75,7 +73,7 @@
 }
 
 .track-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-weight: 300;
   font-size: clamp(52px, 6vw, 96px);
   line-height: 0.92;
@@ -105,7 +103,7 @@
 
 .track-cta {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-450);
   font-weight: 300;
   opacity: 0;

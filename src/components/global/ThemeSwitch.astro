@@ -1,41 +1,21 @@
 ---
 /**
- * Safelight, the theme switch.
+ * Theme toggle.
  *
- * Lit for dark, out for light: you work under the red lamp in the darkroom, and
- * turning the room lights on gives you the print in daylight. That's literally
- * what the two themes are, so the control says what it does.
- *
- * It used to be an aperture, which collided with the shutter on the landing
- * page. One shape can't mean "switch the light" in the nav and "go to the
- * work" in the reveal. The aperture went to the shutter, the bigger object.
+ * A switch, not an icon: "on" is the darkroom (dark, the default), "off" turns
+ * the room lights on. The knob is the safelight, lit in the accent when dark
+ * and an empty ring when light. Hairline track to match the site's rules.
  * Typing "light" / "dark" still works; this just makes it discoverable.
  */
 ---
 
-<button class="safelight-btn" id="themeSwitch" type="button" aria-pressed="false" title="Switch theme">
-  <span class="visually-hidden">Switch theme</span>
-  <svg class="safelight" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <!-- stem, so it reads as mounted rather than floating -->
-    <line x1="12" y1="1.6" x2="12" y2="4.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-    <!-- the shade -->
-    <path
-      d="M4.8 12.4 Q12 2.6 19.2 12.4 Z"
-      fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"
-    />
-    <!-- the lamp itself: filled when it's burning -->
-    <circle class="safelight-bulb" cx="12" cy="12.4" r="2.1" fill="currentColor" />
-    <!-- what it throws, which is the whole state -->
-    <g class="safelight-rays" stroke="currentColor" stroke-width="1.15" stroke-linecap="round">
-      <line x1="7.4"  y1="15.4" x2="5.9"  y2="19.4" />
-      <line x1="12"   y1="16.6" x2="12"   y2="21"   />
-      <line x1="16.6" y1="15.4" x2="18.1" y2="19.4" />
-    </g>
-  </svg>
+<button class="tg" id="themeSwitch" type="button" role="switch" aria-checked="true" title="Switch to light">
+  <span class="visually-hidden">Dark mode</span>
+  <span class="tg-track" aria-hidden="true"><span class="tg-knob"></span></span>
 </button>
 
 <style>
-  .safelight-btn {
+  .tg {
     background: none;
     border: none;
     padding: 4px;
@@ -43,37 +23,47 @@
     color: inherit;
     display: inline-flex;
     align-items: center;
+    cursor: pointer;
   }
   .visually-hidden {
     position: absolute; width: 1px; height: 1px;
     padding: 0; margin: -1px; overflow: hidden;
     clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
-  .safelight {
-    width: 19px; height: 19px;
-    opacity: 0.72;
+  .tg-track {
+    position: relative;
+    width: 34px; height: 18px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    opacity: 0.8;
     transition: opacity 0.25s ease;
   }
-  .safelight-btn:hover .safelight { opacity: 1; }
-
-  .safelight-rays,
-  .safelight-bulb {
-    transition: opacity 0.4s ease, r 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  .tg:hover .tg-track { opacity: 1; }
+  .tg-knob {
+    position: absolute;
+    top: 50%; left: 3px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent-loud);
+    box-shadow: 0 0 8px var(--accent-loud);
+    transform: translate(0, -50%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), background-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  /* Light: the lamp is out, knob slides over as an empty ring */
+  :global(html[data-theme='light']) .tg-knob {
+    transform: translate(16px, -50%);
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px currentColor;
   }
 
-  /* Dark is the darkroom, so the lamp is burning, which is the default state in
-     the markup. Light turns it out: rays gone, bulb down to a cold filament. */
-  :global(html[data-theme='light']) .safelight-rays { opacity: 0; }
-  :global(html[data-theme='light']) .safelight-bulb { r: 0.9; }
-
-  .safelight-btn:focus-visible {
+  .tg:focus-visible {
     outline: 2px solid currentColor;
-    outline-offset: 4px;
-    border-radius: 4px;
+    outline-offset: 3px;
+    border-radius: 999px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .safelight, .safelight-rays, .safelight-bulb { transition: none; }
+    .tg-knob, .tg-track { transition: none; }
   }
 </style>
 
@@ -84,7 +74,7 @@
 
   function sync() {
     const t = currentTheme();
-    btn?.setAttribute('aria-pressed', t === 'light' ? 'true' : 'false');
+    btn?.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
     btn?.setAttribute('title', t === 'light' ? 'Switch to dark' : 'Switch to light');
   }
 

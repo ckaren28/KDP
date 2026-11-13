@@ -52,7 +52,7 @@ const work = [
 ];
 ---
 
-<MainLayout title="Karen Dettmar · UX Engineer and Design Technologist">
+<MainLayout title="Karen Dettmar · Design Engineer">
   <div class="home">
     <section class="hero" aria-label="Introduction">
       <div class="hero-copy">
@@ -102,11 +102,11 @@ const work = [
       padding-block: clamp(32px, 6vw, 80px) 56px;
     }
     h1 {
-      font-family: var(--font-display);
+      font-family: var(--font-display); font-stretch: var(--stretch-display);
       font-weight: 400;
-      font-size: clamp(50px, 8vw, 112px);
+      font-size: clamp(42px, 6.8vw, 95px); /* Caslon runs ~13% wider than Instrument Serif; sized to the old footprint */
       line-height: .98;
-      letter-spacing: -.015em;
+      letter-spacing: -.02em;
       margin: 0;
       color: var(--black);
       text-wrap: balance;
@@ -120,9 +120,9 @@ const work = [
 
     #work { padding-top: 16px; }
     .hello { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 12px; padding-top: 56px; }
-    .big { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); color: var(--black); text-decoration: none; }
+    .big { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: clamp(32px, 4vw, 52px); color: var(--black); text-decoration: none; }
     .big:hover { color: var(--sienna); font-style: italic; }
-    .lab { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .lab { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
     .lab:hover { color: var(--sienna); }
 
     @media (max-width: 760px) {

@@ -21,8 +21,8 @@ const ROLES = [
 ];
 
 const themes = [
-  { label: 'Linen', note: 'Light', t: light },
-  { label: 'Night', note: 'Dark, a blue-grey, never black', t: dark },
+  { label: 'Night', note: 'Default. A blue-grey, never black', t: dark },
+  { label: 'Day', note: 'A cool light grey, one click away', t: light },
 ].map(({ label, note, t }) => {
   const ground = v(t, 'off-white');
   return {
@@ -36,9 +36,10 @@ const themes = [
 });
 
 const faces = [
-  { name: 'Instrument Serif', role: 'Names and titles. Italic is the emphasis.', cls: 'f-serif', sample: 'Interfaces with <em>care</em>' },
-  { name: 'Geist', role: 'Everything you read.', cls: 'f-body', sample: 'Prototyping, thoughtful interaction, and the small details that make something feel finished.' },
-  { name: 'Geist Mono', role: 'Meta, labels, the clock.', cls: 'f-mono', sample: 'New York · Design Technologist' },
+  { name: 'Libre Caslon Condensed', role: 'Names and titles. Emphasis is tomato. Same print-shop lineage as the blackletter.', cls: 'f-display', sample: 'Interfaces with <em>care</em>' },
+  { name: 'Pathway Extreme, full width', role: 'Everything you read. Optical sizing keeps it clear when small.', cls: 'f-body', sample: 'Prototyping, thoughtful interaction, and the small details that make something feel finished.' },
+  { name: 'Pathway Extreme, small', role: 'Meta and labels, in sentence case. One family for the whole site.', cls: 'f-mono', sample: 'New York · Design Engineer' },
+  { name: 'Libre Caslon Condensed italic', role: 'The one italic. Say hello, on hover. Hover it.', cls: 'f-hello', sample: 'Say hello →' },
   { name: 'UnifrakturMaguntia', role: 'One word, once.', cls: 'f-black', sample: 'nerve' },
 ];
 
@@ -47,7 +48,15 @@ const easings = [
   { name: 'Slow', token: '--ease-slow', value: 'cubic-bezier(.22,1,.36,1)', use: 'Lines drawing, things that arrive' },
 ];
 
+const rules = [
+  { name: 'Sentence case', what: 'No all-caps anywhere. Labels read the way they are written.' },
+  { name: 'No eyebrows', what: 'Nothing small sits above a title. The title starts the section.' },
+  { name: 'Color, not slant', what: 'Emphasis and hover turn tomato. The one italic is Say hello, on hover.' },
+  { name: 'One loud word', what: 'Blackletter appears once, for nerve. Everything else stays quiet.' },
+];
+
 const parts = [
+  { name: 'Theme toggle', where: 'ThemeSwitch.astro · lit knob for dark', see: '#top' },
   { name: 'Work cards', where: 'WorkCards.astro', see: '/' },
   { name: 'Hover peek', where: 'HoverPeek.astro', see: '/projects/tech' },
   { name: 'Soap bubble', where: 'Bubble.astro · three.js', see: '/' },
@@ -58,8 +67,20 @@ const parts = [
 
 <MainLayout title="System · Karen Dettmar">
   <div class="sys">
-    <h1 class="sys-title">System</h1>
-    <p class="lede">What this site is made of. Colors and ratios are read from the stylesheet when the site builds.</p>
+    <h1 class="sys-title" id="top">System</h1>
+    <p class="lede">What this site is made of. Night by default, Day one toggle away. Colors and ratios are read from the stylesheet when the site builds.</p>
+
+    <section aria-labelledby="rules">
+      <h2 class="h" id="rules">Rules</h2>
+      <ul class="rows">
+        {rules.map((r) => (
+          <li>
+            <span class="row-name">{r.name}</span>
+            <span class="row-what row-body">{r.what}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
 
     <section aria-labelledby="color">
       <h2 class="h" id="color">Color</h2>
@@ -127,17 +148,17 @@ const parts = [
 
   <style>
     .sys { max-width: 1240px; margin: 0 auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) 120px max(24px, env(safe-area-inset-left, 0px)); }
-    .sys-title { font-family: var(--font-display); font-weight: 400; font-size: clamp(56px, 8vw, 112px); line-height: 1; letter-spacing: -.015em; margin: 0 0 16px; color: var(--black); }
+    .sys-title { font-family: var(--font-display); font-stretch: var(--stretch-display); font-weight: 400; font-size: clamp(56px, 8vw, 112px); line-height: 1; letter-spacing: -.015em; margin: 0 0 16px; color: var(--black); }
     .lede { max-width: 46ch; color: var(--text-body); font-size: var(--fs-450); line-height: 1.55; margin: 0 0 24px; }
     section { margin-top: 88px; }
-    .h { font-family: var(--font-display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1; margin: 0 0 24px; color: var(--black); }
+    .h { font-family: var(--font-display); font-stretch: var(--stretch-display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1; margin: 0 0 24px; color: var(--black); }
     .note { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-350); max-width: 60ch; }
 
     /* color */
     .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .theme { border: 1px solid; padding: 24px; }
-    .theme-name { font-family: var(--font-display); font-size: 32px; line-height: 1; margin: 0 0 24px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-    .theme-name span, .sw-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; opacity: .72; }
+    .theme-name { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: 32px; line-height: 1; margin: 0 0 24px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .theme-name span, .sw-meta { font-family: var(--font-mono); font-size: 11px; opacity: .72; }
     .swatches { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
     .swatches li { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 14px; }
     .chip { width: 40px; height: 40px; border: 1px solid; }
@@ -147,12 +168,14 @@ const parts = [
     .faces { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
     .faces li { padding: 28px 0 18px; border-bottom: 1px solid var(--border); }
     .spec { margin: 0 0 14px; color: var(--black); }
-    .f-serif { font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: var(--track-display); }
-    .f-serif :global(em) { font-style: italic; color: var(--sienna); }
+    .f-display { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: var(--track-display); }
+    .f-display :global(em) { color: var(--sienna); font-style: normal; }
+    .f-hello { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); line-height: 1; color: var(--black); }
+    .f-hello:hover { color: var(--sienna); font-style: italic; }
     .f-body { font-family: var(--font-body); font-size: var(--fs-600); line-height: 1.45; max-width: 40ch; }
-    .f-mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+    .f-mono { font-family: var(--font-mono); font-size: 13px; }
     .f-black { font-family: var(--font-black); font-size: clamp(56px, 8vw, 96px); line-height: 1; color: var(--sienna); }
-    .face-meta, .row-what, .ease-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .face-meta, .row-what, .ease-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
     .face-meta { margin: 0; display: flex; justify-content: space-between; gap: 16px; }
     .face-meta span:first-child { color: var(--black); }
 
@@ -162,13 +185,14 @@ const parts = [
     .track { position: relative; height: 1px; background: var(--border); }
     .dot { position: absolute; top: -7px; left: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--sienna); transition: left .9s var(--e); }
     .eases li:hover .dot { left: calc(100% - 14px); }
-    .ease-name { font-family: var(--font-display); font-size: 28px; line-height: 1; }
+    .ease-name { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: 28px; line-height: 1; }
 
     /* parts */
     .rows { list-style: none; margin: 32px 0 0; padding: 0; border-top: 1px solid var(--border); }
     .rows li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: baseline; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); }
-    .row-name { font-family: var(--font-display); font-size: 28px; line-height: 1.1; color: var(--black); text-decoration: none; }
-    .row-name:hover { font-style: italic; color: var(--sienna); }
+    .row-name { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: 28px; line-height: 1.1; color: var(--black); text-decoration: none; }
+    a.row-name:hover { color: var(--sienna); }
+    .row-body { font-family: var(--font-body); font-size: var(--fs-400); color: var(--text-body); }
     .row-name:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
 
     @media (max-width: 760px) {

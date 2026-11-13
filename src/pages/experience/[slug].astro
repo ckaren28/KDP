@@ -18,7 +18,7 @@ const d = entry.data;
 
 ---
 
-<MainLayout title={`${d.company} · Karen Dettmar`} theme="light">
+<MainLayout title={`${d.company} · Karen Dettmar`}>
   {/* Kept out of search results: these pages are for people Karen sends here,
       not for search traffic. */}
   <meta slot="head" name="robots" content="noindex" />
@@ -35,8 +35,6 @@ const d = entry.data;
       margin-bottom: 40px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
       color: var(--muted);
       text-decoration: none;
     }
@@ -51,8 +49,6 @@ const d = entry.data;
       margin: 0 0 24px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
       color: var(--muted);
     }
     .xpp-company { color: var(--black); font-weight: 400; }
@@ -60,7 +56,7 @@ const d = entry.data;
 
     .xpp-headline {
       margin: 0 0 14px;
-      font-family: var(--font-display);
+      font-family: var(--font-display); font-stretch: var(--stretch-display);
       font-size: clamp(32px, 4.4vw, 52px);
       font-weight: 400;
       line-height: 1.05;
@@ -91,8 +87,6 @@ const d = entry.data;
       margin: 0 0 12px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
       font-weight: 400;
       color: var(--muted);
     }
@@ -137,8 +131,6 @@ const d = entry.data;
       margin-top: 8px;
       font-family: var(--font-mono);
       font-size: var(--fs-100);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--muted);
     }
 
@@ -146,8 +138,6 @@ const d = entry.data;
       margin: 0 0 34px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
       color: var(--muted);
     }
 
@@ -163,8 +153,6 @@ const d = entry.data;
       margin: 0 0 8px;
       font-family: var(--font-mono);
       font-size: var(--fs-150);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
       color: var(--muted);
     }
     .xpp-nda-body {
@@ -202,17 +190,15 @@ const d = entry.data;
       margin: 0 0 26px;
       font-family: var(--font-mono);
       font-size: var(--fs-100);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--muted);
     }
 
     .xpp-body { font-size: var(--fs-400); line-height: 1.8; color: var(--text-body); }
     .xpp-body :global(h2) {
       margin: 44px 0 14px;
-      font-family: var(--font-display);
+      font-family: var(--font-display); font-stretch: var(--stretch-display);
       font-size: clamp(20px, 2.4vw, 26px);
-      font-weight: 600;
+      font-weight: 400;
       letter-spacing: -0.02em;
       color: var(--black);
     }
@@ -284,8 +270,6 @@ const d = entry.data;
       margin-top: 10px;
       font-family: var(--font-mono);
       font-size: var(--fs-100);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       line-height: 1.6;
       color: var(--muted);
     }

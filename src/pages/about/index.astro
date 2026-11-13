@@ -24,7 +24,7 @@ const contact = [
   { label: 'CV',       value: 'Download PDF',              href: '/Karen_Dettmar_CV.pdf', external: true },
   { label: 'Fashion',  value: 'studio.karendettmar.com',   href: 'https://studio.karendettmar.com', external: true },
 ];
-const description = 'About Karen Dettmar, UX Engineer and Design Technologist in New York.';
+const description = 'About Karen Dettmar, Design Engineer in New York.';
 
 ---
 
@@ -36,7 +36,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     </header>
 
     <div class={s['bio']}>
-      <p class={s['bio-lead']}>A UX engineer and design technologist in New York. I've spent my career where design meets code. Building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
+      <p class={s['bio-lead']}>A design engineer in New York. I've spent my career where design meets code. Building apps and redesigning sites that replace legacy systems, creating conference and meetup demos, and taking complex systems and making them easier for people to understand.</p>
       <p>I'm also a serial hobbyist in my free time. I love learning new skills and value personal growth while enriching my artistic craft. My current obsessions lately are tactile-based, including <span class="hint-word" data-hint="2" data-skill="visual craft" tabindex="0">sketching</span>, <span class="hint-word" data-hint="1" data-skill="organization" tabindex="0">cheffing it up</span> and <span class="hint-word" data-hint="0" data-skill="strategy" tabindex="0">MMA</span>. I wish there was more time in the day.</p>
     </div>
 
@@ -57,7 +57,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
 
     <section class={s['section']} aria-labelledby="contactLabel" id="contact">
       <h2 class="sr-only" id="contactLabel">Get in touch</h2>
-      <p class={s['availability']}>Available for UX Engineer and Design Technologist roles.</p>
+      <p class={s['availability']}>Available for Design Engineer roles.</p>
       <ul class={s['row-list']}>
         {contact.map((c) => (
           <li>
@@ -266,7 +266,7 @@ const description = 'About Karen Dettmar, UX Engineer and Design Technologist in
     :global(.ab-page.on-print) { cursor: pointer; }
     /* hobby words sit in the contrast color; hovering one faintly hints its print */
     .ab-page :global(.hint-word) { color: var(--sienna); position: relative; cursor: default; }
-    .ab-page :global(.hint-word.show) { font-style: italic; }
+    .ab-page :global(.hint-word.show) { text-decoration: underline; text-underline-offset: 4px; }
     .ab-page :global(.hint-word:focus-visible) { outline: 1px dotted var(--sienna); outline-offset: 2px; }
     /* phones: room after the hobbies paragraph for the prints */
     @media (max-width: 759px) { :global(.ab-page p:has(.hint-word)) { margin-bottom: 150px; } }

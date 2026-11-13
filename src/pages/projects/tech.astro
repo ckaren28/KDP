@@ -67,21 +67,21 @@ const experiments = [
       padding: 24px max(24px, env(safe-area-inset-right, 0px)) 96px max(24px, env(safe-area-inset-left, 0px));
     }
     .lab-title {
-      font-family: var(--font-display); font-weight: 400;
+      font-family: var(--font-display); font-stretch: var(--stretch-display); font-weight: 400;
       font-size: clamp(56px, 8vw, 112px); line-height: 1; letter-spacing: -.015em;
       margin: 0 0 40px; color: var(--black);
     }
     .xps { margin-top: 88px; }
-    .xps-title { font-family: var(--font-display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1; margin: 0 0 20px; color: var(--black); }
+    .xps-title { font-family: var(--font-display); font-stretch: var(--stretch-display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1; margin: 0 0 20px; color: var(--black); }
     .xps ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
     .xp {
       display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: baseline; gap: 24px;
       padding: 18px 0; border-bottom: 1px solid var(--border);
     }
-    .xp-name { font-family: var(--font-display); font-size: 28px; line-height: 1.1; color: var(--black); text-decoration: none; }
-    .xp:hover .xp-name { font-style: italic; color: var(--sienna); }
-    .xp-what { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-    .xp-links { display: flex; gap: 18px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+    .xp-name { font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: 28px; line-height: 1.1; color: var(--black); text-decoration: none; }
+    .xp:hover .xp-name { color: var(--sienna); }
+    .xp-what { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+    .xp-links { display: flex; gap: 18px; font-family: var(--font-mono); font-size: 11px; }
     .xp-links a { color: var(--sienna); text-decoration: none; }
     .xp-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
     .xp a:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }

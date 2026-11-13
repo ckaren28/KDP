@@ -4,7 +4,7 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 48px 2rem 8rem;
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   color: var(--black);
 }
 
@@ -12,8 +12,6 @@
   padding: 2.5rem 0 4rem;
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .back-nav a:hover { color: var(--black); }
@@ -27,8 +25,6 @@
 .page-label {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 1.5rem;
   display: block;
@@ -62,7 +58,7 @@
 }
 
 .panel-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-550);
   font-weight: 300;
   margin-bottom: 0.4rem;
@@ -88,8 +84,6 @@
 .form-field label {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -145,8 +139,6 @@
 .traveler-row .traveler-badge {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--sienna);
   border: 1px solid var(--sienna);
   padding: 2px 8px;
@@ -156,8 +148,6 @@
 .btn-generate {
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--off-white);
   background: var(--black);
   border: 1px solid var(--black);
@@ -174,8 +164,6 @@
 .presets-label {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.6rem;
 }
@@ -229,8 +217,6 @@
 .output-section-title {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.75rem;
   /* display: block; */
@@ -253,8 +239,6 @@
 :global(.card-name) {
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--black);
   margin-bottom: 0.3rem;
 }
@@ -311,8 +295,6 @@
 :global(.badge) {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   padding: 2px 8px;
   border: 1px solid;
 }
@@ -330,8 +312,6 @@
 .project-nav-link {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -346,8 +326,6 @@
 .next-all {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;

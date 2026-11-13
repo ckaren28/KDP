@@ -4,7 +4,7 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 48px 2rem 8rem;
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   color: var(--black);
 }
 
@@ -12,8 +12,6 @@
   padding: 2.5rem 0 4rem;
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 .back-nav a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .back-nav a:hover { color: var(--black); }
@@ -21,8 +19,6 @@
 .page-label {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 1.5rem;
   display: block;
@@ -143,8 +139,6 @@
 .artwork-caption {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-align: center;
   min-height: 1.4em;
@@ -169,13 +163,11 @@
   display: block;
   font-family: var(--font-body);
   font-size: var(--fs-100);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: #A89070;
   margin-bottom: 0.55rem;
 }
 .wlc-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-400);
   font-weight: 300;
   color: #2C2416;
@@ -221,7 +213,7 @@
 }
 
 .panel-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display); font-stretch: var(--stretch-display);
   font-size: var(--fs-550);
   font-weight: 300;
   margin-bottom: 0.4rem;
@@ -253,8 +245,6 @@
 .form-field label {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -312,8 +302,6 @@
 .btn-generate {
   font-family: var(--font-body);
   font-size: var(--fs-250);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--off-white);
   background: var(--black);
   border: 1px solid var(--black);
@@ -337,8 +325,6 @@
 .presets-label {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.6rem;
 }
@@ -365,8 +351,6 @@
 .facilitator-title {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--black);
   margin-bottom: 0.75rem;
 }
@@ -410,8 +394,6 @@
 .output-section-title {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -420,8 +402,6 @@
 :global(.btn-copy) {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
   background: none;
   border: none;
@@ -462,8 +442,6 @@
 :global(.variation-label) {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 
@@ -498,8 +476,6 @@
 .btn-toggle-details {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   text-decoration: underline;
   color: var(--muted);
   background: none;
@@ -518,16 +494,12 @@
 .details-title {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--black);
   margin-bottom: 1rem;
 }
 .details-sub {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 0.5rem;
 }
@@ -552,8 +524,6 @@
 .discussion-title {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--black);
   margin-bottom: 0.75rem;
 }
@@ -575,8 +545,6 @@
   display: block;
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 2rem;
 }
@@ -650,8 +618,6 @@
 .project-nav-link {
   font-family: var(--font-body);
   font-size: var(--fs-150);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -666,8 +632,6 @@
 .next-all {
   font-family: var(--font-body);
   font-size: var(--fs-200);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;

@@ -37,14 +37,14 @@
   :global(.bb-live) .bb-fallback { display: none; }
   .bb-hint {
     position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; pointer-events: none;
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+    font-family: var(--font-mono); font-size: 12px; color: var(--muted);
   }
   .bb-pop {
     position: absolute; inset: 0; display: grid; place-items: center; text-align: center; pointer-events: none;
     opacity: 0; transform: scale(.92); transition: opacity .35s, transform .6s var(--ease-snap);
   }
   :global(.bb-pop.on) { opacity: 1; transform: none; }
-  .bb-pop p { margin: 0; font-family: var(--font-display); font-style: italic; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.05; max-width: 9em; text-wrap: balance; color: var(--black); }
+  .bb-pop p { margin: 0; font-family: var(--font-display); font-stretch: var(--stretch-display); font-size: clamp(30px, 3.4vw, 46px); line-height: 1.05; max-width: 9em; text-wrap: balance; color: var(--black); }
   .bb-pop span { font-family: var(--font-black); font-style: normal; color: var(--accent-loud); }
   @media (max-width: 760px) { .bb { height: 300px; } }
   /* phones: keep the work close to the top of the page */
