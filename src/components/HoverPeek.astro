@@ -16,12 +16,16 @@
       peek.style.transform = `translate(${px}px, ${py}px) rotate(${tilt}deg)`;
       raf = requestAnimationFrame(move);
     };
+    let shown = '';
     document.querySelectorAll<HTMLElement>('[data-peek]').forEach((el) => {
+      // Load every preview up front so the first hover doesn't flash empty.
+      if (el.dataset.peek && el.dataset.peek !== 'lock') new Image().src = el.dataset.peek;
       el.addEventListener('mouseenter', (e) => {
         const src = el.dataset.peek!;
-        peek.innerHTML = src === 'lock'
+        // Rebuild only when the image changes; re-setting it every enter blanked the print.
+        if (src !== shown) { shown = src; peek.innerHTML = src === 'lock'
           ? '<div class="peek-lock"><div><b>Locked</b><br>Password protected</div></div>'
-          : `<img alt="" src="${src}">`;
+          : `<img alt="" src="${src}">`; }
         tx = px = e.clientX + 18; ty = py = e.clientY + 16;
         peek.classList.add('on');
         if (!raf) move();
