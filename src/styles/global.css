@@ -311,3 +311,15 @@ figure.stage .narrow-shot { max-width: 420px; margin: 0 auto; }
 figure.stage .phone-shot { max-width: 260px; margin: 0 auto; filter: drop-shadow(0 22px 30px rgba(0,0,0,.35)); }
 /* The PNG has white corners outside the bezel; clip them to the phone's rounded shape. */
 figure.stage .phone-shot img { width: 100%; height: auto; border: 0 !important; background: transparent !important; clip-path: inset(0.6% round 12.5% / 6%); }
+
+/* A phone bezel around a scrolling screenshot (Nov 20, 2026). */
+figure.stage .device-phone { width: min(272px, 78vw); margin: 0 auto; border-radius: 42px; background: #111214; padding: 11px; box-shadow: 0 30px 60px -28px rgba(0,0,0,.6), inset 0 0 0 1.5px #3a3c41; }
+figure.stage .device-phone .shot-scroll { border-radius: 32px; }
+.shot-scroll.phone img { aspect-ratio: 9 / 19.5; }
+.shot-scroll.phone.play img { animation-duration: 18s; }
+
+/* A tablet bezel around a scrolling screenshot (Nov 20, 2026). */
+figure.stage .device-tablet { width: min(420px, 86vw); margin: 0 auto; border-radius: 30px; background: #111214; padding: 16px; box-shadow: 0 30px 60px -28px rgba(0,0,0,.6), inset 0 0 0 1.5px #3a3c41; }
+figure.stage .device-tablet .shot-scroll { border-radius: 14px; }
+.shot-scroll.tablet img { aspect-ratio: 3 / 4; }
+.shot-scroll.tablet.play img { animation-duration: 18s; }

@@ -5,53 +5,92 @@ location: "Los Angeles, CA"
 start_date: 2018-01-01
 end_date: 2019-01-01
 headline: "Print campaigns, and the site they pointed at"
-result: "Ran in Variety, Cinefex and Blickpunkt; visits up 10%"
+result: "Ran in Variety, Cinefex and Blickpunkt; monthly active users up 10% in six months"
 abstract: "Print campaigns and the website behind them."
-summary: "Pixomondo is a visual effects studio, so its marketing runs on the calendar of the films and series it works on. I designed the campaigns around those releases and rebuilt the site they landed on. The redesign was what made launching the campaign on schedule possible at all."
+summary: "Pixomondo is a visual effects studio, so its marketing runs on the calendar of the films and series it works on. I designed the campaigns around those releases and redesigned the site they pointed to, paring an overloaded homepage back into an editorial, video-first site."
 also:
-  - "Monthly campaigns around studio releases in print and digital, ideated, mocked up and exported in Adobe Suite"
-  - "Built the site on a LEMP stack (CentOS, NGINX, MySQL, PHP) with a custom WordPress theme"
+  - "Built a Raspberry Pi conference-room booking system for the studio"
+  - "Designed the studio's email newsletters in Mailchimp"
 artifacts:
   - image: "https://res.cloudinary.com/deqij2maw/image/upload/f_auto,q_auto,w_1600/v1786553933/PXO_Blickpunkt_double_spread-double_efskcs.png"
     caption: "Double-page spread that ran in Variety, Cinefex and Blickpunkt"
-  - image: "/images/pixomondo/previs-spread.jpg"
-    caption: "Previsualization campaign spread for Cinefex"
-  - image: "/images/pixomondo/star-trek-discovery.png"
-    caption: "Star Trek: Discovery thank-you ad for Cinefex"
+toc: true
+tools: ["WordPress", "PHP", "LEMP stack", "Video optimization", "Responsive design", "Google Analytics", "Adobe Illustrator", "Photoshop", "InDesign", "Print design"]
 order: 5
 ---
 
-## Two jobs that were really one
+import PxoClocks from '../../components/PxoClocks.astro';
 
-On paper this role was two things: design the campaigns, and look after the website. In
-practice they were a single pipeline with a deadline attached to someone else's release
-schedule.
+## The campaigns
 
-A visual effects studio markets against the films and series it has worked on, so each campaign
-was pinned to a release date that wasn't going to move. The work ran print and digital together.
-**Art for the trade press, a matching hero update on the site, and a blog post to land
-alongside them.**
+Each campaign was pinned to a film or series release date that wasn't going to move. The same
+spreads ran in *Variety*, *Cinefex* and *Blickpunkt*, alongside iPad ads that linked straight to
+the site, so the site had to be ready the day they ran.
 
-The same spreads went out to *Variety*, *Cinefex* and *Blickpunkt* (the general industry
-paper, the visual effects journal, and the German market). Each piece had to hold up in
-three different editorial contexts without being redrawn for each.
+<div class="fig-two">
+  <figure class="stage">
+    <div class="own-window"><img src="/images/pixomondo/previs-spread.jpg" loading="lazy"
+      alt="Previsualization campaign spread for Cinefex." /></div>
+    <figcaption>Previsualization spread for Cinefex.</figcaption>
+  </figure>
+  <figure class="stage">
+    <div class="own-window"><img src="/images/pixomondo/star-trek-discovery.png" loading="lazy"
+      alt="Star Trek: Discovery thank-you ad for Cinefex." /></div>
+    <figcaption>Star Trek: Discovery thank-you ad.</figcaption>
+  </figure>
+</div>
 
-## The site was the bottleneck
+## Before and after
 
-The existing website couldn't carry the campaign on the timeline available. So the redesign
-wasn't a separate initiative that happened to coincide. It was a dependency. If the site
-wasn't rebuilt, the ads had nowhere to point.
+The site I inherited tried to show everything at once: tiles, banners, events and reels all
+competing on one screen. I pared it back to one hero, a few projects and the news.
 
-I met regularly with the CEO to agree the design direction, then built it: a LEMP stack
-(CentOS, NGINX, MySQL, PHP) with a **WordPress theme written from scratch** rather than adapted
-from a template, so the campaign layouts could be changed each month without fighting someone
-else's assumptions.
+<div class="fig-two">
+  <figure class="browser stage">
+    <div class="browser-chrome shot-scroll" data-url="pixomondo.com">
+      <img src="/images/pixomondo/site-2017-desktop.jpg" width="1440" height="5622" loading="lazy"
+        alt="The Pixomondo homepage before the redesign: rows of tiles, banners, event promos, reels and a poster carousel stacked down a long page." />
+    </div>
+    <figcaption>Before: the site I inherited, archived June 2017.</figcaption>
+  </figure>
+  <figure class="browser stage">
+    <div class="browser-chrome shot-scroll" data-url="pixomondo.com">
+      <img src="/images/pixomondo/site-2019-desktop.jpg" width="1440" height="4043" loading="lazy"
+        alt="The redesigned Pixomondo homepage: a full-width #ForTheThrone hero with studio icons, an events strip, two Latest Projects cards, a full-bleed feature and Latest News." />
+    </div>
+    <figcaption>After: my redesign, archived April 2019.</figcaption>
+  </figure>
+</div>
 
-Visits rose 10%, and the campaign launched on time.
+## An editorial, video-first site
+
+The direction, agreed in regular meetings with the CEO, was an editorial magazine, and heavy on
+video, as you would expect from a visual effects studio. Most footage arrived as high-definition
+.mov files far too heavy for the web, so I learned a lot about compression, lossless versus
+lossy, and getting pages to load fast without the reels looking worse. I built it on a LEMP
+stack with a WordPress theme written from scratch, so campaign layouts could change every month.
+
+<figure class="stage">
+  <div class="device-tablet"><div class="shot-scroll tablet">
+    <img src="/images/pixomondo/site-2019-ipad.jpg" width="1300" height="6000" loading="lazy"
+      alt="The redesigned Pixomondo homepage at iPad size, with the projects in two columns." />
+  </div></div>
+  <figcaption>The site at iPad size, where the iPad ads landed.</figcaption>
+</figure>
+
+<figure class="stage">
+  <PxoClocks />
+  <figcaption>The footer: a clock for every studio, live.</figcaption>
+</figure>
+
+## Measuring it
+
+There was no traffic data before the redesign, so I set up Google Analytics to see where visitors
+came from, including the iPad ads.
+
+<div class="stat-row"><div><b>10%</b><span>growth in monthly active users over six months</span></div></div>
 
 ## Print doesn't let you iterate
 
-This is the only work I've done that couldn't be changed after it shipped. No analytics, no
-patch, no second version. It goes to press at full size and that's the artifact. You make
-the decisions before it exists rather than after, which is a different discipline from the
-one screens teach.
+Print was the only work I've done that couldn't change after it shipped. You make the decisions
+before it exists, which is a different discipline from the one screens teach.
