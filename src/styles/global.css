@@ -323,3 +323,10 @@ figure.stage .device-tablet { width: min(420px, 86vw); margin: 0 auto; border-ra
 figure.stage .device-tablet .shot-scroll { border-radius: 14px; }
 .shot-scroll.tablet img { aspect-ratio: 3 / 4; }
 .shot-scroll.tablet.play img { animation-duration: 18s; }
+
+/* Two archived slides crossfading in one frame, like the original hero slider. */
+.xfade { display: grid; }
+.xfade img { grid-area: 1 / 1; }
+.xfade img + img { animation: xfade 9s ease-in-out infinite; }
+@keyframes xfade { 0%, 40% { opacity: 0; } 50%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .xfade img + img { animation: none; opacity: 0; } }
