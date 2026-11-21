@@ -95,6 +95,10 @@ const experience = defineCollection({
     // Secondary things worth listing under the headline work. Keep it to two,
     // chosen, since an exhaustive list reads as a CV bleeding into a portfolio.
     also: z.array(z.string()).optional(),
+    // Nov 20, 2026: a fixed side menu of the body's sections (desktop only).
+    toc: z.boolean().optional().default(false),
+    // Nov 20, 2026: tools and skills shown as tags under the headline.
+    tools: z.array(z.string()).optional(),
     // One design trade-off: what she chose, what it cost, why. Added Nov 2026
     // because interviewers kept asking for trade-off examples. Rendered under
     // the summary on the case page. Only real decisions from the story bank.

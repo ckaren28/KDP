@@ -1,0 +1,66 @@
+---
+// WET case study, Nov 20 2026: a request that lives. One request moves through
+// comment, update and resubmit to approval instead of being started over.
+// Sample data. Loops while in view; shows the final state under reduced motion.
+---
+<div class="wrs" aria-label="Animation: one travel request is commented on, updated, resubmitted and approved">
+  <div class="wrs-bar">WET <span>Travel Requests</span></div>
+  <div class="wrs-body">
+    <div class="wrs-row">
+      <div><b>#1042</b> · John Smith<br><small>BLGO302 · Dubai, UAE · Roundtrip</small></div>
+      <div class="wrs-dates"><small>Return</small><span class="wrs-ret">Dec 1, 2019</span></div>
+      <span class="wrs-pill" data-s="pending">Pending</span>
+    </div>
+    <div class="wrs-note"><b>Manager</b> Can you return a day later, Dec 2? The client moved the walkthrough.</div>
+    <ol class="wrs-steps">
+      <li>Submitted</li><li>Comment</li><li>Updated</li><li>Resubmitted</li><li>Approved</li>
+    </ol>
+  </div>
+</div>
+
+<style>
+  .wrs { background: #fff; color: #1d1d1f; font: 12px/1.4 Helvetica, Arial, sans-serif; border-radius: 10px; overflow: hidden; box-shadow: 0 22px 48px -24px rgba(0,0,0,.45); }
+  .wrs-bar { background: #d93a32; color: #fff; font: 900 18px/1 Helvetica, Arial, sans-serif; padding: 10px 16px; display: flex; gap: 14px; align-items: baseline; }
+  .wrs-bar span { font-weight: 400; font-size: 12px; }
+  .wrs-body { padding: 18px; }
+  .wrs-row { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center; padding: 12px 14px; border: 1px solid #ddd; }
+  .wrs-row small { color: #6b6b70; }
+  .wrs-dates { text-align: right; } .wrs-dates small { display: block; font-size: 10px; }
+  .wrs-ret { transition: color .4s; } .wrs-ret.changed { color: #d4145a; font-weight: 700; }
+  .wrs-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 3px; min-width: 92px; text-align: center; transition: background .4s, color .4s; }
+  .wrs-pill[data-s="pending"] { background: #fff3d6; color: #8a5a00; }
+  .wrs-pill[data-s="comment"] { background: #e4efff; color: #1f5fbf; }
+  .wrs-pill[data-s="approved"] { background: #e0f5e9; color: #157347; }
+  .wrs-note { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid #1f5fbf; background: #f4f7fc; font-size: 11.5px; max-height: 0; opacity: 0; overflow: hidden; padding-block: 0; transition: max-height .5s, opacity .4s, padding .5s; }
+  .wrs-note.in { max-height: 80px; opacity: 1; padding-block: 10px; }
+  .wrs-steps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); counter-reset: s; }
+  .wrs-steps li { position: relative; padding-top: 18px; text-align: center; font-size: 10.5px; color: #9a9aa0; transition: color .3s; }
+  .wrs-steps li::before { content: ''; position: absolute; top: 4px; left: 50%; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: #d6d6da; transition: background .3s; }
+  .wrs-steps li::after { content: ''; position: absolute; top: 8px; left: calc(50% + 7px); right: calc(-50% + 7px); height: 1px; background: #d6d6da; }
+  .wrs-steps li:last-child::after { display: none; }
+  .wrs-steps li.on { color: #1d1d1f; } .wrs-steps li.on::before { background: #d4145a; }
+  @media (prefers-reduced-motion: reduce) { .wrs * { transition: none !important; } }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.wrs').forEach((root) => {
+    const steps = [...root.querySelectorAll('.wrs-steps li')];
+    const pill = root.querySelector('.wrs-pill');
+    const note = root.querySelector('.wrs-note');
+    const ret = root.querySelector('.wrs-ret');
+    const states = [['pending', 'Pending'], ['comment', 'Comment'], ['comment', 'Updated'], ['pending', 'Resubmitted'], ['approved', 'Approved']];
+    const show = (i) => {
+      steps.forEach((s, j) => s.classList.toggle('on', j <= i));
+      pill.dataset.s = states[i][0]; pill.textContent = states[i][1];
+      note.classList.toggle('in', i >= 1);
+      const changed = i >= 2; ret.textContent = changed ? 'Dec 2, 2019' : 'Dec 1, 2019'; ret.classList.toggle('changed', changed);
+    };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { show(4); return; }
+    let i = 0, timer = 0;
+    const tick = () => { show(i); i = (i + 1) % 6; if (i === 0) setTimeout(() => show(0), 0); };
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !timer) { i = 0; tick(); timer = window.setInterval(tick, 1500); }
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = 0; }
+    }, { threshold: 0.3 }).observe(root);
+  });
+</script>

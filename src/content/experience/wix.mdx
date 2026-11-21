@@ -11,83 +11,101 @@ summary: "Wix's first developer conference needed a 30-minute live demo of devel
 also:
   - "Presented the demo live as the keynote, \"Build with us,\" to 300 developers. The recording is on the Wix DevCon site under Keynotes"
   - "Ran a developer-experience study whose findings shipped as onboarding UI changes, refreshed documentation and new product features"
+toc: true
+tools: ["Wix Blocks", "JavaScript", "Node.js", "SDKs", "APIs", "npm packages", "SVG", "WCAG 2.1 AA", "Interaction design", "Information architecture", "Web design", "Responsive design", "Cross-team collaboration", "Public speaking"]
 order: 2
 ---
 
-## The idea
 
-NFTs were having a moment, and I saw the same generative-attribute pattern as a fun, on-brand
-way to demo what Blocks could do. You build an avatar, and it travels through the rest of the
-platform: into the ecommerce catalog as a product, onto a spin wheel, and for the winners, a
-one-to-one booking with the CEO and CTO. All on one page, so nothing reloads.
-
-<div class="fig-pair">
-<figure>
-  <a href="/images/wix/avatar-lofi.jpg" target="_blank" rel="noopener">
-    <img src="/images/wix/avatar-lofi.jpg" width="1405" height="770" loading="lazy"
-      alt="Low-fidelity wireframe of the ecommerce page: a Generate Art box with arrow controls for hair, eyes, nose and clothes and Randomize and Buy Now buttons, above a thank-you form, with sticky notes reading Select face, hair, outfit, eyes; Avatar Generator (block); and Same page (multi state)." />
-  </a>
-  <figcaption>Low-fi: one page with multi-state boxes.</figcaption>
-</figure>
-<figure>
-  <a href="/images/wix/avatar-widget-phone.png" target="_blank" rel="noopener">
-    <img src="/images/wix/avatar-widget-phone.png" width="667" height="1400" loading="lazy" class="fig-phone"
-      alt="The avatar widget on a phone: an avatar with long purple hair on a lime background, above rows for skin, hair, eyes, face, facial hair, shirt and background, each with arrows and a color swatch, and a Randomize button." />
-  </a>
-  <figcaption>Shipped.</figcaption>
-</figure>
-</div>
-
-## Decisions
-
-**Arrows, not dropdowns.** Each attribute steps through its options with a pair of arrows. In a
-crowded room you get a minute of someone's attention: stepping is faster than opening a menu,
-it reads from a distance, and it works with a thumb on a phone.
-
-**A curated set.** The design team made far more options than I shipped. Cycling through
-everything is exhausting at a conference, so I cut it down.
-
-**Every color pairing checked.** Every attribute drew from the same conference palette, so two
-could land on the same hue. I generated every combination and checked contrast against WCAG
-2.1 AA, then blocked the pairings that failed in code instead of changing the design team's
-palette.
-
-<div class="fig-row">
-  <figure>
-    <img src="/images/wix/avatar-clash-dark.jpg" width="513" height="513" loading="lazy"
-      alt="Avatar with orange hair and a green shirt on the near-black background; every part stands out." />
-    <figcaption>Dark holds.</figcaption>
-  </figure>
-  <figure>
-    <img src="/images/wix/avatar-clash-lime.jpg" width="515" height="515" loading="lazy"
-      alt="The same avatar on a lime background; the green shirt nearly blends into it." />
-    <figcaption>Lime: the shirt collides.</figcaption>
-  </figure>
-  <figure>
-    <img src="/images/wix/avatar-clash-orange.jpg" width="515" height="515" loading="lazy"
-      alt="The same avatar on an orange background; the orange hair disappears into it." />
-    <figcaption>Orange: the hair disappears. Blocked.</figcaption>
-  </figure>
-</div>
-
-<figure>
-  <a href="/images/wix/avatar-blocks-editor.jpg" target="_blank" rel="noopener">
-    <img src="/images/wix/avatar-blocks-editor.jpg" width="1488" height="852" loading="lazy"
-      alt="The Wix Blocks editor with the avatar generator widget at the top and its JavaScript below, importing one module per attribute and building the SVG." />
-  </a>
-  <figcaption>Built in Wix Blocks, still in beta, one SVG module per attribute.</figcaption>
-</figure>
-
-## Outcome
-
-**77% of attendees made an avatar.** People shared their avatars on Twitter during the event,
-and building on the new releases first surfaced platform bugs that were fixed before launch.
-
-<figure>
+<figure class="stage">
   <span class="browser-chrome" data-url="Wix DevCon">
     <video src="/videos/wix-avatar-gallery.mp4" poster="/images/wix/avatar-gallery-poster.jpg" width="1280" height="800"
       autoplay loop muted playsinline preload="metadata"
       aria-label="Screen recording of the Wix DevCon avatar gallery scrolling through rows of avatars attendees made, in different hair, skin, shirt and background combinations."></video>
   </span>
-  <figcaption>The avatar gallery at the event. Illustrations by Wix's design team.</figcaption>
+  <figcaption>The avatar gallery at the event. Illustrations by Wix’s design team.</figcaption>
+</figure>
+
+## The idea
+
+NFTs were having a moment, and the same generative-attribute pattern was a fun, on-brand way to
+demo Blocks. You build an avatar, and it travels through the platform: into the store as a
+product, onto a spin wheel, and for the winners, a one-to-one booking with the CEO and CTO. All
+on one page, so nothing reloads.
+
+<figure class="stage">
+  <div class="own-window">
+    <img src="/images/wix/avatar-lofi.jpg" width="1405" height="770" loading="lazy"
+      alt="Low-fidelity wireframe of the ecommerce page: a Generate Art box with arrow controls for hair, eyes, nose and clothes and Randomize and Buy Now buttons, above a thank-you form, with sticky notes reading Select face, hair, outfit, eyes; Avatar Generator (block); and Same page (multi state)." />
+  </div>
+  <figcaption>Low-fi: one page with multi-state boxes.</figcaption>
+</figure>
+
+## Designing for a crowded room
+
+<p class="why">In a crowded room you get a minute of someone’s attention.</p>
+
+**Arrows, not dropdowns.** Each attribute steps through its options with a pair of arrows:
+faster than opening a menu, readable from a distance, and easy with a thumb.
+
+**A curated set.** The design team made far more options than I shipped. Cycling through
+everything is exhausting at a conference, so I cut it down.
+
+<figure class="stage">
+  <div class="phone-shot"><img src="/images/wix/avatar-widget-phone.png" width="667" height="1400" loading="lazy"
+    alt="The avatar widget on a phone: an avatar with long purple hair on a lime background, above rows for skin, hair, eyes, face, facial hair, shirt and background, each with arrows and a color swatch, and a Randomize button." /></div>
+  <figcaption>The shipped widget on a phone.</figcaption>
+</figure>
+
+## Every color pairing checked
+
+Every attribute drew from one conference palette, so two could land on the same hue. I
+generated every combination, checked contrast against WCAG 2.1 AA, and blocked the pairings
+that failed in code instead of changing the design team’s palette.
+
+<div class="fig-row">
+  <figure class="stage">
+    <div class="own-window"><img src="/images/wix/avatar-clash-dark.jpg" width="513" height="513" loading="lazy"
+      alt="Avatar with orange hair and a green shirt on the near-black background; every part stands out." /></div>
+    <figcaption>Dark holds.</figcaption>
+  </figure>
+  <figure class="stage">
+    <div class="own-window"><img src="/images/wix/avatar-clash-lime.jpg" width="515" height="515" loading="lazy"
+      alt="The same avatar on a lime background; the green shirt nearly blends into it." /></div>
+    <figcaption>Lime: the shirt collides.</figcaption>
+  </figure>
+  <figure class="stage">
+    <div class="own-window"><img src="/images/wix/avatar-clash-orange.jpg" width="515" height="515" loading="lazy"
+      alt="The same avatar on an orange background; the orange hair disappears into it." /></div>
+    <figcaption>Orange: the hair disappears. Blocked.</figcaption>
+  </figure>
+</div>
+
+## Built in Wix Blocks
+
+I built it in Wix Blocks, still in beta, with one SVG module per attribute, working with the
+Blocks product manager and lead engineer. Building on unreleased products surfaced platform
+bugs that were fixed before launch.
+
+<figure class="browser stage">
+  <div class="browser-chrome" data-url="Wix Blocks">
+    <img src="/images/wix/avatar-blocks-editor.jpg" width="1488" height="852" loading="lazy"
+      alt="The Wix Blocks editor with the avatar generator widget at the top and its JavaScript below, importing one module per attribute and building the SVG." />
+  </div>
+  <figcaption>The Blocks editor: the widget above, its JavaScript below.</figcaption>
+</figure>
+
+## Outcome
+
+<div class="stat-row"><div><b>77%</b><span>of attendees made an avatar</span></div></div>
+
+People shared their avatars on Twitter during the event, and the products the demo ran on
+launched with the bugs it surfaced already fixed.
+
+<figure class="stage">
+  <div class="own-window narrow-shot">
+    <img src="/images/wix/avatar-output.jpg" width="1200" height="1185" loading="lazy"
+      alt="A finished avatar: purple hair, sunglasses and a black Wix DevCon shirt on a dark grid background." />
+  </div>
+  <figcaption>A finished avatar. The sunglasses were an easter egg: I wrote a custom randomize function that made them rare to land on.</figcaption>
 </figure>

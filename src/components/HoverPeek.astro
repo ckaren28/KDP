@@ -31,8 +31,8 @@
         if (!raf) move();
       });
       el.addEventListener('mousemove', (e) => {
-        tx = Math.min(e.clientX + 18, innerWidth - 180);
-        ty = Math.min(e.clientY + 16, innerHeight - 130);
+        tx = Math.min(e.clientX + 18, innerWidth - peek.offsetWidth - 20);
+        ty = Math.min(e.clientY + 16, innerHeight - peek.offsetHeight - 20);
       });
       el.addEventListener('mouseleave', () => { peek.classList.remove('on'); cancelAnimationFrame(raf); raf = 0; });
     });
@@ -47,7 +47,8 @@
     box-shadow: 0 18px 40px -20px rgba(0,0,0,.45);
   }
   :global(.peek.on) { opacity: 1; }
-  .peek :global(img) { display: block; width: 100%; height: 100px; object-fit: cover; object-position: top; }
+  /* Each preview keeps its own shape (Nov 20, 2026): nothing is cropped. */
+  .peek :global(img) { display: block; width: 100%; height: auto; max-height: 240px; object-fit: contain; }
   .peek :global(.peek-lock) { height: 100px; display: grid; place-items: center; text-align: center; background: var(--black); color: var(--off-white); font-family: var(--font-mono); font-size: 10px; }
   .peek :global(.peek-lock b) { display: block; font-family: var(--font-black); font-weight: 400; font-size: 26px; color: var(--accent-loud); line-height: 1; text-transform: none; }
   @media (prefers-reduced-motion: reduce) { .peek { transition: none; } }

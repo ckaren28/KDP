@@ -1,0 +1,92 @@
+---
+// WET case study, Nov 20 2026: lead visual. The travel app on a phone (it was
+// built responsive); a tap on Create Travel Request reveals the form top to
+// bottom. Recreated in code with sample data. Static form under reduced motion.
+---
+<div class="wph" aria-label="Animation: on a phone, tapping Create Travel Request opens the request form">
+  <div class="wph-phone">
+    <div class="wph-notch"></div>
+    <div class="wph-screen">
+      <div class="wph-bar"><span>WET</span><i></i></div>
+      <div class="wph-home">
+        <h4>My Travel Requests</h4>
+        <div class="wph-card"><b>Dubai, UAE</b><small>Roundtrip · May 20 – Dec 1</small><span class="wph-st ok">Approved</span></div>
+        <div class="wph-card"><b>New York, NY</b><small>Single trip · Jun 3</small><span class="wph-st pend">Pending</span></div>
+        <div class="wph-card"><b>Las Vegas, NV</b><small>Roundtrip · Jun 17 – Jun 21</small><span class="wph-st ok">Approved</span></div>
+        <span class="wph-cta">Create Travel Request +</span>
+      </div>
+      <div class="wph-form">
+        <h4>Create Travel Request</h4>
+        <label>Traveler Name<span>John Smith</span></label>
+        <label>Manager<span class="dd">Select</span></label>
+        <label>Purpose of Travel<span class="dd">Site visit</span></label>
+        <label>Name of Project<span class="dd">BLGO302</span></label>
+        <div class="wph-trip">
+          <div class="wph-trip-h">Trip 1</div>
+          <label>Departing Airport<span class="dd">LAX</span></label>
+          <label>Arrival Airport<span class="dd">DXB</span></label>
+          <label>Depart Date <small>local to LAX</small><span>May 20, 2019</span></label>
+        </div>
+        <div class="wph-add">Add Single Trip +</div>
+        <div class="wph-submit">Submit</div>
+      </div>
+      <i class="wph-tap"></i>
+    </div>
+  </div>
+</div>
+
+<style>
+  .wph { display: grid; place-items: center; padding: 6px 0; }
+  .wph-phone { position: relative; width: 272px; aspect-ratio: 9 / 19; border-radius: 42px; background: #111214; padding: 11px; box-shadow: 0 30px 60px -28px rgba(0,0,0,.6), inset 0 0 0 1.5px #3a3c41; }
+  .wph-notch { position: absolute; z-index: 3; top: 18px; left: 50%; width: 84px; height: 22px; margin-left: -42px; border-radius: 12px; background: #000; }
+  .wph-screen { position: relative; height: 100%; border-radius: 32px; overflow: hidden; background: #f4f4f5; font: 11px/1.35 Helvetica, Arial, sans-serif; color: #1d1d1f; }
+  .wph-bar { height: 70px; padding: 40px 16px 0; background: #d93a32; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .wph-bar span { font: 900 17px/1 Helvetica, Arial, sans-serif; }
+  .wph-bar i { width: 16px; height: 10px; border-top: 2px solid #fff; border-bottom: 2px solid #fff; position: relative; }
+  .wph-bar i::after { content: ''; position: absolute; left: 0; right: 0; top: 2px; height: 2px; background: #fff; }
+  .wph-home { padding: 14px; }
+  .wph h4 { margin: 0 0 10px; font-size: 14px; }
+  .wph-card { position: relative; background: #fff; border: 1px solid #e2e2e6; border-radius: 6px; padding: 9px 10px; margin-bottom: 8px; }
+  .wph-card b, .wph-card small { display: block; } .wph-card small { color: #6b6b70; font-size: 10px; }
+  .wph-card .wph-st { position: absolute; right: 8px; top: 9px; font-style: normal; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+  .ok { background: #e0f5e9; color: #157347; } .pend { background: #fff3d6; color: #8a5a00; }
+  .wph-cta { display: block; margin-top: 14px; padding: 10px; text-align: center; background: #d93a32; color: #fff; font-weight: 700; border-radius: 6px; transition: transform .15s; }
+  .wph-cta.press { transform: scale(.96); }
+  .wph-form { position: absolute; inset: 70px 0 0; padding: 14px; background: #fff; clip-path: inset(0 0 100% 0); transition: clip-path 1.2s cubic-bezier(.25,.8,.25,1); }
+  .wph.open .wph-form { clip-path: inset(0 0 0 0); }
+  .wph-form label { display: block; margin-bottom: 7px; font-size: 10px; }
+  .wph-form label small { color: #d4145a; font-size: 9px; }
+  .wph-form label span { display: block; margin-top: 2px; border: 1px solid #333; padding: 5px 7px; font-size: 10.5px; position: relative; }
+  .wph-form .dd::after { content: '▾'; position: absolute; right: 7px; color: #d4145a; }
+  .wph-trip { border: 1px solid #333; padding: 0 9px 2px; margin: 10px 0 0; }
+  .wph-trip-h { margin: 0 -9px 8px; padding: 5px 9px; border-bottom: 1px solid #333; font-weight: 700; }
+  .wph-add { background: #1d1d1f; color: #fff; text-align: center; padding: 7px; font-size: 10.5px; }
+  .wph-submit { width: 90px; margin: 12px auto 0; padding: 7px; text-align: center; background: #d93a32; color: #fff; border-radius: 5px; }
+  .wph-tap { position: absolute; z-index: 4; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(0,0,0,.18); opacity: 0; transform: scale(.4); pointer-events: none; }
+  .wph-tap.go { animation: wph-tap .6s ease-out; }
+  @keyframes wph-tap { 0% { opacity: 1; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.4); } }
+  @media (prefers-reduced-motion: reduce) { .wph-form { transition: none; } .wph-tap { display: none; } }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.wph').forEach((root) => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { root.classList.add('open'); return; }
+    const cta = root.querySelector('.wph-cta');
+    const tap = root.querySelector('.wph-tap');
+    const screen = root.querySelector('.wph-screen');
+    const loop = () => {
+      root.classList.remove('open');
+      setTimeout(() => {
+        const r = cta.getBoundingClientRect(), s = screen.getBoundingClientRect();
+        tap.style.left = `${r.left - s.left + r.width / 2}px`; tap.style.top = `${r.top - s.top + r.height / 2}px`;
+        tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go'); cta.classList.add('press');
+      }, 1400);
+      setTimeout(() => { cta.classList.remove('press'); root.classList.add('open'); }, 1700);
+    };
+    let timer = 0;
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !timer) { loop(); timer = window.setInterval(loop, 6500); }
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = 0; }
+    }, { threshold: 0.3 }).observe(root);
+  });
+</script>

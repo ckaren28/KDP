@@ -1,0 +1,102 @@
+---
+// WET case study, Nov 20 2026: one request grows to hold several legs.
+// Recreated in code from the request-form design (travel-request-form.png),
+// with sample airports. Loops while in view; static under reduced motion.
+---
+<div class="wtl" aria-label="Animation: a travel request gains a second leg and a round trip, then one leg is removed">
+  <div class="wtl-bar">WET</div>
+  <div class="wtl-body">
+    <div class="wtl-trips">
+      <div class="wtl-trip" data-n="1">
+        <div class="wtl-side">Trip 1</div>
+        <div class="wtl-fields">
+          <label>Departing Airport<span>LAX · Los Angeles</span></label>
+          <label>Arrival Airport<span>JFK · New York</span></label>
+          <label>Depart Date<span>May 20, 2019</span></label>
+          <label>Preferred Time <small>local to LAX</small><span>Morning</span></label>
+        </div>
+      </div>
+      <div class="wtl-trip wtl-new" data-n="2">
+        <div class="wtl-side">Trip 2</div>
+        <span class="wtl-x" role="img" aria-label="Remove leg">×</span>
+        <div class="wtl-fields">
+          <label>Departing Airport<span>JFK · New York</span></label>
+          <label>Arrival Airport<span>DXB · Dubai</span></label>
+          <label>Depart Date<span>May 23, 2019</span></label>
+          <label>Preferred Time <small>local to JFK</small><span>Evening</span></label>
+        </div>
+      </div>
+      <div class="wtl-trip wtl-new" data-n="3">
+        <div class="wtl-side">Trip 3<br><em>Roundtrip</em></div>
+        <span class="wtl-x" role="img" aria-label="Remove leg">×</span>
+        <div class="wtl-fields">
+          <label>Departing Airport<span>DXB · Dubai</span></label>
+          <label>Arrival Airport<span>AUH · Abu Dhabi</span></label>
+          <label>Depart Date<span>May 27, 2019</span></label>
+          <label>Return Date<span>May 29, 2019</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="wtl-actions">
+      <span class="wtl-btn dark" data-act="single">Add Single Trip +</span>
+      <span class="wtl-btn" data-act="round">Add Roundtrip +</span>
+    </div>
+  </div>
+  <div class="wtl-cursor" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M1 1l5 14 2-6 6-2z"/></svg></div>
+</div>
+
+<style>
+  .wtl { position: relative; background: #fff; color: #1d1d1f; font: 12px/1.35 Helvetica, Arial, sans-serif; border-radius: 10px; overflow: hidden; box-shadow: 0 22px 48px -24px rgba(0,0,0,.45); }
+  .wtl-bar { background: #d93a32; color: #fff; font: 900 20px/1 Helvetica, Arial, sans-serif; letter-spacing: .02em; padding: 10px 18px; }
+  .wtl-body { padding: 18px; }
+  .wtl-trips { border: 1px solid #333; border-bottom: 0; }
+  .wtl-trip { display: grid; grid-template-columns: 54px 1fr; border-bottom: 1px solid #ddd; overflow: hidden; max-height: 140px; transition: max-height .7s cubic-bezier(.2,.8,.2,1), opacity .5s; }
+  .wtl-new { max-height: 0; opacity: 0; border-bottom-width: 0; }
+  .wtl-trip.in { max-height: 140px; opacity: 1; border-bottom-width: 1px; }
+  .wtl-trip { position: relative; }
+  .wtl-x { position: absolute; top: 6px; right: 8px; width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid #333; border-radius: 50%; font-size: 13px; line-height: 1; background: #fff; transition: transform .15s, background .2s, color .2s; }
+  .wtl-x.press { transform: scale(.85); background: #d93a32; color: #fff; border-color: #d93a32; }
+  .wtl-side { border-right: 1px solid #333; display: grid; place-items: center; font-weight: 700; font-size: 12px; text-align: center; padding: 6px; }
+  .wtl-side em { font-style: normal; font-weight: 400; font-size: 10px; color: #d4145a; }
+  .wtl-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; padding: 12px 16px; }
+  .wtl-fields label { display: block; font-size: 11px; }
+  .wtl-fields small { color: #d4145a; font-size: 9.5px; }
+  .wtl-fields span { display: block; margin-top: 3px; border: 1px solid #333; padding: 4px 7px; font-size: 11px; background: #fff; }
+  .wtl-actions { display: grid; grid-template-columns: 1fr; border: 1px solid #333; }
+  .wtl-btn { justify-self: center; margin: 7px 0; padding: 5px 10px; border: 1px solid #333; font-size: 12px; background: #fff; transition: transform .15s; }
+  .wtl-actions .dark { justify-self: stretch; margin: 0; padding: 7px 0; text-align: center; background: #1d1d1f; color: #fff; border: 0; }
+  .wtl-btn.press { transform: scale(.95); }
+  .wtl-cursor { position: absolute; left: 90%; top: 90%; width: 16px; height: 16px; pointer-events: none; transition: left .8s cubic-bezier(.3,.7,.2,1), top .8s cubic-bezier(.3,.7,.2,1); }
+  .wtl-cursor svg { width: 16px; height: 16px; fill: #fff; stroke: #000; stroke-width: 1; }
+  @media (max-width: 520px) { .wtl-fields { grid-template-columns: 1fr; } .wtl-trip.in { max-height: 260px; } }
+  @media (prefers-reduced-motion: reduce) { .wtl-trip, .wtl-cursor { transition: none; } .wtl-cursor { display: none; } }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.wtl').forEach((root) => {
+    const trips = [...root.querySelectorAll('.wtl-new')];
+    const cur = root.querySelector('.wtl-cursor');
+    const btn = (a) => root.querySelector(`[data-act="${a}"]`);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { trips.forEach((t) => t.classList.add('in')); return; }
+    const point = (el) => { const r = el.getBoundingClientRect(), f = root.getBoundingClientRect(); cur.style.left = `${r.left - f.left + r.width * 0.6}px`; cur.style.top = `${r.top - f.top + r.height * 0.6}px`; };
+    const click = (a, i, at) => {
+      setTimeout(() => point(btn(a)), at);
+      setTimeout(() => { btn(a).classList.add('press'); trips[i].classList.add('in'); }, at + 900);
+      setTimeout(() => { btn(a).classList.remove('press'); point(btn(a)); }, at + 1050);
+    };
+    const loop = () => {
+      trips.forEach((t) => t.classList.remove('in')); cur.style.left = '90%'; cur.style.top = '40%';
+      click('single', 0, 700);
+      click('round', 1, 3200);
+      const x = trips[0].querySelector('.wtl-x');
+      setTimeout(() => point(x), 5300);
+      setTimeout(() => { x.classList.add('press'); trips[0].classList.remove('in'); }, 6200);
+      setTimeout(() => x.classList.remove('press'), 6400);
+    };
+    let timer = 0;
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !timer) { loop(); timer = window.setInterval(loop, 9000); }
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = 0; }
+    }, { threshold: 0.3 }).observe(root);
+  });
+</script>

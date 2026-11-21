@@ -1,0 +1,56 @@
+---
+// WET case study, Nov 20 2026: Karen's original travel-request workflow
+// (travel-workflow.png), redrawn cleanly. A request steps through the flow and
+// alternates between the accepted and declined branch on each pass.
+---
+<div class="wwf" aria-label="Workflow: an employee submits a request, their manager approves it, the travel manager reviews it, and it is either accepted and booked or declined">
+  <ol class="wwf-flow">
+    <li class="wwf-step" data-i="0"><b>Employee</b><span>Fills out one request, with every leg of the trip</span></li>
+    <li class="wwf-step" data-i="1"><b>Manager</b><span>Gets an email and approves before it goes further</span></li>
+    <li class="wwf-step" data-i="2"><b>Travel manager</b><span>Reviews the request online and accepts or declines</span></li>
+    <li class="wwf-branch">
+      <div class="wwf-step yes" data-i="3"><b>Accepted</b><span>Travel manager books it; the employee is cc'd and updated at every step</span></div>
+      <div class="wwf-step no" data-i="3"><b>Declined</b><span>The employee is emailed that the request was declined</span></div>
+    </li>
+  </ol>
+  <p class="wwf-note">Loaner phone requested: the request also goes to IT. Approved trips mark themselves complete after the arrival date.</p>
+</div>
+
+<style>
+  .wwf { background: #fff; color: #1d1d1f; font: 13px/1.4 Helvetica, Arial, sans-serif; border-radius: 10px; padding: 22px; box-shadow: 0 22px 48px -24px rgba(0,0,0,.45); }
+  .wwf-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr) 1.25fr; gap: 26px; align-items: center; }
+  .wwf-step { position: relative; border: 1px solid #d0d0d4; border-radius: 6px; padding: 12px; background: #fff; transition: border-color .35s, box-shadow .35s, background .35s; }
+  .wwf-step b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .wwf-step span { display: block; font-size: 11.5px; color: #5b5b60; }
+  .wwf-flow > li:not(:last-child)::after { content: ''; position: absolute; right: -20px; top: 50%; width: 14px; height: 1px; background: #1d1d1f; }
+  .wwf-flow > li:not(:last-child)::before { content: ''; position: absolute; right: -21px; top: calc(50% - 3px); border: 3.5px solid transparent; border-left: 5px solid #1d1d1f; }
+  .wwf-branch { display: grid; gap: 10px; }
+  .wwf-step.on { border-color: #d93a32; box-shadow: 0 0 0 3px rgba(217,58,50,.14); }
+  .wwf-step.yes.on { border-color: #157347; box-shadow: 0 0 0 3px rgba(21,115,71,.14); background: #f3fbf6; }
+  .wwf-step.no.on { border-color: #d93a32; background: #fdf3f2; }
+  .wwf-note { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid #ececf0; font-size: 11.5px; color: #5b5b60; }
+  @media (max-width: 640px) {
+    .wwf-flow { grid-template-columns: 1fr; gap: 22px; }
+    .wwf-flow > li:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -16px; width: 1px; height: 12px; }
+    .wwf-flow > li:not(:last-child)::before { right: auto; left: calc(50% - 3.5px); top: auto; bottom: -21px; border: 3.5px solid transparent; border-top: 5px solid #1d1d1f; }
+  }
+  @media (prefers-reduced-motion: reduce) { .wwf-step { transition: none; } }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.wwf').forEach((root) => {
+    const steps = [...root.querySelectorAll('.wwf-step')];
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let i = 0, accept = true, timer = 0;
+    const tick = () => {
+      steps.forEach((s) => s.classList.remove('on'));
+      if (i <= 2) steps.filter((s) => s.dataset.i === String(i)).forEach((s) => s.classList.add('on'));
+      else if (i === 3) root.querySelector(accept ? '.yes' : '.no').classList.add('on');
+      i++; if (i > 4) { i = 0; accept = !accept; }
+    };
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !timer) { i = 0; tick(); timer = window.setInterval(tick, 1100); }
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = 0; steps.forEach((s) => s.classList.remove('on')); }
+    }, { threshold: 0.3 }).observe(root);
+  });
+</script>

@@ -1,0 +1,70 @@
+---
+// WET case study, Nov 20 2026: the travel manager's view, rebuilt at full
+// resolution from travel-manager-built.jpg (blue = manager side). Every request
+// in one table; the manager approves a pending one in place. Sample data.
+---
+<div class="wmv" aria-label="Animation: the travel manager approves a pending request from the table">
+  <div class="wmv-nav"><span class="wmv-logo">WET</span><span>Create a Travel Request</span><span class="on">All Travel Requests</span><span class="wmv-out">Logout</span></div>
+  <div class="wmv-body">
+    <div class="wmv-top"><h4>Travel Requests</h4><span class="wmv-filter">Filter ▾</span><span class="wmv-search">Search</span></div>
+    <div class="wmv-table" role="table">
+      <div class="wmv-tr wmv-th" role="row"><span>Req #</span><span>Employee</span><span>Purpose</span><span>Itinerary</span><span>Status</span></div>
+      <div class="wmv-tr" role="row"><span>1038</span><span>Maria Lopez</span><span>Install</span><span>LAX → LAS · Jun 17<br>LAS → LAX · Jun 21</span><span><b class="st ok">Approved</b></span></div>
+      <div class="wmv-tr wmv-target" role="row"><span>1042</span><span>John Smith</span><span>Site visit</span><span>LAX → DXB · May 20<br>DXB → LAX · Dec 2</span><span class="wmv-act"><b class="st pend">Pending</b><i class="wmv-btn yes">Approve</i><i class="wmv-btn no">Decline</i></span></div>
+      <div class="wmv-tr" role="row"><span>1045</span><span>Dev Patel</span><span>Client meeting</span><span>LAX → JFK · Jun 3</span><span><b class="st pend">Pending</b></span></div>
+      <div class="wmv-tr" role="row"><span>1047</span><span>Amy Chen</span><span>Training</span><span>LAX → SFO · Jun 10<br>SFO → LAX · Jun 11</span><span><b class="st dec">Declined</b></span></div>
+    </div>
+  </div>
+  <div class="wmv-cursor" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M1 1l5 14 2-6 6-2z"/></svg></div>
+</div>
+
+<style>
+  .wmv { position: relative; background: #fff; color: #1d1d1f; font: 12px/1.4 Helvetica, Arial, sans-serif; border-radius: 10px; overflow: hidden; box-shadow: 0 22px 48px -24px rgba(0,0,0,.45); }
+  .wmv-nav { display: flex; gap: 18px; align-items: center; background: #1f4e8c; color: #cfe0f7; padding: 10px 16px; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+  .wmv-nav .on { color: #fff; font-weight: 700; }
+  .wmv-logo { font: 900 16px/1 Helvetica, Arial, sans-serif; color: #fff; letter-spacing: 0; text-transform: none; }
+  .wmv-out { margin-left: auto; }
+  .wmv-body { padding: 16px 18px 20px; }
+  .wmv-top { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .wmv-top h4 { margin: 0 auto 0 0; font-size: 16px; }
+  .wmv-filter, .wmv-search { border: 1px solid #c9ced8; border-radius: 4px; padding: 4px 9px; font-size: 11px; color: #555; }
+  .wmv-search { width: 110px; color: #999; }
+  .wmv-tr { display: grid; grid-template-columns: 48px 1fr 0.9fr 1.5fr 1.35fr; gap: 10px; align-items: center; padding: 9px 8px; border-bottom: 1px solid #e6e8ee; transition: background .4s; }
+  .wmv-th { background: #2a2d33; color: #fff; font-size: 10.5px; font-weight: 700; border: 0; }
+  .wmv-tr span:nth-child(4) { font-size: 11px; color: #444; }
+  .st { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 3px; transition: background .4s, color .4s; }
+  .ok { background: #e0f5e9; color: #157347; } .pend { background: #fff3d6; color: #8a5a00; } .dec { background: #fde8e6; color: #b42318; }
+  .wmv-act { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+  .wmv-btn { font-style: normal; font-size: 10px; padding: 3px 7px; border-radius: 3px; border: 1px solid #1f4e8c; color: #1f4e8c; transition: transform .15s, opacity .3s; }
+  .wmv-btn.yes { background: #1f4e8c; color: #fff; }
+  .wmv-btn.press { transform: scale(.92); }
+  .wmv.done .wmv-btn { opacity: 0; }
+  .wmv.done .wmv-target { background: #f3fbf6; }
+  .wmv-cursor { position: absolute; left: 92%; top: 92%; width: 16px; height: 16px; pointer-events: none; transition: left .9s cubic-bezier(.3,.7,.2,1), top .9s cubic-bezier(.3,.7,.2,1); }
+  .wmv-cursor svg { width: 16px; height: 16px; fill: #fff; stroke: #000; stroke-width: 1; }
+  @media (max-width: 600px) { .wmv-tr { grid-template-columns: 40px 1fr 1.3fr; } .wmv-tr span:nth-child(3), .wmv-tr span:nth-child(4) { display: none; } .wmv-nav span:not(.wmv-logo):not(.on) { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .wmv * { transition: none !important; } .wmv-cursor { display: none; } }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.wmv').forEach((root) => {
+    if (root.dataset.bound) return; root.dataset.bound = '1';
+    const st = root.querySelector('.wmv-target .st');
+    const yes = root.querySelector('.wmv-btn.yes');
+    const cur = root.querySelector('.wmv-cursor');
+    const approve = () => { root.classList.add('done'); st.className = 'st ok'; st.textContent = 'Approved'; };
+    const reset = () => { root.classList.remove('done'); st.className = 'st pend'; st.textContent = 'Pending'; cur.style.left = '92%'; cur.style.top = '92%'; };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { approve(); return; }
+    const loop = () => {
+      reset();
+      setTimeout(() => { const r = yes.getBoundingClientRect(), f = root.getBoundingClientRect(); cur.style.left = `${r.left - f.left + r.width * 0.5}px`; cur.style.top = `${r.top - f.top + r.height * 0.6}px`; }, 900);
+      setTimeout(() => { yes.classList.add('press'); }, 2000);
+      setTimeout(() => { yes.classList.remove('press'); approve(); }, 2200);
+    };
+    let timer = 0;
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !timer) { loop(); timer = window.setInterval(loop, 6000); }
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = 0; }
+    }, { threshold: 0.3 }).observe(root);
+  });
+</script>

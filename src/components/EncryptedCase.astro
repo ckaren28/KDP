@@ -90,6 +90,13 @@ const { src } = Astro.props;
       const out = root.querySelector<HTMLElement>('.enc-out')!;
       out.innerHTML = new TextDecoder().decode(plain);
       out.hidden = false;
+      // Scripts set through innerHTML don't run; re-create them so a case can
+      // carry its own animations (Nov 20, 2026: the Intuit leaderboard).
+      out.querySelectorAll('script').forEach((old) => {
+        const s = document.createElement('script');
+        s.textContent = old.textContent;
+        old.replaceWith(s);
+      });
       root.querySelector('.enc-box')?.remove();
       try { localStorage.setItem(KEY, JSON.stringify({ pw, exp: Date.now() + WEEK })); } catch {}
       return true;

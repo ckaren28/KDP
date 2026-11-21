@@ -13,7 +13,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
+// Side menu: the summary, then every h2 in the body.
+const toc = entry.data.toc ? [{ slug: 'overview', text: 'Overview' }, ...headings.filter((h) => h.depth === 2)] : [];
 const d = entry.data;
 
 ---
@@ -83,6 +85,7 @@ const d = entry.data;
     }
 
     .xpp-also-wrap { margin: 0 0 40px; }
+    .xpp-also-end { margin: 64px 0 0; padding-top: 24px; border-top: 1px solid var(--border); }
     .xpp-also-label {
       margin: 0 0 12px;
       font-family: var(--font-mono);
@@ -283,14 +286,43 @@ const d = entry.data;
     .xpp-body :global(a:hover) { color: var(--black); }
     .xpp-body :global(a:focus-visible) { outline: 2px solid var(--sienna); outline-offset: 3px; }
 
+    /* Fixed section menu, left of the reading column. Wide screens only;
+       phones read straight down. */
+    .xpp-tools { display: flex; flex-wrap: wrap; gap: 6px; margin: -8px 0 28px; padding: 0; list-style: none; }
+    .xpp-tools li { padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+    .xpp-toc { display: none; }
+    @media (min-width: 1080px) {
+      .xpp-toc {
+        display: block; position: fixed; top: 140px; z-index: 5;
+        left: 24px; width: clamp(120px, calc(50vw - 390px - 64px), 170px);
+      }
+    }
+    @media (min-width: 1300px) { .xpp-toc { left: calc(50% - 390px - 210px); } }
+    .xpp-toc a {
+      display: block; padding: 7px 0 7px 14px;
+      border-left: 1px solid var(--border);
+      font-size: var(--fs-150, 14px); line-height: 1.3;
+      color: var(--muted); text-decoration: none;
+      transition: color .2s, border-color .2s;
+    }
+    .xpp-toc a:hover { color: var(--black); }
+    .xpp-toc a.on { color: var(--black); border-left-color: var(--sienna); }
+    .xpp-toc a:focus-visible { outline: 2px solid var(--sienna); outline-offset: 3px; }
+    .xpp-body :global(h2) { scroll-margin-top: 96px; }
+
     @media (max-width: 900px) {
       .xpp { padding: 32px 24px 72px; }
       .xpp-artifacts { grid-template-columns: 1fr; }
     }
   </style>
 
+  {toc.length > 0 && (
+    <nav class="xpp-toc" aria-label="Sections">
+      {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+    </nav>
+  )}
   <article class="xpp">
-    <a href="/#work" class="xpp-back">← Back to work</a>
+    <a href="/#work" class="xpp-back" id="overview">← Back to work</a>
 
     <h1 class="xpp-headline">{d.headline}</h1>
     <p class="xpp-meta">
@@ -298,6 +330,11 @@ const d = entry.data;
       <span>{d.role}</span>
       <span>{d.location}</span>
     </p>
+    {d.tools && d.tools.length > 0 && (
+      <ul class="xpp-tools" aria-label="Tools and skills">
+        {d.tools.map((t) => <li>{t}</li>)}
+      </ul>
+    )}
     {d.encrypted ? <EncryptedCase src={d.encrypted} /> : <>
     <p class="xpp-result">{d.result}</p>
     <p class="xpp-summary">{d.summary}</p>
@@ -309,14 +346,6 @@ const d = entry.data;
       </section>
     )}
 
-    {d.also && d.also.length > 0 && (
-      <section class="xpp-also-wrap" aria-labelledby="alsoLabel">
-        <h2 class="xpp-also-label" id="alsoLabel">Also in this role</h2>
-        <ul class="xpp-also">
-          {d.also.map((item) => <li>{item}</li>)}
-        </ul>
-      </section>
-    )}
 
     {d.unshipped && (
       <p class="xpp-unshipped">Proposed. This design was never shipped</p>
@@ -345,7 +374,33 @@ const d = entry.data;
     )}
 
     <div class="xpp-body"><Content /></div>
+
+    {/* Nov 20, 2026: moved below the case body so it doesn't break the story. */}
+    {d.also && d.also.length > 0 && (
+      <section class="xpp-also-wrap xpp-also-end" aria-labelledby="alsoLabel">
+        <h2 class="xpp-also-label" id="alsoLabel">Also in this role</h2>
+        <ul class="xpp-also">
+          {d.also.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+    )}
     </>}
   </article>
+
+  <script>
+    // Screenshot motion only runs while the screenshot is on screen.
+    const shotIO = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('play', e.isIntersecting)), { threshold: 0.35 });
+    document.querySelectorAll('.shot-scroll, .shot-zoom').forEach((el) => shotIO.observe(el));
+
+    // Highlight the section in view in the side menu.
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.xpp-toc a')];
+    if (links.length) {
+      const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean) as HTMLElement[];
+      const mark = (id: string) => links.forEach((a) => a.classList.toggle('on', a.hash === '#' + id));
+      mark('overview');
+      const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && mark(e.target.id)), { rootMargin: '-35% 0px -60% 0px' });
+      targets.forEach((t) => io.observe(t));
+    }
+  </script>
 
 </MainLayout>

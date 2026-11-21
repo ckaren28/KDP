@@ -8,82 +8,109 @@ headline: "Redesigning employee travel at WET"
 result: "Piloted, then rolled out company-wide; the legacy system was retired"
 abstract: "Redesigned and rebuilt an internal travel app."
 summary: "WET Design builds large-scale water features, the Bellagio fountains among them. Its employee travel-request app was a decade old, undocumented and desktop-only, and the travel manager was coordinating requests over email. I interviewed the people who used it, designed the workflow and interface within WET's brand guidelines, and built the front end as the sole front-end developer."
-also:
-  - "Redesigned and deployed the company intranet, turning it into the primary source of company updates. Time on page rose 25%, about 30 seconds"
+toc: true
+tools: ["Vue", "JavaScript", "SASS", "GraphQL", "Confluence", "Responsive design", "User research", "Workflow design"]
 order: 1
 ---
 
-## What I learned
+import WetTripLegs from '../../components/wet/WetTripLegs.astro';
+import WetRequestStatus from '../../components/wet/WetRequestStatus.astro';
+import WetCalendar from '../../components/wet/WetCalendar.astro';
+import WetWorkflow from '../../components/wet/WetWorkflow.astro';
+import WetPhoneHero from '../../components/wet/WetPhoneHero.astro';
+import WetManagerView from '../../components/wet/WetManagerView.astro';
+import WetRollout from '../../components/wet/WetRollout.astro';
 
-I sat down with the travel manager to see how requests were actually processed, and
-interviewed several of the employees who traveled most. Four things stood out:
+
+<figure class="stage">
+  <WetPhoneHero />
+  <figcaption>The travel app on a phone: Create Travel Request opens the form. Sample data.</figcaption>
+</figure>
+
+## What travelers told me
+
+I sat with the travel manager to see how requests were really processed, and interviewed the
+employees who traveled most.
 
 - Trips had several legs, and the old form assumed a simple out-and-back.
-- Travelers weren't sure whether to enter times in their own time zone or the destination's.
-- Changing a request meant starting a new one from scratch.
-- Requests needed a manager's approval, and a way to comment on and resubmit them.
+- Travelers weren't sure which time zone to enter times in.
+- Changing a request meant starting over.
+- Requests needed a manager's approval, and a way to comment and resubmit.
 
-## Decisions
+<figure class="stage">
+  <WetWorkflow />
+  <figcaption>The workflow I mapped from those conversations.</figcaption>
+</figure>
+
+## One request, several legs
 
 <p class="why">Heard: trips had several legs, and time zones confused people.</p>
 
-**One request, several legs.** The form holds as many segments as the trip needs, single legs
-and round trips together. Each leg has labeled departure and arrival times with guidance on
-which location's time to use, and an airport-code lookup instead of free text.
+The form holds as many legs as the trip needs, single and round trips together. Each leg says
+which location's time to use, and airports come from a code lookup instead of free text.
 
-<figure class="browser">
-  <a class="browser-chrome" data-url="WET Travel" href="/images/wet/travel-request-form.png" target="_blank" rel="noopener">
+<figure class="stage">
+  <WetTripLegs />
+  <figcaption>Adding legs to one request. Sample airports.</figcaption>
+</figure>
+
+<figure class="browser stage">
+  <div class="browser-chrome shot-scroll" data-url="WET Travel">
     <img src="/images/wet/travel-request-form.png" width="1366" height="1199" loading="lazy"
       alt="Design of the Create Travel Request form: traveler, manager, purpose, project and job code fields; a Trip 1 block with departing and arrival airports, dates and preferred times; Add Single Trip and Add Roundtrip buttons; car rental, hotel and loaner phone options; and an additional information box." />
-  </a>
-  <figcaption>Request form design. Each leg is its own block.</figcaption>
+  </div>
+  <figcaption>The request form design.</figcaption>
 </figure>
+
+## A request that lives
 
 <p class="why">Heard: changing a request meant starting over, and every trip needed a manager's approval.</p>
 
-**A request that lives, not a one-off form.** Managers approve or decline from a notification
-that carries the trip's essentials, and a request can be commented on, updated and resubmitted
-instead of started over.
+Managers approve or decline from an email that carries the trip's essentials. A request can be
+commented on, updated and resubmitted instead of started over.
 
-<figure>
-  <a href="/images/wet/travel-approval-email-crop.png" target="_blank" rel="noopener">
+<figure class="stage">
+  <WetRequestStatus />
+  <figcaption>One request, from submitted to approved. Sample data.</figcaption>
+</figure>
+
+<figure class="stage">
+  <div class="own-window shot-zoom" style="--zx:66%;--zy:58%;--zs:1.9">
     <img src="/images/wet/travel-approval-email-crop.png" width="865" height="545" loading="lazy"
       alt="Design of an approval notification email: a pink card reading that an employee has submitted a travel request, with employee, trip type, project, location and travel dates, and a link to approve or decline." />
-  </a>
-  <figcaption>Approval notification design.</figcaption>
+  </div>
+  <figcaption>The approval email.</figcaption>
 </figure>
+
+## Two views, two jobs
 
 <p class="why">Heard: the travel manager was absorbing everything over email.</p>
 
-**Two views, two jobs.** Employees got the form and a table of their own requests. The travel
-manager got every request in one place, filterable, with approve and decline right there, so
-approvals stopped happening over email. Color told you which side you were on: red for
-employees, blue for the manager.
+Employees see their own requests. The travel manager sees every request in one table, with
+approve and decline right there. Red is the employee side; blue is the manager's.
 
-<figure class="browser">
-  <a class="browser-chrome" data-url="WET Travel" href="/images/wet/travel-manager-built.jpg" target="_blank" rel="noopener">
-    <img src="/images/wet/travel-manager-built.jpg" width="1956" height="1467" loading="lazy"
-      alt="Screenshot of the built Travel Requests page: a sortable, searchable table of requests with request number, date, employee, travel purpose, billing, one-way and round-trip legs with airports and dates, and Approved, Pending or Declined status." />
-  </a>
-  <figcaption>The built manager view, with test data.</figcaption>
+<figure class="stage">
+  <WetManagerView />
+  <figcaption>The travel manager’s view. Sample data.</figcaption>
 </figure>
 
-## Outcome
+## Rollout
 
-I built the front end in Vue, JavaScript, SASS and GraphQL, responsive so it worked on a phone
-as well as at a desk. WET's IT team tested it first, it was piloted in a couple of departments,
-and then it rolled out company-wide. The old system was retired.
+I built the front end in Vue, JavaScript, SASS and GraphQL, responsive for a phone as well as a
+desk.
+
+<figure class="stage">
+  <WetRollout />
+  <figcaption>Tested, piloted, then company-wide. The old system was retired.</figcaption>
+</figure>
 
 ## Also at WET: the intranet
 
-I redesigned the company intranet on Confluence. The hardest part was the events calendar: a
-dot on each day with an event, opening a tooltip with the details, which Confluence at the
-time didn't make easy to integrate.
+I redesigned the company intranet on Confluence and made it the primary source of company
+updates; time on page rose 25%, about 30 seconds. The hardest part was the events calendar, a
+dot on each event day that opens the details, which Confluence didn't make easy at the time.
 
-<figure>
-  <a href="/images/wet/intranet-calendar.png" target="_blank" rel="noopener">
-    <img src="/images/wet/intranet-calendar.png" width="584" height="468" loading="lazy" class="fig-narrow"
-      alt="The intranet calendar for June 2019, with today highlighted in red, a red dot on Friday the 7th, and a tooltip open describing a Jam Session in the Playground Cafeteria from 1 to 2 PM." />
-  </a>
-  <figcaption>The intranet calendar, with the event dot and tooltip.</figcaption>
+<figure class="stage">
+  <WetCalendar />
+  <figcaption>The events calendar. Hover the dot.</figcaption>
 </figure>
